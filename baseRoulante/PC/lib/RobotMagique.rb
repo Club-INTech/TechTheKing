@@ -30,7 +30,7 @@ class RobotMagique
                 # Bleu : recalage3 et changer signe angle + y
                 @robot.recalage
                 
-                @robot.attendreJumper
+                #-#@robot.attendreJumper
 
                 @robot.demarrerTimer
                 @evenements.demarrer
