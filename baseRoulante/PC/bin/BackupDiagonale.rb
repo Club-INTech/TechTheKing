@@ -1,8 +1,11 @@
+#!/usr/bin/ruby -I../lib
+
 # -*- coding: utf-8 -*-
 require "Strategie"
 require "Vecteur"
-
+require "Robot"
 require "Log"
+require "CarteTechTheFruit"
 
 class Diagonale < Strategie
 
@@ -56,7 +59,7 @@ class Diagonale < Strategie
 			@robot.alignement(-Math::PI/4)
 			deplacement 1500, 1222, -3*(Math::PI/4)
 			@robot.goTo 600,1722
-			@robot.tourneDe (Math::PI)
+			@robot.tourneDe(Math::PI)
 			deplacement 1500, 1722, (Math::PI/4)
 			#deplacement 2400, 1222, (-Math::PI/4)
 
@@ -323,3 +326,13 @@ class Diagonale < Strategie
         end
 
 end
+
+robot=Robot.new(:jaune)
+robot.demarrer
+robot.recalage
+
+carte=CarteTechTheFruit.new
+test=Diagonale.new
+
+test.donnerRessources(robot,carte)
+test.sequence
