@@ -39,8 +39,8 @@ class Robot
 
                 detectionPeripherique = Detection.new(identifiantArduino).association
                 @asservissement = Asservissement.new detectionPeripherique["Asservissement"], positionDebut
-                #@actionneurs = Actionneurs.new detectionPeripherique["Actionneurs"]
-                #@evitement = Evitement.new detectionPeripherique["Evitement"]
+                #-#@actionneurs = Actionneurs.new detectionPeripherique["Actionneurs"]
+                #-#@evitement = Evitement.new detectionPeripherique["Evitement"]
 
                 reset
 
@@ -55,8 +55,8 @@ class Robot
                 @log.info "Démarrage..."
 
                 @asservissement.demarrer
-                #@actionneurs.demarrer
-                #@evitement.demarrer
+                #-#@actionneurs.demarrer
+                #-#@evitement.demarrer
 
                 @log.info "Robot démarré"
         end
@@ -72,8 +72,8 @@ class Robot
                         desactiveAsservissement
 
                         @asservissement.arreter
-                        @actionneurs.arreter
-                        @evitement.arreter
+                        #-#@actionneurs.arreter
+                        #-#@evitement.arreter
                         @log.info "Fin du temps réglementaire"
                         exit
                 }
@@ -88,8 +88,8 @@ class Robot
                 @log.info "Arrêt..."
 
                 @asservissement.arreter
-                @actionneurs.arreter
-                @evitement.arreter
+                #-#@actionneurs.arreter
+                #-#@evitement.arreter
 
                 @log.info "Robot arrêté"
         end
@@ -132,32 +132,32 @@ class Robot
 
         # Valeurs des capteurs ultrason
         def ultrasons
-                @evitement.ultrasons
+                #-#@evitement.ultrasons
         end
 
         # Contrôle d'état des ultrason haut
         def etatHaut
-                @evitement.controleEtatHaut
+                #-#@evitement.controleEtatHaut
         end
 
         # Valeurs des capteurs optiques
         def optiques
-                @evitement.optiques
+                #-#@evitement.optiques
         end
 
         #place sur rail gauche
         def placeSurRailGauche
-                @evitement.placeSurRailGauche
+                #-#@evitement.placeSurRailGauche
         end
 
         #place sur rail droit
         def placeSurRailDroit
-                @evitement.placeSurRailDroit
+                #-#@evitement.placeSurRailDroit
         end
 
         def placeTotal
                 #placeSurRailDroit + placeSurRailGauche
-                return (5-@evitement.nombreOranges)
+                #-#return (5-@evitement.nombreOranges)
         end
 
         #
@@ -265,13 +265,13 @@ class Robot
         end
 
         def activeEvitement
-                @evitementactive = true
+                #-#@evitementactive = true
         end
         def desactiveEvitement
-                @evitementactive = false
+                #-#@evitementactive = false
         end
         def evitement?
-                @evitementactive
+                #-#@evitementactive
         end
         # Retourne l'état des codeuses pour la calibration
         def codeuses
@@ -341,63 +341,63 @@ class Robot
 
         # Allume la led du jumper
         def allumerLed
-                @actionneurs.allumerLed
+                #-#@actionneurs.allumerLed
         end
 
         # Retourne l'état du jumper, prise jack
         def attendreJumper
                 @log.info "Attente du jumper"
-                while @actionneurs.etatJumper != 1
-                        sleep 0.1
-                end
+                #-#while @actionneurs.etatJumper != 1
+                #-#        sleep 0.1
+                #-#end
                 @log.info "Jumper débloqué"
         end
 
         # Vide les oranges en baissant la fourche
         def baisseFourche
-                @actionneurs.baisseFourche
+                #-#@actionneurs.baisseFourche
         end
 
         # Attrape les oranges en relevant la fourche
         def leveFourche
-                @actionneurs.leveFourche
+                #-#@actionneurs.leveFourche
         end
 
         def rangeFourche
-                @actionneurs.rangeFourche
+                #-#@actionneurs.rangeFourche
         end
 
         def actionneursStopUrgence
-                @actionneurs.stopUrgence
+                #-#@actionneurs.stopUrgence
         end
 
         def rouleauDirect
-                @actionneurs.rouleauDirect
+                #-#@actionneurs.rouleauDirect
         end
 
         def rouleauIndirect
                 # @log.debug "Envoi signal rouleau"
-                @actionneurs.rouleauIndirect
+                #-#@actionneurs.rouleauIndirect
         end
 
         def stopRouleau
-                @actionneurs.stopRouleau
+                #-#@actionneurs.stopRouleau
         end
 
         def selecteurGauche
-                @actionneurs.selecteurGauche
+                #-#@actionneurs.selecteurGauche
         end
 
         def selecteurDroite
-                @actionneurs.selecteurDroite
+                #-#@actionneurs.selecteurDroite
         end
 
         def selecteurMilieu
-                @actionneurs.selecteurMilieu
+                #-#@actionneurs.selecteurMilieu
         end
 
         def stopSelecteur
-                @actionneurs.stopSelecteur
+                #-#@actionneurs.stopSelecteur
         end
 
         def changerVitesse(rotation, translation)
