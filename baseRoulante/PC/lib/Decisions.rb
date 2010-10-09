@@ -45,6 +45,7 @@ class Decisions
                 Dir.entries(chemin).each { |f|
                         if f.include? ".rb"
                                 require chemin + f.to_s if f.include? ".rb"
+				p f.sub(".rb","")
                                 charge Kernel.const_get(f.sub(".rb", "")).new
                         end
                 }
