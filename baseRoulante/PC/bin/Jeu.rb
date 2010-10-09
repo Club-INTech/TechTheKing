@@ -1,22 +1,13 @@
 #!/usr/bin/ruby -I../lib
 
-require "readline"
+require "Match"
 
-require "ListeEvenements"
-require "RobotMagique"
+robot=Robot.new(:jaune)
+robot.demarrer
+robot.recalage
 
-begin
-        ligne = Readline.readline("Coté de jeu : (j : jaune, b : bleue)\n", true)
-end while (ligne != "j" and ligne != "b")
+carte=CarteTechTheFruit.new
+match=Diagonale.new
 
-if ligne == "j"
-        positionInitiale = Position.new(300, 300, 0)
-        magicien = RobotMagique.new(positionInitiale, ListeEvenements, "Strategies/", :jaune)  
-else
-        positionInitiale = Position.new(300, -300, 0)
-        magicien = RobotMagique.new(positionInitiale, ListeEvenements, "Strategies/", :bleu)        
-end
-
-Readline.readline("Presser une touche pour lancer le robot", true)
-
-magicien.demarrer
+match.donnerRessources(robot,carte)
+match.sequence

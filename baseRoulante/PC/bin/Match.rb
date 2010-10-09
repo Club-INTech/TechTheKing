@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
 require "Strategie"
 require "Vecteur"
-
+require "Robot"
 require "Log"
+require "CarteTechTheFruit"
 
-class Diagonale < Strategie
+class Match < Strategie
 
         def initialize
                 # temps requis, points gagnés, position de départ
@@ -150,14 +150,8 @@ class Diagonale < Strategie
                         @robot.baisseFourche
                         sleep 1
                         @robot.goTo 2690, 1895
-
                         return true
 
-                        #         @robot.goTo 2350, 1807, -(Math::PI/4)
-                        #         @robot.goTo 2400, 1847, -(Math::PI/4)
-                        #         @robot.goTo 2350, 1807, -(Math::PI/4)
-                        #         @robot.goTo 2400, 1847, -(Math::PI/4)
-                        #         sleep 2
                         @robot.rouleauIndirect		
                         @robot.goTo 295, 193
                         @robot.alignement 3.14 	
@@ -178,7 +172,6 @@ class Diagonale < Strategie
                         sleep 2
                         @robot.stopRouleau
 
-                        #   @robot.goTo 2657, 1868
                         @robot.alignement(-(Math::PI/2))
 
                         @robot.baisseFourche
