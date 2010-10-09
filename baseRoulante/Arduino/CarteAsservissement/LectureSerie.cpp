@@ -11,6 +11,9 @@ LectureSerie::LectureSerie()
 /*
  * Fonction à mettre dans le loop()
  */
+
+/* les nom des fonctions du manager ne sont pas corrects
+ ex: pour 'a' on avance et non on change l'angle */
 void
 LectureSerie::traitement() {
 	unsigned char premierCaractere; // Inutile que le char soit signé ! -- Yann Sionneau
@@ -27,11 +30,13 @@ LectureSerie::traitement() {
 	case 'a':
 		litEntierLong(&i);
 		if (i >= 0)
+			// changer la position
 			manager.changeConsigneAngle(i);
 		break;
 	case 'b':
 		litEntierLong(&i);
 		if (i >= 0)
+			// changer l'angle
 			manager.changeConsigneDistance(i);
 		break;
 	case 'c':

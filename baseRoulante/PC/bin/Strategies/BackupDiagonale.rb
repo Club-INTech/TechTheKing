@@ -56,7 +56,7 @@ class Diagonale < Strategie
 			@robot.alignement(-Math::PI/4)
 			deplacement 1500, 1222, -3*(Math::PI/4)
 			@robot.goTo 600,1722
-			@robot.tourneDe (Math::PI)
+			@robot.tourneDe(Math::PI)
 			deplacement 1500, 1722, (Math::PI/4)
 			#deplacement 2400, 1222, (-Math::PI/4)
 
