@@ -12,7 +12,6 @@ class LectureSerie {
 	private:
 		bool	litEntier(int *);
 		bool	litEntierLong(long int *);
-		//void	lol(long int *);
 };
 
 extern LectureSerie lectureSerie;

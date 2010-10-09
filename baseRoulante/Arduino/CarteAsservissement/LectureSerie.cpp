@@ -13,7 +13,7 @@ LectureSerie::LectureSerie()
  */
 void
 LectureSerie::traitement() {
-	unsigned char premierCaractere; // Inutile que le char soit signé ! -- Yann Sionneau
+	unsigned char premierCaractere;
 	while (Serial.available() == 0) {
 		asm("nop");
 	}
@@ -143,10 +143,9 @@ bool
 LectureSerie::litEntierLong(long int *i)
 {
 	long int aux = 0;
-//	int j; Inutile d'utiliser 2 octets (2 registres carrément ici) pour stoquer les nombres de 0 à 7 -- Yann Sionneau
 	unsigned char j;
 	long int k = 10000000;
-	unsigned char c = 0; // les unsigned feront l'affaire ! -- Yann Sionneau
+	unsigned char c = 0;
 	for (j = 0; j < 8; j++) {
 		while (Serial.available()==0) { 
 			asm("nop");

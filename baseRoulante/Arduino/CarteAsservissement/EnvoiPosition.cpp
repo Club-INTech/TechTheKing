@@ -50,7 +50,6 @@ void
 EnvoiPosition::intToHex(unsigned char *data)
 {
 	unsigned char c;
-//	int i; Inutile de stoquer les nombres de 0 à 3 sur 2 octets (2 registres sur avr) :) -- Yann Sionneau
 	unsigned char i; 
 	
 	for (i = 3; i >= 0; i--) {
@@ -76,7 +75,7 @@ EnvoiPosition::intToHex(unsigned char *data)
  */
  
 // Division par 4 du temps de cette interruption @ 57600 bauds (pareil à 9600..)
-// TODO: Peut-on passer cette variable en unsigned ? les avr ont plus de facilité avec les non signés :) -- Yann Sionneau
+
 char stator = 3;
 
 long int bufferG;

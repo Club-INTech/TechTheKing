@@ -14,7 +14,7 @@ volatile char etatPins = 0;
 
 ISR(PCINT2_vect)
 {
-    	unsigned char changementPins 	= (PIND & MASQUE) ^ etatPins; // un unsigned fera l'affaire -- Yann Sionneau
+    	unsigned char changementPins 	= (PIND & MASQUE) ^ etatPins;
     	etatPins 		= PIND & MASQUE;
     
     	if (changementPins & ENCGA){
@@ -53,7 +53,7 @@ ISR(PCINT2_vect)
 void 
 Manager::assPolaire()
 {
-	//static int stator1337 = 100; // TODO: Mettre static unsigned char stator1337 = 100; ? -- Yann Sionneau
+	//static int stator1337 = 100;
 	
 	long int angle = 	encodeurG - encodeurD;
 	long int distance = 	encodeurG + encodeurD;
@@ -122,7 +122,6 @@ Manager::assPolaire()
 	// Réactivation des interruptions
 	//cli();
 	// Reprise de l'envoi de position
-	//TODO je pense que c'est plutot TIMSK2 = savTIMSK2; pour la ligne suivante. -- Yann Sionneau
 	//TIMSK2 |= savTIMSK2; 
 }
 
@@ -247,7 +246,7 @@ Manager::reset()
  * Réduire le préscaler à 500Hz
  */
  
-unsigned char stator1 = 1; // un unsigned fera l'affaire ! -- Yann Sionneau
+unsigned char stator1 = 1;
 
 ISR(TIMER2_OVF_vect)
 {
@@ -256,7 +255,7 @@ ISR(TIMER2_OVF_vect)
 		stator1 = 1;
 	}
 	else {
-		stator1--; // TODO: mettre stator1 = 0; à la place ? -- Yann Sionneau
+		stator1--;
 	}
 }
 
