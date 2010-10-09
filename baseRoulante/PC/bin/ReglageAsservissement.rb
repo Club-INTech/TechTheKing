@@ -8,6 +8,8 @@ puts "Réglage de l'arduino d'asservissement"
 puts "Premier caractère, type d'asservissement t ou r"
 puts "Deuxième caractère, type de constante, Acc (a), Kp (k), Vmax (v), PWM (p)"
 puts "Valeur"
+puts "Sinon a ou b pour avancer/reculer"
+puts "Et c ou d pour tourner gauche/droite"
 
 peripherique = `ls -1 /dev/ttyUSB* 2> /dev/null`
 liaison = Serie.new("/dev/ttyUSB0", 57600)
@@ -17,20 +19,20 @@ while line = Readline.readline("> ", true)
         typeC = line[1].chr
         valeur = line[2..line.size - 1].to_i
         if type == "a"
-        	liaison.ecrire "b" + valeur.to_s.rjust(8, "0")
+        	liaison.ecrire "a" + valeur.to_s.rjust(8, "0")
         end
         if type == "?"
 		liaison.ecrire "?"
 
 	end
 	if type == "b"
-        	liaison.ecrire "g" + valeur.to_s.rjust(8, "0")
+        	liaison.ecrire "f" + valeur.to_s.rjust(8, "0")
         end
         if type == "c"
-        	liaison.ecrire "a" + valeur.to_s.rjust(8, "0")
+        	liaison.ecrire "b" + valeur.to_s.rjust(8, "0")
         end
         if type == "d"
-        	liaison.ecrire "f" + valeur.to_s.rjust(8, "0")
+        	liaison.ecrire "g" + valeur.to_s.rjust(8, "0")
         end
         if type == "r"
                 if typeC == "a"
@@ -67,10 +69,10 @@ while line = Readline.readline("> ", true)
 		end
         end
 	retour = ""
-	begin
-		if ((caractere = liaison.getc) != nil) 
-			retour << caractere.chr
-		end
-	end while caractere != 10
-	retour.split("\r\n").first
+	#begin
+		#if ((caractere = liaison.getc) != nil) 
+		#	retour << caractere.chr
+		#end
+	#end while caractere != 10
+	#retour.split("\r\n").first
 end

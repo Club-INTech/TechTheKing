@@ -7,7 +7,7 @@ robot.demarrer
 robot.recalage
 
 carte=CarteTechTheFruit.new
-match=Diagonale.new
+match=Match.new
 
 match.donnerRessources(robot,carte)
 match.sequence
