@@ -1,11 +1,16 @@
 #!/usr/bin/ruby -I../lib
 
-require "readline"
+# Ici on peut appeler directement les fonctions du Robot
+# Cela permet de faire du debug et des tests
 
+require "readline"
 require "Robot"
 
-#robot = Robot.new(:jaune, Position.new(300, 300, 0))
+
+# le 0.0085 correspond au defaut d'alignement de notre robot, appele un 2A pour comprendre
 robot = Robot.new(:bleu, Position.new(300, -300, 0.0085))
+#robot = Robot.new(:jaune, Position.new(300, 300, 0))
+
 robot.demarrer
 
 begin
