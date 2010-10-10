@@ -1,13 +1,3 @@
 #!/usr/bin/ruby -I../lib
 
-$in = ARGV[0]
-$out = ARGV[1]
-
-require "Log"
-
-Logger.instance.level = Logger::UNKNOWN
-
-require "TestDecisions"
-require "TestStrategie"
-# require "TestInterfaceEvitement"
-# require "TestInterfaceAsservissement"
+# a coder pour faire exécuter tous les tests que l'on a crées sur le robot
