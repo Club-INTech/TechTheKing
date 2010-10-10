@@ -1,11 +1,8 @@
-# Ce fichier contient l'ensemble des objets présents sur la table,
-# leur caractéristiques ainsi qu'une fonction pour les afficher
-# Author::    Clément Bethuys  (mailto:clement.bethuys@laposte.net)
-# Copyright:: Copyright (c) 2010 INTech - TechTheFruit
-# License::   GPL
+# les objets qui se trouvent sur le terrain
 
 require "Point"
-#require "sdl"
+# la librairy sdl si on veut afficher les objets de la carte
+# require "sdl"
 
 # Objet Chemin qui possède une fonction d'impression par la SDL
 class Chemin

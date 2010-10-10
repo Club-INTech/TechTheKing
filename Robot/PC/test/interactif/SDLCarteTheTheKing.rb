@@ -1,3 +1,5 @@
+# ne pas oublier d'ajouter le -I
+
 require "CarteTechTheFruit.rb"
 require "sdl.rb"
 require "Log"
