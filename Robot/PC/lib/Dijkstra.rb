@@ -1,8 +1,5 @@
-# ce fichier contient les fonctions permettant de trouver le plus court chemin
-# en utilisant l'algorithme de Dijkstra
-# Author::    Clément Bethuys  (mailto:clement.bethuys@laposte.net)
-# Copyright:: Copyright (c) 2010 INTech - TechTheFruit
-# License::   GPL
+# ce fichier définit la classe Dijstra 
+# Cette classe permet de trouver le plus court chemin possible
 
 require "Point"
 require "Vecteur"

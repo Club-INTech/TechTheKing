@@ -1,8 +1,6 @@
-# Ce fichier contient les fonctions qui permettent de modifier l'état de la carte
-# et d'obtenir le chemin pour aller d'un point A à un point B
-# Author::    Clément Bethuys  (mailto:clement.bethuys@laposte.net)
-# Copyright:: Copyright (c) 2010 INTech - TechTheFruit
-# License::   GPL
+# Ce fichier définit la classe représentant une carte quelconque
+# Cette classe n'est pas utilisable en l'état car il faut y renseigner des informations
+# C'est ce que fait CarteTechTheKing qui alors est utilisable
 
 require "Dijkstra"
 require "Point"

@@ -1,7 +1,5 @@
-# Ce fichier contient la classe de log.
-# Author::    Guillaume Rose  (mailto:guillaume.rose@gmail.com)
-# Copyright:: Copyright (c) 2010 INTech - TechTheFruit
-# License::   GPL
+# Ce fichier définit la classe de log
+# Son utilisation est fortement recommandée lorsque vous programmer
 
 require 'logger'
 require 'singleton'
@@ -19,9 +17,3 @@ class Logger
     end  
 end
 
-# log = Logger.instance
-# log.level = Logger::WARN
-# 
-# log.debug("Created logger")
-# log.info("Program started")
-# log.warn("Nothing to do!")

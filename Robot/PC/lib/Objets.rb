@@ -1,4 +1,5 @@
-# les objets qui se trouvent sur le terrain
+# Ce fichier définit les classes qui représentent des objets sur le plateau de jeu
+# On peut afficher ces objets avec la sdl sur une carte virtuelle
 
 require "Point"
 # la librairy sdl si on veut afficher les objets de la carte

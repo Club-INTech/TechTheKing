@@ -1,6 +1,8 @@
+# Ce fichier définit les classes de communication série
+# Ces classes permettent de recevoir et d'envoyer des données via une interface série
+
 require "serialport"
 require "thread"
-
 
 class Serie
 	
@@ -52,7 +54,6 @@ class SerieSimple < Serie
 		self.ecrire cmd
 		self.lire
 	end
-	
 end
 
 
@@ -98,5 +99,4 @@ class SerieThread < Serie
 	def arreter
 		@thread.exit
 	end
-	
 end

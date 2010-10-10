@@ -1,11 +1,7 @@
-# Ce fichier contient l'ensemble des fonctions accessibles par les scripts
-# ie les stratégies.
-# Author::    Guillaume Rose  (mailto:guillaume.rose@gmail.com)
-# Copyright:: Copyright (c) 2010 INTech - TechTheFruit
-# License::   GPL
+# Ce fichier définit la classe Robot
+# Cette classe réalise l'abstraction des solutions techniques en fonctions de plus haut niveau
 
 require "Log"
-
 require "Detection"
 require "Position"
 require "Asservissement"

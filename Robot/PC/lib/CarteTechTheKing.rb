@@ -1,7 +1,5 @@
-# Ce fichier rajoute à la carte les données propres à la table de jeu initiale
-# Author::    Clément Bethuys  (mailto:clement.bethuys@laposte.net)
-# Copyright:: Copyright (c) 2010 INTech - TechTheFruit
-# License::   GPL
+# Ce fichier définit la classe représentant la table de jeu
+# Toutes les informations sur la position des éléments du jeu est enregistré ici
 
 require "Carte"
 require "Objets"

@@ -9,4 +9,4 @@ A partir de la vous pouvez faire tous les tests que vous voulez sans avoir peur 
 
 le dossier Robot est pour l'instant une coquille vide, en y incluant progressivement votre code celui ci deviendra votre robot pour la coupe. 
 Si vous devez coder une fonction codé la dans /lib dans le fichier correspondant ou si ce fichier n'existe pas crée en 1
-Si vous devez coder des tests faites les dans /test 
+Si vous devez coder des tests faites les dans /test

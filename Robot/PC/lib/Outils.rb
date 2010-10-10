@@ -1,4 +1,5 @@
-# toutes les petites fonctions dont on a toujours besoin
+# Ce fichier définit les classes d'utilitées générales
+# Il y a notament les classes représentant un point, un vecteur, une position et diverses opérations mathématiques 
 
 class Point
  

@@ -1,7 +1,5 @@
-# Détection des périphériques
-# Author::    Guillaume Rose  (mailto:guillaume.rose@gmail.com)
-# Copyright:: Copyright (c) 2010 INTech - TechTheFruit
-# License::   GPL
+# Ce fichier définit la classe de détection des périphériques
+# Ces classes permet de s'affranchir du port USB sur lequel est branché chaque carte
 
 require "Log"
 
