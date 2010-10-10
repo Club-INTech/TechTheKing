@@ -6,7 +6,7 @@
 doc: clean doc-pc doc-arduino
 
 doc-arduino:
-	rdoc --inline-source -a -c utf8 -o doc_pc ../PC/bin/*.rb ../PC/lib/*.rb
+	rdoc --inline-source -a -c utf8 -o doc_pc ../PC/
 
 doc-pc:
 	doxygen DoxyConfig
