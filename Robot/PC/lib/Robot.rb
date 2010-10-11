@@ -1,4 +1,3 @@
-# Ce fichier définit la classe Robot
 # Cette classe réalise l'abstraction des solutions techniques en fonctions de plus haut niveau
 
 require "Log"
@@ -143,11 +142,12 @@ class Robot
                 @evitement.placeSurRailGauche
         end
 
-        #place sur rail droit
+        # place sur rail droit
         def placeSurRailDroit
                 @evitement.placeSurRailDroit
         end
 
+	# renvoie combien de place pour les tomates il nous reste
         def placeTotal
                 #placeSurRailDroit + placeSurRailGauche
                 return (5-@evitement.nombreOranges)
