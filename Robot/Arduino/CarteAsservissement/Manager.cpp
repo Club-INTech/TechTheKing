@@ -1,3 +1,8 @@
+/**
+ * \file Manager.cpp
+ * \brief une des couches de l'asservissement
+ */
+
 #include <avr/interrupt.h>
 #include <avr/io.h>
 
@@ -46,12 +51,12 @@ ISR(PCINT2_vect)
 	}
 
 }
-/*
- * Fonction à exécuter à intervalle de temps régulier (~1kHz)
- * Ajouter un timer, priorité sur les interruptions
+
+/**
+ * \fn void  Manager::assPolaire()
+ * \brief fonction a éxécuter à intervales réguliers
  */
-void 
-Manager::assPolaire()
+void  Manager::assPolaire()
 {
 	//static int stator1337 = 100;
 	
@@ -125,15 +130,20 @@ Manager::assPolaire()
 	//TIMSK2 |= savTIMSK2; 
 }
 
-/*
- * Initialisation des pins
+/**
+ * \fn Manager::Manager() 
+ * \brief Constructeur de Manager
  */
 Manager::Manager() 
 {
+
 }
 
-void
-Manager::init()
+/**
+ * \fn void Manager::init()
+ * \brief initialise le manager d'asservissements
+ */
+void Manager::init()
 {
 	activationAssDistance = true;
 	activationAssAngle = true;
@@ -197,42 +207,61 @@ Manager::init()
 	assTranslation.changeKd(40);
 }
 
-/*
- * Définit la nouvelle consigne en angle et distance (en tics)
+/**
+ * \fn void Manager::changeConsigne(long int distanceDonnee, long int angleDonne)
+ * \brief change la consigne en angle et en distance
+ * \param distanceDonnee la distance a parcourir
+ * \param angleDonne l'angle a prendre
  */
-void 
-Manager::changeConsigne(long int distanceDonnee, long int angleDonne)
+void Manager::changeConsigne(long int distanceDonnee, long int angleDonne)
 {
 	assTranslation.changeConsigne(distanceDonnee);
 	assRotation.changeConsigne(angleDonne);
 }
 
-void
-Manager::changeConsigneAngle(long int angleDonne)
+/**
+ * \fn void Manager::changeConsigneAngle(long int angleDonne)
+ * \brief change la consigne en angle
+ * \param angleDonne l'angle à faire
+ */
+void Manager::changeConsigneAngle(long int angleDonne)
 {
 	assRotation.changeConsigne(angleDonne);
 }
 
-void 
-Manager::changeConsigneDistance(long int distanceDonnee)
+/**
+ * \fn void  Manager::changeConsigneDistance(long int distanceDonnee)
+ * \brief change la consigne en angle
+ * \param distanceDonnee la distance a parcourir
+ */
+void  Manager::changeConsigneDistance(long int distanceDonnee)
 {
 	assTranslation.changeConsigne(distanceDonnee);
 }
 
-void 
-Manager::switchAssDistance()
+/**
+ * \fn void Manager::switchAssDistance()
+ * \brief active et désactive l'asservissement en distance
+ */
+void Manager::switchAssDistance()
 {
 	activationAssDistance = !activationAssDistance;
 }
 
-void 
-Manager::switchAssAngle()
+/**
+ * \fn void Manager::switchAssAngle()
+ * \brief active et désactive l'asservissement en angle
+ */
+void Manager::switchAssAngle()
 {
 	activationAssAngle = !activationAssAngle;
 }
 
-void
-Manager::reset()
+/**
+ * \fn void Manager::reset()
+ * \brief on reset l'asservissement
+ */
+void Manager::reset()
 {
 	cli();
 	encodeurG = 0;

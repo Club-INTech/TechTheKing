@@ -1,21 +1,32 @@
+/**
+ * \file LectureSerie.cpp
+ * \brief lit les commandes sur le série
+ */
+
 #include <HardwareSerial.h>
 
 #include "LectureSerie.h"
 #include "EnvoiPosition.h"
 #include "Manager.h"
 
+/**
+ * \fn LectureSerie::LectureSerie() 
+ * \brief le constructeur de LectureSerie
+ */
 LectureSerie::LectureSerie() 
 {
-}
 
-/*
- * Fonction à mettre dans le loop()
- */
+}
 
 /* les nom des fonctions du manager ne sont pas corrects
  ex: pour 'a' on avance et non on change l'angle */
-void
-LectureSerie::traitement() {
+ 
+/**
+ * \fn void LectureSerie::traitement()
+ * \brief recupère le caractère sur le série et appèle la bonne fonction
+ */ 
+void LectureSerie::traitement()
+{
 	unsigned char premierCaractere;
 	while (Serial.available() == 0) {
 		asm("nop");
@@ -144,8 +155,12 @@ LectureSerie::traitement() {
 	}
 }
 
-bool
-LectureSerie::litEntierLong(long int *i)
+/**
+ * \fn LectureSerie::litEntierLong(long int *i)
+ * \brief convertie la chaine de caractère en int
+ * \param i la chaine de caractère
+ */
+bool LectureSerie::litEntierLong(long int *i)
 {
 	long int aux = 0;
 	unsigned char j;
