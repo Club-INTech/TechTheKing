@@ -1,5 +1,4 @@
 # Ce fichier définit la classe pour l'évitement du robot
-# Cette classe est utilisée pour mettre à jour la position du robot adverse
 
 require "Log"
 

@@ -1,5 +1,4 @@
-# Ce fichier définit la classe permettant de se déplacer
-# Cette classe les déplacements (haut niveau) en commande pour l'asservissement (bas niveau)
+# Ce fichier définit la classe d'asservissement permettant de se déplacer
 
 require "Float"
 require "Fixnum"
@@ -10,7 +9,7 @@ require "SerieThread"
 require "Position"
 
 
-# Cette classe gère l'asservissement
+# Cette classe les déplacements (haut niveau) en commande pour l'asservissement (bas niveau)
 class Asservissement
 
 	# Précision du goTo : cercle à partir duquel on n'envoit plus de nouvelle consigne

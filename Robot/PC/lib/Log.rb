@@ -1,5 +1,4 @@
 # Ce fichier définit la classe de log
-# Son utilisation est fortement recommandée lorsque vous programmer
 
 require 'logger'
 require 'singleton'

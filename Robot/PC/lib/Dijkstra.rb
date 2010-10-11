@@ -1,5 +1,4 @@
-# ce fichier définit la classe Dijstra 
-# Cette classe permet de trouver le plus court chemin possible
+# ce fichier définit la classe Dijstra, cela permet de trouve le plus court chemin
 
 require "Point"
 require "Vecteur"

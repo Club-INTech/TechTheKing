@@ -1,4 +1,4 @@
-# Cette classe réalise l'abstraction des solutions techniques en fonctions de plus haut niveau
+# Cet fichier contient la classe Robot
 
 require "Log"
 require "Detection"

@@ -1,6 +1,4 @@
 # Ce fichier définit la classe représentant une carte quelconque
-# Cette classe n'est pas utilisable en l'état car il faut y renseigner des informations
-# C'est ce que fait CarteTechTheKing qui elle est utilisable
 
 require "Dijkstra"
 require "Point"

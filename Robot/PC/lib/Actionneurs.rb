@@ -1,5 +1,4 @@
 # Ce fichier définit la classe pour la gestion des actionneurs du robot
-# Cette classe
 
 require "Log"
 
