@@ -16,10 +16,12 @@ class Actionneurs
 		@interface = InterfaceActionneurs.new peripherique
 	end
 	
+	# fonction à décrire
 	def fonction1
 		# à coder	
 	end
 
+	# fonction à décrire
 	def fonction2
 		# à coder	
 	end

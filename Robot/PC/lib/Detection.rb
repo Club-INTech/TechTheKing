@@ -2,12 +2,10 @@
 # Ces classes permet de s'affranchir du port USB sur lequel est branché chaque carte
 
 require "Log"
-
 require "SerieSimple"
 
 # La classe Détection permet d'associer un Arduino à chaque service ie
 # l'asservissement, les actionneurs et l'évitement
-
 class Detection
 
 	# Contient l'association service - périphérique série
@@ -42,5 +40,4 @@ class Detection
 	def peripheriqueAssocie partie
 		@association[partie]
 	end
-	
 end

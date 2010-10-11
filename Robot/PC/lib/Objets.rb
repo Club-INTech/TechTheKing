@@ -10,6 +10,7 @@ class Chemin
 
 	public 
 
+	# la liste des points du chemin
 	attr_accessor :listePoints
 
 	# Garde la liste de points passée en tant structure de classe pour pouvoir ensuite l'afficher
@@ -40,6 +41,7 @@ class Epis
 
 	public
 
+	# la position du centre de l'épis
 	attr_accessor :position
 	
 	# Initialise un épis à la position "position" et possédant le rayon passé
@@ -60,6 +62,7 @@ class Tomate
 
 	public
 
+	# la position du centre de la tomate
 	attr_accessor :position
 
 	# Initialise une tomate à la position "position" et possédant le rayon passé

@@ -11,7 +11,12 @@ class Dijkstra
         
 	public 
 
-	attr_accessor :noeuds ,:dedans ,:arretes
+	# on peut modifier les noeuds
+	attr_accessor :noeuds
+	# on peut savoir si on est dans une zone au pas
+	attr_accessor :dedans
+	# on peut modifier la liste des arrêtes
+	attr_accessor :arretes
 
 	# Crée le graphe qui est composée de noeuds et d'arretes
         def initialize
@@ -54,7 +59,7 @@ class Dijkstra
 		@arretes[second].delete(premier)
         end
 	
-	# "La" fonction appelée par la carte qui renvoie une liste des points pour aller de la zone "n_depart" à la zone "n_arrive"
+	# La fonction appelée par la carte qui renvoie une liste des points pour aller de la zone "n_depart" à la zone "n_arrive"
 	def chemin(n_depart,n_arrive,pas_intermediaire)
 		t = parcours(n_depart,n_arrive).map!{ |numero| @noeuds[numero]}
 		if(pas_intermediaire) then t=enleverIntermediaires(t) end

@@ -10,7 +10,6 @@ require "Evitement.rb"
 
 # Cette classe est le robot (couche finale). Elle contient toutes les fonctions
 # accessibles par les scripts.
-
 class Robot
 
         # Temps restant, décrémente de seconde en seconde
@@ -56,7 +55,8 @@ class Robot
 
                 @log.info "Robot démarré"
         end
-
+        
+   	# demarre le timer du robot et arrete au bout de 90 secondes
         def demarrerTimer
                 @timer = Thread.new {
                         @log.info "Démarrage du timer"
@@ -75,6 +75,7 @@ class Robot
                 }
         end
 
+	# arrete le timer 
         def arreterTimer
                 @timer.exit
         end
@@ -122,10 +123,6 @@ class Robot
                 end
         end
 
-        #
-        # Evitement
-        #
-
         # Valeurs des capteurs ultrason
         def ultrasons
                 @evitement.ultrasons
@@ -155,10 +152,6 @@ class Robot
                 #placeSurRailDroit + placeSurRailGauche
                 return (5-@evitement.nombreOranges)
         end
-
-        #
-        # Asservissement
-        #
 
         # Desactive l'asservissement
         def desactiveAsservissement
@@ -193,6 +186,7 @@ class Robot
                 end
         end
 
+	# encore un autre goto
         def goToEx x, y, *condition
                 if @couleur == :jaune
                         @log.info "Aller à : " + x.to_s + ", " + y.to_s
@@ -203,6 +197,7 @@ class Robot
                 end
         end
 
+	# encore un autre goto
         def goToDep x, y, *condition
                 if @couleur == :jaune
                         @log.info "Aller à : " + x.to_s + ", " + y.to_s + ", " + angle.to_s
@@ -213,6 +208,7 @@ class Robot
                 end
         end
 
+	# encore un autre goto
         def goToDep2 x, y, *condition
                 i=10
                 while i
@@ -235,12 +231,14 @@ class Robot
                 end
         end
 
+	# avance d'une certaine distance
         def avancer distance
 
                 @asservissement.avancer(distance)
 
         end
 
+	# tourne d'un certain angle
         def tourner angle
                 if @couleur != :jaune
                         angle = -angle
@@ -248,6 +246,7 @@ class Robot
                 @asservissement.tourner(angle)
         end
 
+	# aligne le robot suivant un angle
         def alignement angle
                 if @couleur != :jaune
                         angle = -angle
@@ -260,15 +259,21 @@ class Robot
                 1
         end
 
+	# active l'évitement
         def activeEvitement
                 @evitementactive = true
         end
+        
+        # désactive l'évitement
         def desactiveEvitement
                 @evitementactive = false
         end
+        
+        # l'évitement est-il activé
         def evitement?
                 @evitementactive
         end
+        
         # Retourne l'état des codeuses pour la calibration
         def codeuses
                 @asservissement.codeuses
@@ -288,6 +293,7 @@ class Robot
                 1
         end
 
+	# se recale suivant la bonne couleur
         def recalage
                 if @couleur == :jaune
                         recalageJaune
@@ -296,22 +302,13 @@ class Robot
                 end
         end
         
-
         # Recalage du robot
         def recalageJaune
                 @asservissement.recalage                
                 1
         end
 
-        # def recalage2
-        #         @asservissement.recalage2 :x, :negatif, 168
-        #         goTo 400, position.y, 0, :bypass
-        #         @asservissement.recalage2 :y, :negatif, 168
-        #         goTo position.x, 400, 0, :bypass
-        #         goTo 400, -400, 0
-        #         1                
-        # end
-
+	# se recale sur le coté bleu
         def recalageBleu
                 @asservissement.recalage3
                 1
@@ -322,18 +319,17 @@ class Robot
                 @asservissement.sens
         end
 
+	# fonction de recalage sur le coté jaune
         def recalageJauneEnCours
                 @asservissement.remiseAZero Position.new(300, 300, 0)
                 recalageJaune
         end
 
+	# fonction de recalage sur le coté bleu
         def recalageBleuEnCours
                 @asservissement.remiseAZero Position.new(300, -300, 0)
                 recalageBleu
         end        
-        #
-        # Actionneurs
-        #
 
         # Allume la led du jumper
         def allumerLed
@@ -359,45 +355,54 @@ class Robot
                 @actionneurs.leveFourche
         end
 
+	# range la fourche
         def rangeFourche
                 @actionneurs.rangeFourche
         end
 
+	# arrete les actionneurs
         def actionneursStopUrgence
                 @actionneurs.stopUrgence
         end
 
+	# fait tourner le rouleau dans le sens direct
         def rouleauDirect
                 @actionneurs.rouleauDirect
         end
 
+	# fait tourner le rouleau dans le sens indirect
         def rouleauIndirect
                 # @log.debug "Envoi signal rouleau"
                 @actionneurs.rouleauIndirect
         end
 
+	# arrete le rouleau
         def stopRouleau
                 @actionneurs.stopRouleau
         end
 
+	# le sélecteur guide les tomates sur le rail gauche
         def selecteurGauche
                 @actionneurs.selecteurGauche
         end
 
+	# le sélecteur guide les tomates sur le rail droit
         def selecteurDroite
                 @actionneurs.selecteurDroite
         end
 
+	# met le sélecteur en position intermédiaire
         def selecteurMilieu
                 @actionneurs.selecteurMilieu
         end
 
+	# arrete le sélecteur (y compris ses petits mouvements)
         def stopSelecteur
                 @actionneurs.stopSelecteur
         end
 
+	# change les paramètres max de vitesse du robot
         def changerVitesse(rotation, translation)
                 @asservissement.changerVitesse(rotation, translation)
         end
-
 end

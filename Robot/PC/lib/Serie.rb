@@ -4,10 +4,10 @@
 require "serialport"
 require "thread"
 
+# Classe virtuelle de communication série, elle ne doit pas être instancié
 class Serie
 	
-	# Initialisation à partir d'un périphérique et d'une vitesse de 
-	# connexion
+	# Initialisation à partir d'un périphérique et d'une vitesse de connexion
 	def initialize(peripherique = "/dev/ttyUSB0", vitesse = 57600)
 		port_str = peripherique
 		baud_rate = vitesse
@@ -25,13 +25,15 @@ class Serie
 	end
 end
 
+# Classe permettant la communication série et attend la réponce (bloquant)
 class SerieSimple < Serie
 
+	# Initialise la connection série
 	def initialize(peripherique = "/dev/ttyUSB0", vitesse = 57600)
 		super(peripherique,vitesse)
 	end
 
-	#Ecrit directement sur le port série
+	# Ecrit directement sur le port série
 	def ecrire action
 		@sp.write action + "\r\n"
 	end
@@ -56,7 +58,7 @@ class SerieSimple < Serie
 	end
 end
 
-
+# Classe permettant la communication série sans attendre la réponce (non bloquant)
 class SerieThread < Serie
 
 	# Initialisation à partir d'un périphérique et d'une vitesse de 

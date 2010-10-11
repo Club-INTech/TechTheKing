@@ -3,8 +3,10 @@
 
 require "Log"
 
+# Cette classe permet de gérer tout l'évitement du robot
 class Evitement
 
+	# initialise la connection avec la carte liée a l'évitement
 	def initialize peripherique
 		@log = Logger.instance
 
@@ -13,11 +15,13 @@ class Evitement
 		end
 		@log.debug "Evitement sur " + peripherique if peripherique != nil
 	end
-
+	
+	# à commenter
 	def fonction1
 		# à coder
 	end
-	
+
+	# à commenter
 	def fonction2
 		# à coder
 	end

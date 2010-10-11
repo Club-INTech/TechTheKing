@@ -1,9 +1,10 @@
-# ne pas oublier d'ajouter le -I
+# ce fichier ...
 
 require "CarteTechTheFruit.rb"
 require "sdl.rb"
 require "Log"
 
+# Cette classe permet de visualiser la carte grace à la SDL
 class Visualisateur
 
 	public 

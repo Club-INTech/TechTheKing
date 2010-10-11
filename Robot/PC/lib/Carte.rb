@@ -1,6 +1,6 @@
 # Ce fichier définit la classe représentant une carte quelconque
 # Cette classe n'est pas utilisable en l'état car il faut y renseigner des informations
-# C'est ce que fait CarteTechTheKing qui alors est utilisable
+# C'est ce que fait CarteTechTheKing qui elle est utilisable
 
 require "Dijkstra"
 require "Point"
@@ -13,14 +13,14 @@ require "Log"
 class Carte
   
 	public
-
+	
+	# tous les objets de la table sont accessible grâce a cet objet
 	attr_accessor :listeObjets
 
 	# Crée les structures permettant d'acceuillir les différents objets d'une classe fille
         def initialize
 	 	@log = Logger.instance
 		@liste=Array.new
-
 		@liste_epis= Array.new
 		@liste_tomates= Array.new
 		@liste_zones_depart= Array.new
@@ -29,7 +29,8 @@ class Carte
 		@listeObjets =[@liste_zones_depart,@liste_pente,@liste_epis,@liste_tomates,@liste_chemins]
 		@graphe = Dijkstra.new
         end
-
+        
+	# Renvoie le meilleur chemin non lissé pour aller du centre de la zoneA au centre de la zoneB
 	def goToPos(zoneA,zoneB,pas_intermediaire=true,lisser=false)
 		goTo(@graphe.noeuds[zoneA],@graphe.noeuds[zoneB],pas_intermediaire=true,lisser=false)
 	end
@@ -145,6 +146,7 @@ class Carte
 		end
 	end
 
+	# Renvoie true si la zone liée a la position est bloquée
 	def estBloque? position
 		if @liste.include?(quelleZone(position)) then return true else return false end
 	end
