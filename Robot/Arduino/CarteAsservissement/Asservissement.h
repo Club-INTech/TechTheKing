@@ -1,8 +1,3 @@
-/**
- * \file Asservissement.h
- * \brief header de Asservissement.cpp
- */
- 
 #ifndef Asservissement_h
 #define Asservissement_h
 
@@ -19,52 +14,56 @@
 
 #define TRIGGER_BLOCAGE	15
 
-/**
- * \brief Se charge des fonctions d'asservissement
- */
 class Asservissement{
 	public:
-		Asservissement(); 
+		Asservissement();
 		
-		void changeConsigne(long int);
-
-		int calculePwm(long int positionReelle);
+		void	changeConsigne(long int);
+		
+		int 	calculePwm(long int);
 		void 	calculePositionIntermediaire(long int);
 		
-		void stop();
-		void stopUrgence(long int); 
+		void 	stop();
+		void 	stopUrgence(long int); 
 		
-		void calculeErreurMax();
+		void 	calculeErreurMax();
 		
-		void changeKp(int);
-		void changeAcc(long int);
-		void changeVmax(long int);
-		void changePWM(int);
-		void changeKd(long int);
+		void 	changeKp(int);
+		void 	changeAcc(long int);
+		void	changeVmax(long int);
+		void 	changePWM(int);
+		void	changeKd(long int);
 		
-		void reset();
-		
-		// Consigne et position du robot
-		long int consigne; //!< consigne en position
-		long int positionIntermediaire; //!< la prochaine position que l'on atteind
+		void	reset();
+
+		// Consigne et position du robot (point de vue Arduino)
+		long int 	consigne;	
+		long int 	positionIntermediaire;
 		
 		// Consigne et position du robot zoomé
-		long int consigneZoom; //!< consigne zoomée
-		long int positionIntermediaireZoom; //!< la prochaine position zoomée que l'on atteind
+		long int 	consigneZoom;	
+		long int 	positionIntermediaireZoom;
 
 		// Constantes de l'asservissement et du moteur	
-		long int Kp; //!< le coefficient proportiel
-		long int Kd; //!< le coefficient dérivateur
-		long int deltaBkp; //!< je sais pas ce que c'est
-		long int Acc; //!< l'accélération max
-		long int Vmax; //!< la vitesse max
-		long int maxPWM; //!< le PWM max
-		long int dFreinage; //!< la distance de freinage
-		long int n; //!< le palier de vitesse
-		long int erreurMax; //!< l'erreur maximum avant de dire que l'on est bloqué
-		long int erreur; //!< l'erreur courante du robot
-		int blocageDetecte; //!< Vaut 1 ou -1 si le moteur est bloqué
-		int blocageTemp; //!< le sais pas ce que c'est
+		long int 	Kp; 
+		long int	Kd;
+		long int	deltaBkp;	
+		long int 	Acc, Vmax;
+		long int 	maxPWM; 
+		
+		// Distance de freinage		
+		long int 	dFreinage; 
+
+		// Palier de vitesse
+		long int 	n;	
+
+		// Erreur maximum (sert à détecter les obstacles)
+		long int 	erreurMax;	
+		long int	erreur;
+
+		// Vaut 1 ou -1 si le moteur est bloqué
+		int 		blocageDetecte;
+		int		blocageTemp;
 };
 
 #endif

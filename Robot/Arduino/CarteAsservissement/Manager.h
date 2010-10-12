@@ -1,8 +1,3 @@
-/**
- * \file Manager.h
- * \brief header de Manager.cpp
- */
-
 #ifndef Manager_h
 #define Manager_h
 
@@ -41,11 +36,7 @@
 #define PINDIRG (1 << PORTB3)
 #define PINDIRD (1 << PORTB4)
 
-/**
- * \brief Se charge de rassembler les deux asservissements en un
- */
-class Manager
-{
+class Manager {
 	public:
 		Manager();
 		
@@ -63,16 +54,17 @@ class Manager
 		
 		void	reset();
 
-		Asservissement 	assRotation; //!< l'objet assRotation
-		Asservissement 	assTranslation; //!< l'objet assTranslation
+		Asservissement 	assRotation;
+		Asservissement 	assTranslation;
 		
 		// Activation de l'asservissement
-		bool activationAssDistance; //!< true si on est asservit en translation
-		bool activationAssAngle; //!< true si on est asservit en rotation
+		bool		activationAssDistance;
+		bool		activationAssAngle;
 };
 
 extern volatile long int 	encodeurG;
 extern volatile long int 	encodeurD;
+
 extern Manager 			manager;
 
 #endif

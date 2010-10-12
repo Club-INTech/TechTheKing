@@ -1,8 +1,3 @@
-/**
- * \file EnvoiPosition.cpp
- * \brief envoie la position du robot via le série
- */
-
 #include <avr/interrupt.h>
 #include <avr/io.h>
 
@@ -11,10 +6,6 @@
 #include "EnvoiPosition.h"
 #include "Manager.h"
 
-/**
- * \fn EnvoiPosition::EnvoiPosition() 
- * \brief constructeur de EnvoiPosition
- */
 EnvoiPosition::EnvoiPosition() 
 {
 	TCCR0A |= (1 << CS02) | (0 << CS01) | (1 << CS00);
@@ -23,11 +14,11 @@ EnvoiPosition::EnvoiPosition()
 	TCNT0 = 0;
 }
 
-/**
- * \fn void EnvoiPosition::boucle()
- * \brief fonction a exécuter dans un timer
+/*
+ * Fonction à exécuter dans un timer
  */
-void EnvoiPosition::boucle()
+void 
+EnvoiPosition::boucle()
 {
 	/*
 	 * Envoi de encodeurG, encodeurD si actif = 1
@@ -35,38 +26,33 @@ void EnvoiPosition::boucle()
 	 */
 }
 
-/**
- * \fn void EnvoiPosition::active()
- * \brief active le timer
+/*
+ * Active le timer
  */
-void EnvoiPosition::active()
+void 
+EnvoiPosition::active()
 {
 	actif = true;
 	TIMSK0 |=  (1 << OCIE0A);
 }
 
-/**
- * \fn void EnvoiPosition::desactive()
- * \brief desactive le timer
+/*
+ * Désactive le timer
  */
-void EnvoiPosition::desactive()
+void 
+EnvoiPosition::desactive()
 {
 	actif = false;
 	TIMSK0 &= ~(1 << OCIE0A);
 }
 
-/**
- * \fn void EnvoiPosition::intToHex(unsigned char *data)
- * \brief convertit un entier en hexadecimal
- * \param data le nombre en question
- */
-void EnvoiPosition::intToHex(unsigned char *data)
+void 
+EnvoiPosition::intToHex(unsigned char *data)
 {
 	unsigned char c;
 	unsigned char i; 
 	
-	for (i = 3; i >= 0; i--) 
-	{
+	for (i = 3; i >= 0; i--) {
 		c = (data[i] & 0xF0) >> 4;
 		
 		if (c <= 9)

@@ -1,26 +1,19 @@
-/**
- * \file Asservissement.cpp
- * \brief gère les fonctions d'asservissement
- */
- 
 #include "Asservissement.h"
 
 #define ABS(x) 		((x) < 0 ? - (x) : (x))
 #define MAX(a,b) 	((a) > (b) ? (a) : (b)) 
 #define MIN(a,b) 	((a) < (b) ? (a) : (b)) 
 
-/**
- * \fn Asservissement::Asservissement()
- * \brief constructeur de Asservissement
- */
+//#define NO_ACC
+
 Asservissement::Asservissement()
 {
 	// Constante de l'asservissement et du mouvement
-	maxPWM = PUISSANCE;
-	Kp = KP;
-	Vmax = VMAX;
-	Acc = ACC;
-	Kd = KD;
+	maxPWM = 	PUISSANCE;
+	Kp = 		KP;
+	Vmax = 		VMAX;
+	Acc = 		ACC;
+	Kd = 		KD;
 	
 	// Consigne par défaut et position du robot à l'initialisation
 	positionIntermediaire = 0;
@@ -43,13 +36,12 @@ Asservissement::Asservissement()
 	calculeErreurMax();
 }
 
-/**
- * \fn int Asservissement::calculePwm(long int positionReelle)
- * \brief calcule le Pwn en fonction de notre position
- * \param positionReelle la position du robot dans son repère
- * \return un int
+/*
+ * Calcule la puissance moteur à fournir pour atteindre la nouvelle position théorique
  */
-int Asservissement::calculePwm(long int positionReelle)
+ 
+int 
+Asservissement::calculePwm(long int positionReelle)
 {
 	long int delta = (positionIntermediaire - positionReelle);
 	
@@ -66,12 +58,12 @@ int Asservissement::calculePwm(long int positionReelle)
 	return pwm;
 }
 
-/**
- * \fn void Asservissement::calculePositionIntermediaire(long int positionReelle)
- * \brief calcule la nouvelle position à atteindre
- * \param positionReelle la position du robot dans son repère
+/*
+ * Calcule la nouvelle position à atteindre
  */
-void Asservissement::calculePositionIntermediaire(long int positionReelle)
+ 
+void 
+Asservissement::calculePositionIntermediaire(long int positionReelle)
 {
 	long int delta = consigneZoom - positionIntermediaireZoom;
 
@@ -137,20 +129,22 @@ void Asservissement::calculePositionIntermediaire(long int positionReelle)
 	positionIntermediaire = positionIntermediaireZoom / PRESCALER;
 }
 
-/**
- * \fn void Asservissement::calculeErreurMax()
- * \brief calcule l'erreur max afin de détecter tout blocage
+/*
+ * Calcule l'erreur maximum (positionReelle et positionIntermediaire) afin de déterminer le blocage
  */
-void Asservissement::calculeErreurMax()
+
+void 
+Asservissement::calculeErreurMax()
 {
 	erreurMax = (PRESCALER * 2 * maxPWM) / Kp;  
 }
 
-/**
- * \fn void Asservissement::stop()
- * \brief on arrete le robot
+/*
+ * Arrêt progressif du moteur
  */
-void Asservissement::stop()
+ 
+void 
+Asservissement::stop()
 {
 	if (n > 0)
 		consigneZoom = positionIntermediaireZoom + dFreinage;
@@ -158,85 +152,67 @@ void Asservissement::stop()
 		consigneZoom = positionIntermediaireZoom - dFreinage;	
 }
 
-/**
- * \fn void Asservissement::stopUrgence(long int positionReelle)
- * \brief on s'asservit sur place
- * \param positionReelle la position du robot dans son repère
+/*
+ * Arrete le moteur à la position courante
  */
-void Asservissement::stopUrgence(long int positionReelle)
+ 
+void 
+Asservissement::stopUrgence(long int positionReelle)
 {
 	changeConsigne(positionReelle);
 	n = 0;
 }
 
-/**
- * \fn void Asservissement::changeConsigne(long int consigneDonnee)
- * \brief définit la nouvelle consigne
- * \param consigneDonnee la nouvelle consigne
+
+/*
+ * Définit la nouvelle consigne
  */
-void Asservissement::changeConsigne(long int consigneDonnee)
+ 
+void 
+Asservissement::changeConsigne(long int consigneDonnee)
 {
 	consigne = consigneDonnee;
 	consigneZoom = consigneDonnee * PRESCALER;
 }
 
-/**
- * \fn void Asservissement::changeKp(int KpDonne)
- * \brief change le Kp
- * \param KpDonne le nouveau Kp
+/*
+ * Définition dynamique des constantes
  */
-void Asservissement::changeKp(int KpDonne)
+void 
+Asservissement::changeKp(int KpDonne)
 {
 	Kp = KpDonne;
 	calculeErreurMax();
 }
 
-/**
- * \fn void Asservissement::changePWM(int maxPwmDonne)
- * \brief change le PWM
- * \param maxPwmDonne le PWM maximal
- */
-void Asservissement::changePWM(int maxPwmDonne)
+
+void 
+Asservissement::changePWM(int maxPwmDonne)
 {
 	maxPWM = maxPwmDonne;
 	calculeErreurMax();
 }
 
-/**
- * \fn void Asservissement::changeAcc(long int AccDonne)
- * \brief change l'accélération max
- * \param AccDonne l'accélération max
- */
-void Asservissement::changeAcc(long int AccDonne)
+void 
+Asservissement::changeAcc(long int AccDonne)
 {
 	Acc = AccDonne;
 }
 
-/**
- * \fn void Asservissement::changeVmax(long int VmaxDonne)
- * \brief change la vitesse max
- * \param VmaxDonne la vitesse max
- */
-void Asservissement::changeVmax(long int VmaxDonne)
+void
+Asservissement::changeVmax(long int VmaxDonne)
 {
 	Vmax = VmaxDonne;
 }
 
-/**
- * \fn void Asservissement::changeKd(long int KdDonne)
- * \brief change le Kd
- * \param KdDonne le coefficient Kd de l'asservissement
- */
-void Asservissement::changeKd(long int KdDonne)
+void
+Asservissement::changeKd(long int KdDonne)
 {
 	Kd = KdDonne;
 }
 
-/**
- * \fn void Asservissement::reset() 
- * \brief reset l'asservissement, on pert la position
- */
-void Asservissement::reset() 
+void
+Asservissement::reset() 
 {
 	positionIntermediaire = 0;
 	consigne = 0;

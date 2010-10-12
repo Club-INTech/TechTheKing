@@ -1,8 +1,3 @@
-/**
- * \file EnvoiPosition.h
- * \brief header de EnvoiPosition.cpp
- */
-
 #ifndef EnvoiPosition_h
 #define EnvoiPosition_H
 
@@ -10,9 +5,6 @@
 
 #define TRIGGER_BLOCAGE	50
 
-/**
- * \brief Se charge d'envoyer la position calculée au PC
- */
 class EnvoiPosition {
 	public:
 		EnvoiPosition();
@@ -23,7 +15,8 @@ class EnvoiPosition {
 	
 	private:
 		void 	intToHex(unsigned char *);
-		bool	actif; //!< true si on envoie les positions
+		
+		bool	actif;
 };
 
 extern EnvoiPosition envoiPosition;
