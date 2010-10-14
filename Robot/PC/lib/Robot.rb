@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 # Cet fichier contient la classe Robot
 
 require "Log"

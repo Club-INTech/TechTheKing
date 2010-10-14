@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 # Ce fichier définit la classe pour l'évitement du robot
 
 require "Log"

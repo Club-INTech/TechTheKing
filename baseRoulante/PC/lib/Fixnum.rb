@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class Fixnum
         def modulo2 arg = (2 * Math::PI)
                 angle = self.to_f % arg

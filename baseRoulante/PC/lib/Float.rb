@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class Float
         def modulo2 arg = (2 * Math::PI)
                 angle = self % arg

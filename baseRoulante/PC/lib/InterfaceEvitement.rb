@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 # Gestion de l'arduino des capteurs
 # Author::  Guillaume DEMAISON (mailto:guillaume.demaison@minet.net)
 # Copyright:: Copyright (c) 2010 INTech - TechTheFruit

@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 # Ce fichier contient l'ensemble des objets présents sur la table,
 # leur caractéristiques ainsi qu'une fonction pour les afficher
 # Author::    Clément Bethuys  (mailto:clement.bethuys@laposte.net)

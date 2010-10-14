@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 # Ce fichier contient les fonctions qui permettent de modifier l'état de la carte
 # et d'obtenir le chemin pour aller d'un point A à un point B
 # Author::    Clément Bethuys  (mailto:clement.bethuys@laposte.net)

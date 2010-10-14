@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 # Ce fichier définit la classe de détection des périphériques
 # Ces classes permet de s'affranchir du port USB sur lequel est branché chaque carte
 

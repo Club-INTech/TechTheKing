@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 # Ce fichier contient la classe Serie. Elle permet une communication simple avec
 # le port série.
 # Author::    Guillaume Rose  (mailto:guillaume.rose@gmail.com)

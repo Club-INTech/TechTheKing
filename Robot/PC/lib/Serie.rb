@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 # Ce fichier définit les classes de communication série
 # Ces classes permettent de recevoir et d'envoyer des données via une interface série
 

@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 # ce fichier contient les fonctions permettant de trouver le plus court chemin
 # en utilisant l'algorithme de Dijkstra
 # Author::    Clément Bethuys  (mailto:clement.bethuys@laposte.net)

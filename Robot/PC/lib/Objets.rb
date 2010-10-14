@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 # Ce fichier définit les classes qui représentent des objets sur le plateau de jeu
 # On peut afficher ces objets avec la sdl sur une carte virtuelle
 

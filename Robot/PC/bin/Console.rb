@@ -1,4 +1,5 @@
 #!/usr/bin/ruby -I../lib
+# encoding: utf-8
 
 # Ici on peut appeler directement les fonctions du Robot
 # Cela permet de faire du debug et des tests

@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 # Ce fichier rajoute à la carte les données propres à la table de jeu initiale
 # Author::    Clément Bethuys  (mailto:clement.bethuys@laposte.net)
 # Copyright:: Copyright (c) 2010 INTech - TechTheFruit

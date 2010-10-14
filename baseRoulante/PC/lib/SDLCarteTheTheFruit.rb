@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require "CarteTechTheFruit.rb"
 require "sdl.rb"
 require "Log"

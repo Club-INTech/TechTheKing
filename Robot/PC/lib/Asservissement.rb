@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 # Ce fichier définit la classe d'asservissement permettant de se déplacer
 
 require "Float"

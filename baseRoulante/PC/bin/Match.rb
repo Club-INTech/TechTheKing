@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require "Strategie"
 require "Vecteur"
 require "Robot"

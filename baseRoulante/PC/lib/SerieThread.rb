@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 # Ce fichier contient la classe SerieThread. Elle permet la communication avec
 # le port série.
 # Author::    Guillaume Rose  (mailto:guillaume.rose@gmail.com)

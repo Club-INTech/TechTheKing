@@ -1,4 +1,5 @@
 #!/usr/bin/ruby -I../lib
+# encoding: utf-8
 
 require "Match"
 

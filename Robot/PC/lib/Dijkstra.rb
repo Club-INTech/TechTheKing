@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 # ce fichier définit la classe Dijstra, cela permet de trouve le plus court chemin
 
 require "Point"

@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 # Gestion de l'asservissement en x, y
 # ie les stratégies.
 # Author::    Guillaume Rose  (mailto:guillaume.rose@gmail.com)

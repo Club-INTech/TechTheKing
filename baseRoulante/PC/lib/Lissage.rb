@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 # Ce fichier contient les fonctions qui permettent de lisser une suite de points
 # Author::    Clément Bethuys  (mailto:clement.bethuys@laposte.net)
 # Copyright:: Copyright (c) 2010 INTech - TechTheFruit

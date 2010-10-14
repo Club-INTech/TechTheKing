@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 # Ce fichier contient la classe Point.
 # Author::    Guillaume Rose  (mailto:guillaume.rose@gmail.com)
 # Copyright:: Copyright (c) 2010 INTech - TechTheFruit

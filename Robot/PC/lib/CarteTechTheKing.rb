@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 # Ce fichier définit la classe représentant la table de jeu
 # Toutes les informations sur la position des éléments du jeu est enregistré ici
 

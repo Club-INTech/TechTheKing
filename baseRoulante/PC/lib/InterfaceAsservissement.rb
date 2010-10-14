@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 # Ce fichier contient la classe d'interfaçage de l'asservissement. Elle permet 
 # une communication avec l'Arduino d'asservissement.
 # Author::    Guillaume Rose  (mailto:guillaume.rose@gmail.com)

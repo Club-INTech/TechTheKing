@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 # Ce fichier contient l'ensemble des fonctions accessibles par les scripts
 # ie les stratégies.
 # Author::    Guillaume Rose  (mailto:guillaume.rose@gmail.com)

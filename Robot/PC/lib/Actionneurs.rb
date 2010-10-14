@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 # Ce fichier définit la classe pour la gestion des actionneurs du robot
 
 require "Log"
