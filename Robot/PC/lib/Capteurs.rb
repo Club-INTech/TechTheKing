@@ -5,7 +5,7 @@
 require "Log"
 
 # Cette classe permet de gérer tout l'évitement du robot
-class Evitement
+class Capteurs
 
 	# initialise la connection avec la carte liée a l'évitement
 	def initialize peripherique
