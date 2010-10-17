@@ -2,86 +2,45 @@
 
 # Ce fichier définit la classe d'asservissement permettant de se déplacer
 
-require "Float"
-require "Fixnum"
 require "Log"
-require "Point"
-require "Vecteur"
-require "SerieThread"
-require "Position"
-
+require "Serie"
 
 # Cette classe les déplacements (haut niveau) en commande pour l'asservissement (bas niveau)
 class Asservissement
 
-	# Précision du goTo : cercle à partir duquel on n'envoit plus de nouvelle consigne
-	attr_accessor :precisionSimple,:sens
-
-	# sens actuel du robot
-	attr_accessor :sens
-
-	# Précision du goTo : cercle à partir duquel on déblocage le déroulement de la stratégie
-	attr_accessor :precisionDouble
+public
 
 	# Initialise l'asservissement à partir d'un périphérique série, valeurs 
 	# par défaut pour la précision
 	def initialize peripherique, positionParDefaut = Position.new(0, 0, 0)
-		@log = Logger.instance
-
-		if peripherique == nil
-			raise "Pas de carte pour Asservissement" 
-		end
-
-		@log.debug "Asservissement sur " + peripherique
-
-		@precisionSimple = 50
-		@precisionDouble = 20
-
-		@drapeauArret = false
-
-		@interface = InterfaceAsservissement.new peripherique, 57600, positionParDefaut
-		@interface.demarrer
-
-		@interface.changerVitesse([3000, 3000])
-		@interface.changerPWM([2000, 2046])
-		@log.debug "Asservissement prêt"
-		@sens = 1
 	end
 	
-	# à commenter
+	# retourne la position du robot
 	def position
 	end
 
-	# à commenter
-	def demarrer
+	# retourne l'abcisse du robot
+	def x
+	end
+	
+	# retourne l'ordonnée du robot
+	def y
+	end
+	
+	# retourne l'angle du robot
+	def angle
 	end
 
-	# à commenter
-	def arreter
-	end
-
-	# à commenter
-	def reset
-	end
-
-	# à commenter
+	# remet la position a zero (utile lors d'un recalage)
 	def remiseAZero nouvellePosition = Position.new(0, 0, 0)
 	end
 
-	# à commenter
-	def goto(where)
-	end
-
-	# à commenter
-	def avancer distance
+	# Va a la position demandé avec l'angle voulu
+	def goto position
 	end
 
 	# à commenter
 	def tourner angle
-	end
-
-	# à commenter
-	def tourneDe angleDonne
 	end
 
 	# à commenter
@@ -121,27 +80,40 @@ class Asservissement
 	end
 
 	# à commenter
-	def arret
-	end
-
-	# à commenter
 	def stop
 	end
 
-	# à commenter
-	def stopUrgence
-	end
-
-	# à commenter
+	# dans quel sens avance le robot on doit pouvoir gérer le sens précisement
+	# 1 avance
+	# -1 recule
+	# 0 prend le plus court
 	def sens
 	end
-
-	# à commenter
-	def changerVitesse(rotation, translation)
+	
+	# change le sens d'avancement du robot
+	def changerSens
 	end
 
-	# à commenter
-	def alignement angle
+	# change les vitesse de l'asservissement
+	def changerVitesse(translation,rotation)
 	end
+
+	# change les accélérations
+	def changerAcceleration(valeur)
+	end
+
+	# change les PWM
+	def changerPWM(valeur)
+	end
+
+	# change les Kp
+	def changerKp(valeur)
+	end
+
+	# change les Kd
+	def changerKd(valeur)
+	end
+	
+private
 
 end

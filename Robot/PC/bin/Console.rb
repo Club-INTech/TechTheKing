@@ -7,11 +7,7 @@
 require "readline"
 require "Robot"
 
-
-# le 0.0085 correspond au defaut d'alignement de notre robot, appele un 2A pour comprendre
-robot = Robot.new(:bleu, Position.new(300, -300, 0.0085))
-#robot = Robot.new(:jaune, Position.new(300, 300, 0))
-
+robot = Robot.new()
 robot.demarrer
 
 begin

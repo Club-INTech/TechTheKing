@@ -1,11 +1,11 @@
 #!/usr/bin/ruby -I../../lib
 # encoding: utf-8
 
-require "test/unit"
-require "Dijkstra"
+require 'test/unit'
+require 'Strategie'
 
-# cette classe permet de tester tout le pathfinding
-class TestDijkstra < Test::Unit::TestCase
+# cette classe permet de tester la classe strategie
+class TestStrategie
 
 	#initialisation
 	def setup

@@ -1,4 +1,5 @@
-#!/usr/bin/ruby -I../lib
+#!/usr/bin/ruby -I../../lib
+# encoding: utf-8
 
 require "test/unit"
 require "Carte"
@@ -6,18 +7,11 @@ require "Carte"
 # Cette classe permet de tester la carte indépendemment des éléments qui s'y trouvent
 class TestCarte < Test::Unit::TestCase
         
-        # à documenter
+       	#initialisation
 	def setup
-		#initialisation
         end
         
-        # à documenter     
-        def testFonction1
-		#test 1
-        end
-        
-        # à documenter  
-        def testFonction2
-		#test 2
-      	end
+	# premier test de la batterie de tests
+	def test_1
+	end
 end

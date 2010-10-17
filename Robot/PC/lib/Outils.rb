@@ -2,8 +2,8 @@
 
 # Ce fichier définit les classes d'utilitées générales
 # Il y a notament les classes représentant un point, un vecteur, une position et diverses opérations mathématiques 
+# Il y a pas mal de ménage a faire si l'on veut être clair
 
-# definit un Point (2D)
 class Point
  
  	# Un point est défini par son abscisse et son ordonnée

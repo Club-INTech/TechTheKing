@@ -1,4 +1,5 @@
-#!/usr/bin/ruby -I../lib
+#!/usr/bin/ruby -I../../lib
+# encoding: utf-8
 
 require "test/unit"
 require "CarteTechTheKing"
@@ -6,18 +7,11 @@ require "CarteTechTheKing"
 # Cette classe permet de tester la carte avec les éléments de jeu
 class TestTechTheKing < Test::Unit::TestCase
 
-        # à documenter
+        #initialisation
 	def setup
-               #initialisation
         end
 
-        # à documenter        
-        def testfonction1
-                #test1
-        end
-
-        # à documenter
-        def testfonction2
-                #test2
-        end
+	# premier test de la batterie de tests
+	def test_1
+	end
 end
