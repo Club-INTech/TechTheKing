@@ -71,7 +71,7 @@ LectureSerie::traitement() {
 	case 'k':
 		litEntierLong(&i);
 		if (i >= 0) {
-			manager.assRotation.changeAcc(i);
+			
 		}
 		break;
 	case 'l':
@@ -105,7 +105,7 @@ LectureSerie::traitement() {
 	case 'q':
 		litEntierLong(&i);
 		if (i >= 0) {
-			manager.assTranslation.changeAcc(i);
+			
 		}
 		break;
 	case 'r':
@@ -136,6 +136,20 @@ LectureSerie::traitement() {
 		litEntierLong(&i);
 		if (i >= 0) {
 			manager.assTranslation.changeKd(i);
+		}
+		break;
+
+	case 'w':
+		litEntierLong(&i);
+		if (i >= 0) {
+			manager.assTranslation.changeKi(i);
+		}
+		break;
+		
+	case 'x':
+		litEntierLong(&i);
+		if (i >= 0) {
+			manager.assTranslation.changeKi(i);
 		}
 		break;
 
