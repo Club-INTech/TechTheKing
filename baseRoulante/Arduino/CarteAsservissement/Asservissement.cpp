@@ -98,6 +98,7 @@ void
 Asservissement::changeConsigne(long int consigneDonnee)
 {
 	consigne = consigneDonnee;
+	integraleErreur = 0;
 }
 
 /*
