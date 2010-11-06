@@ -65,8 +65,11 @@ class Asservissement{
 
 class AsservissementVitesse : public Asservissement {
 		
-	public: 
+	public:
+		AsservissementVitesse();
 		int 	calculePwmVitesse(long int);
+	private:
+		int	pwm;
 		
 		
 };

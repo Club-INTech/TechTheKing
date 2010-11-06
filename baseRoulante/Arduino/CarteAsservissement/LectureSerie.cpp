@@ -69,7 +69,7 @@ LectureSerie::traitement() {
 		manager.reset();
 		break;
 	case 'k':
-		manager.switchAsservissement();		
+		manager.switchTypeAsservissement();		
 		break;
 	case 'l':
 		litEntierLong(&i);

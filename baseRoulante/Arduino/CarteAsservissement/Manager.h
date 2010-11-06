@@ -42,28 +42,43 @@ class Manager {
 		
 		void 	init();
 		
-		void 	changeConsigne (long int, long int);
+		void 	changeConsigne (long int,long int);
 		
 		void 	changeConsigneDistance (long int);
 		void 	changeConsigneAngle (long int);
+
+		void	changeConsigneVitesseTranslation(long int); 
+		void	changeConsigneVitesseRotation(long int); 
 
 		void 	assPolaire();
 		
 		void 	switchAssDistance();
 		void 	switchAssAngle();
-		
+
+		void	switchTypeAsservissement();
+
 		void	reset();
 
 		AsservissementPosition 	assRotation;
-		AsservissementPositin 	assTranslation;
+		AsservissementPosition 	assTranslation;
 		AsservissementVitesse 	assVitesseRotation;
 		AsservissementVitesse 	assVitesseTranslation;
+
+		
+		unsigned char typeAsservissement;
 	
 		// Activation de l'asservissement
 	
 		// Activation de l'asservissement
 		bool		activationAssDistance;
 		bool		activationAssAngle;
+		bool		activationAssVitesseRotation;
+		bool		activationAssVitesseTranslation;
+
+		long int	angleBkp;
+
+		long int	distanceBkp;
+
 };
 
 extern volatile long int 	encodeurG;

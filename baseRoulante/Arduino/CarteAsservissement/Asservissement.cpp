@@ -30,14 +30,16 @@ Asservissement::Asservissement()
 	erreur = 0;
 	erreurBkp = 0;
 
-	
+}
+
+AsservissementVitesse::AsservissementVitesse(){
+	pwm=0;
+}
 
 /*
  * Calcule la puissance moteur à fournir pour atteindre la nouvelle position théorique
  */
- 
-int 
-AsservissementPosition::calculePwmPosition(long int positionReelle)
+int AsservissementPosition::calculePwmPosition(long int positionReelle)
 {
 	long int erreur = (consigne - positionReelle);
 	if(ABS(erreur)<=4){
@@ -60,8 +62,7 @@ AsservissementPosition::calculePwmPosition(long int positionReelle)
 }
 
 
-int 
-AsservissementVitesse::calculePwmVitesse(long int positionReelle)
+int AsservissementVitesse::calculePwmVitesse(long int positionReelle)
 {
 	long int erreur = (consigne - positionReelle);
 	if(ABS(erreur)<=4){
@@ -70,7 +71,7 @@ AsservissementVitesse::calculePwmVitesse(long int positionReelle)
 	}
 	else
 	integraleErreur+=erreur;
-	long int pwm += (Kp * erreur + Kd  * (erreur - erreurBkp) + Ki  * integraleErreur); // Le facteur 256(freq des overflow) est inclu dans Kd et Ki pour moins de calcul
+	pwm += (Kp * erreur + Kd  * (erreur - erreurBkp) + Ki  * integraleErreur); // Le facteur 256(freq des overflow) est inclu dans Kd et Ki pour moins de calcul
 	erreurBkp = erreur;
 	if (pwm > maxPWM){
 		pwm = maxPWM;
@@ -167,8 +168,4 @@ void
 Asservissement::reset() 
 {
 	consigne = 0;
-	
-	
-	blocageDetecte = 0;
-}
-
+	blocageDetecte = 0;}
