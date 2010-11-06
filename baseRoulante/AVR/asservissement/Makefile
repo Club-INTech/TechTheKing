@@ -35,9 +35,5 @@ Print.o: ../common/Print.cpp
 clean:
 	rm -rf *.o *.hex *.out
 
-
-
-
-
-
-
+upload:
+	sudo avrdude -c usbtiny -p m328p -U flash:w:asservissement.hex
