@@ -69,10 +69,7 @@ LectureSerie::traitement() {
 		manager.reset();
 		break;
 	case 'k':
-		litEntierLong(&i);
-		if (i >= 0) {
-			
-		}
+		manager.switchAsservissement();		
 		break;
 	case 'l':
 		litEntierLong(&i);
@@ -152,6 +149,18 @@ LectureSerie::traitement() {
 			manager.assTranslation.changeKi(i);
 		}
 		break;
+	
+	case 'y':
+		litEntierLong(&i);
+		if (i >= 0) {
+			manager.assVitesseTranslation.changeConsigne(i);
+		}
+	
+	case 'z':
+		litEntierLong(&i);
+		if (i >= 0) {
+			manager.assVitesseRotation.changeConsigne(i);
+		}
 
 	default:
 		break;
