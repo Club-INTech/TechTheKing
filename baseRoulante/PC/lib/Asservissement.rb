@@ -93,7 +93,6 @@ class Asservissement
 
   # Se déplace en absolu à la destination indiquée
   def goToEx destination, *condition
-    begin
       @drapeauArret = false
 
       evaluationConditionArret(*condition)
@@ -131,24 +130,6 @@ class Asservissement
       @log.debug "Fin Aller à : " + position.x.to_s + ", " + position.y.to_s
 
       return true
-    rescue  RuntimeError => e
-      puts "gotoEx"
-      puts e
-      if e.to_s.include? "blocageTrans"
-        @log.debug "BlocageTrans"
-        stopUrgence
-        puts "stop urgence"
-      end
-      if e.to_s == "stop"
-        @log.debug "Arret demandé"
-        arret
-      end
-      if e.to_s == "timeout"
-        @log.debug "Timeout"
-      end
-      raise e
-    end
-    true
   end
 
   def goTo *param
