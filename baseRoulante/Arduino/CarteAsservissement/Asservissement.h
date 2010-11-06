@@ -46,6 +46,7 @@ class Asservissement{
 		long int 	Kp; 
 		long int	Kd;
 		long int	Ki;
+		int	acc;
 
 		long int 	Vmax;
 		long int 	maxPWM; 

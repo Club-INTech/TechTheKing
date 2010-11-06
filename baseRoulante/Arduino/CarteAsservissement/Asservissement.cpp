@@ -14,10 +14,12 @@ Asservissement::Asservissement()
 	Kp = 		KP;
 	Vmax = 		VMAX;
 	Kd = 		KD;
+	Ki =		0;
 	
 	// Consigne par défaut et position du robot à l'initialisation
 	consigne = 0;
 	integraleErreur=0;
+	acc=3;
 
 		
 
@@ -42,11 +44,14 @@ int
 Asservissement::calculePwm(long int positionReelle)
 {
 	long int erreur = (consigne - positionReelle);
-	integraleErreur+=erreur;
-	long int pwm = Kp * erreur + Kd/100  * (erreurBkp-erreur) + Ki/100 * integraleErreur; // Le facteur 256(freq des overflow) est inclu dans Kd et Ki pour moins de calcul
-
+	if(ABS(erreur)<=3){
+		integraleErreur=0;
+		return 0;
+	}
+	else
+		integraleErreur+=erreur;
+	long int pwm = acc*(Kp * erreur + Kd  * (erreur - erreurBkp) - Ki/10000  * integraleErreur); // Le facteur 256(freq des overflow) est inclu dans Kd et Ki pour moins de calcul
 	erreurBkp = erreur;
-	
 	if (pwm > maxPWM) {
 		pwm = maxPWM;
 	}

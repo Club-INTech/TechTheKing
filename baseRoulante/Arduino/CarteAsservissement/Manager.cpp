@@ -69,8 +69,6 @@ Manager::assPolaire()
 	// Réactivation des interruptions pour les encodeurs
 	sei();  
 
-	assRotation.calculePositionIntermediaire(angle);
-	assTranslation.calculePositionIntermediaire(distance);
 
 	int pwmRotation = (activationAssAngle?assRotation.calculePwm(angle):0);
 	int pwmTranslation = (activationAssDistance?assTranslation.calculePwm(distance):0);
@@ -184,17 +182,18 @@ Manager::init()
 	TCCR2A |= (0 << WGM21) |(0 << WGM20);
 	TIMSK2 |= (1 << TOIE2) | (0 << OCIE2A);
 	
-	assRotation.changeKp(15);
-	assRotation.changeAcc(21);
+	assRotation.changeKp(25);
 	assRotation.changeVmax(3000);
 	assRotation.changePWM(1024);
-	assRotation.changeKd(35);
-	
-	assTranslation.changeKp(12);
-	assTranslation.changeAcc(20);
+	assRotation.changeKd(400);
+        assRotation.changeKi(0);
+
+	assTranslation.changeKp(25);
 	assTranslation.changeVmax(3000);
 	assTranslation.changePWM(1024);
-	assTranslation.changeKd(40);
+	assTranslation.changeKd(400);
+	assTranslation.changeKi(0);
+
 }
 
 /*

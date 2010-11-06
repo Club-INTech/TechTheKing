@@ -142,7 +142,7 @@ LectureSerie::traitement() {
 	case 'w':
 		litEntierLong(&i);
 		if (i >= 0) {
-			manager.assTranslation.changeKi(i);
+			manager.assRotation.changeKi(i);
 		}
 		break;
 		
