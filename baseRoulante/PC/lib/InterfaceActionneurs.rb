@@ -13,7 +13,7 @@ class InterfaceActionneurs < Serie
 
   # Initialise avec un périphérique à une certaine vitesse
   def initialize(peripherique = "/dev/ttyUSB0", vitesse = 57600)
-    super(peripherique, vitesse)
+    super(peripherique, vitesse) if peripherique != "mock_tty"
   end
 
   # Allume la led du jumper
