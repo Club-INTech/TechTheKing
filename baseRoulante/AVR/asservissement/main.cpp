@@ -30,10 +30,10 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include "lib_asservissement/Asservissement.h"
-#include "lib_asservissement/EnvoiPosition.h"
-#include "lib_asservissement/LectureSerie.h"
-#include "lib_asservissement/Manager.h"
+#include "lib/Asservissement.h"
+#include "lib/EnvoiPosition.h"
+#include "lib/LectureSerie.h"
+#include "lib/Manager.h"
 
 int main( void )
 {
