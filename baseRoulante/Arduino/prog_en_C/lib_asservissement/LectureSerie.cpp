@@ -154,8 +154,7 @@ LectureSerie::traitement() {
 	}
 }
 
-bool
-LectureSerie::litEntierLong(long int *i)
+bool LectureSerie::litEntierLong(long int *i)
 {
 	long int aux = 0;
 	unsigned char j;
@@ -174,6 +173,7 @@ LectureSerie::litEntierLong(long int *i)
 		k /= 10;
 	} 
 	*i = aux;
+	return true;
 }
 
 LectureSerie lectureSerie;

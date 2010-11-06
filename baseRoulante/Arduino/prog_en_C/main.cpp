@@ -28,21 +28,19 @@
  * "v" change le Kd pour la rotation
  */
 
-#include "Asservissement.h"
-#include "EnvoiPosition.h"
-#include "LectureSerie.h"
-#include "Manager.h"
-
-#define TRUE 42
-
-
+#include <avr/io.h>
+#include <avr/interrupt.h>
+#include "lib_asservissement/Asservissement.h"
+#include "lib_asservissement/EnvoiPosition.h"
+#include "lib_asservissement/LectureSerie.h"
+#include "lib_asservissement/Manager.h"
 
 int main( void )
 {
 	Serial.begin(57600);
         manager.init();
 
-	while( TRUE )
+	while( true )
 	{
 		lectureSerie.traitement();
 	}

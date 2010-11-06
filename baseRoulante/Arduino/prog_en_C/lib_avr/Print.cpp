@@ -22,9 +22,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-#include "wiring.h"
 
 #include "Print.h"
+
+extern "C" void __cxa_pure_virtual() {}
 
 // Public Methods //////////////////////////////////////////////////////////////
 

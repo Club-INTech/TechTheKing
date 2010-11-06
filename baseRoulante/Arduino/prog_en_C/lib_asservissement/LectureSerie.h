@@ -1,7 +1,7 @@
 #ifndef LectureSerie_h
 #define LectureSerie_h
 
-#include "lib_avr/HardwareSerial.h"
+#include "../lib_avr/HardwareSerial.h"
 #include "EnvoiPosition.h"
 #include "Manager.h"
 

@@ -1,12 +1,11 @@
-#ifndef EnvoiPosition_h
+#ifndef EnvoiPosition_H
 #define EnvoiPosition_H
 
 #include <avr/interrupt.h>
 #include <avr/io.h>
-#include "lib_avr/HardwareSerial.h"
+#include "../lib_avr/HardwareSerial.h"
 #include "Manager.h"
-
-#define TRIGGER_BLOCAGE	50
+#include "Asservissement.h"
 
 class EnvoiPosition {
 	public:

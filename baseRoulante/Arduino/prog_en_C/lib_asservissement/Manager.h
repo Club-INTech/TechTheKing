@@ -3,6 +3,7 @@
 
 #include <avr/interrupt.h>
 #include <avr/io.h>
+#include "../lib_avr/HardwareSerial.h"
 
 #include "Asservissement.h"
 
@@ -21,7 +22,7 @@
 #define ENC_CONF DDRD
 
 
-#define MASQUE B0111100
+#define MASQUE 0b0111100
 
 /*
  * Réglage des pins des PWM
@@ -32,8 +33,8 @@
 #define PIN_PWM_G PORTB1
 
 // Roue Droite
-#define PIN_DIR_G PORTB4
-#define PIN_PWM_G PORTB2
+#define PIN_DIR_D PORTB4
+#define PIN_PWM_D PORTB2
 
 #define PORT_PWM_CONF DDRB
 #define PORT_PWM PORTB

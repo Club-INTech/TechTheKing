@@ -1,9 +1,3 @@
-#include <avr/interrupt.h>
-#include <avr/io.h>
-
-#include <HardwareSerial.h>
-#include <wiring.h>
-
 #include "Manager.h"
 
 /*
@@ -17,33 +11,33 @@ ISR(PCINT2_vect)
     	unsigned char changementPins 	= (PIND & MASQUE) ^ etatPins;
     	etatPins 		= PIND & MASQUE;
     
-    	if (changementPins & (ENC_PORT & ( 1 << ENCGA))
+    	if (changementPins & (ENC_PORT & ( 1 << ENCGA)))
 	{
-		if (etatPins & (ENC_PORT & ( 1 << ENCGA)) //front montant codeur 1 voix A
+		if (etatPins & (ENC_PORT & ( 1 << ENCGA))) //front montant codeur 1 voix A
 			(etatPins & ( 1 << ENCGB ))?encodeurG++:encodeurG--;
 	      	else                  //front descendant codeur 1 voix A
 			(etatPins & ( 1 << ENCGB ))?encodeurG--:encodeurG++;
 	}
 
-    	if (changementPins & (ENC_PORT & ( 1 << ENCGB))
+    	if (changementPins & (ENC_PORT & ( 1 << ENCGB)))
 	{
-		if (etatPins & (ENC_PORT & ( 1 << ENCGB)) //front montant codeur 1 voix B
+		if (etatPins & (ENC_PORT & ( 1 << ENCGB))) //front montant codeur 1 voix B
 			(etatPins & ( 1 << ENCGA ))?encodeurG--:encodeurG++;
 		else                  //front descendant codeur 1 voix B
 			(etatPins & ( 1 << ENCGA ))?encodeurG++:encodeurG--;
 	}
     
-	if (changementPins & (ENC_PORT & ( 1 << ENCDA))
+	if (changementPins & (ENC_PORT & ( 1 << ENCDA)))
 	{
-		if (etatPins & (ENC_PORT & ( 1 << ENCDA)) //front montant codeur 2 voix A
+		if (etatPins & (ENC_PORT & ( 1 << ENCDA))) //front montant codeur 2 voix A
 			(etatPins & ( 1 << ENCDB ))?encodeurD++:encodeurD--;
 		else                  //front descendant codeur 2 voix A
 			(etatPins & ( 1 << ENCDB ))?encodeurD--:encodeurD++;
 	}
  
-	if (changementPins & (ENC_PORT & ( 1 << ENCDB))
+	if (changementPins & (ENC_PORT & ( 1 << ENCDB)))
 	{
-		if (etatPins & (ENC_PORT & ( 1 << ENCDB)) //front montant codeur 2 voix B
+		if (etatPins & (ENC_PORT & ( 1 << ENCDB))) //front montant codeur 2 voix B
 			(etatPins & ( 1 << ENCDA ))?encodeurD--:encodeurD++;
 	        else                  //front descendant codeur 2 voix B
 			(etatPins & ( 1 << ENCDA ))?encodeurD++:encodeurD--;
@@ -72,8 +66,8 @@ Manager::assPolaire()
 	// Réactivation des interruptions pour les encodeurs
 	sei();  
 
-	assRotation.calculePositionIntermediaire(angle);
-	assTranslation.calculePositionIntermediaire(distance);
+	//assRotation.calculePositionIntermediaire(angle);
+	//assTranslation.calculePositionIntermediaire(distance);
 
 	int pwmRotation = (activationAssAngle?assRotation.calculePwm(angle):0);
 	int pwmTranslation = (activationAssDistance?assTranslation.calculePwm(distance):0);
@@ -187,13 +181,13 @@ Manager::init()
 	TIMSK2 |= (1 << TOIE2) | (0 << OCIE2A);
 	
 	assRotation.changeKp(15);
-	assRotation.changeAcc(21);
+	//assRotation.changeAcc(21);
 	assRotation.changeVmax(3000);
 	assRotation.changePWM(1024);
 	assRotation.changeKd(35);
 	
 	assTranslation.changeKp(12);
-	assTranslation.changeAcc(20);
+	//assTranslation.changeAcc(20);
 	assTranslation.changeVmax(3000);
 	assTranslation.changePWM(1024);
 	assTranslation.changeKd(40);

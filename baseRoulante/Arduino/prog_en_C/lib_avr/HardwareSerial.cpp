@@ -21,11 +21,20 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <avr/io.h>
+#include <avr/interrupt.h>
 #include <inttypes.h>
-#include "wiring.h"
-#include "wiring_private.h"
-
 #include "HardwareSerial.h"
+
+#ifndef cbi
+#define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
+#endif
+#ifndef sbi
+#define sbi(sfr, bit) (_SFR_BYTE(sfr) |= _BV(bit))
+#endif
+#ifndef abs
+#define abs(x) ((x)>0?(x):-(x))
+#endif
 
 // Define constants and variables for buffering incoming serial data.  We're
 // using a ring buffer (I think), in which rx_buffer_head is the index of the
