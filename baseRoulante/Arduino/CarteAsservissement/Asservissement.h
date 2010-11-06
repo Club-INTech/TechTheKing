@@ -2,7 +2,7 @@
 #define Asservissement_h
 
 // Puissance max. de l'asservissement comprise entre 0 et 1024
-#define	PUISSANCE	300
+#define	PUISSANCE	1024
 
 // Constante de l'asservissement
 #define KP		30
@@ -20,8 +20,6 @@ class Asservissement{
 		
 		void	changeConsigne(long int);
 		
-		int 	calculePwm(long int);
-		void	actualiserDeriveeErreur(long int);
 		
 		void 	stop();
 		void 	stopUrgence(long int); 
@@ -65,4 +63,20 @@ class Asservissement{
 		int		blocageTemp;
 };
 
+class AsservissementVitesse : public Asservissement {
+		
+	public: 
+		int 	calculePwmVitesse(long int);
+		
+		
+};
+
+
+class AsservissementPosition : public Asservissement {
+		
+	public:
+		int 	calculePwmPosition(long int);
+		
+		
+};
 #endif

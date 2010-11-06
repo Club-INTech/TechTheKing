@@ -3,17 +3,16 @@
 #define ABS(x) 		((x) < 0 ? - (x) : (x))
 #define MAX(a,b) 	((a) > (b) ? (a) : (b)) 
 #define MIN(a,b) 	((a) < (b) ? (a) : (b)) 
-#define DECEL 32768
 
 //#define NO_ACC
 
 Asservissement::Asservissement()
 {
 	// Constante de l'asservissement et du mouvement
-	maxPWM = 	PUISSANCE;
-	Kp = 		KP;
-	Vmax = 		VMAX;
-	Kd = 		KD;
+	maxPWM = 	0;
+	Kp = 		0;
+	Vmax = 		0;
+	Kd = 		0;
 	Ki =		0;
 	
 	// Consigne par défaut et position du robot à l'initialisation
@@ -32,30 +31,28 @@ Asservissement::Asservissement()
 	erreurBkp = 0;
 
 	
-	// Calcul de l'erreur maximum afin de détecter les blocages
-	calculeErreurMax();
-}
 
 /*
  * Calcule la puissance moteur à fournir pour atteindre la nouvelle position théorique
  */
  
 int 
-Asservissement::calculePwm(long int positionReelle)
+AsservissementPosition::calculePwmPosition(long int positionReelle)
 {
 	long int erreur = (consigne - positionReelle);
-	if(ABS(erreur)<=3){
+	if(ABS(erreur)<=4){
 		integraleErreur=0;
 		return 0;
 	}
 	else
-		integraleErreur+=erreur;
-	long int pwm = acc*(Kp * erreur + Kd  * (erreur - erreurBkp) - Ki/10000  * integraleErreur); // Le facteur 256(freq des overflow) est inclu dans Kd et Ki pour moins de calcul
+	integraleErreur+=erreur;
+	long int pwm = (Kp * erreur + Kd  * (erreur - erreurBkp) + Ki  * integraleErreur); // Le facteur 256(freq des overflow) est inclu dans Kd et Ki pour moins de calcul
 	erreurBkp = erreur;
-	if (pwm > maxPWM) {
+	if (pwm > maxPWM){
 		pwm = maxPWM;
 	}
-	else if (pwm < -maxPWM ) {
+	else if (pwm < -maxPWM ) 
+	{
 		pwm = -maxPWM;
 	}
 	
@@ -63,6 +60,28 @@ Asservissement::calculePwm(long int positionReelle)
 }
 
 
+int 
+AsservissementVitesse::calculePwmVitesse(long int positionReelle)
+{
+	long int erreur = (consigne - positionReelle);
+	if(ABS(erreur)<=4){
+		integraleErreur=0;
+		return 0;
+	}
+	else
+	integraleErreur+=erreur;
+	long int pwm += (Kp * erreur + Kd  * (erreur - erreurBkp) + Ki  * integraleErreur); // Le facteur 256(freq des overflow) est inclu dans Kd et Ki pour moins de calcul
+	erreurBkp = erreur;
+	if (pwm > maxPWM){
+		pwm = maxPWM;
+	}
+	else if (pwm < -maxPWM ) 
+	{
+		pwm = -maxPWM;
+	}
+	
+	return pwm;
+}
 
 /*
  * Calcule l'erreur maximum (positionReelle et positionIntermediaire) afin de déterminer le blocage

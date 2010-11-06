@@ -185,13 +185,13 @@ Manager::init()
 	assRotation.changeKp(25);
 	assRotation.changeVmax(3000);
 	assRotation.changePWM(1024);
-	assRotation.changeKd(400);
+	assRotation.changeKd(375);
         assRotation.changeKi(0);
 
-	assTranslation.changeKp(25);
+	assTranslation.changeKp(30);
 	assTranslation.changeVmax(3000);
 	assTranslation.changePWM(1024);
-	assTranslation.changeKd(400);
+	assTranslation.changeKd(300);
 	assTranslation.changeKi(0);
 
 }
