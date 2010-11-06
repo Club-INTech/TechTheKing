@@ -54,9 +54,13 @@ class Manager {
 		
 		void	reset();
 
-		Asservissement 	assRotation;
-		Asservissement 	assTranslation;
-		
+		AsservissementPosition 	assRotation;
+		AsservissementPositin 	assTranslation;
+		AsservissementVitesse 	assVitesseRotation;
+		AsservissementVitesse 	assVitesseTranslation;
+	
+		// Activation de l'asservissement
+	
 		// Activation de l'asservissement
 		bool		activationAssDistance;
 		bool		activationAssAngle;

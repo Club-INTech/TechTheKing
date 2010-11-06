@@ -57,7 +57,6 @@ Manager::assPolaire()
 	
 	long int angle = 	encodeurG - encodeurD;
 	long int distance = 	encodeurG + encodeurD;
-
 	/*
 	 * Reprise TechTheWave, priorité des interruptions
 	 */
@@ -70,12 +69,24 @@ Manager::assPolaire()
 	sei();  
 
 
-	int pwmRotation = (activationAssAngle?assRotation.calculePwm(angle):0);
-	int pwmTranslation = (activationAssDistance?assTranslation.calculePwm(distance):0);
+	
+		// Activation de l'asservissement
+	if(typeAsservissement==0){
+	int pwmRotation = (activationAssAngle?assRotation.calculePwmPosition(angle):0);
+	int pwmTranslation = (activationAssDistance?assTranslation.calculePwmPosition(distance):0);
+	}
+	else{
+	int pwmRotation = (activationAssVitRot?assVitesseRotation.calculePwm((angle-angleBkp)/256):0);
+	int pwmTranslation = (activationAssDistance?assVitesseTranslation.calculePwmVitesse((distance-distanceBkp)/256):0);
+	}
 
-	// Coefficient trouvé de manière empirique
 	int pwmG = pwmTranslation + pwmRotation;
 	int pwmD = pwmTranslation - pwmRotation;
+	
+	angleBkp = angle;
+	distanceBkp = distance;
+	
+	// Coefficient trouvé de manière empirique
 
 	if (pwmG > PWM_MAX) 
 		pwmG = PWM_MAX;
@@ -183,17 +194,27 @@ Manager::init()
 	TIMSK2 |= (1 << TOIE2) | (0 << OCIE2A);
 	
 	assRotation.changeKp(25);
-	assRotation.changeVmax(3000);
 	assRotation.changePWM(1024);
 	assRotation.changeKd(375);
         assRotation.changeKi(0);
 
 	assTranslation.changeKp(30);
-	assTranslation.changeVmax(3000);
 	assTranslation.changePWM(1024);
 	assTranslation.changeKd(300);
 	assTranslation.changeKi(0);
+	
+	assVitesseRotation.changeKp(25);
+	assVitesseRotation.changePWM(1024);
+	assVitesseRotation.changeKd(375);
+        assVitesseRotation.changeKi(0);
 
+	assVitesseTranslation.changeKp(25);
+	assVitesseTranslation.changePWM(1024);
+	assVitesseTranslation.changeKd(375);
+        assVitesseTranslation.changeKi(0);
+
+
+	typeAsservissement=0;//0 : assPosition, 1 : assVitesse
 }
 
 /*
@@ -213,9 +234,24 @@ Manager::changeConsigneAngle(long int angleDonne)
 }
 
 void 
-Manager::changeConsigneDistance(long int distanceDonnee)
+Manager::changeConsigneTranslation(long int distanceDonnee)
 {
 	assTranslation.changeConsigne(distanceDonnee);
+}
+
+
+void
+Manager::changeConsigneVitesseRot(long int vitesseRotDonnee)
+{
+	assVitesseRotation.changeConsigne(vitesseRotDonnee);
+}
+
+
+
+void 
+Manager::changeConsigneDistance(long int vitesseTransDonnee)
+{
+	assVitesseTranslation.changeConsigne(vitesseTransDonnee);
 }
 
 void 
@@ -231,6 +267,13 @@ Manager::switchAssAngle()
 }
 
 void
+
+void
+Manager::switchTypeAsservissement()
+{
+	typeAsservissement = !typeAsservissement;
+}
+
 Manager::reset()
 {
 	cli();
