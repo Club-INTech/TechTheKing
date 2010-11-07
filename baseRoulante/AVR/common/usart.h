@@ -1,22 +1,30 @@
 #ifndef _USART_H_
 #define _USART_H_
 
-void uart_init(void);
-void print(const char *);
-void println( void );
-unsigned char uart_recv_char(void);
-void uart_send_char(unsigned char);
-
-void print_ushort( uint8_t entier );
-void print_uint( uint16_t entier );
-void print_ulong( uint32_t entier );
-
-void print_short( int8_t entier );
-void print_int( int16_t entier );
-void print_long( int32_t entier );
+#include <avr/io.h>
+#include <avr/interrupt.h>
 
 #define BAUD_RATE 57600
 
 #define UBRR (F_CPU/8/BAUD_RATE - 1)/2
+
+//Fonction de base de la liaison série
+void uart_init(void);
+unsigned char uart_recv_char(void);
+inline void uart_send_char(unsigned char);
+inline void uart_send_ln( void );
+inline void uart_send_string(const char *);
+
+//Fonction suplémentaire
+inline void printShortNumber( unsigned short );
+inline void printIntNumber( unsigned int );
+inline void printLongNumber( unsigned long );
+
+//Définition des prints
+void printString( const char * );
+
+//Définition des prints ln
+void println( void );
+void printlnString( const char * );
 
 #endif
