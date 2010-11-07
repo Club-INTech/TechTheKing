@@ -22,20 +22,20 @@ inline void printLongNumber( unsigned long );
 
 //Définition des prints
 void printString( const char * );
-// void printShort( short );
+void printShort( short );
 void printUShort( unsigned short );
-// void printInt( int );
+void printInt( int );
 void printUInt( unsigned int );
-// void printLong( long );
+void printLong( long );
 void printULong( unsigned long );
 
 
 //Définition des prints ln
 void println( void );
 void printlnString( const char * );
-// void printlnShort( short );
+//void printlnShort( short );
 void printlnUShort( unsigned short );
-// void printlnInt( int );
+//void printlnInt( int );
 void printlnUInt( unsigned int );
 // void printlnLong( long );
 void printlnULong( unsigned long );

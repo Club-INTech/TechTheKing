@@ -160,11 +160,32 @@ void printlnULong(long unsigned int entier)
 	uart_send_ln();
 }
 
+void printShort(short int entier)
+{
+	if (entier < 0)
+	{
+		uart_send_char('-');
+		entier = -entier;
+	}
+	printShortNumber(entier);
+}
 
+void printInt(int entier)
+{
+	if (entier < 0)
+	{
+		uart_send_char('-');
+		entier = -entier;
+	}
+	printIntNumber(entier);
+}
 
-
-
-
-
-
-
+void printLong(long int entier)
+{
+	if (entier < 0)
+	{
+		uart_send_char('-');
+		entier = -entier;
+	}
+	printLongNumber(entier);
+}
