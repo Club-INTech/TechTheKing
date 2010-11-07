@@ -22,6 +22,13 @@ inline void printLongNumber( unsigned long );
 
 //Définition des prints
 void printString( const char * );
+// void printShort( short );
+void printUShort( unsigned short );
+// void printInt( int );
+void printUInt( unsigned int );
+// void printLong( long );
+void printULong( unsigned long );
+
 
 //Définition des prints ln
 void println( void );

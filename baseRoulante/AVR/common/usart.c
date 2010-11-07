@@ -111,21 +111,37 @@ inline void printLongNumber(unsigned long n )
  * Définition des print pour nombre
  */
 
-void printString(const char *string)
+void printString(const char *string )
 {
 	uart_send_string(string);
 }
 
-void println(void )
+void println( void )
 {
 	uart_send_ln();
 }
 
-void printlnString(const char *string)
+void printlnString(const char *string )
 {
 	uart_send_string(string);
 	uart_send_ln();
 }
+
+void printUInt(unsigned int entier )
+{
+	printIntNumber(entier);
+}
+
+void printUShort(short unsigned int entier )
+{
+	printShortNumber( entier );
+}
+
+void printULong(long unsigned int entier )
+{
+	printLongNumber(entier);
+}
+
 
 
 
