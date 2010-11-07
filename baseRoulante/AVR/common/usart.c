@@ -142,6 +142,27 @@ void printULong(long unsigned int entier )
 	printLongNumber(entier);
 }
 
+void printlnUShort(short unsigned int entier)
+{
+	printShortNumber(entier);
+	uart_send_ln();
+}
+
+void printlnUInt(unsigned int entier)
+{
+	printIntNumber(entier);
+	uart_send_ln();
+}
+
+void printlnULong(long unsigned int entier)
+{
+	printLongNumber(entier);
+	uart_send_ln();
+}
+
+
+
+
 
 
 

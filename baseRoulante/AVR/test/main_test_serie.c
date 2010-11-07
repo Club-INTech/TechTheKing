@@ -12,7 +12,7 @@ int main( void )
 	println();
 	println();
 	
-	printlnString("### Debut de zone de test des nombres unsigned ###");
+	printlnString("### Debut de zone de test des nombres unsigned sans le retour a la ligne automatique (ln) ###");
 	println();
 	printString("Impression d'un unsigned short 42 : ");
 	printUShort(i);
@@ -23,6 +23,15 @@ int main( void )
 	printString("Impression d'un unsigned long 42 : ");
 	printULong((unsigned long)i);
 	println();
+	
+	printlnString("### Debut de zone de test des nombres unsigned avec le retour a la ligne automatique (ln) ###");
+	println();
+	printString("Impression d'un unsigned short 42 : ");
+	printlnUShort(i);
+	printString("Impression d'un unsigned int 42 : ");
+	printlnUInt((unsigned int)i);
+	printString("Impression d'un unsigned long 42 : ");
+	printlnULong((unsigned long)i);
 	
 	
 	while( 42 )
