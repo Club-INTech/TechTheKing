@@ -139,14 +139,14 @@ LectureSerie::traitement() {
 	case 'w':
 		litEntierLong(&i);
 		if (i >= 0) {
-			manager.assRotation.changeKi(i);
+			manager.assVitesseTranslation.changeKp(i);
 		}
 		break;
 		
 	case 'x':
 		litEntierLong(&i);
 		if (i >= 0) {
-			manager.assTranslation.changeKi(i);
+			manager.assVitesseRotation.changeKp(i);
 		}
 		break;
 	

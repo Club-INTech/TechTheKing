@@ -11,7 +11,7 @@
  * "e" réinitialise la position
  * "f" f recule en
  * "g" tourne jusqu'a negatif
- * "h" change AssAngle d'état
+ * "h" change AssTranslation d'état
  * "i" change AssRotation d'état
  * "j" reset
  * "k" change l'accélération maximale en translation

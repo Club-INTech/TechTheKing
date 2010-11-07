@@ -42,12 +42,10 @@ AsservissementVitesse::AsservissementVitesse(){
 int AsservissementPosition::calculePwmPosition(long int positionReelle)
 {
 	long int erreur = (consigne - positionReelle);
-	if(ABS(erreur)<=4){
+	if(erreur<=3)
 		integraleErreur=0;
-		return 0;
-	}
 	else
-	integraleErreur+=erreur;
+		integraleErreur+=erreur;
 	long int pwm = (Kp * erreur + Kd  * (erreur - erreurBkp) + Ki  * integraleErreur); // Le facteur 256(freq des overflow) est inclu dans Kd et Ki pour moins de calcul
 	erreurBkp = erreur;
 	if (pwm > maxPWM){
