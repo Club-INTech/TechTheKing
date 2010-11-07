@@ -32,8 +32,11 @@ HardwareSerial.o: ../common/HardwareSerial.cpp
 Print.o: ../common/Print.cpp
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) ../common/Print.cpp -c
 
+usart.o: ../common/usart.c
+	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) ../common/usart.c -c
+
 clean:
 	rm -rf *.o *.hex *.out
 
-upload:
+upload: all
 	sudo avrdude -c usbtiny -p m328p -U flash:w:asservissement.hex
