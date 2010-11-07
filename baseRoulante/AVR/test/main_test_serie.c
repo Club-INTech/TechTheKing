@@ -23,6 +23,7 @@ int main( void )
 	printString("Impression d'un unsigned long 42 : ");
 	printULong((unsigned long)i);
 	println();
+	println();
 	
 	printlnString("### Debut de zone de test des nombres unsigned avec le retour a la ligne automatique (ln) ###");
 	println();
@@ -45,6 +46,7 @@ int main( void )
 	printString("Impression d'un unsigned long 42 : ");
 	printLong((long)i);
 	println();
+	println();
 	
 	printlnString("### Debut de zone de test des nombres signed (mais négatif) sans le retour a la ligne automatique (ln) ###");
 	println();
@@ -56,6 +58,18 @@ int main( void )
 	println();
 	printString("Impression d'un unsigned long 42 : ");
 	printLong((long)-i);
+	println();
+	println();
+	
+	printlnString("### Debut de zone de test des nombres signed (mais négatif) avec le retour a la ligne automatique (ln) ###");
+	println();
+	printString("Impression d'un unsigned short 42 : ");
+	printlnShort(-i);
+	printString("Impression d'un unsigned int 42 : ");
+	printlnInt((int)-i);
+	printString("Impression d'un unsigned long 42 : ");
+	printlnLong((long)-i);
+	println();
 	println();
 	
 	

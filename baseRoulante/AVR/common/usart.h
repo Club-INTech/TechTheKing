@@ -33,11 +33,11 @@ void printULong( unsigned long );
 //Définition des prints ln
 void println( void );
 void printlnString( const char * );
-//void printlnShort( short );
+void printlnShort( short );
 void printlnUShort( unsigned short );
-//void printlnInt( int );
+void printlnInt( int );
 void printlnUInt( unsigned int );
-// void printlnLong( long );
+void printlnLong( long );
 void printlnULong( unsigned long );
 
 #endif

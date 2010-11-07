@@ -189,3 +189,37 @@ void printLong(long int entier)
 	}
 	printLongNumber(entier);
 }
+
+void printlnShort(short int entier )
+{
+	if (entier < 0)
+	{
+		uart_send_char('-');
+		entier = -entier;
+	}
+	printShortNumber(entier);
+	uart_send_ln();
+}
+
+void printlnInt(int entier )
+{
+	if (entier < 0)
+	{
+		uart_send_char('-');
+		entier = -entier;
+	}
+	printIntNumber(entier);
+	uart_send_ln();
+}
+
+void printlnLong(long int entier )
+{
+	if (entier < 0)
+	{
+		uart_send_char('-');
+		entier = -entier;
+	}
+	printLongNumber(entier);
+	uart_send_ln();
+}
+
