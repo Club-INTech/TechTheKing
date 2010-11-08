@@ -29,15 +29,21 @@ LectureSerie::traitement() {
 		break;
 	case 'a':
 		litEntierLong(&i);
-		if (i >= 0)
-			// changer la position
-			manager.changeConsigneAngle(i);
+		if (i >= 10000000)
+			//  avance
+			manager.changeConsigneAngle(i-10000000);
+		else if(i>=0)
+			// recule
+			manager.changeConsigneAngle(-i);
 		break;
 	case 'b':
 		litEntierLong(&i);
+		if (i >= 10000000)
+			//  tourne positivement de i
+			manager.changeConsigneDistance(i-10000000);
 		if (i >= 0)
-			// changer l'angle
-			manager.changeConsigneDistance(i);
+			// tourne négativement i
+			manager.changeConsigneDistance(-i);
 		break;
 	case 'c':
 		envoiPosition.active();
@@ -52,12 +58,12 @@ LectureSerie::traitement() {
 	case 'f':
 		litEntierLong(&i);
 		if (i >= 0)
-			manager.changeConsigneAngle(-i);
+			manager.assVitesseRotation.changeKd(i);
 		break;
 	case 'g':
 		litEntierLong(&i);
 		if (i >= 0)
-			manager.changeConsigneDistance(-i);
+			manager.assVitesseTranslation.changeKd(i);
 		break;	
 	case 'h':
 		manager.switchAssDistance();

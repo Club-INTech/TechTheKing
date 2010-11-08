@@ -4,8 +4,8 @@
  *
  * exécute les ordres qui lui sont passées, voici la liste des ordres :
  * "?" pour demaner quelle carte est-tu (ie 0)
- * "a" avance en
- * "b" tourne jusqu'a
+ * "a" avance en (faire commencer par 1), ou recule en (faire commencer par 0)
+ * "b" tourne jusqu'a (meme chose)
  * "c" active l'envoie de la position
  * "d" désactive l'envoie de la position
  * "e" réinitialise la position
@@ -26,7 +26,9 @@
  * "t" change le PWM pour la rotation
  * "u" change le Kd pour la translation
  * "v" change le Kd pour la rotation
- */
+ * "y" tourne à la vitesse de
+ * "z" avance à la vitese de 
+*/
 
 #include <Asservissement.h>
 #include <EnvoiPosition.h>

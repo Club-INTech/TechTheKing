@@ -76,8 +76,8 @@ Manager::assPolaire()
 	pwmTranslation = (activationAssDistance?assTranslation.calculePwmPosition(distance):0);
 	}
 	else{
-	pwmRotation = (activationAssVitesseRotation?assVitesseRotation.calculePwmVitesse((angle-angleBkp)*4):0);
-	pwmTranslation = (activationAssVitesseTranslation?assVitesseTranslation.calculePwmVitesse((distance-distanceBkp)*4):0);
+	pwmRotation = (activationAssVitesseRotation?assVitesseRotation.calculePwmVitesse((angle-angleBkp)*8):0);
+	pwmTranslation = (activationAssVitesseTranslation?assVitesseTranslation.calculePwmVitesse((distance-distanceBkp)*8):0);
 	}
 
 	int pwmG = pwmTranslation + pwmRotation;
@@ -189,9 +189,11 @@ void Manager::init()
 	/*
 	 * Initialisation du timer de l'asservissement @ 1kHz
 	 */
-	TCCR2A |= (1 << CS22) | (0 << CS21) | (0 << CS20);
-	TCCR2A |= (0 << WGM21) |(0 << WGM20);
-	TIMSK2 |= (1 << TOIE2) | (0 << OCIE2A);
+	TCCR2A |= (1 << CS22) | (1 << CS21);
+	TCCR2A &= ~(1 << CS20);
+	TCCR2A &= ~(1 << WGM21) & (1 << WGM20);
+	TIMSK2 |= (1 << TOIE2);
+	TIMSK2 &= ~(1 << OCIE2A);
 	
 	assRotation.changeKp(30);
 	assRotation.changePWM(1024);
@@ -205,12 +207,12 @@ void Manager::init()
 	
 	assVitesseRotation.changeKp(1);
 	assVitesseRotation.changePWM(1024);
-	assVitesseRotation.changeKd(0);
+	assVitesseRotation.changeKd(10);
         assVitesseRotation.changeKi(0);
 
 	assVitesseTranslation.changeKp(1);
 	assVitesseTranslation.changePWM(1024);
-	assVitesseTranslation.changeKd(0);
+	assVitesseTranslation.changeKd(10);
         assVitesseTranslation.changeKi(0);
 
 	angleBkp=0;
