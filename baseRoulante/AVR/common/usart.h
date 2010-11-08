@@ -52,6 +52,25 @@
  */
 #define UBRR (F_CPU/8/BAUD_RATE - 1)/2
 
+/**
+ * Define interne de la taille du ring buffer de la liaison série
+ * @fn RX_BUFFER_SIZE
+ * @def RX_BUFFER_SIZE
+ */
+#define RX_BUFFER_SIZE 64
+
+/**
+ * Cette structure correspond au buffer circulaire de réception des DATA en série. Lors d'une réception (par interruption), les données reçues sont stockées dans ce buffer.
+ * @struct ring_buffer
+ * @brief Il s'agit du buffer circulaire de réception
+ */
+struct ring_buffer
+{
+	unsigned char buffer[RX_BUFFER_SIZE];
+	int head;
+	int tail;
+};
+
 //Fonction de base de la liaison série
 /**
  * @fn void uart_init( void )
@@ -255,5 +274,32 @@ void printlnLong( long );
  * Cette fonction permet d'envoyer un ombre codé sur 4 octet, non signé et avec retour automatique à la ligne.
  */
 void printlnULong( unsigned long );
+
+//Réception des données
+/**
+ * @ingroup reception
+ * @fn uint8_t available( void )
+ * @brief Permet de savoir si des DATA ont été reçues
+ * @return 0 si pas de DATA, autre choses sinon.
+ */
+uint8_t available(void);
+
+/**
+ * @ingroup reception
+ * @ingroup inline
+ * @fn inline void store_char( unsigned char, Ring_buffer *)
+ * @brief Permet de stocker une DATA reçue dans le ring buffer
+ * @param c la DATE reçue (1 octet)
+ * @param *rx_buffer un pointeur vers le ring buffer
+ */
+inline void store_char(unsigned char, ring_buffer);
+
+/**
+ * @ingroup reception
+ * @fn int read( void )
+ * @brief Permet à l'utilisateur de récupérer les DATA reçues
+ * @return La DATA stockée dans le buffer circulaire
+ */
+int read(void);
 
 #endif

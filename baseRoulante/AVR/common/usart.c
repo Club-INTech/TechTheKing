@@ -1,6 +1,49 @@
 #include "usart.h"
 
 /*
+ * Partie réception de DATA
+ */
+
+ring_buffer rx_buffer = { { 0 }, 0, 0 };
+
+SIGNAL(USART_RX_vect)
+{
+	unsigned char c = UDR0;
+	store_char(c, &rx_buffer);
+}
+
+inline void store_char(unsigned char c, ring_buffer *rx_buffer)
+{
+	int i = (rx_buffer->head + 1) % RX_BUFFER_SIZE;
+	
+	if (i != rx_buffer->tail)
+	{
+		rx_buffer->buffer[rx_buffer->head] = c;
+		rx_buffer->head = i;
+	}
+}
+
+uint8_t available(void)
+{
+	return (RX_BUFFER_SIZE + rx_buffer->head - rx_buffer->tail) % RX_BUFFER_SIZE;
+}
+
+int read(void)
+{
+	if (rx_buffer->head == rx_buffer->tail)
+	{
+		return -1;
+	}
+	else
+	{
+		unsigned char c = rx_buffer->buffer[rx_buffer->tail];
+		rx_buffer->tail = (rx_buffer->tail + 1) % RX_BUFFER_SIZE;
+		return c;
+	}
+}
+
+
+/*
  * Définition des fonctions de bases pour le fonctionnement de la liaison série
  */
 
