@@ -57,7 +57,7 @@
  * @fn RX_BUFFER_SIZE
  * @def RX_BUFFER_SIZE
  */
-#define RX_BUFFER_SIZE 64
+#define RX_BUFFER_SIZE 32
 
 /**
  * Cette structure correspond au buffer circulaire de réception des DATA en série. Lors d'une réception (par interruption), les données reçues sont stockées dans ce buffer.
@@ -287,12 +287,12 @@ uint8_t available(void);
 /**
  * @ingroup reception
  * @ingroup inline
- * @fn inline void store_char( unsigned char, Ring_buffer *)
+ * @fn inline void store_char( unsigned char, struct ring_buffer *)
  * @brief Permet de stocker une DATA reçue dans le ring buffer
  * @param c la DATE reçue (1 octet)
  * @param *rx_buffer un pointeur vers le ring buffer
  */
-inline void store_char(unsigned char, ring_buffer);
+inline void store_char(unsigned char, struct ring_buffer *);
 
 /**
  * @ingroup reception

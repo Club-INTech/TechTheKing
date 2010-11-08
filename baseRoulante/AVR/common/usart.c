@@ -4,15 +4,15 @@
  * Partie réception de DATA
  */
 
-ring_buffer rx_buffer = { { 0 }, 0, 0 };
+struct ring_buffer rx_buffer = { { 0 }, 0, 0 };
 
-SIGNAL(USART_RX_vect)
+ISR(USART_RX_vect)
 {
-	unsigned char c = UDR0;
+	unsigned char c = uart_recv_char();
 	store_char(c, &rx_buffer);
 }
 
-inline void store_char(unsigned char c, ring_buffer *rx_buffer)
+inline void store_char(unsigned char c, struct ring_buffer *rx_buffer)
 {
 	int i = (rx_buffer->head + 1) % RX_BUFFER_SIZE;
 	
@@ -25,19 +25,19 @@ inline void store_char(unsigned char c, ring_buffer *rx_buffer)
 
 uint8_t available(void)
 {
-	return (RX_BUFFER_SIZE + rx_buffer->head - rx_buffer->tail) % RX_BUFFER_SIZE;
+	return (RX_BUFFER_SIZE + rx_buffer.head - rx_buffer.tail) % RX_BUFFER_SIZE;
 }
 
 int read(void)
 {
-	if (rx_buffer->head == rx_buffer->tail)
+	if (rx_buffer.head == rx_buffer.tail)
 	{
 		return -1;
 	}
 	else
 	{
-		unsigned char c = rx_buffer->buffer[rx_buffer->tail];
-		rx_buffer->tail = (rx_buffer->tail + 1) % RX_BUFFER_SIZE;
+		unsigned char c = rx_buffer.buffer[rx_buffer.tail];
+		rx_buffer.tail = (rx_buffer.tail + 1) % RX_BUFFER_SIZE;
 		return c;
 	}
 }
@@ -78,9 +78,14 @@ void uart_init( void )
 	UBRR0H = (unsigned char)(UBRR >> 8);
 	UBRR0L = (unsigned char)UBRR;
 	
-	UCSR0B = (1<<RXEN0)|(1<<TXEN0);
+	UCSR0B |= ( 1 << RXCIE0 );	//Activation de l'interruption de réception
+	
+	
+	UCSR0B |= ( 1 << RXEN0 );	//Activation de la réception
+	UCSR0B |= ( 1 << TXEN0 );	//Activation de l'emission
 
 	UCSR0C = (1 << USBS0)|(3<<UCSZ00);
+	sei();
 }
 
 /*
