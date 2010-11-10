@@ -12,7 +12,7 @@
 
 int main( void )
 {
-	uint8_t i = 42 ;
+	uint8_t i = 42, j = 1 ,c ;
 	uart_init();
 	_delay_ms(1000);
 	printlnString("## Debut de test unitaire ##");
@@ -95,12 +95,44 @@ int main( void )
 	println();
 	
 	printlnString("Test de réceptio par le PC : ecrivez du texte, je vais vous repondre.");
+	printlnString("Appuyez sur @ pour sortir et faire le test suivant");
 	
-	while( 42 )
+	while( j )
 	{
 		if( available() )
-			uart_send_char(read()+1);
+		{
+			c = read();
+			uart_send_char(c);
+			if( c == '@')
+				j = 0;
+		}
 	}
+	
+	j = 1;
+	long monNombre = 0;
+	println();
+	printlnString("Cette fois-ci, veuillez m'envoyer un nombre avec 'ENTER' à la fin");
+	printlnString("Vous avez droit à 3 essais (il y a une seconde de latence entre le second et le troisième, mais vou spouvez quand même entrer un nombre avant");
+	printlnString("Le nombre doit-être compris entre -2147483646 et 2147483647");
+	
+	monNombre = readLongNumber();
+	printlnLong(monNombre);
+	monNombre = readLongNumber();
+	printlnLong(monNombre);
+	_delay_ms(1000);
+	monNombre = readLongNumber();
+	printlnLong(monNombre);
+	
+	println();
+	printlnString("Nous recommençons la même manipulation, mais pour un nombre non signé compris entre 0 et 2^32");
+	
+	monNombre = readULongNumber();
+	printlnLong(monNombre);
+	monNombre = readULongNumber();
+	printlnLong(monNombre);
+	_delay_ms(1000);
+	monNombre = readULongNumber();
+	printlnLong(monNombre);
 	
 	return 0;
 }

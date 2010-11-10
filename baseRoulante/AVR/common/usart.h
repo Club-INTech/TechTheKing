@@ -4,11 +4,11 @@
 /**
  * Librairie C avr pour atmega 168 et 328 pour l'utilisation de liaison série 
  * @file usart.h
- * @author Jérémy Cheynet
+ * @author Jérémy Cheynet avec le support psychologique de Yann Sionneau
  * @brief Librairie C avr pour liaison série
  * @version 1.0
  * @date 07/11/2010
- * @todo Rajouter toute la partie récupération des informations (en gros, les fonctions read et available et rajouter le ring buffer).
+ * @todo Régler le problème d'overflow lors de la lecture d'un unsigned lon dans la fonction readULongNumber.
  */
 
 #include <avr/io.h>
@@ -301,5 +301,26 @@ inline void store_char(unsigned char, struct ring_buffer *);
  * @return La DATA stockée dans le buffer circulaire
  */
 int read(void);
+
+/**
+ * @ingroup reception
+ * @ingroup inline
+ * @fn long readLongNumber( void )
+ * @brief Permet de lire un nombre quelconque signé (de -2147483646 à 2147483647)
+ * @warning Cette fonction est bloquante, sauf si le long est déjà reçu
+ * @return Le nombre reçu
+ */
+inline long readLongNumber( void );
+
+/**
+ * @ingroup reception
+ * @ingroup inline
+ * @fn inline unsigned long readULongNumber( void )
+ * @brief Permet de lire un nombre quelconque non signé (de 0 à 2^32)
+ * @warning Cette fonction est bloquante, sauf si le long est déjà reçu
+ * @return Le nombre reçu
+ */
+inline uint32_t readULongNumber( void );
+
 
 #endif

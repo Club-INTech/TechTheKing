@@ -8,7 +8,7 @@ struct ring_buffer rx_buffer = { { 0 }, 0, 0 };
 
 ISR(USART_RX_vect)
 {
-	unsigned char c = uart_recv_char();
+	unsigned char c = UDR0;
 	store_char(c, &rx_buffer);
 }
 
@@ -271,3 +271,56 @@ void printlnLong(long int entier )
 	uart_send_ln();
 }
 
+inline long readLongNumber( void )
+{
+	long monLong = 0; 
+	unsigned int i = 0;
+	uint8_t flag = 0;
+	
+	while( 1 )
+	{
+		if( available() )
+		{
+			i = read();
+			if( i == '-' )
+			{
+				flag = 1;
+			}
+			else if( i == '\r' || i == '\n' || i == 0b00001010 || i == '@')
+			{
+				if( flag == 1 )
+					return -1 * monLong;
+				else
+					return monLong;
+			}
+			else if( i <= '9' && i >= '0' )
+			{
+				monLong *= 10;
+				monLong += (i - 48);
+			}
+		}
+	}
+}
+
+inline uint32_t readULongNumber( void )
+{
+	uint32_t monLong = 0; 
+	unsigned int i = 0;
+	
+	while( 1 )
+	{
+		if( available() )
+		{
+			i = read();
+			if( i == '\r' || i == '\n' || i == 0b00001010 )
+			{
+				return monLong;
+			}
+			else if( i <= '9' && i >= '0' )
+			{
+				monLong *= (unsigned short)10;
+				monLong += (unsigned short)(i - 48);
+			}
+		}
+	}
+}
