@@ -1,7 +1,7 @@
 #ifndef LectureSerie_h
 #define LectureSerie_h
 
-#include "../../common/HardwareSerial.h"
+#include "../../common/usart.h"
 #include "EnvoiPosition.h"
 #include "Manager.h"
 

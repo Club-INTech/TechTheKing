@@ -201,6 +201,14 @@ void printLong( long );
  */
 void printULong( unsigned long );
 
+/**
+ * @ingroup print
+ * @fn void printChar( unsigned char )
+ * @brief Permet d'envoyer un char
+ * @param c Le caractère à envoyer
+ */
+void printChar( unsigned char );
+
 
 //Définition des prints ln
 
@@ -274,6 +282,14 @@ void printlnLong( long );
  * Cette fonction permet d'envoyer un ombre codé sur 4 octet, non signé et avec retour automatique à la ligne.
  */
 void printlnULong( unsigned long );
+
+/**
+ * @ingroup println
+ * @fn void printlnChar( unsigned char )
+ * @brief Permet d'envoyer un caratère avec un retour à la ligne
+ * @param c Le caractère à envoyer
+ */
+void printlnChar( unsigned char );
 
 //Réception des données
 /**

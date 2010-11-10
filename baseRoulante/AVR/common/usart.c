@@ -164,8 +164,19 @@ void printString(const char *string )
 	uart_send_string(string);
 }
 
+void printChar( unsigned char c )
+{
+	uart_send_char( c );
+}
+
 void println( void )
 {
+	uart_send_ln();
+}
+
+void printlnChar( unsigned char c)
+{
+	uart_send_char( c );
 	uart_send_ln();
 }
 

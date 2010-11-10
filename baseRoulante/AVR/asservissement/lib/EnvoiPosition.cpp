@@ -1,4 +1,5 @@
 #include "EnvoiPosition.h"
+#include "../../common/usart.h"
 
 EnvoiPosition::EnvoiPosition() 
 {
@@ -46,20 +47,29 @@ EnvoiPosition::intToHex(unsigned char *data)
 	unsigned char c;
 	unsigned char i; 
 	
-	for (i = 3; i >= 0; i--) {
+	for (i = 3; i >= 0; i--)
+	{
 		c = (data[i] & 0xF0) >> 4;
 		
 		if (c <= 9)
-			Serial.write(c + '0');
+		{
+			printChar(c + '0');
+		}
 		else
-			Serial.write(c - 10 + 'A');
+		{
+			printChar(c - 10 + 'A');
+		}
 			
 		c = data[i] & 0xF;
 		
 		if (c <= 9)
-			Serial.write(c + '0');
+		{
+			printChar(c + '0');
+		}
 		else
-			Serial.write(c - 10 + 'A');
+		{
+			printChar(c - 10 + 'A');
+		}
 	}
 }
 
@@ -82,46 +92,54 @@ ISR(TIMER0_COMPA_vect)
 		bufferG = encodeurG;
 		bufferD = encodeurD;		
 		sei();
-		Serial.print(bufferG);
-		Serial.print(" ");
-		Serial.print(bufferD);
-		Serial.print(" ");
+		printLong(bufferG);
+		printChar(' ');
+		printLong(bufferD);
+		printChar(' ');
 		
 		if (manager.assTranslation.blocageTemp == TRIGGER_BLOCAGE) {
 			if (manager.assRotation.erreur > 0) 
-				Serial.print("1");
+				printChar('1');
 			else
-				Serial.print("2");
+				printChar('2');
 		}
 		else if (manager.assTranslation.blocageTemp == -TRIGGER_BLOCAGE) {
 			if (manager.assRotation.erreur > 0) 
-				Serial.print("-2");
+			{
+				printString("-2");
+			}
 			else
-				Serial.print("-1");
+			{
+				printString("-1");
+			}	
 		} 
 		else {
-			Serial.print("0");
+			printChar('0');
 		}
 		
-		Serial.print(" ");
+		printChar(' ');
 		
 		if (manager.assRotation.blocageTemp == TRIGGER_BLOCAGE) {
 			if (manager.assTranslation.erreur > 0) 
-				Serial.print("1");
+				printChar('1');
 			else
-				Serial.print("2");
+				printChar('2');
 		}
 		else if (manager.assRotation.blocageTemp == -TRIGGER_BLOCAGE) {
 			if (manager.assTranslation.erreur > 0) 
-				Serial.print("-2");
+			{
+				printString("-2");
+			}
 			else
-				Serial.print("-1");
+			{
+				printString("-1");
+			}
 		} 
 		else {
-			Serial.print("0");
+			printChar('0');
 		}
 
-		Serial.println();
+		println();
 	}
 	else {
 		stator--;

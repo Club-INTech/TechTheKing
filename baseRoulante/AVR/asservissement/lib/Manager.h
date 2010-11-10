@@ -3,7 +3,6 @@
 
 #include <avr/interrupt.h>
 #include <avr/io.h>
-#include "../../common/HardwareSerial.h"
 
 #include "Asservissement.h"
 

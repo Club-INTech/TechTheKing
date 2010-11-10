@@ -13,15 +13,15 @@ LectureSerie::LectureSerie()
 void
 LectureSerie::traitement() {
 	unsigned char premierCaractere;
-	while (Serial.available() == 0) {
+	while (available() == 0) {
 		asm("nop");
 	}
-	premierCaractere = Serial.read();
+	premierCaractere = read();
 	
 	long int i;
 	switch (premierCaractere) {
 	case '?':
-		Serial.println("0");
+		printChar('0');
 		break;
 	case 'a':
 		litEntierLong(&i);
@@ -161,10 +161,10 @@ bool LectureSerie::litEntierLong(long int *i)
 	long int k = 10000000;
 	unsigned char c = 0;
 	for (j = 0; j < 8; j++) {
-		while (Serial.available()==0) { 
+		while (available()==0) { 
 			asm("nop");
 		}
-		c = Serial.read();
+		c = read();
 		if (c < 48 || c > 57) {
 			aux = -1;
 			break;
