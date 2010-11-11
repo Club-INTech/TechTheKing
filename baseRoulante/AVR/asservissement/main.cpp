@@ -34,10 +34,11 @@
 #include "lib/EnvoiPosition.h"
 #include "lib/LectureSerie.h"
 #include "lib/Manager.h"
+#include "../common/usart.h"
 
 int main( void )
 {
-	Serial.begin(57600);
+	uart_init();
         manager.init();
 
 	while( true )

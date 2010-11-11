@@ -191,6 +191,8 @@ Manager::init()
 	assTranslation.changeVmax(3000);
 	assTranslation.changePWM(1024);
 	assTranslation.changeKd(40);
+	
+	sei();
 }
 
 /*

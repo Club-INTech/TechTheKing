@@ -14,7 +14,7 @@ main_test_serie.o: main_test_serie.c
 	avr-gcc -Wall -O2 -mmcu=$(MMCU) -DF_CPU=$(FREQ) main_test_serie.c -c
 
 usart.o: ../common/usart.c
-	avr-gcc -Wall -O2 -mmcu=$(MMCU) -DF_CPU=$(FREQ) ../common/usart.c -c
+	avr-gcc -Wall -mmcu=$(MMCU) -DF_CPU=$(FREQ) ../common/usart.c -c
 
 
 clean:

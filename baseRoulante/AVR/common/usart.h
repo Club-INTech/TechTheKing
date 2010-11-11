@@ -4,11 +4,11 @@
 /**
  * Librairie C avr pour atmega 168 et 328 pour l'utilisation de liaison série 
  * @file usart.h
- * @author Jérémy Cheynet
+ * @author Jérémy Cheynet avec le support psychologique de Yann Sionneau
  * @brief Librairie C avr pour liaison série
  * @version 1.0
  * @date 07/11/2010
- * @todo Rajouter toute la partie récupération des informations (en gros, les fonctions read et available et rajouter le ring buffer).
+ * @todo Régler le problème d'overflow lors de la lecture d'un unsigned lon dans la fonction readULongNumber.
  */
 
 #include <avr/io.h>
@@ -57,7 +57,7 @@
  * @fn RX_BUFFER_SIZE
  * @def RX_BUFFER_SIZE
  */
-#define RX_BUFFER_SIZE 64
+#define RX_BUFFER_SIZE 32
 
 /**
  * Cette structure correspond au buffer circulaire de réception des DATA en série. Lors d'une réception (par interruption), les données reçues sont stockées dans ce buffer.
@@ -201,6 +201,14 @@ void printLong( long );
  */
 void printULong( unsigned long );
 
+/**
+ * @ingroup print
+ * @fn void printChar( unsigned char )
+ * @brief Permet d'envoyer un char
+ * @param c Le caractère à envoyer
+ */
+void printChar( unsigned char );
+
 
 //Définition des prints ln
 
@@ -275,6 +283,14 @@ void printlnLong( long );
  */
 void printlnULong( unsigned long );
 
+/**
+ * @ingroup println
+ * @fn void printlnChar( unsigned char )
+ * @brief Permet d'envoyer un caratère avec un retour à la ligne
+ * @param c Le caractère à envoyer
+ */
+void printlnChar( unsigned char );
+
 //Réception des données
 /**
  * @ingroup reception
@@ -287,12 +303,12 @@ uint8_t available(void);
 /**
  * @ingroup reception
  * @ingroup inline
- * @fn inline void store_char( unsigned char, Ring_buffer *)
+ * @fn inline void store_char( unsigned char, struct ring_buffer *)
  * @brief Permet de stocker une DATA reçue dans le ring buffer
  * @param c la DATE reçue (1 octet)
  * @param *rx_buffer un pointeur vers le ring buffer
  */
-inline void store_char(unsigned char, ring_buffer);
+inline void store_char(unsigned char, struct ring_buffer *);
 
 /**
  * @ingroup reception
@@ -301,5 +317,26 @@ inline void store_char(unsigned char, ring_buffer);
  * @return La DATA stockée dans le buffer circulaire
  */
 int read(void);
+
+/**
+ * @ingroup reception
+ * @ingroup inline
+ * @fn long readLongNumber( void )
+ * @brief Permet de lire un nombre quelconque signé (de -2147483646 à 2147483647)
+ * @warning Cette fonction est bloquante, sauf si le long est déjà reçu
+ * @return Le nombre reçu
+ */
+inline long readLongNumber( void );
+
+/**
+ * @ingroup reception
+ * @ingroup inline
+ * @fn inline unsigned long readULongNumber( void )
+ * @brief Permet de lire un nombre quelconque non signé (de 0 à 2^32)
+ * @warning Cette fonction est bloquante, sauf si le long est déjà reçu
+ * @return Le nombre reçu
+ */
+inline uint32_t readULongNumber( void );
+
 
 #endif
