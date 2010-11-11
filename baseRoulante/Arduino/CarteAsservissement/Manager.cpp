@@ -143,10 +143,10 @@ Manager::Manager(){
 
 void Manager::init()
 {
-	activationAssDistance = false;
-	activationAssAngle = false;
-	activationAssVitesseTranslation = true;
-	activationAssVitesseRotation = true;
+	activationAssDistance = true;
+	activationAssAngle = true;
+	activationAssVitesseTranslation = false;
+	activationAssVitesseRotation = false;
 	/*
 	 * Réglage des pins (codeurs)
 	 */
@@ -189,20 +189,21 @@ void Manager::init()
 	/*
 	 * Initialisation du timer de l'asservissement @ 1kHz
 	 */
-	TCCR2A |= (1 << CS22) | (1 << CS21);
+	TCCR2A &= ~(1 << CS22); 
+	TCCR2A |= (1 << CS21);
 	TCCR2A &= ~(1 << CS20);
 	TCCR2A &= ~(1 << WGM21) & (1 << WGM20);
 	TIMSK2 |= (1 << TOIE2);
 	TIMSK2 &= ~(1 << OCIE2A);
 	
-	assRotation.changeKp(30);
+	assRotation.changeKp(7);
 	assRotation.changePWM(1024);
-	assRotation.changeKd(150);
+	assRotation.changeKd(300);
         assRotation.changeKi(0);
 
-	assTranslation.changeKp(30);
+	assTranslation.changeKp(10);
 	assTranslation.changePWM(1024);
-	assTranslation.changeKd(250);
+	assTranslation.changeKd(190);
 	assTranslation.changeKi(0);
 	
 	assVitesseRotation.changeKp(1);
@@ -218,7 +219,7 @@ void Manager::init()
 	angleBkp=0;
 	distanceBkp=0;
 
-	typeAsservissement=1;//0 : assPosition, 1 : assVitesse
+	typeAsservissement=0;//0 : assPosition, 1 : assVitesse
 }
 
 /*
