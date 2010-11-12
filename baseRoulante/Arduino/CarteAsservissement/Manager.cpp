@@ -69,13 +69,12 @@ Manager::assPolaire()
 	// Réactivation des interruptions pour les encodeurs
 	sei();
 
-	assRotation.setVitesse((angle-angleBkp)*500) // 500 = 1000/(2ms)  pour avoir la vitesse en tic/s
-	assTranslation.setVitesse((distance-disanceBkp)*500) // Meme chose
+	assRotation.setVitesse((angle-angleBkp)*500); // 500 = 1000/(2ms)  pour avoir la vitesse en tic/s
+	assTranslation.setVitesse((distance-distanceBkp)*500); // Meme chose
 
-	int pwmRotation,pwmTranslation;
 		// Activation de l'asservissement
-	pwmRotation = (activationAssAngle?assRotation.calculePwmPosition(angle):0);
-	pwmTranslation = (activationAssDistance?assTranslation.calculePwmPosition(distance):0);
+	int pwmRotation = (activationAssAngle?assRotation.calculePwm(angle):0);
+	int pwmTranslation = (activationAssDistance?assTranslation.calculePwm(distance):0);
 
 	int pwmG = pwmTranslation + pwmRotation;
 	int pwmD = pwmTranslation - pwmRotation;
@@ -197,11 +196,13 @@ void Manager::init()
 	assRotation.changePWM(1024);
 	assRotation.changeKd(300);
         assRotation.changeKi(0);
+        assRotation.changeVmax(1000);
 
 	assTranslation.changeKp(10);
 	assTranslation.changePWM(1024);
 	assTranslation.changeKd(190);
 	assTranslation.changeKi(0);
+        assTranslation.changeVmax(1000);
 	
 
 	angleBkp=0;
@@ -232,17 +233,6 @@ Manager::changeConsigneDistance(long int distanceDonnee)
 	assTranslation.changeConsigne(distanceDonnee);
 }
 
-void 
-Manager::changeConsigneVitesseTranslation(long int vitesseTranslationDonnee)
-{
-	assVitesseTranslation.changeConsigne(vitesseTranslationDonnee);
-}
-
-void
-Manager::changeConsigneVitesseRotation(long int vitesseRotationDonnee)
-{
-	assVitesseRotation.changeConsigne(vitesseRotationDonnee);
-}
 
 
 

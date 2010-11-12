@@ -35,9 +35,6 @@ Asservissement::Asservissement()
 
 }
 
-AsservissementVitesse::AsservissementVitesse(){
-	pwm=0;
-}
 
 /*
  * Calcule la puissance moteur à fournir pour atteindre la nouvelle position théorique
@@ -49,9 +46,9 @@ int Asservissement::calculePwm(long int positionReelle)
 		integraleErreur=0;
 	else
 		integraleErreur+=erreur;
-	long int pwm = kp * erreur - kd * vitesse - ki  * integralaeErreur; // la dérivée de l'erreur est égale à -vitesse
+	long int pwm = kp * erreur - kd * vitesse - ki  * integraleErreur; // la dérivée de l'erreur est égale à -vitesse
 
-	if(vitesse=>vMax){
+	if(vitesse>vMax){
 		pwm+=kpVitesse*(vMax-vitesse); // pas besoin de dérivateur ou d'intégrateur ici
 	}
 
@@ -105,10 +102,9 @@ Asservissement::changeConsigne(long int consigneDonnee)
  * Définition dynamique des constantes
  */
 void 
-Asservissement::changeKp(unsigned int KpDonne)
+Asservissement::changeKp(unsigned int kpDonne)
 {
-	Kp = KpDonne;
-	calculeErreurMax();
+	kp = kpDonne;
 }
 
 
@@ -116,28 +112,33 @@ void
 Asservissement::changePWM(int maxPwmDonne)
 {
 	maxPWM = maxPwmDonne;
-	calculeErreurMax();
 }
 
 
 void
-Asservissement::changeVmax(long int VmaxDonne)
+Asservissement::changeVmax(long int vMaxDonne)
 {
-	Vmax = VmaxDonne;
+	vMax = vMaxDonne;
 }
 
 void
-Asservissement::changeKd(unsigned int KdDonne)
+Asservissement::changeKd(unsigned int kdDonne)
 {
-	Kd = KdDonne;
+	kd = kdDonne;
 }
 
 void
-Asservissement::changeKi(unsigned int KiDonne)
+Asservissement::changeKi(unsigned int kiDonne)
 {
-	Ki = KiDonne;
+	ki = kiDonne;
 }
 
+
+void
+Asservissement::changeKpVitesse(unsigned int kpVitesseDonne)
+{
+	kpVitesse=kpVitesseDonne;
+}
 
 void
 Asservissement::setVitesse(long int vitesseDonnee)

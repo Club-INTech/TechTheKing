@@ -58,12 +58,12 @@ LectureSerie::traitement() {
 	case 'f':
 		litEntierLong(&i);
 		if (i >= 0)
-			manager.assVitesseRotation.changeKd(i);
+			manager.assRotation.changeKpVitesse(i);
 		break;
 	case 'g':
 		litEntierLong(&i);
 		if (i >= 0)
-			manager.assVitesseTranslation.changeKd(i);
+			manager.assTranslation.changeKpVitesse(i);
 		break;	
 	case 'h':
 		manager.switchAssDistance();
@@ -75,7 +75,6 @@ LectureSerie::traitement() {
 		manager.reset();
 		break;
 	case 'k':
-		manager.switchTypeAsservissement();		
 		break;
 	case 'l':
 		litEntierLong(&i);
@@ -145,27 +144,27 @@ LectureSerie::traitement() {
 	case 'w':
 		litEntierLong(&i);
 		if (i >= 0) {
-			manager.assVitesseTranslation.changeKp(i);
+			manager.assTranslation.changeKi(i);
 		}
 		break;
 		
 	case 'x':
 		litEntierLong(&i);
 		if (i >= 0) {
-			manager.assVitesseRotation.changeKp(i);
+			manager.assRotation.changeKi(i);
 		}
 		break;
 	
 	case 'y':
 		litEntierLong(&i);
 		if (i >= 0) {
-			manager.assVitesseTranslation.changeConsigne(i);
+			manager.assTranslation.changeVmax(i);
 		}
 	
 	case 'z':
 		litEntierLong(&i);
 		if (i >= 0) {
-			manager.assVitesseRotation.changeConsigne(i);
+			manager.assRotation.changeVmax(i);
 		}
 
 	default:

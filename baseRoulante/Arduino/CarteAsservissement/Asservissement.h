@@ -24,12 +24,12 @@ class Asservissement{
 		void 	stop();
 		void 	stopUrgence(long int); 
 		
-		void	calculePwm(long int);
-		void 	calculeErreurMax();
+		int	calculePwm(long int);
 
 		void	changeKp(unsigned int);
 		void	changeKd(unsigned int);
 		void	changeKi(unsigned int);
+		void	changeKpVitesse(unsigned int);
 
 		void 	changeAcc(long int);
 		void	changeVmax(long int);
@@ -44,11 +44,12 @@ class Asservissement{
 		
 
 		// Constantes de l'asservissement et du moteur	
-		long int 	Kp; 
-		long int	Kd;
-		long int	Ki;
+		long int 	kp; 
+		long int	kd;
+		long int	ki;
+		long int	kpVitesse;
 
-		long int 	Vmax;
+		long int 	vMax;
 		long int 	maxPWM; 
 		
 
@@ -57,8 +58,6 @@ class Asservissement{
 		long int	erreurBkp;
 		long int	integraleErreur;
 
-		// Erreur maximum (sert à détecter les obstacles)
-		long int 	erreurMax;
 
 		// Vaut 1 ou -1 si le moteur est bloqué
 		int 		blocageDetecte;
