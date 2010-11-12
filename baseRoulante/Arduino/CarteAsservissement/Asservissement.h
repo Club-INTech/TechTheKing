@@ -24,6 +24,7 @@ class Asservissement{
 		void 	stop();
 		void 	stopUrgence(long int); 
 		
+		void	calculePwm(long int);
 		void 	calculeErreurMax();
 
 		void	changeKp(unsigned int);
@@ -35,7 +36,9 @@ class Asservissement{
 		void 	changePWM(int);
 
 		void	reset();
-
+		
+		void	setVitesse(long int);	
+	
 		// Consigne et position du robot (point de vue Arduino)
 		long int 	consigne;	
 		
@@ -44,7 +47,6 @@ class Asservissement{
 		long int 	Kp; 
 		long int	Kd;
 		long int	Ki;
-		int	acc;
 
 		long int 	Vmax;
 		long int 	maxPWM; 
@@ -56,30 +58,16 @@ class Asservissement{
 		long int	integraleErreur;
 
 		// Erreur maximum (sert à détecter les obstacles)
-		long int 	erreurMax;	
+		long int 	erreurMax;
 
 		// Vaut 1 ou -1 si le moteur est bloqué
 		int 		blocageDetecte;
 		int		blocageTemp;
-};
 
-class AsservissementVitesse : public Asservissement {
-		
-	public:
-		AsservissementVitesse();
-		int 	calculePwmVitesse(long int);
-	private:
-		int	pwm;
-		
+		// Vitesse du robot;
+		long int	vitesse;
 		
 };
-
-
-class AsservissementPosition : public Asservissement {
-		
-	public:
-		int 	calculePwmPosition(long int);
 		
 		
-};
 #endif

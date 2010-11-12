@@ -10,15 +10,18 @@ Asservissement::Asservissement()
 {
 	// Constante de l'asservissement et du mouvement
 	maxPWM = 	0;
-	Kp = 		0;
-	Vmax = 		0;
-	Kd = 		0;
-	Ki =		0;
+	kp = 		0;
+	vMax = 		0;
+	kd = 		0;
+	ki =		0;
+	kpVitesse =	0;
 	
 	// Consigne par défaut et position du robot à l'initialisation
 	consigne = 0;
 	integraleErreur=0;
-	acc=3;
+
+	// Vitesse du robot
+	vitesse = 0;
 
 		
 
@@ -39,15 +42,19 @@ AsservissementVitesse::AsservissementVitesse(){
 /*
  * Calcule la puissance moteur à fournir pour atteindre la nouvelle position théorique
  */
-int AsservissementPosition::calculePwmPosition(long int positionReelle)
+int Asservissement::calculePwm(long int positionReelle)
 {
 	long int erreur = (consigne - positionReelle);
 	if(erreur<=3)
 		integraleErreur=0;
 	else
 		integraleErreur+=erreur;
-	long int pwm = (Kp * erreur + Kd  * (erreur - erreurBkp) + Ki  * integraleErreur); // Le facteur 256(freq des overflow) est inclu dans Kd et Ki pour moins de calcul
-	erreurBkp = erreur;
+	long int pwm = kp * erreur - kd * vitesse - ki  * integralaeErreur; // la dérivée de l'erreur est égale à -vitesse
+
+	if(vitesse=>vMax){
+		pwm+=kpVitesse*(vMax-vitesse); // pas besoin de dérivateur ou d'intégrateur ici
+	}
+
 	if (pwm > maxPWM){
 		pwm = maxPWM;
 	}
@@ -60,37 +67,7 @@ int AsservissementPosition::calculePwmPosition(long int positionReelle)
 }
 
 
-int AsservissementVitesse::calculePwmVitesse(long int positionReelle)
-{
-	long int erreur = (consigne - positionReelle);
-	if(ABS(erreur)<=4){
-		integraleErreur=0;
-		return 0;
-	}
-	else
-	integraleErreur+=erreur;
-	pwm += (Kp * erreur + Kd  * (erreur - erreurBkp) + Ki  * integraleErreur); // Le facteur 256(freq des overflow) est inclu dans Kd et Ki pour moins de calcul
-	erreurBkp = erreur;
-	if (pwm > maxPWM){
-		pwm = maxPWM;
-	}
-	else if (pwm < -maxPWM ) 
-	{
-		pwm = -maxPWM;
-	}
-	
-	return pwm;
-}
 
-/*
- * Calcule l'erreur maximum (positionReelle et positionIntermediaire) afin de déterminer le blocage
- */
-
-void 
-Asservissement::calculeErreurMax()
-{
-	erreurMax = (PRESCALER * 2 * maxPWM) / Kp;  
-}
 
 /*
  * Arrêt progressif du moteur
@@ -161,6 +138,12 @@ Asservissement::changeKi(unsigned int KiDonne)
 	Ki = KiDonne;
 }
 
+
+void
+Asservissement::setVitesse(long int vitesseDonnee)
+{
+	vitesse = vitesseDonnee;
+}
 
 void
 Asservissement::reset() 

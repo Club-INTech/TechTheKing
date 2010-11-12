@@ -57,6 +57,7 @@ Manager::assPolaire()
 	
 	long int angle = 	encodeurG - encodeurD;
 	long int distance = 	encodeurG + encodeurD;
+
 	/*
 	 * Reprise TechTheWave, priorité des interruptions
 	 */
@@ -66,19 +67,15 @@ Manager::assPolaire()
 	// Asservissement prioritaire sur l'envoi de la position
 	//TIMSK2 &= ~(1<<TOIE2); 
 	// Réactivation des interruptions pour les encodeurs
-	sei();  
+	sei();
+
+	assRotation.setVitesse((angle-angleBkp)*500) // 500 = 1000/(2ms)  pour avoir la vitesse en tic/s
+	assTranslation.setVitesse((distance-disanceBkp)*500) // Meme chose
 
 	int pwmRotation,pwmTranslation;
-	
 		// Activation de l'asservissement
-	if(typeAsservissement==0){
 	pwmRotation = (activationAssAngle?assRotation.calculePwmPosition(angle):0);
 	pwmTranslation = (activationAssDistance?assTranslation.calculePwmPosition(distance):0);
-	}
-	else{
-	pwmRotation = (activationAssVitesseRotation?assVitesseRotation.calculePwmVitesse((angle-angleBkp)*8):0);
-	pwmTranslation = (activationAssVitesseTranslation?assVitesseTranslation.calculePwmVitesse((distance-distanceBkp)*8):0);
-	}
 
 	int pwmG = pwmTranslation + pwmRotation;
 	int pwmD = pwmTranslation - pwmRotation;
@@ -145,8 +142,6 @@ void Manager::init()
 {
 	activationAssDistance = true;
 	activationAssAngle = true;
-	activationAssVitesseTranslation = false;
-	activationAssVitesseRotation = false;
 	/*
 	 * Réglage des pins (codeurs)
 	 */
@@ -187,7 +182,9 @@ void Manager::init()
 	TCCR1A |= (1 << COM1B1);
 	 
 	/*
-	 * Initialisation du timer de l'asservissement @ 1kHz
+	 * Initialisation du timer de l'asservissement @ 125 KHz
+	 * C'est un timer 8bit donc la fréquence de l'asservissement
+	 * est 125/256 Khz = 488Hz soit environ 500Hz ou un asservissement toutes les 2ms
 	 */
 	TCCR2A &= ~(1 << CS22); 
 	TCCR2A |= (1 << CS21);
@@ -206,20 +203,10 @@ void Manager::init()
 	assTranslation.changeKd(190);
 	assTranslation.changeKi(0);
 	
-	assVitesseRotation.changeKp(1);
-	assVitesseRotation.changePWM(1024);
-	assVitesseRotation.changeKd(10);
-        assVitesseRotation.changeKi(0);
-
-	assVitesseTranslation.changeKp(1);
-	assVitesseTranslation.changePWM(1024);
-	assVitesseTranslation.changeKd(10);
-        assVitesseTranslation.changeKi(0);
 
 	angleBkp=0;
 	distanceBkp=0;
 
-	typeAsservissement=0;//0 : assPosition, 1 : assVitesse
 }
 
 /*
@@ -273,11 +260,6 @@ Manager::switchAssAngle()
 }
 
 
-void
-Manager::switchTypeAsservissement()
-{
-	typeAsservissement = !typeAsservissement;
-}
 
 void Manager::reset()
 {

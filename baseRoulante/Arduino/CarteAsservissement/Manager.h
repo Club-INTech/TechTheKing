@@ -55,25 +55,19 @@ class Manager {
 		void 	switchAssDistance();
 		void 	switchAssAngle();
 
-		void	switchTypeAsservissement();
 
 		void	reset();
 
-		AsservissementPosition 	assRotation;
-		AsservissementPosition 	assTranslation;
-		AsservissementVitesse 	assVitesseRotation;
-		AsservissementVitesse 	assVitesseTranslation;
+		Asservissement 	assRotation;
+		Asservissement 	assTranslation;
 
 		
-		unsigned char typeAsservissement;
 	
 		// Activation de l'asservissement
 	
 		// Activation de l'asservissement
 		bool		activationAssDistance;
 		bool		activationAssAngle;
-		bool		activationAssVitesseRotation;
-		bool		activationAssVitesseTranslation;
 
 		long int	angleBkp;
 
