@@ -194,14 +194,14 @@ void Manager::init()
 	
 	assRotation.changeKp(7);
 	assRotation.changePWM(1024);
-	assRotation.changeKd(0);
+	assRotation.changeKd(40);
         assRotation.changeKi(0);
         assRotation.changeVmax(0);
 	assRotation.changeKpVitesse(0);
 
 	assTranslation.changeKp(10);
 	assTranslation.changePWM(1024);
-	assTranslation.changeKd(0);
+	assTranslation.changeKd(40);
 	assTranslation.changeKi(0);
         assTranslation.changeVmax(0);
 	assTranslation.changeKpVitesse(0);	
