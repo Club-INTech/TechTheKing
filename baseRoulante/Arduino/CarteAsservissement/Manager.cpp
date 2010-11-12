@@ -69,8 +69,8 @@ Manager::assPolaire()
 	// Réactivation des interruptions pour les encodeurs
 	sei();
 
-	assRotation.setVitesse((angle-angleBkp)*500); // 500 = 1000/(2ms)  pour avoir la vitesse en tic/s
-	assTranslation.setVitesse((distance-distanceBkp)*500); // Meme chose
+	assRotation.setVitesse((angle-angleBkp)*305); // 305 = 1000/(3.279ms)  pour avoir la vitesse en tic/s
+	assTranslation.setVitesse((distance-distanceBkp)*305); // Meme chose
 
 		// Activation de l'asservissement
 	int pwmRotation = (activationAssAngle?assRotation.calculePwm(angle):0);
@@ -181,29 +181,30 @@ void Manager::init()
 	TCCR1A |= (1 << COM1B1);
 	 
 	/*
-	 * Initialisation du timer de l'asservissement @ 125 KHz
+	 * Initialisation du timer de l'asservissement @ 78.125 KHz
 	 * C'est un timer 8bit donc la fréquence de l'asservissement
-	 * est 125/256 Khz = 488Hz soit environ 500Hz ou un asservissement toutes les 2ms
+	 * est 78.125/256 Khz = 305Hz soit environ 500Hz ou un asservissement toutes les 3.279ms
 	 */
-	TCCR2A &= ~(1 << CS22); 
-	TCCR2A |= (1 << CS21);
-	TCCR2A &= ~(1 << CS20);
+	TCCR2A |= (1 << CS22); 
+	TCCR2A &= ~(1 << CS21);
+	TCCR2A |= (1 << CS20);
 	TCCR2A &= ~(1 << WGM21) & (1 << WGM20);
 	TIMSK2 |= (1 << TOIE2);
 	TIMSK2 &= ~(1 << OCIE2A);
 	
 	assRotation.changeKp(7);
 	assRotation.changePWM(1024);
-	assRotation.changeKd(300);
+	assRotation.changeKd(0);
         assRotation.changeKi(0);
-        assRotation.changeVmax(1000);
+        assRotation.changeVmax(0);
+	assRotation.changeKpVitesse(0);
 
 	assTranslation.changeKp(10);
 	assTranslation.changePWM(1024);
-	assTranslation.changeKd(190);
+	assTranslation.changeKd(0);
 	assTranslation.changeKi(0);
-        assTranslation.changeVmax(1000);
-	
+        assTranslation.changeVmax(0);
+	assTranslation.changeKpVitesse(0);	
 
 	angleBkp=0;
 	distanceBkp=0;
