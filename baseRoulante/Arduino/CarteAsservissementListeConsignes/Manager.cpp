@@ -60,18 +60,17 @@ Manager::assPolaire()
 	assTranslation.setVitesse((distance-distanceBkp)*305); // Meme chose
 	
 /*
-*si on est trop proche de la consigne suivante, on la redéfinie.
+*si on est trop proche de la consigne suivante, on la redéfinira.
 */
 
-	if( distance > ( tableauConsignes.listeConsignes[consigneSuivante]).distance ) * 0.7 && consigneSuivante < tableauConsignes.nbConsignes )
+	if( distance > (tableauConsignes.listeConsignes[indiceConsigneActuelle]).distance * 0.7 && indiceConsigneActuelle < tableauConsignes.nbConsignes )
 	{
-		consigneSuivante+=1;
-		changeConsigne( (tableauConsignes.listeConsignes[consigneSuivante]).distance, (tableauConsignes.listeConsignes[consigneSuivante]).angle );
+		indiceConsigneActuelle+=1; //réactualise les consignes. (Oui, c'est moche.)
 	}
 
 
-	int pwmRotation = (activationAssAngle?assRotation.calculePwm(angle):0);
-	int pwmTranslation = (activationAssDistance?assTranslation.calculePwm(distance):0);
+	int pwmRotation = (activationAssAngle?assRotation.calculePwm(((tableauConsignes.listeConsignes)[indiceConsigneActuelle]).angle,angle):0);
+	int pwmTranslation = (activationAssDistance?assTranslation.calculePwm(((tableauConsignes.listeConsignes)[indiceConsigneActuelle]).distance,distance):0);
 
 
 	int pwmG = pwmTranslation + pwmRotation;
@@ -181,7 +180,7 @@ void Manager::init()
 	/*
 	 * Initialisation du timer de l'asservissement @ 78.125 KHz
 	 * C'est un timer 8bit donc la fréquence de l'asservissement
-	 * est 78.125/256 Khz = 305Hz soit environ 500Hz ou un asservissement toutes les 3.279ms
+	 * est 78.125/256 Khz = 305Hz soit environ un asservissement toutes les 3.279ms
 	 */
 	TCCR2A |= (1 << CS22); 
 	TCCR2A &= ~(1 << CS21);
@@ -190,8 +189,8 @@ void Manager::init()
 	TIMSK2 |= (1 << TOIE2);
 	TIMSK2 &= ~(1 << OCIE2A);
 	
-	TableauConsignes tableauConsignes;
-	tableauConsignes.nb=1;
+	tableauConsignes.nbConsignes=1;
+	indiceConsigneActuelle=1;
 
 	assRotation.changeKp(7);
 	assRotation.changePWM(1023);
@@ -220,29 +219,30 @@ void
 Manager::pushConsigne(long int distanceDonnee, long int angleDonne)
 {
 	tableauConsignes.nbConsignes+=1; //ajout d'une case utile dans le tableau.
-	(tableauConsignes.listeConsignes[nbConsigne-1]).distance = distanceDonnee;
-	(tableauConsignes.listeConsignes[nbConsigne-1]).angle = angleDonne;
+	changeIemeConsigne(distanceDonnee, angleDonne, (tableauConsignes.nbConsignes) );
+
 }
 
 
+
 void 
-Manager::changeConsigne(long int distanceDonnee, long int angleDonne)
+Manager::changeIemeConsigne(long int distanceDonnee, long int angleDonne,int i)
 {
-	assTranslation.changeConsigne(distanceDonnee);
-	assRotation.changeConsigne(angleDonne);
+	(tableauConsignes.listeConsignes[i-1]).distance=distanceDonnee;
+	(tableauConsignes.listeConsignes[i-1]).angle=angleDonne;
 }
 
 void
-Manager::changeConsigneAngle(long int angleDonne)
+Manager::changeIemeConsigneAngle(long int angleDonne, int i)
 {
-	assRotation.changeConsigne(angleDonne);
+	(tableauConsignes.listeConsignes[i-1]).angle=angleDonne;
 }
 
 
 void 
-Manager::changeConsigneDistance(long int distanceDonnee)
+Manager::changeIemeConsigneDistance(long int distanceDonnee, int i)
 {
-	assTranslation.changeConsigne(distanceDonnee);
+	(tableauConsignes.listeConsignes[i-1]).distance=distanceDonnee;
 }
 
 
@@ -268,8 +268,9 @@ void Manager::reset()
 	cli();
 	encodeurG = 0;
 	encodeurD = 0;
-	assRotation.reset();
-	assTranslation.reset();
+	tableauConsignes.nbConsignes=1;
+	indiceConsigneActuelle=1;
+	manager.changeIemeConsigne(0,0,1);
 	sei();
 }
 /*

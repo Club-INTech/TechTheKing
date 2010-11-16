@@ -18,13 +18,11 @@ class Asservissement{
 	public:
 		Asservissement();
 		
-		void	changeConsigne(long int);
-		
+		void	changeConsigne(long int);	
 		
 		void 	stop();
-		void 	stopUrgence(long int); 
 		
-		int	calculePwm(long int);
+		int	calculePwm(long int,long int);
 
 		void	changeKp(unsigned int);
 		void	changeKd(unsigned int);

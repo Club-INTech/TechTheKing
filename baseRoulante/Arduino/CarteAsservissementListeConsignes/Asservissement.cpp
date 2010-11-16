@@ -39,7 +39,7 @@ Asservissement::Asservissement()
 /*
  * Calcule la puissance moteur à fournir pour atteindre la nouvelle position théorique
  */
-int Asservissement::calculePwm(long int positionReelle)
+int Asservissement::calculePwm(long int consigne, long int positionReelle)
 {
 	long int erreur = (consigne - positionReelle);
 	if(erreur<=3)
@@ -76,27 +76,6 @@ Asservissement::stop()
 
 }
 
-/*
- * Arrete le moteur à la position courante
- */
- 
-void 
-Asservissement::stopUrgence(long int positionReelle)
-{
-	changeConsigne(positionReelle);
-}
-
-
-/*
- * Définit la nouvelle consigne
- */
- 
-void 
-Asservissement::changeConsigne(long int consigneDonnee)
-{
-	consigne = consigneDonnee;
-	integraleErreur = 0;
-}
 
 /*
  * Définition dynamique des constantes

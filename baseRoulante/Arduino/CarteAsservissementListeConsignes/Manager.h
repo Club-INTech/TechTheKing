@@ -44,15 +44,10 @@ class Manager {
 		
 		void 	init();
 
-		void 	ajouterConsigne (long int,long int);
-
-		void 	changeConsigne (long int,long int);
-		
-		void 	changeConsigneDistance (long int);
-		void 	changeConsigneAngle (long int);
-
-		void	changeConsigneVitesseTranslation(long int); 
-		void	changeConsigneVitesseRotation(long int); 
+		void 	pushConsigne(long int , long int );
+		void 	changeIemeConsigne(long int , long int ,int i);		
+		void 	changeIemeConsigneDistance (long int,int i);
+		void 	changeIemeConsigneAngle (long int,int i); 
 
 		void 	assPolaire();
 		
@@ -87,7 +82,9 @@ class Manager {
 			Consigne listeConsignes[NB_MAX_CONSIGNES] ;
 		}TableauConsignes;
 
-
+		
+		TableauConsignes tableauConsignes;
+		int indiceConsigneActuelle;
 
 };
 

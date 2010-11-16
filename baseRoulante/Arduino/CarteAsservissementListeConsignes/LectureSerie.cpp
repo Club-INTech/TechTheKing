@@ -31,19 +31,19 @@ LectureSerie::traitement() {
 		litEntierLong(&i);
 		if (i >= 10000000)
 			//  avance
-			manager.changeConsigneAngle(i-10000000);
+			manager.changeIemeConsigneAngle(i-10000000,1);
 		else if(i>=0)
 			// recule
-			manager.changeConsigneAngle(-i);
+			manager.changeIemeConsigneAngle(-i,1);
 		break;
 	case 'b':
 		litEntierLong(&i);
 		if (i >= 10000000)
 			//  tourne positivement de i
-			manager.changeConsigneDistance(i-10000000);
+			manager.changeIemeConsigneDistance(i-10000000,1);
 		if (i >= 0)
 			// tourne négativement i
-			manager.changeConsigneDistance(-i);
+			manager.changeIemeConsigneDistance(-i,1);
 		break;
 	case 'c':
 		envoiPosition.active();
@@ -94,9 +94,7 @@ LectureSerie::traitement() {
 		break;
 	case 'o':
 		cli();
-		manager.assRotation.stopUrgence(encodeurG - encodeurD);
-		manager.assTranslation.stopUrgence(encodeurG + encodeurD);
-		sei();
+		manager.reset();
 		break;
 	case 'p':
 		litEntierLong(&i);
