@@ -73,8 +73,8 @@ class Manager {
 		long int	distanceBkp;
 
 		typedef struct {
-			int distance;
-			int angle;
+			long int distance;
+			long int angle;
 		}Consigne;
 
 		typedef struct {

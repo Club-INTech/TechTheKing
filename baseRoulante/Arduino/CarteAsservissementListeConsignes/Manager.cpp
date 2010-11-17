@@ -65,7 +65,7 @@ Manager::assPolaire()
 
 	if( distance > (tableauConsignes.listeConsignes[indiceConsigneActuelle]).distance * 0.7 && indiceConsigneActuelle < tableauConsignes.nbConsignes )
 	{
-		indiceConsigneActuelle+=1; //réactualise les consignes. (Oui, c'est moche.)
+		indiceConsigneActuelle+=1;
 	}
 
 
