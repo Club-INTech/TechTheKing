@@ -21,6 +21,8 @@
 
 #define MASQUE B0111100
 
+#define NB_MAX_CONSIGNES
+
 /*
  * Réglage des pins des PWM
  */
@@ -41,14 +43,11 @@ class Manager {
 		Manager();
 		
 		void 	init();
-		
-		void 	changeConsigne (long int,long int);
-		
-		void 	changeConsigneDistance (long int);
-		void 	changeConsigneAngle (long int);
 
-		void	changeConsigneVitesseTranslation(long int); 
-		void	changeConsigneVitesseRotation(long int); 
+		void 	pushConsigne(long int , long int );
+		void 	changeIemeConsigne(long int , long int ,int i);		
+		void 	changeIemeConsigneDistance (long int,int i);
+		void 	changeIemeConsigneAngle (long int,int i); 
 
 		void 	assPolaire();
 		
@@ -72,6 +71,20 @@ class Manager {
 		long int	angleBkp;
 
 		long int	distanceBkp;
+
+		typedef struct {
+			long int distance;
+			long int angle;
+		}Consigne;
+
+		typedef struct {
+			unsigned int nbConsignes;
+			Consigne listeConsignes[NB_MAX_CONSIGNES] ;
+		}TableauConsignes;
+
+		
+		TableauConsignes tableauConsignes;
+		unsigned int indiceConsigneActuelle;
 
 };
 

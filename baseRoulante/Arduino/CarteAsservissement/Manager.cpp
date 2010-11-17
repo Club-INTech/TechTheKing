@@ -46,35 +46,32 @@ ISR(PCINT2_vect)
 	}
 
 }
-/*
- * Fonction à exécuter à intervalle de temps régulier (~1kHz)
- * Ajouter un timer, priorité sur les interruptions
- */
+
 void
 Manager::assPolaire()
 {
-	//static int stator1337 = 100;
 	
 	long int angle = 	encodeurG - encodeurD;
 	long int distance = 	encodeurG + encodeurD;
 
-	/*
-	 * Reprise TechTheWave, priorité des interruptions
-	 */
-	 
-	// Sauvegarde de TIMSK2
-	//unsigned char savTIMSK2 = TIMSK2; // un unsigned fera l'affaire ! -- Yann Sionneau
-	// Asservissement prioritaire sur l'envoi de la position
-	//TIMSK2 &= ~(1<<TOIE2); 
-	// Réactivation des interruptions pour les encodeurs
 	sei();
 
 	assRotation.setVitesse((angle-angleBkp)*305); // 305 = 1000/(3.279ms)  pour avoir la vitesse en tic/s
 	assTranslation.setVitesse((distance-distanceBkp)*305); // Meme chose
+	
+/*
+*si on est trop proche de la consigne suivante, on la redéfinira.
+*/
 
-		// Activation de l'asservissement
-	int pwmRotation = (activationAssAngle?assRotation.calculePwm(angle):0);
-	int pwmTranslation = (activationAssDistance?assTranslation.calculePwm(distance):0);
+	if( distance > (tableauConsignes.listeConsignes[indiceConsigneActuelle]).distance * 0.7 && indiceConsigneActuelle < tableauConsignes.nbConsignes )
+	{
+		indiceConsigneActuelle+=1;
+	}
+
+
+	int pwmRotation = (activationAssAngle?assRotation.calculePwm(((tableauConsignes.listeConsignes)[indiceConsigneActuelle-1]).angle,angle):0);
+	int pwmTranslation = (activationAssDistance?assTranslation.calculePwm(((tableauConsignes.listeConsignes)[indiceConsigneActuelle-1]).distance,distance):0);
+
 
 	int pwmG = pwmTranslation + pwmRotation;
 	int pwmD = pwmTranslation - pwmRotation;
@@ -82,7 +79,7 @@ Manager::assPolaire()
 	angleBkp = angle;
 	distanceBkp = distance;
 	
-	// Coefficient trouvé de manière empirique
+
 
 	if (pwmG > PWM_MAX) 
 		pwmG = PWM_MAX;
@@ -183,7 +180,7 @@ void Manager::init()
 	/*
 	 * Initialisation du timer de l'asservissement @ 78.125 KHz
 	 * C'est un timer 8bit donc la fréquence de l'asservissement
-	 * est 78.125/256 Khz = 305Hz soit environ 500Hz ou un asservissement toutes les 3.279ms
+	 * est 78.125/256 Khz = 305Hz soit environ un asservissement toutes les 3.279ms
 	 */
 	TCCR2A |= (1 << CS22); 
 	TCCR2A &= ~(1 << CS21);
@@ -192,15 +189,18 @@ void Manager::init()
 	TIMSK2 |= (1 << TOIE2);
 	TIMSK2 &= ~(1 << OCIE2A);
 	
+	tableauConsignes.nbConsignes=1;
+	indiceConsigneActuelle=1;
+
 	assRotation.changeKp(7);
-	assRotation.changePWM(1024);
+	assRotation.changePWM(1023);
 	assRotation.changeKd(40);
         assRotation.changeKi(0);
         assRotation.changeVmax(0);
 	assRotation.changeKpVitesse(0);
 
 	assTranslation.changeKp(10);
-	assTranslation.changePWM(1024);
+	assTranslation.changePWM(1023);
 	assTranslation.changeKd(40);
 	assTranslation.changeKi(0);
         assTranslation.changeVmax(0);
@@ -214,24 +214,37 @@ void Manager::init()
 /*
  * Définit la nouvelle consigne en angle et distance (en tics)
  */
+
 void 
-Manager::changeConsigne(long int distanceDonnee, long int angleDonne)
+Manager::pushConsigne(long int distanceDonnee, long int angleDonne)
 {
-	assTranslation.changeConsigne(distanceDonnee);
-	assRotation.changeConsigne(angleDonne);
+	tableauConsignes.nbConsignes+=1; //ajout d'une case utile dans le tableau.
+	changeIemeConsigne(distanceDonnee, angleDonne, (tableauConsignes.nbConsignes) );
+
+}
+
+
+
+void 
+Manager::changeIemeConsigne(long int distanceDonnee, long int angleDonne,int i)
+{
+	(tableauConsignes.listeConsignes[i-1]).distance=distanceDonnee;
+	(tableauConsignes.listeConsignes[i-1]).angle=angleDonne;
 }
 
 void
-Manager::changeConsigneAngle(long int angleDonne)
+Manager::changeIemeConsigneAngle(long int angleDonne, int i)
 {
-	assRotation.changeConsigne(angleDonne);
+	(tableauConsignes.listeConsignes[i-1]).angle=angleDonne;
+	(tableauConsignes.listeConsignes[i-1]).distance=0;
 }
 
 
 void 
-Manager::changeConsigneDistance(long int distanceDonnee)
+Manager::changeIemeConsigneDistance(long int distanceDonnee, int i)
 {
-	assTranslation.changeConsigne(distanceDonnee);
+	(tableauConsignes.listeConsignes[i-1]).distance=distanceDonnee;
+	(tableauConsignes.listeConsignes[i-1]).angle=0;
 }
 
 
@@ -257,8 +270,9 @@ void Manager::reset()
 	cli();
 	encodeurG = 0;
 	encodeurD = 0;
-	assRotation.reset();
-	assTranslation.reset();
+	tableauConsignes.nbConsignes=1;
+	indiceConsigneActuelle=1;
+	manager.changeIemeConsigne(0,0,1);
 	sei();
 }
 /*
