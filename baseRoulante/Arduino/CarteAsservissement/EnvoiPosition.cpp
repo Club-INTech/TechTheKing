@@ -81,6 +81,7 @@ char stator = 3;
 long int bufferG;
 long int bufferD;
 
+
 ISR(TIMER0_COMPA_vect)
 {
 	if (stator == 0) {

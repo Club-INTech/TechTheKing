@@ -82,9 +82,8 @@ class Manager {
 			Consigne listeConsignes[NB_MAX_CONSIGNES] ;
 		}TableauConsignes;
 
-		
-		TableauConsignes tableauConsignes;
 		unsigned int indiceConsigneActuelle;
+		TableauConsignes tableauConsignes;
 
 };
 

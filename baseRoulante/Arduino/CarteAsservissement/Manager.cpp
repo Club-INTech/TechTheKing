@@ -76,7 +76,7 @@ Manager::assPolaire()
 * Ceci ne s'applique pas à la dernière consigne
 */
 
-	if(  distance > (tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).distance * 0.8  && ABS(angle) > ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).angle) * 0.8 && indiceConsigneActuelle < (tableauConsignes.nbConsignes))
+	if(  distance > (tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).distance * 0.8   && indiceConsigneActuelle < tableauConsignes.nbConsignes )
 	{
 		indiceConsigneActuelle+=1;
 	}
@@ -220,7 +220,7 @@ void Manager::init()
 	assRotation.changeKpVitesse(0);
 
 	assTranslation.changeKp(7);
-	assTranslation.changePWM(1023);
+	assTranslation.changePWM(350);
 	assTranslation.changeKd(30);
 	assTranslation.changeKi(0);
         assTranslation.changeVmax(0);
@@ -294,12 +294,14 @@ Manager::switchAssAngle()
 
 void Manager::reset()
 {
+	cli();
 	tableauConsignes.nbConsignes=1;
 	indiceConsigneActuelle=1;
 	encodeurG = 0;
 	encodeurD = 0;
 	(tableauConsignes.listeConsignes[0]).distance = 0;
 	(tableauConsignes.listeConsignes[0]).angle = 0;
+	sei();
 }
 
 /*
@@ -308,7 +310,8 @@ void Manager::reset()
 
 void	Manager::test(){
 	unsigned int i;
-	cli();
+	indiceConsigneActuelle=1;
+	tableauConsignes.nbConsignes=0;
 	for(i=1;i<=20;i++);
 	manager.pushConsigne( i*30 , i*200);
 	sei();
