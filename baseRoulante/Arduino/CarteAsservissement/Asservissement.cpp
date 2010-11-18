@@ -45,7 +45,7 @@ int Asservissement::calculePwm(long int consigne, long int positionReelle)
 		integraleErreur=0;
 	else
 		integraleErreur+=erreur;
-	long int pwm = kp * erreur - kd * vitesse / 100 - ki  * integraleErreur; // la dérivée de l'erreur est égale à -vitesse . On divise par 100 car sinon kd < 1
+	long int pwm = kp * erreur - activationKd * kd * vitesse / 100 - ki  * integraleErreur; // la dérivée de l'erreur est égale à -vitesse . On divise par 100 car sinon kd < 1
 
 	if(vitesse>vMax){
 		pwm+=kpVitesse*(vMax-vitesse); // pas besoin de dérivateur ou d'intégrateur ici
@@ -103,6 +103,12 @@ void
 Asservissement::changeKd(unsigned int kdDonne)
 {
 	kd = kdDonne;
+}
+
+void
+Asservissement::setActivationKd(unsigned char etatDonne)
+{
+	activationKd = etatDonne;
 }
 
 void

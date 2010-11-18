@@ -56,9 +56,8 @@ Manager::assPolaire()
 /* Calculs de position du robot
 *
 */
-	
-	long int angle = 	encodeurG - encodeurD;
-	long int distance = 	encodeurG + encodeurD;
+	long int angleAvantChangement = 	encodeurG - encodeurD;
+	long int distanceAvantChangement = 	encodeurG + encodeurD;
 
 /*
 *Réactualisation des vitesses du robot
@@ -76,16 +75,35 @@ Manager::assPolaire()
 * Ceci ne s'applique pas à la dernière consigne
 */
 
-	if(  ABS(distance) > ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).distance) * 0.8 && indiceConsigneActuelle < tableauConsignes.nbConsignes )
+/*
+* factorisation de la désactivation de Kd
+*/
+
+assRotation.setActivationKd(0);
+assTranslation.setActivationKd(0);
+
+
+	if(  ABS(distanceAvantChangement) > ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).distance) * 0.8 && ABS(angleAvantChangement) > ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).angle)*0.95)
 	{
-		if( ABS(angle) > ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).angle) * 0.9 )
-			{
+		if( indiceConsigneActuelle < tableauConsignes.nbConsignes  )
+		{
 			indiceConsigneActuelle+=1;
+			distanceTotale+=encodeurG+encodeurD; // Conservation de l'information présente dans les codeuses au changement de consigne.
+			angleTotal+=encodeurG-encodeurD; // idem
+
+ /* On reset la position du robot (On considère que le robot ne fait que des segments...)
+  *
+  */			
 			encodeurG=0;
 			encodeurD=0;
 			angleBkp=0;
 			distanceBkp=0;
-			}
+		}
+		else // Si on est à la dernière consigne, on réactive Kd pour que le robot s'arrête proprement.
+		{
+			assRotation.setActivationKd(1);
+			assTranslation.setActivationKd(1);
+		}
 	}
 
 /*
@@ -321,8 +339,10 @@ void	Manager::test(){
 	cli();	
 	unsigned int i;
 	tableauConsignes.nbConsignes=0;
-	for(i=1;i<=5;i++)
-		manager.pushConsigne( 0 , 400);
+	for(i=1;i<=10;i++)
+		manager.pushConsigne( 0 , 200); //avance sans tourner de 2000
+	for(i=1;i<=20;i++)
+		manager.pushConsigne( 50 , 100); //avance régulièrement en tournant
 	indiceConsigneActuelle=1;
 	sei();
 

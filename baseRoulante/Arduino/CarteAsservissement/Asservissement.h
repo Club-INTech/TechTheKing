@@ -53,6 +53,8 @@ class Asservissement{
 		long int	erreurBkp;
 		long int	integraleErreur;
 
+		unsigned char   activationKd;
+
 
 		// Vaut 1 ou -1 si le moteur est bloqué
 		int 		blocageDetecte;
