@@ -47,7 +47,7 @@ class Manager {
 		void 	pushConsigne(long int , long int );
 		void 	changeIemeConsigne(long int , long int ,int i);		
 		void 	changeIemeConsigneDistance (long int,int i);
-		void 	changeIemeConsigneAngle (long int,int i); 
+		void 	changeIemeConsigneAngle (long int,int i);
 
 		void 	assPolaire();
 		
@@ -67,6 +67,9 @@ class Manager {
 		// Activation de l'asservissement
 		bool		activationAssDistance;
 		bool		activationAssAngle;
+
+		long int distanceTotale;
+		long int angleTotal;
 
 		long int	angleBkp;
 

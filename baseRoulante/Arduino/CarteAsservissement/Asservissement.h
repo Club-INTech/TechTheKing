@@ -24,6 +24,7 @@ class Asservissement{
 		int	calculePwm(long int,long int);
 
 		void	changeKp(unsigned int);
+		void	setActivationKd(unsigned char);
 		void	changeKd(unsigned int);
 		void	changeKi(unsigned int);
 		void	changeKpVitesse(unsigned int);

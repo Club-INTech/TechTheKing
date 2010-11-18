@@ -63,10 +63,10 @@ Manager::assPolaire()
 *Réactualisation des vitesses du robot
 */
 
-	assRotation.setVitesse((angle-angleBkp)*305); // 305 = 1000/(3.279ms)  pour avoir la vitesse en tic/s
-	assTranslation.setVitesse((distance-distanceBkp)*305); // Meme chose
-	angleBkp = angle;
-	distanceBkp = distance;
+	assRotation.setVitesse((angleAvantChangement-angleBkp)*305); // 305 = 1000/(3.279ms)  pour avoir la vitesse en tic/s
+	assTranslation.setVitesse((distanceAvantChangement-distanceBkp)*305); // Meme chose
+	angleBkp = angleAvantChangement;
+	distanceBkp = distanceAvantChangement;
 
 /*
 * On changera de consigne si :
@@ -110,8 +110,8 @@ assTranslation.setActivationKd(0);
 *Calcul des PWM
 */
 	
-	int pwmRotation = (activationAssAngle?assRotation.calculePwm(((tableauConsignes.listeConsignes)[indiceConsigneActuelle-1]).angle,angle):0);
-	int pwmTranslation = (activationAssDistance?assTranslation.calculePwm(((tableauConsignes.listeConsignes)[indiceConsigneActuelle-1]).distance,distance):0);
+	int pwmRotation = (activationAssAngle?assRotation.calculePwm(((tableauConsignes.listeConsignes)[indiceConsigneActuelle-1]).angle,angleAvantChangement):0);
+	int pwmTranslation = (activationAssDistance?assTranslation.calculePwm(((tableauConsignes.listeConsignes)[indiceConsigneActuelle-1]).distance,distanceAvantChangement):0);
 
 	int pwmG = pwmTranslation + pwmRotation;
 	int pwmD = pwmTranslation - pwmRotation;
