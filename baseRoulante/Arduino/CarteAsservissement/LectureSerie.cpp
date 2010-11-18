@@ -75,6 +75,7 @@ LectureSerie::traitement() {
 		manager.reset();
 		break;
 	case 'k':
+		manager.test();
 		break;
 	case 'l':
 		litEntierLong(&i);

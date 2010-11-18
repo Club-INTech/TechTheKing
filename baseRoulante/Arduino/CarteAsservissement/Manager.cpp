@@ -63,7 +63,7 @@ Manager::assPolaire()
 *si on est trop proche de la consigne suivante, on la redéfinira.
 */
 
-	if( distance > (tableauConsignes.listeConsignes[indiceConsigneActuelle]).distance * 0.7 && indiceConsigneActuelle < tableauConsignes.nbConsignes )
+	if(  distance > (tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).distance * 0.7  && indiceConsigneActuelle < (tableauConsignes.nbConsignes - 1))
 	{
 		indiceConsigneActuelle+=1;
 	}
@@ -182,9 +182,9 @@ void Manager::init()
 	 * C'est un timer 8bit donc la fréquence de l'asservissement
 	 * est 78.125/256 Khz = 305Hz soit environ un asservissement toutes les 3.279ms
 	 */
-	TCCR2A |= (1 << CS22); 
+	TCCR2A |= (1 << CS22);
 	TCCR2A &= ~(1 << CS21);
-	TCCR2A |= (1 << CS20);
+	TCCR2A &= ~(1 << CS20);
 	TCCR2A &= ~(1 << WGM21) & (1 << WGM20);
 	TIMSK2 |= (1 << TOIE2);
 	TIMSK2 &= ~(1 << OCIE2A);
@@ -192,14 +192,14 @@ void Manager::init()
 	tableauConsignes.nbConsignes=1;
 	indiceConsigneActuelle=1;
 
-	assRotation.changeKp(7);
+	assRotation.changeKp(5);
 	assRotation.changePWM(1023);
 	assRotation.changeKd(40);
         assRotation.changeKi(0);
         assRotation.changeVmax(0);
 	assRotation.changeKpVitesse(0);
 
-	assTranslation.changeKp(10);
+	assTranslation.changeKp(7);
 	assTranslation.changePWM(1023);
 	assTranslation.changeKd(40);
 	assTranslation.changeKi(0);
@@ -268,13 +268,27 @@ Manager::switchAssAngle()
 void Manager::reset()
 {
 	cli();
-	encodeurG = 0;
-	encodeurD = 0;
 	tableauConsignes.nbConsignes=1;
 	indiceConsigneActuelle=1;
-	manager.changeIemeConsigne(0,0,1);
+	encodeurG = 0;
+	encodeurD = 0;
+	angleBkp=0;
+	distanceBkp=0;
+	(tableauConsignes.listeConsignes[0]).distance = 0;
+	(tableauConsignes.listeConsignes[0]).angle = 0;
 	sei();
 }
+
+void	Manager::test(){
+	unsigned int i;
+	cli();
+	for(i=1;i<=50;i++);
+	manager.pushConsigne( i*10 , i*70);
+	sei();
+
+}
+
+
 /*
  * Portion à modifier 
  * Réduire le préscaler à 500Hz

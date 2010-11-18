@@ -54,7 +54,7 @@ class Manager {
 		void 	switchAssDistance();
 		void 	switchAssAngle();
 
-
+		void	test();
 		void	reset();
 
 		Asservissement 	assRotation;
