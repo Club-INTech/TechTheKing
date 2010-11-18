@@ -18,7 +18,6 @@ class Asservissement{
 	public:
 		Asservissement();
 		
-		void	changeConsigne(long int);	
 		
 		void 	stop();
 		
@@ -36,9 +35,7 @@ class Asservissement{
 		void	reset();
 		
 		void	setVitesse(long int);	
-	
-		// Consigne et position du robot (point de vue Arduino)
-		long int 	consigne;	
+		
 		
 
 		// Constantes de l'asservissement et du moteur	

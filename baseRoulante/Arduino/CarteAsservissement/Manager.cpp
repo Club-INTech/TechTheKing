@@ -6,6 +6,8 @@
 
 #include "Manager.h"
 
+#define ABS(x) 		((x) < 0 ? - (x) : (x))
+
 /*
  * Fonction d'interruption sur les codeurs
  */
@@ -50,35 +52,49 @@ ISR(PCINT2_vect)
 void
 Manager::assPolaire()
 {
+
+/* Calculs de position du robot
+*
+*/
 	
 	long int angle = 	encodeurG - encodeurD;
 	long int distance = 	encodeurG + encodeurD;
 
-	sei();
+/*
+*Réactualisation des vitesses du robot
+*/
 
 	assRotation.setVitesse((angle-angleBkp)*305); // 305 = 1000/(3.279ms)  pour avoir la vitesse en tic/s
 	assTranslation.setVitesse((distance-distanceBkp)*305); // Meme chose
-	
+	angleBkp = angle;
+	distanceBkp = distance;
+
 /*
-*si on est trop proche de la consigne suivante, on la redéfinira.
+* On changera de consigne si :
+*	-on est suffisament proche de la consigne en distance
+*	-on est suffisament aligné avec la consigne
+* Ceci ne s'applique pas à la dernière consigne
 */
 
-	if(  distance > (tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).distance * 0.7  && indiceConsigneActuelle < (tableauConsignes.nbConsignes - 1))
+	if(  distance > (tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).distance * 0.8  && ABS(angle) > ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).angle) * 0.8 && indiceConsigneActuelle < (tableauConsignes.nbConsignes))
 	{
 		indiceConsigneActuelle+=1;
 	}
 
-
+/*
+*Calcul des PWM
+*/
+	
 	int pwmRotation = (activationAssAngle?assRotation.calculePwm(((tableauConsignes.listeConsignes)[indiceConsigneActuelle-1]).angle,angle):0);
 	int pwmTranslation = (activationAssDistance?assTranslation.calculePwm(((tableauConsignes.listeConsignes)[indiceConsigneActuelle-1]).distance,distance):0);
-
 
 	int pwmG = pwmTranslation + pwmRotation;
 	int pwmD = pwmTranslation - pwmRotation;
 	
-	angleBkp = angle;
-	distanceBkp = distance;
-	
+
+/*
+*Envoi des PWM
+*/	
 
 
 	if (pwmG > PWM_MAX) 
@@ -116,13 +132,17 @@ Manager::assPolaire()
 		PORTB |= PINDIRD;
         	OCR1B = -pwmD;
 	}
+
+/*
+* Fin de la boucle
+*/
+
 		
 	/*
 	 * Reprise TechTheWave
 	 */
 	 
 	// Réactivation des interruptions
-	//cli();
 	// Reprise de l'envoi de position
 	//TIMSK2 |= savTIMSK2; 
 }
@@ -184,7 +204,7 @@ void Manager::init()
 	 */
 	TCCR2A |= (1 << CS22);
 	TCCR2A &= ~(1 << CS21);
-	TCCR2A &= ~(1 << CS20);
+	TCCR2A |= ~(1 << CS20);
 	TCCR2A &= ~(1 << WGM21) & (1 << WGM20);
 	TIMSK2 |= (1 << TOIE2);
 	TIMSK2 &= ~(1 << OCIE2A);
@@ -194,14 +214,14 @@ void Manager::init()
 
 	assRotation.changeKp(5);
 	assRotation.changePWM(1023);
-	assRotation.changeKd(40);
+	assRotation.changeKd(30);
         assRotation.changeKi(0);
         assRotation.changeVmax(0);
 	assRotation.changeKpVitesse(0);
 
 	assTranslation.changeKp(7);
 	assTranslation.changePWM(1023);
-	assTranslation.changeKd(40);
+	assTranslation.changeKd(30);
 	assTranslation.changeKi(0);
         assTranslation.changeVmax(0);
 	assTranslation.changeKpVitesse(0);	
@@ -212,17 +232,20 @@ void Manager::init()
 }
 
 /*
- * Définit la nouvelle consigne en angle et distance (en tics)
+ * Ajoute une consigne à la liste.
  */
 
 void 
 Manager::pushConsigne(long int distanceDonnee, long int angleDonne)
 {
-	tableauConsignes.nbConsignes+=1; //ajout d'une case utile dans le tableau.
+	tableauConsignes.nbConsignes+=1; //ajout d'une case dans le tableau.
 	changeIemeConsigne(distanceDonnee, angleDonne, (tableauConsignes.nbConsignes) );
 
 }
 
+/*
+ * Change une consigne de la liste
+ */
 
 
 void 
@@ -248,7 +271,9 @@ Manager::changeIemeConsigneDistance(long int distanceDonnee, int i)
 }
 
 
-
+/*
+ * Change les asservissements d'état
+*/
 
 
 void 
@@ -263,27 +288,29 @@ Manager::switchAssAngle()
 	activationAssAngle = !activationAssAngle;
 }
 
-
+/*
+ * reset l'asservissement
+*/
 
 void Manager::reset()
 {
-	cli();
 	tableauConsignes.nbConsignes=1;
 	indiceConsigneActuelle=1;
 	encodeurG = 0;
 	encodeurD = 0;
-	angleBkp=0;
-	distanceBkp=0;
 	(tableauConsignes.listeConsignes[0]).distance = 0;
 	(tableauConsignes.listeConsignes[0]).angle = 0;
-	sei();
 }
+
+/*
+* Fait faire une courbe au robot(test)
+*/
 
 void	Manager::test(){
 	unsigned int i;
 	cli();
-	for(i=1;i<=50;i++);
-	manager.pushConsigne( i*10 , i*70);
+	for(i=1;i<=20;i++);
+	manager.pushConsigne( i*30 , i*200);
 	sei();
 
 }
@@ -294,6 +321,11 @@ void	Manager::test(){
  * Réduire le préscaler à 500Hz
  */
  
+
+/*
+* Comprends pas.
+*/
+
 unsigned char stator1 = 1;
 
 ISR(TIMER2_OVF_vect)

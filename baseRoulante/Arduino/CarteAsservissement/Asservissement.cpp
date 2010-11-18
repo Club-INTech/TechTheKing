@@ -17,7 +17,6 @@ Asservissement::Asservissement()
 	kpVitesse =	0;
 	
 	// Consigne par défaut et position du robot à l'initialisation
-	consigne = 0;
 	integraleErreur=0;
 
 	// Vitesse du robot
@@ -124,9 +123,3 @@ Asservissement::setVitesse(long int vitesseDonnee)
 {
 	vitesse = vitesseDonnee;
 }
-
-void
-Asservissement::reset() 
-{
-	consigne = 0;
-	blocageDetecte = 0;}
