@@ -76,10 +76,16 @@ Manager::assPolaire()
 * Ceci ne s'applique pas à la dernière consigne
 */
 
-	if(  distance > (tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).distance * 0.6 && indiceConsigneActuelle < tableauConsignes.nbConsignes )
+	if(  ABS(distance) > ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).distance) * 0.8 && indiceConsigneActuelle < tableauConsignes.nbConsignes )
 	{
-		if( angle > (tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).angle * 0.6 )
+		if( ABS(angle) > ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).angle) * 0.9 )
+			{
 			indiceConsigneActuelle+=1;
+			encodeurG=0;
+			encodeurD=0;
+			angleBkp=0;
+			distanceBkp=0;
+			}
 	}
 
 /*
@@ -213,16 +219,16 @@ void Manager::init()
 	tableauConsignes.nbConsignes=1;
 	indiceConsigneActuelle=1;
 
-	assRotation.changeKp(5);
+	assRotation.changeKp(20);
 	assRotation.changePWM(1023);
-	assRotation.changeKd(30);
+	assRotation.changeKd(50);
         assRotation.changeKi(0);
         assRotation.changeVmax(0);
 	assRotation.changeKpVitesse(0);
 
-	assTranslation.changeKp(5);
+	assTranslation.changeKp(20);
 	assTranslation.changePWM(1024);
-	assTranslation.changeKd(30);
+	assTranslation.changeKd(50);
 	assTranslation.changeKi(0);
         assTranslation.changeVmax(0);
 	assTranslation.changeKpVitesse(0);	
@@ -300,6 +306,8 @@ void Manager::reset()
 	indiceConsigneActuelle=1;
 	encodeurG = 0;
 	encodeurD = 0;
+	distanceBkp = 0;
+	angleBkp = 0;
 	(tableauConsignes.listeConsignes[0]).distance = 0;
 	(tableauConsignes.listeConsignes[0]).angle = 0;
 	sei();
@@ -310,11 +318,12 @@ void Manager::reset()
 */
 
 void	Manager::test(){
+	cli();	
 	unsigned int i;
-	indiceConsigneActuelle=1;
 	tableauConsignes.nbConsignes=0;
-	for(i=1;i<=20;i++)
-		manager.pushConsigne( i*30 , i*200);
+	for(i=1;i<=5;i++)
+		manager.pushConsigne( 0 , 400);
+	indiceConsigneActuelle=1;
 	sei();
 
 }
