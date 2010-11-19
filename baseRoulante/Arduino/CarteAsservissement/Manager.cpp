@@ -91,18 +91,21 @@ assTranslation.setActivationKd(0);
 			distanceTotale+=encodeurG+encodeurD; // Conservation de l'information présente dans les codeuses au changement de consigne.
 			angleTotal+=encodeurG-encodeurD; // idem
 
- /* On reset la position du robot (On considère que le robot ne fait que des segments...)
-  *
+ /* 
+  * On reset la position du robot (On considère que le robot ne fait que des segments...)
   */			
 			encodeurG=0;
 			encodeurD=0;
 			angleBkp=0;
 			distanceBkp=0;
-		}
-		else // Si on est à la dernière consigne, on réactive Kd pour que le robot s'arrête proprement.
-		{
-			assRotation.setActivationKd(1);
-			assTranslation.setActivationKd(1);
+			
+/*
+*  Lors du passage à la dernière consigne on réactive Kd
+*/
+			if(indiceConsigneActuelle=tableauConsignes.nbConsignes{
+				assRotation.setActivationKd(1);
+				assTranslation.setActivationKd(1);
+			}
 		}
 	}
 
