@@ -28,7 +28,7 @@ uint8_t ind = 0;//code la position dans le chronogramme de commande du moteur
  * et on y va pour la fonction main
  */
 int main() {
-	int temp=0;
+	//int temp=0;
 	//on initialise la notion temporelle sur l'AVR
 	temps_init();
 	//on initialise la transmission série (pour le debug)
@@ -54,7 +54,7 @@ int main() {
 	//démarrage : 
 	printlnString("demarrage");
 	while (periode > 5556) {
-		//calcul de la valeur de periode à utiliser ici : 
+		//calcul de la valeur de periode à utiliser ici (en gros pour le démarrage, on se contente pour l'instant d'une simple rampe) : 
 		if (micros() > incTemps + incPeriode) {
 			incTemps = micros();
 			if (periode > 10000) {
@@ -66,18 +66,7 @@ int main() {
 		}
 		//commutation des bobines du moteur : 
 		if (micros() > micTemps + periode) {
-			temp=PINC;
-			printUInt(temp);
-			printString("|");
-			printUInt((temp&(1<<PINC1))>>PINC1);
-			printString("|");
-			printUShort(PINC0);
-			printUShort(PINC1);
-			printUShort(PINC2);
-			printUShort(PINC3);
-			printUShort(PINC4);
-			printUShort(PINC5);
-			printUShort(PINC6);
+			printUShort(rbi(PINC,pinSens));
 			printString("\t");
 			printUInt(periode);
 			printString("d");
@@ -99,18 +88,7 @@ int main() {
 	while (1) {
 		//commutation des bobines du moteur : 
 		if (micros() > micTemps + periode) {
-			temp=PINC;
-			printUInt(temp);
-			printString("|");
-			printUInt((temp&(1<<PINC1))>>PINC1);
-			printString("|");
-			printUShort(PINC0);
-			printUShort(PINC1);
-			printUShort(PINC2);
-			printUShort(PINC3);
-			printUShort(PINC4);
-			printUShort(PINC5);
-			printUShort(PINC6);
+			printUShort(rbi(PINC,pinSens));
 			printString("\t");
 			printUInt(periode);
 			printString("d");
