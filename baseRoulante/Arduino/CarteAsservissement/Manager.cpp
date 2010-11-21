@@ -83,11 +83,11 @@ assRotation.setActivationKd(0);
 assTranslation.setActivationKd(0);
 
 
-	if(  ABS(distanceAvantChangement) > ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).distance) * 0.8 && ABS(angleAvantChangement) > ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).angle)*0.95)
+	if(  ABS(distanceAvantChangement) > ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).distance) * 0.95 && ABS(angleAvantChangement) > ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).angle) )
 	{
 		if( indiceConsigneActuelle < tableauConsignes.nbConsignes  )
 		{
-			indiceConsigneActuelle+=1;
+			indiceConsigneActuelle++;
 			distanceTotale+=encodeurG+encodeurD; // Conservation de l'information présente dans les codeuses au changement de consigne.
 			angleTotal+=encodeurG-encodeurD; // idem
 
@@ -98,16 +98,18 @@ assTranslation.setActivationKd(0);
 			encodeurD=0;
 			angleBkp=0;
 			distanceBkp=0;
-			
 /*
 *  Lors du passage à la dernière consigne on réactive Kd
 */
-			if(indiceConsigneActuelle=tableauConsignes.nbConsignes{
-				assRotation.setActivationKd(1);
-				assTranslation.setActivationKd(1);
-			}
 		}
+
 	}
+
+
+if(indiceConsigneActuelle==tableauConsignes.nbConsignes){
+	assRotation.setActivationKd(1);
+	assTranslation.setActivationKd(1);
+}
 
 /*
 *Calcul des PWM
@@ -230,9 +232,9 @@ void Manager::init()
 	 * C'est un timer 8bit donc la fréquence de l'asservissement
 	 * est 78.125/256 Khz = 305Hz soit environ un asservissement toutes les 3.279ms
 	 */
-	TCCR2A |= (1 << CS22);
-	TCCR2A &= ~(1 << CS21);
-	TCCR2A |= ~(1 << CS20);
+	TCCR2A &= ~(1 << CS22);
+	TCCR2A |= (1 << CS21);
+	TCCR2A &= ~(1 << CS20);
 	TCCR2A &= ~(1 << WGM21) & (1 << WGM20);
 	TIMSK2 |= (1 << TOIE2);
 	TIMSK2 &= ~(1 << OCIE2A);
@@ -240,16 +242,16 @@ void Manager::init()
 	tableauConsignes.nbConsignes=1;
 	indiceConsigneActuelle=1;
 
-	assRotation.changeKp(20);
+	assRotation.changeKp(50);
 	assRotation.changePWM(1023);
-	assRotation.changeKd(50);
-        assRotation.changeKi(0);
-        assRotation.changeVmax(0);
+	assRotation.changeKd(200);
+    assRotation.changeKi(0);
+    assRotation.changeVmax(0);
 	assRotation.changeKpVitesse(0);
 
-	assTranslation.changeKp(20);
-	assTranslation.changePWM(1024);
-	assTranslation.changeKd(50);
+	assTranslation.changeKp(50);
+	assTranslation.changePWM(1023);
+	assTranslation.changeKd(200);
 	assTranslation.changeKi(0);
         assTranslation.changeVmax(0);
 	assTranslation.changeKpVitesse(0);	
@@ -276,7 +278,7 @@ Manager::pushConsigne(long int distanceDonnee, long int angleDonne)
  */
 
 
-void 
+void
 Manager::changeIemeConsigne(long int distanceDonnee, long int angleDonne,int i)
 {
 	(tableauConsignes.listeConsignes[i-1]).distance=distanceDonnee;
@@ -323,12 +325,12 @@ Manager::switchAssAngle()
 void Manager::reset()
 {
 	cli();
-	tableauConsignes.nbConsignes=1;
-	indiceConsigneActuelle=1;
 	encodeurG = 0;
 	encodeurD = 0;
 	distanceBkp = 0;
 	angleBkp = 0;
+	indiceConsigneActuelle=1;
+	tableauConsignes.nbConsignes=1;
 	(tableauConsignes.listeConsignes[0]).distance = 0;
 	(tableauConsignes.listeConsignes[0]).angle = 0;
 	sei();
@@ -344,9 +346,10 @@ void	Manager::test(){
 	tableauConsignes.nbConsignes=0;
 	for(i=1;i<=10;i++)
 		manager.pushConsigne( 0 , 200); //avance sans tourner de 2000
-	for(i=1;i<=20;i++)
+	for(i=1;i<=40;i++)
 		manager.pushConsigne( 50 , 100); //avance régulièrement en tournant
-	indiceConsigneActuelle=1;
+	for(i=1;i<=10;i++)
+		manager.pushConsigne( 0 , 200); //avance sans tourner de 2000
 	sei();
 
 }
@@ -366,13 +369,7 @@ unsigned char stator1 = 1;
 
 ISR(TIMER2_OVF_vect)
 {
-	if (stator1 == 0) {
-		manager.assPolaire();
-		stator1 = 1;
-	}
-	else {
-		stator1--;
-	}
+	manager.assPolaire();
 }
 
 
