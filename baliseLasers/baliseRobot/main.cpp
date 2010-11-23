@@ -27,11 +27,12 @@ uint8_t ind = 0;//code la position dans le chronogramme de commande du moteur
  * et on y va pour la fonction main
  */
 int main() {
-	//int temp=0;
 	//on initialise la notion temporelle sur l'AVR
 	temps_init();
 	//on initialise la transmission série (pour le debug)
 	uart_init();
+	//on initialise l'alimentation des lasers (par pwm)
+	lasers_init();
 	//on initialise les ports de commande du moteur
 	sbi(DDRB,pinMot1);
 	sbi(DDRB,pinMot2);
