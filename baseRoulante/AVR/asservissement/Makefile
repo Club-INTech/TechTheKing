@@ -26,11 +26,11 @@ Asservissement.o: lib/Asservissement.cpp
 Manager.o: lib/Manager.cpp
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) lib/Manager.cpp -c
 
-usart.o: ../common/usart.c
-	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) ../common/usart.c -c
+usart.o: ../../../common-AVR/usart.c
+	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) ../../../common-AVR/usart.c -c
 
-Print.o: ../common/Print.cpp
-	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) ../common/Print.cpp -c
+Print.o: ../../../common-AVR/Print.cpp
+	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) ../../../common-AVR/Print.cpp -c
 
 clean:
 	rm -rf *.o *.hex *.out
