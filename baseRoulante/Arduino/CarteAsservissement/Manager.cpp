@@ -56,8 +56,8 @@ Manager::assPolaire()
 /* Calculs de position du robot
 *
 */
-	long int angleAvantChangement = 	encodeurG - encodeurD;
-	long int distanceAvantChangement = 	encodeurG + encodeurD;
+	long int angle = 	encodeurG - encodeurD;
+	long int distance = 	encodeurG + encodeurD;
 
 /*
 *Réactualisation des vitesses du robot
@@ -78,37 +78,20 @@ Manager::assPolaire()
 /*
 * factorisation de la désactivation de Kd
 */
-
-assRotation.setActivationKd(0);
-assTranslation.setActivationKd(0);
-
-
-	if(  ABS(distanceAvantChangement) > ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).distance) * 0.95 && ABS(angleAvantChangement) > ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).angle) )
-	{
-		if( indiceConsigneActuelle < tableauConsignes.nbConsignes  )
-		{
-			indiceConsigneActuelle++;
-			distanceTotale+=encodeurG+encodeurD; // Conservation de l'information présente dans les codeuses au changement de consigne.
-			angleTotal+=encodeurG-encodeurD; // idem
-
- /* 
-  * On reset la position du robot (On considère que le robot ne fait que des segments...)
-  */			
-			encodeurG=0;
-			encodeurD=0;
-			angleBkp=0;
-			distanceBkp=0;
-/*
-*  Lors du passage à la dernière consigne on réactive Kd
-*/
-		}
-
-	}
-
-
-if(indiceConsigneActuelle==tableauConsignes.nbConsignes){
+if( indiceConsigneActuelle < tableauConsignes.nbConsignes ) {
+	assRotation.setActivationKd(0);
+	assTranslation.setActivationKd(0);
+}
+else{
 	assRotation.setActivationKd(1);
 	assTranslation.setActivationKd(1);
+}
+	
+
+if(ABS(distance) > ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).distance) * 0.95 && ABS(angle) > ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).angle) ){
+	if( indiceConsigneActuelle < tableauConsignes.nbConsignes ){
+		indiceConsigneActuelle++;
+	}
 }
 
 /*
@@ -262,27 +245,48 @@ void Manager::init()
 }
 
 /*
- * Ajoute une consigne à la liste.
- */
+* Fonctions de test, un quart de cercle si je me trompe pas.
+*/
 
-void 
-Manager::pushConsigne(long int distanceDonnee, long int angleDonne)
-{
-	tableauConsignes.nbConsignes+=1; //ajout d'une case dans le tableau.
-	changeIemeConsigne(distanceDonnee, angleDonne, (tableauConsignes.nbConsignes) );
+void	Manager::test(){
+	cli();	
+	unsigned int i;
+	tableauConsignes.nbConsignes=60;
+	for(i=1;i<=10;i++)
+		manager.changeIemeConsigne( 0 , 200*i,i); //avance sans tourner de 2000
+	for(i=1;i<=40;i++)
+		manager.changeIemeConsigne( 50*i , 2000 + 100*i,10+i); //avance régulièrement en tournant
+	for(i=1;i<=10;i++)
+		manager.changeIemeConsigne( 2000 , 6000 + 200*i,50+i); //avance sans tourner de 2000
+	sei();
 
 }
-
-/*
- * Change une consigne de la liste
- */
-
 
 void
 Manager::changeIemeConsigne(long int distanceDonnee, long int angleDonne,int i)
 {
 	(tableauConsignes.listeConsignes[i-1]).distance=distanceDonnee;
 	(tableauConsignes.listeConsignes[i-1]).angle=angleDonne;
+}
+
+
+/*
+* Fonctions utiles au transfert de la liste de points via la liaison série.
+*/
+
+
+void
+Manager::setNbConsignes(int nbConsignesDonne)
+{
+	tableauConsignes.nbConsignes=nbConsignesDonne;
+}
+
+
+void 
+Manager::changeIemeConsigneDistance(long int distanceDonnee, int i)
+{
+	(tableauConsignes.listeConsignes[i-1]).distance=distanceDonnee;
+	(tableauConsignes.listeConsignes[i-1]).angle=0;
 }
 
 void
@@ -292,12 +296,17 @@ Manager::changeIemeConsigneAngle(long int angleDonne, int i)
 	(tableauConsignes.listeConsignes[i-1]).distance=0;
 }
 
+/*
+*A voir, si on peut envoyer via un long int à la fois la distance et l'angle.
+*Diviserait par environ deux le temp de chargement de la liste de points en série.
+*/
 
 void 
-Manager::changeIemeConsigneDistance(long int distanceDonnee, int i)
+Manager::pushConsigne(long int distanceDonnee, long int angleDonne)
 {
-	(tableauConsignes.listeConsignes[i-1]).distance=distanceDonnee;
-	(tableauConsignes.listeConsignes[i-1]).angle=0;
+	tableauConsignes.nbConsignes+=1; //ajout d'une case dans le tableau.
+	changeIemeConsigne(distanceDonnee, angleDonne, (tableauConsignes.nbConsignes) );
+
 }
 
 
@@ -336,23 +345,6 @@ void Manager::reset()
 	sei();
 }
 
-/*
-* Fait faire une courbe au robot(test)
-*/
-
-void	Manager::test(){
-	cli();	
-	unsigned int i;
-	tableauConsignes.nbConsignes=0;
-	for(i=1;i<=10;i++)
-		manager.pushConsigne( 0 , 200); //avance sans tourner de 2000
-	for(i=1;i<=40;i++)
-		manager.pushConsigne( 50 , 100); //avance régulièrement en tournant
-	for(i=1;i<=10;i++)
-		manager.pushConsigne( 0 , 200); //avance sans tourner de 2000
-	sei();
-
-}
 
 
 /*
