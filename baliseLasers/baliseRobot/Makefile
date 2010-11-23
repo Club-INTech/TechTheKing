@@ -20,8 +20,8 @@ temps.o : lib/temps.cpp
 lasers.o : lib/lasers.cpp
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) lib/lasers.cpp -c
 
-usart.o: ../../baseRoulante/AVR/common/usart.c
-	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) ../../baseRoulante/AVR/common/usart.c -c
+usart.o: ../../common-AVR/usart.c
+	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) ../../common-AVR/usart.c -c
 
 clean:
 	rm -rf *.o *.hex *.out
