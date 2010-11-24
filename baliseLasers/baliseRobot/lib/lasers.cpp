@@ -2,8 +2,8 @@
 
 void lasers_init() {
 	sbi(DDRD,DDD5);		//définie la sortie B du timer0
-	OCR0A=0x30;		//défini la fréquence de 333kHz en accord avec le diviseur
-	OCR0B=0x18;		//défini le rapport cyclique de 50%
+	OCR0A=0x30;		//48//défini la fréquence de 333kHz en accord avec le diviseur
+	OCR0B=0x18;		//24//défini le rapport cyclique de 50%
 	/*positionner le mode pwm*/
 	sbi(TCCR0A,WGM00);	//
 	sbi(TCCR0A,WGM01);	//fast-pwm, TOP=OCR0A
