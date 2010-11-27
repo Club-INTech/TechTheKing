@@ -8,11 +8,10 @@
 #define freqD 10 //fréquence demandée en tr/s
 static uint32_t consigne;//période pour la consigne de commande
 //pour la mesure des periodes de rotation du moteur
-uint32_t temps[2]={65535,65535};//contient les périodes de rotation mesurées
-uint32_t tempsI=65535;//période instantannée de rotation mesurée
-uint8_t indT=0;//code l'élément de temps[] à remplir
-uint32_t milAP=0;//micros après top
-uint32_t milAV=0;//micros avant top
+volatile uint32_t temps[2]={65535,65535};//contient les périodes de rotation mesurées
+volatile uint8_t indT=0;//code l'élément de temps[] à remplir
+volatile uint32_t milAP=0;//micros après top
+volatile uint32_t milAV=0;//micros avant top
 //pour l'asservissement en vitesse du moteur
 //static uint16_t timerAsserv=10000;//période d'asservissement
 //uint32_t asservAv = 0;//compteur de temps pour l'asservissement
@@ -28,11 +27,12 @@ uint8_t ind = 0;//code la position dans le chronogramme de commande du moteur
  * et on y va pour la fonction main
  */
 int main() {
-	//int temp=0;
 	//on initialise la notion temporelle sur l'AVR
 	temps_init();
 	//on initialise la transmission série (pour le debug)
 	uart_init();
+	//on initialise l'alimentation des lasers (par pwm)
+	lasers_init();
 	//on initialise les ports de commande du moteur
 	sbi(DDRB,pinMot1);
 	sbi(DDRB,pinMot2);
@@ -115,15 +115,12 @@ int main() {
 ISR(INT0_vect) {
 	cli();
 	milAP=micros();
-	tempsI=(milAP-milAV);
-	milAV=milAP;
-	if (indT<1) {
-		indT++;
-	}
-	else {
-		indT=0;
-	}
 	temps[0]=temps[1];
-	temps[1]=tempsI;
+	temps[1]=(milAP-milAV);
+	milAV=milAP;
+	if (indT<1) 
+		indT++;
+	else 
+		indT=0;
 	sei();
 }

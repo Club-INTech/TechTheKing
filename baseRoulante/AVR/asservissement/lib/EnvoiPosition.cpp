@@ -1,5 +1,5 @@
 #include "EnvoiPosition.h"
-#include "../../common/usart.h"
+#include "../../../../common-AVR/usart.h"
 
 EnvoiPosition::EnvoiPosition() 
 {

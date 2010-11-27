@@ -8,8 +8,8 @@ all: baliseRobot.hex
 baliseRobot.hex: baliseRobot.out
 	avr-objcopy -O ihex -R .eeprom baliseRobot.out baliseRobot.hex
 
-baliseRobot.out: main.o usart.o temps.o
-	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) main.o usart.o temps.o -o baliseRobot.out
+baliseRobot.out: main.o usart.o temps.o lasers.o
+	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) main.o usart.o temps.o lasers.o -o baliseRobot.out
 
 main.o: main.cpp
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) main.cpp -c
@@ -17,8 +17,11 @@ main.o: main.cpp
 temps.o : lib/temps.cpp
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) lib/temps.cpp -c
 
-usart.o: ../../baseRoulante/AVR/common/usart.c
-	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) ../../baseRoulante/AVR/common/usart.c -c
+lasers.o : lib/lasers.cpp
+	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) lib/lasers.cpp -c
+
+usart.o: ../../common-AVR/usart.c
+	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) ../../common-AVR/usart.c -c
 
 clean:
 	rm -rf *.o *.hex *.out

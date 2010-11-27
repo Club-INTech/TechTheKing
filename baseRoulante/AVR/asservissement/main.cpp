@@ -34,7 +34,7 @@
 #include "lib/EnvoiPosition.h"
 #include "lib/LectureSerie.h"
 #include "lib/Manager.h"
-#include "../common/usart.h"
+#include "../../../common-AVR/usart.h"
 
 int main( void )
 {
