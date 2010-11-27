@@ -63,8 +63,8 @@ Manager::assPolaire()
 *Réactualisation des vitesses du robot
 */
 
-	assRotation.setVitesse((angle-angleBkp)*710); // 305 = 1000/(3.279ms)  pour avoir la vitesse en tic/s
-	assTranslation.setVitesse((distance-distanceBkp)*710); // Meme chose
+	assRotation.setVitesse((angle-angleBkp)*1000); // 305 = 1000/(3.279ms)  pour avoir la vitesse en tic/s
+	assTranslation.setVitesse((distance-distanceBkp)*1000); // Meme chose
 	angleBkp = angle;
 	distanceBkp = distance;
 
@@ -81,7 +81,7 @@ Manager::assPolaire()
 */
 if( indiceConsigneActuelle < tableauConsignes.nbConsignes ) {
 	assRotation.setActivationKd(0);
-	assTranslation.setActivationKd(1);
+	assTranslation.setActivationKd(0);
 }
 else{
 	assRotation.setActivationKd(1);
@@ -89,14 +89,14 @@ else{
 }
 	
 
-if(ABS(distance) >= ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).distance - 10)
-	&& ABS(angle) >= ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).angle -10)){
+if(ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).distance - distance) < 10
+	&& ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).angle - angle) < 10 ){
 		if( indiceConsigneActuelle < tableauConsignes.nbConsignes ){
-		Serial.print(distanceTotale);
 		indiceConsigneActuelle++;
 		Serial.print(distance);
 		Serial.print("   ");
 		Serial.print(angle);
+		Serial.print("   ");
 	}
 }
 
@@ -220,8 +220,8 @@ void Manager::init()
 	* C'est un timer 8bit donc la fréquence de l'asservissement
 	* est 78.125/256 Khz = 305Hz soit environ un asservissement toutes les 3.279ms
 	*/
-	TCCR2A |= (1 << CS22);
-	TCCR2A &= ~(1 << CS21);
+	TCCR2A &= ~(1 << CS22);
+	TCCR2A |= (1 << CS21);
 	TCCR2A &= ~(1 << CS20);
 	TCCR2A &= ~(1 << WGM21) & (1 << WGM20);
 	TIMSK2 |= (1 << TOIE2);
@@ -230,16 +230,16 @@ void Manager::init()
 	tableauConsignes.nbConsignes=1;
 	indiceConsigneActuelle=1;
 
-	assRotation.changeKp(50);
+	assRotation.changeKp(30);
 	assRotation.changePWM(1023);
-	assRotation.changeKd(300);
+	assRotation.changeKd(200);
 	assRotation.changeKi(0);
 	assRotation.changeVmax(0);
 	assRotation.changeKpVitesse(0);
 
-	assTranslation.changeKp(50);
+	assTranslation.changeKp(30);
 	assTranslation.changePWM(1023);
-	assTranslation.changeKd(300);
+	assTranslation.changeKd(200);
 	assTranslation.changeKi(0);
 		assTranslation.changeVmax(0);
 	assTranslation.changeKpVitesse(0);	
@@ -258,9 +258,13 @@ void Manager::init()
 void	Manager::test(){
 	cli();	
 	unsigned int i;
-	tableauConsignes.nbConsignes=30;
-	for(i=1;i<=30;i++)
-		manager.pushConsigne(-50*i, 150*i,i);	
+	tableauConsignes.nbConsignes=0;
+	for(i=1;i<5;i++){
+		manager.pushConsigne( 0 , (300*i));
+	}
+	for(i=1;i<11;i++){
+		manager.pushConsigne( (100*i), 3000 + (100*i));
+	}
 	sei();
 
 }
