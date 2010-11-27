@@ -1,12 +1,5 @@
-# encoding: utf-8
-
-# Ce fichier contient la classe Point.
-# Author::    Guillaume Rose  (mailto:guillaume.rose@gmail.com)
-# Copyright:: Copyright (c) 2010 INTech - TechTheFruit
-# License::   GPL
-
-# Cette classe définit les fonctions de base pour le calcul sur les coordonnées
-# d'un point.
+require "Consigne"
+require "Vecteur"
 
 class Point
  
@@ -44,7 +37,7 @@ class Point
 	end
 	
 	# Affiche les attributs d'un point
-	def prettyprint
+	def prettyPrint
 	        puts "x = " + x.to_s + ", y = " + y.to_s
 	end
 	
@@ -60,4 +53,44 @@ class Point
 	
 	
  
+end
+
+class ListePoints < Array
+	
+	def initialize
+		super
+	end
+	
+	def prettyPrint
+		each do |point|
+			point.prettyPrint
+		end
+	end
+	
+	def * k
+		each do |point|
+			point*k
+		end
+	end
+	
+	def / k
+		each do |point|
+			point / k
+		end
+	end
+	
+	def convertirEnConsignes
+		@@listeConsignes = ListeConsignes.new
+		@@consigneAPush = Consigne.new
+		@@vecteurConsignes = Vecteur.new
+		for i in (0..self.length-2)
+			@@vecteurConsignes.x = self[i+1].x - self[i].x
+			@@vecteurConsignes.y = self[i+1].y - self[i].y
+			@@consigneAPush.rayon+=@@vecteurConsignes.norme
+			@@consigneAPush.angle+=@@vecteurConsignes.angle
+			@@listeConsignes.push(Consigne.new(@@consigneAPush.rayon,@@consigneAPush.angle))
+		end
+		return @@listeConsignes
+	end
+	
 end

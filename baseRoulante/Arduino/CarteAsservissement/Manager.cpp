@@ -56,17 +56,17 @@ Manager::assPolaire()
 /* Calculs de position du robot
 *
 */
-	long int angleAvantChangement = 	encodeurG - encodeurD;
-	long int distanceAvantChangement = 	encodeurG + encodeurD;
+	long int angle = 	encodeurG - encodeurD;
+	long int distance = 	encodeurG + encodeurD;
 
 /*
 *Réactualisation des vitesses du robot
 */
 
-	assRotation.setVitesse((angleAvantChangement-angleBkp)*305); // 305 = 1000/(3.279ms)  pour avoir la vitesse en tic/s
-	assTranslation.setVitesse((distanceAvantChangement-distanceBkp)*305); // Meme chose
-	angleBkp = angleAvantChangement;
-	distanceBkp = distanceAvantChangement;
+	assRotation.setVitesse((angle-angleBkp)*305); // 305 = 1000/(3.279ms)  pour avoir la vitesse en tic/s
+	assTranslation.setVitesse((distance-distanceBkp)*305); // Meme chose
+	angleBkp = angle;
+	distanceBkp = distance;
 
 /*
 * On changera de consigne si :
@@ -79,44 +79,32 @@ Manager::assPolaire()
 * factorisation de la désactivation de Kd
 */
 
-assRotation.setActivationKd(0);
-assTranslation.setActivationKd(0);
-
-
-	if(  ABS(distanceAvantChangement) > ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).distance) * 0.95 && ABS(angleAvantChangement) > ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).angle) )
-	{
-		if( indiceConsigneActuelle < tableauConsignes.nbConsignes  )
-		{
-			indiceConsigneActuelle++;
-			distanceTotale+=encodeurG+encodeurD; // Conservation de l'information présente dans les codeuses au changement de consigne.
-			angleTotal+=encodeurG-encodeurD; // idem
-
- /* 
-  * On reset la position du robot (On considère que le robot ne fait que des segments...)
-  */			
-			encodeurG=0;
-			encodeurD=0;
-			angleBkp=0;
-			distanceBkp=0;
-/*
-*  Lors du passage à la dernière consigne on réactive Kd
-*/
-		}
-
-	}
-
-
 if(indiceConsigneActuelle==tableauConsignes.nbConsignes){
 	assRotation.setActivationKd(1);
 	assTranslation.setActivationKd(1);
 }
+else{
+assRotation.setActivationKd(0);
+assTranslation.setActivationKd(1);
+}
+
+
+if(  ABS(distance) > ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).distance) && ABS(angle) > ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).angle) )
+{
+	if( indiceConsigneActuelle < tableauConsignes.nbConsignes  )
+	{
+		indiceConsigneActuelle++;
+	}
+}
+
+
 
 /*
 *Calcul des PWM
 */
 	
-	int pwmRotation = (activationAssAngle?assRotation.calculePwm(((tableauConsignes.listeConsignes)[indiceConsigneActuelle-1]).angle,angleAvantChangement):0);
-	int pwmTranslation = (activationAssDistance?assTranslation.calculePwm(((tableauConsignes.listeConsignes)[indiceConsigneActuelle-1]).distance,distanceAvantChangement):0);
+	int pwmRotation = (activationAssAngle?assRotation.calculePwm(((tableauConsignes.listeConsignes)[indiceConsigneActuelle-1]).angle,angle):0);
+	int pwmTranslation = (activationAssDistance?assTranslation.calculePwm(((tableauConsignes.listeConsignes)[indiceConsigneActuelle-1]).distance,distance):0);
 
 	int pwmG = pwmTranslation + pwmRotation;
 	int pwmD = pwmTranslation - pwmRotation;
