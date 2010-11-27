@@ -9,24 +9,24 @@
 #define ABS(x) 		((x) < 0 ? - (x) : (x))
 
 /*
- * Fonction d'interruption sur les codeurs
- */
+* Fonction d'interruption sur les codeurs
+*/
 
 volatile char etatPins = 0;
 
 ISR(PCINT2_vect)
 {
-    	unsigned char changementPins 	= (PIND & MASQUE) ^ etatPins;
-    	etatPins 		= PIND & MASQUE;
+		unsigned char changementPins 	= (PIND & MASQUE) ^ etatPins;
+		etatPins 		= PIND & MASQUE;
     
-    	if (changementPins & ENCGA){
+		if (changementPins & ENCGA){
 		if (etatPins & ENCGA) //front montant codeur 1 voix A
 			(etatPins & ENCGB)?encodeurG++:encodeurG--;
-	      	else                  //front descendant codeur 1 voix A
+				else                  //front descendant codeur 1 voix A
 			(etatPins & ENCGB)?encodeurG--:encodeurG++;
 	}
 
-    	if (changementPins & ENCGB){
+		if (changementPins & ENCGB){
 		if (etatPins & ENCGB) //front montant codeur 1 voix B
 			(etatPins & ENCGA)?encodeurG--:encodeurG++;
 		else                  //front descendant codeur 1 voix B
@@ -43,7 +43,7 @@ ISR(PCINT2_vect)
 	if (changementPins & ENCDB){
 		if (etatPins & ENCDB) //front montant codeur 2 voix B
 			(etatPins & ENCDA)?encodeurD--:encodeurD++;
-	        else                  //front descendant codeur 2 voix B
+			else                  //front descendant codeur 2 voix B
 			(etatPins & ENCDA)?encodeurD++:encodeurD--;
 	}
 
@@ -63,10 +63,10 @@ Manager::assPolaire()
 *Réactualisation des vitesses du robot
 */
 
-	assRotation.setVitesse((angleAvantChangement-angleBkp)*305); // 305 = 1000/(3.279ms)  pour avoir la vitesse en tic/s
-	assTranslation.setVitesse((distanceAvantChangement-distanceBkp)*305); // Meme chose
-	angleBkp = angleAvantChangement;
-	distanceBkp = distanceAvantChangement;
+	assRotation.setVitesse((angle-angleBkp)*710); // 305 = 1000/(3.279ms)  pour avoir la vitesse en tic/s
+	assTranslation.setVitesse((distance-distanceBkp)*710); // Meme chose
+	angleBkp = angle;
+	distanceBkp = distance;
 
 /*
 * On changera de consigne si :
@@ -75,12 +75,13 @@ Manager::assPolaire()
 * Ceci ne s'applique pas à la dernière consigne
 */
 
+
 /*
 * factorisation de la désactivation de Kd
 */
 if( indiceConsigneActuelle < tableauConsignes.nbConsignes ) {
 	assRotation.setActivationKd(0);
-	assTranslation.setActivationKd(0);
+	assTranslation.setActivationKd(1);
 }
 else{
 	assRotation.setActivationKd(1);
@@ -88,18 +89,22 @@ else{
 }
 	
 
-if(ABS(distance) > ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).distance) * 0.95 && ABS(angle) > ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).angle) ){
-	if( indiceConsigneActuelle < tableauConsignes.nbConsignes ){
+if(ABS(distance) >= ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).distance - 10)
+	&& ABS(angle) >= ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).angle -10)){
+		if( indiceConsigneActuelle < tableauConsignes.nbConsignes ){
+		Serial.print(distanceTotale);
 		indiceConsigneActuelle++;
+		Serial.print(distance);
+		Serial.print("   ");
+		Serial.print(angle);
 	}
 }
 
 /*
 *Calcul des PWM
 */
-	
-	int pwmRotation = (activationAssAngle?assRotation.calculePwm(((tableauConsignes.listeConsignes)[indiceConsigneActuelle-1]).angle,angleAvantChangement):0);
-	int pwmTranslation = (activationAssDistance?assTranslation.calculePwm(((tableauConsignes.listeConsignes)[indiceConsigneActuelle-1]).distance,distanceAvantChangement):0);
+	int pwmRotation = (activationAssAngle?assRotation.calculePwm(((tableauConsignes.listeConsignes)[indiceConsigneActuelle-1]).angle,angle):0);
+	int pwmTranslation = (activationAssDistance?assTranslation.calculePwm(((tableauConsignes.listeConsignes)[indiceConsigneActuelle-1]).distance,distance):0);
 
 	int pwmG = pwmTranslation + pwmRotation;
 	int pwmD = pwmTranslation - pwmRotation;
@@ -143,7 +148,7 @@ if(ABS(distance) > ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1
 		// Direction droite = 1
 		// PWM droite = -pwmD
 		PORTB |= PINDIRD;
-        	OCR1B = -pwmD;
+			OCR1B = -pwmD;
 	}
 
 /*
@@ -152,8 +157,8 @@ if(ABS(distance) > ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1
 
 		
 	/*
-	 * Reprise TechTheWave
-	 */
+	* Reprise TechTheWave
+	*/
 	 
 	// Réactivation des interruptions
 	// Reprise de l'envoi de position
@@ -161,8 +166,8 @@ if(ABS(distance) > ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1
 }
 
 /*
- * Initialisation des pins
- */
+* Initialisation des pins
+*/
 Manager::Manager(){
 }
 
@@ -172,8 +177,8 @@ void Manager::init()
 	activationAssDistance = true;
 	activationAssAngle = true;
 	/*
-	 * Réglage des pins (codeurs)
-	 */
+	* Réglage des pins (codeurs)
+	*/
 	pinMode(PORTB2, INPUT);
 	pinMode(PORTB3, INPUT);
 	pinMode(PORTB4, INPUT);
@@ -186,11 +191,11 @@ void Manager::init()
 
 	// Initialisation de l'interruption
 	PCICR |= (1 << PCIE2);
-  	PCMSK2 |= (1 << PCINT18) | (1 << PCINT19) | (1 << PCINT20) | (1 << PCINT21);
+	PCMSK2 |= (1 << PCINT18) | (1 << PCINT19) | (1 << PCINT20) | (1 << PCINT21);
 	
 	/*
-	 * Réglage des PWM
-	 */
+	* Réglage des PWM
+	*/
 
 	pinMode(DIRG, OUTPUT);
 	pinMode(PWMG, OUTPUT);
@@ -211,12 +216,12 @@ void Manager::init()
 	TCCR1A |= (1 << COM1B1);
 	 
 	/*
-	 * Initialisation du timer de l'asservissement @ 78.125 KHz
-	 * C'est un timer 8bit donc la fréquence de l'asservissement
-	 * est 78.125/256 Khz = 305Hz soit environ un asservissement toutes les 3.279ms
-	 */
-	TCCR2A &= ~(1 << CS22);
-	TCCR2A |= (1 << CS21);
+	* Initialisation du timer de l'asservissement @ 78.125 KHz
+	* C'est un timer 8bit donc la fréquence de l'asservissement
+	* est 78.125/256 Khz = 305Hz soit environ un asservissement toutes les 3.279ms
+	*/
+	TCCR2A |= (1 << CS22);
+	TCCR2A &= ~(1 << CS21);
 	TCCR2A &= ~(1 << CS20);
 	TCCR2A &= ~(1 << WGM21) & (1 << WGM20);
 	TIMSK2 |= (1 << TOIE2);
@@ -227,37 +232,35 @@ void Manager::init()
 
 	assRotation.changeKp(50);
 	assRotation.changePWM(1023);
-	assRotation.changeKd(200);
-    assRotation.changeKi(0);
-    assRotation.changeVmax(0);
+	assRotation.changeKd(300);
+	assRotation.changeKi(0);
+	assRotation.changeVmax(0);
 	assRotation.changeKpVitesse(0);
 
 	assTranslation.changeKp(50);
 	assTranslation.changePWM(1023);
-	assTranslation.changeKd(200);
+	assTranslation.changeKd(300);
 	assTranslation.changeKi(0);
-        assTranslation.changeVmax(0);
+		assTranslation.changeVmax(0);
 	assTranslation.changeKpVitesse(0);	
 
+	distanceTotale=0;
+	angleTotal=0;
 	angleBkp=0;
 	distanceBkp=0;
 
 }
 
 /*
-* Fonctions de test, un quart de cercle si je me trompe pas.
+* Fonctions de test
 */
 
 void	Manager::test(){
 	cli();	
 	unsigned int i;
-	tableauConsignes.nbConsignes=60;
-	for(i=1;i<=10;i++)
-		manager.changeIemeConsigne( 0 , 200*i,i); //avance sans tourner de 2000
-	for(i=1;i<=40;i++)
-		manager.changeIemeConsigne( 50*i , 2000 + 100*i,10+i); //avance régulièrement en tournant
-	for(i=1;i<=10;i++)
-		manager.changeIemeConsigne( 2000 , 6000 + 200*i,50+i); //avance sans tourner de 2000
+	tableauConsignes.nbConsignes=30;
+	for(i=1;i<=30;i++)
+		manager.pushConsigne(-50*i, 150*i,i);	
 	sei();
 
 }
@@ -311,7 +314,7 @@ Manager::pushConsigne(long int distanceDonnee, long int angleDonne)
 
 
 /*
- * Change les asservissements d'état
+* Change les asservissements d'état
 */
 
 
@@ -328,14 +331,17 @@ Manager::switchAssAngle()
 }
 
 /*
- * reset l'asservissement
+* reset l'asservissement
 */
 
 void Manager::reset()
 {
 	cli();
-	encodeurG = 0;
-	encodeurD = 0;
+	Serial.print(distanceTotale);
+	Serial.print("   ");
+	Serial.print(angleTotal);
+	encodeurG=0;
+	encodeurD=0;
 	distanceBkp = 0;
 	angleBkp = 0;
 	indiceConsigneActuelle=1;
@@ -348,9 +354,9 @@ void Manager::reset()
 
 
 /*
- * Portion à modifier 
- * Réduire le préscaler à 500Hz
- */
+* Portion à modifier 
+* Réduire le préscaler à 500Hz
+*/
  
 
 /*
@@ -369,4 +375,3 @@ volatile long int encodeurG = 0;
 volatile long int encodeurD = 0;
 
 Manager manager;
-
