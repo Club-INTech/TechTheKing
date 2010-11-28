@@ -21,7 +21,7 @@
 
 #define MASQUE B0111100
 
-#define NB_MAX_CONSIGNES 500
+#define NB_MAX_CONSIGNES 200
 
 /*
  * Réglage des pins des PWM
