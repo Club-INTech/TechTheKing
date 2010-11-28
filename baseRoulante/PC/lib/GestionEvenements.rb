@@ -1,7 +1,5 @@
 # encoding: utf-8
 
-require "Log"
-
 class GestionEvenements
 
         def initialize(robot, carte)
@@ -43,10 +41,6 @@ class GestionEvenements
                                         sleep delta
                                 }
                         }
-                        
-                        # @ordonnanceur.join
-                        
-                        # @log.warn "Arrêt anormal des évènements"
                 end
         end
 
@@ -54,30 +48,6 @@ class GestionEvenements
                 @log.debug "Arrêt des évènements"
                 @ordonnanceur.exit
         end
-
-        def setup
-                
-        end
-        
-         def attacheStrategie(strategieEnCours)
-                 @strategie = strategieEnCours
-         end
-         
-         def arretStrategie
-                 @strategie.exit
-         end
-         
-         def blocageStrategie
-                 @blocageStrategie
-         end
-         
-         def deblocageStrategie
-                 @blocageStrategie = false
-         end
-         
-         def interrompreStrategie
-                 arretStrategie
-                 @blocageStrategie = true
-         end
          
 end
+

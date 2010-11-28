@@ -258,12 +258,10 @@ void Manager::init()
 void	Manager::test(){
 	cli();	
 	unsigned int i;
-	tableauConsignes.nbConsignes=0;
-	for(i=1;i<5;i++){
-		manager.pushConsigne( 0 , (300*i));
-	}
+	tableauConsignes.nbConsignes=10;
+
 	for(i=1;i<11;i++){
-		manager.pushConsigne( (100*i), 3000 + (100*i));
+		changeIemeConsigne( (50*i), (50*i), (i));
 	}
 	sei();
 
