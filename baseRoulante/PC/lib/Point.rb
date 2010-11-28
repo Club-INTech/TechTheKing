@@ -1,5 +1,5 @@
-require "Consigne"
-require "Vecteur"
+require "./Consigne"
+require "./Vecteur"
 
 class Point
  
@@ -86,8 +86,9 @@ class ListePoints < Array
 		for i in (0..self.length-2)
 			@@vecteurConsignes.x = self[i+1].x - self[i].x
 			@@vecteurConsignes.y = self[i+1].y - self[i].y
+			puts(@@vecteurConsignes.y/@@vecteurConsignes.x)
 			@@consigneAPush.rayon+=@@vecteurConsignes.norme
-			@@consigneAPush.angle+=@@vecteurConsignes.angle
+			@@consigneAPush.angle=@@vecteurConsignes.angle
 			@@listeConsignes.push(Consigne.new(@@consigneAPush.rayon,@@consigneAPush.angle))
 		end
 		return @@listeConsignes

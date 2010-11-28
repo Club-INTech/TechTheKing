@@ -81,7 +81,7 @@ Manager::assPolaire()
 */
 if( indiceConsigneActuelle < tableauConsignes.nbConsignes ) {
 	assRotation.setActivationKd(0);
-	assTranslation.setActivationKd(0);
+	assTranslation.setActivationKd(1);
 }
 else{
 	assRotation.setActivationKd(1);
@@ -89,14 +89,10 @@ else{
 }
 	
 
-if(ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).distance - distance) < 10
-	&& ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).angle - angle) < 10 ){
+if(ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).distance - distance) < 30
+	&& ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).angle - angle) < 30 ){
 		if( indiceConsigneActuelle < tableauConsignes.nbConsignes ){
 		indiceConsigneActuelle++;
-		Serial.print(distance);
-		Serial.print("   ");
-		Serial.print(angle);
-		Serial.print("   ");
 	}
 }
 
@@ -230,18 +226,18 @@ void Manager::init()
 	tableauConsignes.nbConsignes=1;
 	indiceConsigneActuelle=1;
 
-	assRotation.changeKp(30);
+	assRotation.changeKp(10);
 	assRotation.changePWM(1023);
-	assRotation.changeKd(200);
+	assRotation.changeKd(30);
 	assRotation.changeKi(0);
 	assRotation.changeVmax(0);
 	assRotation.changeKpVitesse(0);
 
-	assTranslation.changeKp(30);
+	assTranslation.changeKp(15);
 	assTranslation.changePWM(1023);
-	assTranslation.changeKd(200);
+	assTranslation.changeKd(30);
 	assTranslation.changeKi(0);
-		assTranslation.changeVmax(0);
+	assTranslation.changeVmax(0);
 	assTranslation.changeKpVitesse(0);	
 
 	distanceTotale=0;
@@ -252,17 +248,42 @@ void Manager::init()
 }
 
 /*
-* Fonctions de test
+* Fonctions de test : courbe de Bézier. (voir PC/Lib/Bezier)
 */
 
 void	Manager::test(){
 	cli();	
 	unsigned int i;
-	tableauConsignes.nbConsignes=10;
-
-	for(i=1;i<11;i++){
-		changeIemeConsigne( (50*i), (50*i), (i));
-	}
+	tableauConsignes.nbConsignes=18;
+	changeIemeConsigne( -32, 235,1);
+	changeIemeConsigne( -98, 461,2);
+	changeIemeConsigne( -167, 678,3);
+	changeIemeConsigne( -238, 887,4);
+	changeIemeConsigne( -313, 1087,5);
+	changeIemeConsigne( -391, 1280,6);
+	changeIemeConsigne( -471, 1466,7);
+	changeIemeConsigne( -555, 1645,8);
+	changeIemeConsigne( -642, 1817,9);
+	changeIemeConsigne( -733, 1983,10);
+	changeIemeConsigne( -826, 2144,11);
+	changeIemeConsigne( -923, 2299,12);
+	changeIemeConsigne( -1023, 2449,13);
+	changeIemeConsigne( -1127, 2594,14);
+	changeIemeConsigne( -1233, 2735,15);
+	changeIemeConsigne( -1343, 2872,16);
+	changeIemeConsigne( -1456, 3006,17);
+	changeIemeConsigne( -1571, 3137,18);
+	changeIemeConsigne( -1689, 3265,19);
+	changeIemeConsigne( -1809, 3391,20);
+	changeIemeConsigne( -1932, 3515,21);
+	changeIemeConsigne( -2056, 3637,22);
+	changeIemeConsigne( -2181, 3758,23);
+	changeIemeConsigne( -2308, 3879,24);
+	changeIemeConsigne( -2435, 3999,25);
+	changeIemeConsigne( -2562, 4119,26);
+	changeIemeConsigne( -2689, 4239,27);
+	changeIemeConsigne( -2816, 4361,28);
+	changeIemeConsigne( -2941, 4483,29);
 	sei();
 
 }
