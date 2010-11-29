@@ -21,7 +21,7 @@
 
 #define MASQUE B0111100
 
-#define NB_MAX_CONSIGNES
+#define NB_MAX_CONSIGNES 200
 
 /*
  * Réglage des pins des PWM
@@ -46,6 +46,7 @@ class Manager {
 
 		void 	pushConsigne(long int , long int );
 		void 	changeIemeConsigne(long int , long int ,int i);		
+		void setNbConsignes(int nbConsignesDonne);
 		void 	changeIemeConsigneDistance (long int,int i);
 		void 	changeIemeConsigneAngle (long int,int i);
 
@@ -55,6 +56,8 @@ class Manager {
 		void 	switchAssAngle();
 
 		void	test();
+
+
 		void	reset();
 
 		Asservissement 	assRotation;

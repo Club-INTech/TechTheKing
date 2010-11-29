@@ -1,11 +1,9 @@
-# encoding: utf-8
-
 # Ce fichier contient la classe Vecteur.
 # Author::    Guillaume Rose  (mailto:guillaume.rose@gmail.com)
 # Copyright:: Copyright (c) 2010 INTech - TechTheFruit
 # License::   GPL
 
-require "Point"
+require "./Point"
 
 # Cette classe définit les fonctions de base sur les vecteurs.
 
@@ -25,9 +23,9 @@ class Vecteur
 		Math.sqrt(@x**2 + @y**2)
 	end
 
-	# Calcule l'angle du vecteur par rapport à l'axe (Ox)
+	# Calcule l'angle du vecteur par rapport à l'axe (Oy)
 	def angle
-		Math.atan2 @y, @x
+		Math.atan2 @x, @y
 	end
 	
 	def produitScalaire v

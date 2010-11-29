@@ -1,17 +1,13 @@
 # encoding: utf-8
 
-# Détection des périphériques
-# Author::    Guillaume Rose  (mailto:guillaume.rose@gmail.com)
-# Copyright:: Copyright (c) 2010 INTech - TechTheFruit
-# License::   GPL
+# Ce fichier définit la classe de détection des périphériques
+# Ces classes permet de s'affranchir du port USB sur lequel est branché chaque carte
 
 require "Log"
-
-require "SerieSimple"
+require "Serie"
 
 # La classe Détection permet d'associer un Arduino à chaque service ie
 # l'asservissement, les actionneurs et l'évitement
-
 class Detection
 
 	# Contient l'association service - périphérique série
@@ -46,5 +42,4 @@ class Detection
 	def peripheriqueAssocie partie
 		@association[partie]
 	end
-	
 end
