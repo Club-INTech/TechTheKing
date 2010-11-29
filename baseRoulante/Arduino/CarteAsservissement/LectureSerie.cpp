@@ -51,19 +51,17 @@ LectureSerie::traitement() {
 	case 'd':
 		envoiPosition.desactive();
 		break;
-	case 'e':
-		encodeurG = 0;
-		encodeurD = 0;
+	case 'e': // désactive interruptions
+		manager.switchAssDistance();
+		manager.switchAssAngle();
 		break;
-	case 'f':
+	case 'f': // réactive interuptions
+		PCICR |= (1 << PCIE2);
+		break;
+	case 'g': // push consigne etape 1
 		litEntierLong(&i);
 		if (i >= 0)
-			manager.assRotation.changeKpVitesse(i);
-		break;
-	case 'g':
-		litEntierLong(&i);
-		if (i >= 0)
-			manager.assTranslation.changeKpVitesse(i);
+			manager.pushConsigneDistance(i);
 		break;	
 	case 'h':
 		manager.switchAssDistance();
@@ -103,10 +101,10 @@ LectureSerie::traitement() {
 			manager.assRotation.changePWM(i);
 		}
 		break;
-	case 'q':
+	case 'q': // push consigne (étape 2)
 		litEntierLong(&i);
 		if (i >= 0) {
-			
+			manager.pushConsigneAngle(i);
 		}
 		break;
 	case 'r':

@@ -44,7 +44,8 @@ class Manager {
 		
 		void 	init();
 
-		void 	pushConsigne(long int , long int );
+		void 	pushConsigneAngle(long int );
+		void 	pushConsigneDistance(long int );
 		void 	changeIemeConsigne(long int , long int ,int i);		
 		void setNbConsignes(int nbConsignesDonne);
 		void 	changeIemeConsigneDistance (long int,int i);

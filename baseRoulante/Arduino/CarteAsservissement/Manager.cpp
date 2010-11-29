@@ -90,7 +90,7 @@ else{
 	
 
 if(ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).distance - distance) < 30
-	&& ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).angle - angle) < 30 ){
+	&& ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).angle - angle) < 8 ){
 		if( indiceConsigneActuelle < tableauConsignes.nbConsignes ){
 		indiceConsigneActuelle++;
 	}
@@ -348,11 +348,19 @@ Manager::changeIemeConsigneAngle(long int angleDonne, int i)
 *Diviserait par environ deux le temp de chargement de la liste de points en sÃ©rie.
 */
 
+
 void 
-Manager::pushConsigne(long int distanceDonnee, long int angleDonne)
+Manager::pushConsigneDistance(long int distanceDonnee) // on transfert d'abord la distance (pas d'incrémentation de nbConsignes)
 {
+	changeIemeConsigneDistance(distanceDonnee, (tableauConsignes.nbConsignes));
+}
+
+
+void 
+Manager::pushConsigneAngle(long int angleDonne)
+{
+	changeIemeConsigneAngle(angleDonne, (tableauConsignes.nbConsignes) );
 	tableauConsignes.nbConsignes+=1; //ajout d'une case dans le tableau.
-	changeIemeConsigne(distanceDonnee, angleDonne, (tableauConsignes.nbConsignes) );
 
 }
 
@@ -381,6 +389,7 @@ Manager::switchAssAngle()
 void Manager::reset()
 {
 	cli();
+	Serial.print(tableauConsignes.nbConsignes);
 	Serial.print(distanceTotale);
 	Serial.print("   ");
 	Serial.print(angleTotal);
