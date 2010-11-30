@@ -21,7 +21,7 @@
 
 #define MASQUE B0111100
 
-#define NB_MAX_CONSIGNES 200
+#define NB_MAX_CONSIGNES
 
 /*
  * Réglage des pins des PWM
@@ -44,10 +44,9 @@ class Manager {
 		
 		void 	init();
 
-		void 	pushConsigneAngle(long int );
-		void 	pushConsigneDistance(long int );
+		void 	pushConsigne(long int , long int );
 		void 	changeIemeConsigne(long int , long int ,int i);		
-		void setNbConsignes(int nbConsignesDonne);
+		void setNbConsignes(int nbConsignesDonne)
 		void 	changeIemeConsigneDistance (long int,int i);
 		void 	changeIemeConsigneAngle (long int,int i);
 

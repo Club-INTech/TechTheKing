@@ -51,19 +51,16 @@ LectureSerie::traitement() {
 	case 'd':
 		envoiPosition.desactive();
 		break;
-	case 'e':
-		encodeurG = 0;
-		encodeurD = 0;
+	case 'e': // désactive interruptions
+		manager.switchAssDistance();
+		manager.switchAssAngle();
 		break;
-	case 'f':
-		litEntierLong(&i);
-		if (i >= 0)
-			manager.assRotation.changeKpVitesse(i);
+	case 'f': // A faire avant de charger une liste de points
+		manager.setNbConsignes(00000000);
 		break;
-	case 'g':
+	case 'g': // push consigne etape 1
 		litEntierLong(&i);
-		if (i >= 0)
-			manager.assTranslation.changeKpVitesse(i);
+		manager.pushConsigneDistance(i);
 		break;	
 	case 'h':
 		manager.switchAssDistance();
@@ -103,10 +100,10 @@ LectureSerie::traitement() {
 			manager.assRotation.changePWM(i);
 		}
 		break;
-	case 'q':
+	case 'q': // push consigne (étape 2)
 		litEntierLong(&i);
 		if (i >= 0) {
-			
+			manager.pushConsigneAngle(i);
 		}
 		break;
 	case 'r':
