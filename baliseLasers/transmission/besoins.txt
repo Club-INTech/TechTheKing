@@ -1,0 +1,13 @@
+Robot adverse : angle + distance  : données en polaire par rapport à notre robot.
+	angle : top laser -> retour robot -> angle connu direct
+	distance : calcul à partir du temps séparant les deux lasers dans l'avr de la balise robot adverse -> retour robot -> distance connue
+
+	possibilité d'intercepter (au passage (si balises fixes en intermédiaire) ou en parallèle) pour calculer en plus les coordonnées (x,y) du robot adverse à partir de la position connue de notre robot. 
+
+Balise fixe : 
+	Calcul de la triangulation à partir des trois distances. 
+	Calcul de la triangulation à partir de deux distances et d'un angle séparant les deux balises (à contrôler) <- possibilité de "perdre" une balise fixe.
+	
+	Renvoie des données brutes?
+	Renvoie de la coordonnée du robot calculée
+	Renvoie de la trame robot adverse si balise fixe utilisée en intermédiaire. 
