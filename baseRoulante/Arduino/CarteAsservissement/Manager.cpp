@@ -81,7 +81,7 @@ Manager::assPolaire()
 */
 if( indiceConsigneActuelle < tableauConsignes.nbConsignes ) {
 	assRotation.setActivationKd(0);
-	assTranslation.setActivationKd(1);
+	assTranslation.setActivationKd(0);
 }
 else{
 	assRotation.setActivationKd(1);
@@ -226,16 +226,16 @@ void Manager::init()
 	tableauConsignes.nbConsignes=0;
 	indiceConsigneActuelle=1;
 
-	assRotation.changeKp(15);
+	assRotation.changeKp(10);
 	assRotation.changePWM(1023);
-	assRotation.changeKd(35);
+	assRotation.changeKd(50);
 	assRotation.changeKi(0);
 	assRotation.changeVmax(0);
 	assRotation.changeKpVitesse(0);
 
-	assTranslation.changeKp(22);
+	assTranslation.changeKp(15);
 	assTranslation.changePWM(1023);
-	assTranslation.changeKd(40);
+	assTranslation.changeKd(50);
 	assTranslation.changeKi(0);
 	assTranslation.changeVmax(0);
 	assTranslation.changeKpVitesse(0);	

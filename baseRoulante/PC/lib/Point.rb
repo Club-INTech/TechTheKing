@@ -83,11 +83,21 @@ class ListePoints < Array
 		@@listeConsignes = ListeConsignes.new
 		@@consigneAPush = Consigne.new
 		@@vecteurConsignes = Vecteur.new
+		@@sensDeRotation = 0
 		for i in (0..self.length-2)
+			@@angleBkp= @@consigneAPush.angle
 			@@vecteurConsignes.x = self[i+1].x - self[i].x
 			@@vecteurConsignes.y = self[i+1].y - self[i].y
 			@@consigneAPush.rayon+=@@vecteurConsignes.norme
 			@@consigneAPush.angle=@@vecteurConsignes.angle
+			if(@@sensDeRotation*@@consigneAPush.angle<0)
+				@@consigneAPush.angle+=2*Math::PI
+			end
+			if(@@consigneAPush.angle > @@angleBkp)
+				@@sensDeRotation=1
+			else
+				@@sensDeRotation=-1
+			end
 			@@listeConsignes.push(Consigne.new(@@consigneAPush.rayon,@@consigneAPush.angle))
 		end
 		return @@listeConsignes
