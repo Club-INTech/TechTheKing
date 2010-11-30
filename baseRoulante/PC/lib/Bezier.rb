@@ -47,12 +47,13 @@ end
 #un petit test avec un carré, les 10 points donnés en résultat semblent en effet appartenir à la bonne courbe de Bézier
 interfaceDeTransfert=SerieThread.new
 point1=Point.new(0,0)
-point2=Point.new(0,20000)
-point3=Point.new(20000,20000)
-point4=Point.new(20000,0)
+point2=Point.new(0,7000)
+point3=Point.new(7000,7000)
+point4=Point.new(7000,3500)
+point5=Point.new(0,3500)
 sleep 2
 interfaceDeTransfert.ecrire "?"
-listeTest=Bezier.new([point1,point2,point3,point4],50).prettyPrint
+listeTest=Bezier.new([point1,point2,point3,point4,point5],100).prettyPrint
 listeTest.convertirEnConsignes.convertirEnTicks.transfertSerie(interfaceDeTransfert)
 while 1
 end

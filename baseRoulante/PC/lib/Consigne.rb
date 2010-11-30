@@ -16,8 +16,9 @@ class Consigne
 	end
 	
 	def convertirEnTicks
-		@rayon=(@rayon*0.2).to_i
-		@angle=(@angle*1591).to_i
+		#le /2 est un subterfuge pour 360°
+		@rayon=(@rayon*1.02633).to_i
+		@angle=(@angle*1559.71).to_i
 	end
 	
 	def prettyPrint

@@ -89,8 +89,8 @@ else{
 }
 	
 
-if(ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).distance - distance) < 30
-	&& ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).angle - angle) < 8 ){
+if(ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).distance - distance) < 15
+	&& ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).angle - angle) < 15 ){
 		if( indiceConsigneActuelle < tableauConsignes.nbConsignes ){
 		indiceConsigneActuelle++;
 	}
@@ -226,16 +226,16 @@ void Manager::init()
 	tableauConsignes.nbConsignes=0;
 	indiceConsigneActuelle=1;
 
-	assRotation.changeKp(10);
+	assRotation.changeKp(15);
 	assRotation.changePWM(1023);
-	assRotation.changeKd(30);
+	assRotation.changeKd(35);
 	assRotation.changeKi(0);
 	assRotation.changeVmax(0);
 	assRotation.changeKpVitesse(0);
 
-	assTranslation.changeKp(15);
+	assTranslation.changeKp(22);
 	assTranslation.changePWM(1023);
-	assTranslation.changeKd(30);
+	assTranslation.changeKd(40);
 	assTranslation.changeKi(0);
 	assTranslation.changeVmax(0);
 	assTranslation.changeKpVitesse(0);	
