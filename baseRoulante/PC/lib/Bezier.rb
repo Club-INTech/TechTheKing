@@ -50,4 +50,9 @@ point1=Point.new(0,0)
 point2=Point.new(0,20000)
 point3=Point.new(20000,20000)
 point4=Point.new(20000,0)
-interfaceDeTransfert.ecrire "e"
+sleep 2
+interfaceDeTransfert.ecrire "?"
+listeTest=Bezier.new([point1,point2,point3,point4],50).prettyPrint
+listeTest.convertirEnConsignes.convertirEnTicks.transfertSerie(interfaceDeTransfert)
+while 1
+end

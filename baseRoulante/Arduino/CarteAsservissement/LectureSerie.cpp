@@ -55,13 +55,12 @@ LectureSerie::traitement() {
 		manager.switchAssDistance();
 		manager.switchAssAngle();
 		break;
-	case 'f': // réactive interuptions
-		PCICR |= (1 << PCIE2);
+	case 'f': // A faire avant de charger une liste de points
+		manager.setNbConsignes(00000000);
 		break;
 	case 'g': // push consigne etape 1
 		litEntierLong(&i);
-		if (i >= 0)
-			manager.pushConsigneDistance(i);
+		manager.pushConsigneDistance(i);
 		break;	
 	case 'h':
 		manager.switchAssDistance();

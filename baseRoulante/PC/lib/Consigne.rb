@@ -29,11 +29,11 @@ end
 class ListeConsignes < Array
 	
 	def transfertSerie interfaceDeTransfert
-		#~ interfaceDeTransfert.ecrire("e") 
-		#~ each do |consigne|
-			#~ consigne.transfertSerie interfaceDeTransfert
-		#~ end
-		#~ interfaceDeTransfert.ecrire("e") 
+		interfaceDeTransfert.ecrire("e") 
+		each do |consigne|
+			consigne.transfertSerie interfaceDeTransfert
+		end
+		interfaceDeTransfert.ecrire("e") 
 	end
 	
 	def convertirEnTicks

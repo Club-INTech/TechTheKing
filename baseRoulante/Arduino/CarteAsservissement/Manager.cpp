@@ -223,7 +223,7 @@ void Manager::init()
 	TIMSK2 |= (1 << TOIE2);
 	TIMSK2 &= ~(1 << OCIE2A);
 	
-	tableauConsignes.nbConsignes=1;
+	tableauConsignes.nbConsignes=0;
 	indiceConsigneActuelle=1;
 
 	assRotation.changeKp(10);
@@ -304,7 +304,7 @@ void	Manager::test(){
 	changeIemeConsigne(4759, 7320,47);
 	changeIemeConsigne(4831, 7537,48);
 	changeIemeConsigne(4900, 7763,49);
-	changeIemeConsigne(4900, 7998,50);
+	changeIemeConsigne(4966, 7998,50);
 	sei();
 
 }
@@ -333,14 +333,12 @@ void
 Manager::changeIemeConsigneDistance(long int distanceDonnee, int i)
 {
 	(tableauConsignes.listeConsignes[i-1]).distance=distanceDonnee;
-	(tableauConsignes.listeConsignes[i-1]).angle=0;
 }
 
 void
 Manager::changeIemeConsigneAngle(long int angleDonne, int i)
 {
 	(tableauConsignes.listeConsignes[i-1]).angle=angleDonne;
-	(tableauConsignes.listeConsignes[i-1]).distance=0;
 }
 
 /*
@@ -352,6 +350,7 @@ Manager::changeIemeConsigneAngle(long int angleDonne, int i)
 void 
 Manager::pushConsigneDistance(long int distanceDonnee) // on transfert d'abord la distance (pas d'incrémentation de nbConsignes)
 {
+	tableauConsignes.nbConsignes+=1; //ajout d'une case dans le tableau.
 	changeIemeConsigneDistance(distanceDonnee, (tableauConsignes.nbConsignes));
 }
 
@@ -360,7 +359,6 @@ void
 Manager::pushConsigneAngle(long int angleDonne)
 {
 	changeIemeConsigneAngle(angleDonne, (tableauConsignes.nbConsignes) );
-	tableauConsignes.nbConsignes+=1; //ajout d'une case dans le tableau.
 
 }
 
@@ -389,16 +387,19 @@ Manager::switchAssAngle()
 void Manager::reset()
 {
 	cli();
-	Serial.print(tableauConsignes.nbConsignes);
-	Serial.print(distanceTotale);
+	Serial.print((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).distance);
+	Serial.print(" ");
+	Serial.print((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).angle);
 	Serial.print("   ");
-	Serial.print(angleTotal);
+	Serial.print((tableauConsignes.listeConsignes[indiceConsigneActuelle-2]).distance);
+	Serial.print(" ");
+	Serial.print((tableauConsignes.listeConsignes[indiceConsigneActuelle-2]).angle);
 	encodeurG=0;
 	encodeurD=0;
 	distanceBkp = 0;
 	angleBkp = 0;
 	indiceConsigneActuelle=1;
-	tableauConsignes.nbConsignes=1;
+	tableauConsignes.nbConsignes=0;
 	(tableauConsignes.listeConsignes[0]).distance = 0;
 	(tableauConsignes.listeConsignes[0]).angle = 0;
 	sei();
