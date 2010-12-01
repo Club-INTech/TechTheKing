@@ -89,8 +89,8 @@ else{
 }
 	
 
-if(ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).distance - distance) < 15
-	&& ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).angle - angle) < 15 ){
+if(ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).distance - distance) < 60
+	&& ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).angle - angle) < 60 ){
 		if( indiceConsigneActuelle < tableauConsignes.nbConsignes ){
 		indiceConsigneActuelle++;
 	}
