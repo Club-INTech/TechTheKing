@@ -387,13 +387,13 @@ Manager::switchAssAngle()
 void Manager::reset()
 {
 	cli();
+	
 	Serial.print((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).distance);
 	Serial.print(" ");
 	Serial.print((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).angle);
 	Serial.print("   ");
-	Serial.print((tableauConsignes.listeConsignes[indiceConsigneActuelle-2]).distance);
-	Serial.print(" ");
-	Serial.print((tableauConsignes.listeConsignes[indiceConsigneActuelle-2]).angle);
+	Serial.print(tableauConsignes.nbConsignes);
+	Serial.print("\n");
 	encodeurG=0;
 	encodeurD=0;
 	distanceBkp = 0;

@@ -48,8 +48,8 @@ end
 interfaceDeTransfert=SerieThread.new
 point1=Point.new(0,0)
 point2=Point.new(0,3500)
-point3=Point.new(3500,3500)
-point4=Point.new(3500,7000)
+point3=Point.new(-3500,3500)
+point4=Point.new(-3500,7000)
 sleep 2
 interfaceDeTransfert.ecrire "?"
 listeTest=Bezier.new([point1,point2,point3,point4],100).prettyPrint

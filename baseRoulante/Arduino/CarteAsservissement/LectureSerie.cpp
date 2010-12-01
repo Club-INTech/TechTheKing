@@ -60,7 +60,12 @@ LectureSerie::traitement() {
 		break;
 	case 'g': // push consigne etape 1
 		litEntierLong(&i);
-		manager.pushConsigneDistance(i);
+		if (i >= 10000000)
+		//  avance
+			manager.pushConsigneDistance(i-10000000);
+		else if(i>=0)
+		// recule
+			manager.pushConsigneDistance(-i);
 		break;	
 	case 'h':
 		manager.switchAssDistance();
@@ -102,9 +107,12 @@ LectureSerie::traitement() {
 		break;
 	case 'q': // push consigne (étape 2)
 		litEntierLong(&i);
-		if (i >= 0) {
-			manager.pushConsigneAngle(i);
-		}
+		if (i >= 10000000)
+		//  avance
+			manager.pushConsigneAngle(i-10000000);
+		else if(i>=0)
+		// recule
+			manager.pushConsigneAngle(-i);
 		break;
 	case 'r':
 		litEntierLong(&i);

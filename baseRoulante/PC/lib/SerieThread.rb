@@ -14,7 +14,7 @@ class SerieThread
 
 	# Initialisation à partir d'un périphérique et d'une vitesse de 
 	# connexion
-	def initialize(peripherique = "/dev/ttyUSB1", vitesse = 57600)
+	def initialize(peripherique = "/dev/ttyUSB0", vitesse = 57600)
 		port_str = peripherique
 		baud_rate = vitesse
 		data_bits = 8
