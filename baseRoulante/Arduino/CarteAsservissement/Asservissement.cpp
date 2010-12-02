@@ -22,9 +22,6 @@ Asservissement::Asservissement()
 	// Vitesse du robot
 	vitesse = 0;
 
-		
-
-	
 	// Aucun blocage à l'initialisation
 	blocageDetecte = 0;
 	blocageTemp = 0;
@@ -34,47 +31,44 @@ Asservissement::Asservissement()
 
 }
 
-
 /*
  * Calcule la puissance moteur à fournir pour atteindre la nouvelle position théorique
  */
 int Asservissement::calculePwm(long int consigne, long int positionReelle)
 {
-	long int erreur = (consigne - positionReelle);
-	if(erreur<=3)
+	long int erreur = consigne - positionReelle;
+	if (erreur <= 3)
 		integraleErreur=0;
 	else
 		integraleErreur+=erreur;
-	long int pwm = kp * erreur - activationKd * kd * vitesse / 100 - ki  * integraleErreur; // la dérivée de l'erreur est égale à -vitesse . On divise par 100 car sinon kd < 1
+		
+	// la dérivée de l'erreur est égale à -vitesse . On divise par 100 car sinon kd < 1
+	long int pwm = kp * erreur - activationKd * kd * vitesse / 100 - ki  * integraleErreur; 
 
-	if(vitesse>vMax){
-		pwm+=kpVitesse*(vMax-vitesse); // pas besoin de dérivateur ou d'intégrateur ici
+	if (vitesse > vMax) {
+		// pas besoin de dérivateur ou d'intégrateur ici
+		pwm += kpVitesse * (vMax - vitesse); 
 	}
 
-	if (pwm > maxPWM){
+	if (pwm > maxPWM) {
 		pwm = maxPWM;
 	}
-	else if (pwm < -maxPWM ) 
-	{
+	
+	if (pwm < -maxPWM ) {
 		pwm = -maxPWM;
 	}
 	
 	return pwm;
 }
 
-
-
-
 /*
  * Arrêt progressif du moteur
- */
- 
+ */ 
 void 
 Asservissement::stop()
 {
 
 }
-
 
 /*
  * Définition dynamique des constantes
@@ -85,13 +79,11 @@ Asservissement::changeKp(unsigned int kpDonne)
 	kp = kpDonne;
 }
 
-
 void 
 Asservissement::changePWM(int maxPwmDonne)
 {
 	maxPWM = maxPwmDonne;
 }
-
 
 void
 Asservissement::changeVmax(long int vMaxDonne)
@@ -116,7 +108,6 @@ Asservissement::changeKi(unsigned int kiDonne)
 {
 	ki = kiDonne;
 }
-
 
 void
 Asservissement::changeKpVitesse(unsigned int kpVitesseDonne)
