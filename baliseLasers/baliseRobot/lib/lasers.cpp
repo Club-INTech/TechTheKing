@@ -2,8 +2,8 @@
 
 void lasers_init() {
 	sbi(DDRD,DDD5);		//définie la sortie B du timer0
-	OCR0A=0x30;		//48//défini la fréquence de 333kHz en accord avec le diviseur
-	OCR0B=0x18;		//24//défini le rapport cyclique de 50%
+	OCR0A=0x78;		//120//défini la fréquence de 16,67kHz en accord avec le prescaler
+	OCR0B=0x3C;		//60//défini le rapport cyclique de 50%
 	/*positionner le mode pwm*/
 	sbi(TCCR0A,WGM00);	//
 	sbi(TCCR0A,WGM01);	//fast-pwm, TOP=OCR0A
@@ -13,7 +13,7 @@ void lasers_init() {
 	cbi(TCCR0A,COM0B0);	//réussie et mis à 1 à passage par BOTTOM
 	/*sélection de la source du timer*/
 	cbi(TCCR0B,CS02);	//
-	cbi(TCCR0B,CS01);	//diviseur à 1->le timer s'incrémente à 16MHz
-	sbi(TCCR0B,CS00);	//
+	sbi(TCCR0B,CS01);	//prescaler à 8
+	cbi(TCCR0B,CS00);	//
 	return ;
 }
