@@ -32,3 +32,4 @@ Trame envisagée :
 	soit des trames de : 40 bits=5 octets ou 32 bits = 4 octets selon les cas.
 
 
+Pour le codage de canal : maintenir une transmission sur le canal, typiqueme t 010101010101010... Et coder nos bits là dessus (ex : 1=11, 0=00 ; ou 1=pas de changement, et 0=on laisse le changement). Permet de conserver une utilisation du medium et calmer les réglages automatique des gains des différents récepteurs.
