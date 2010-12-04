@@ -27,7 +27,7 @@ class Consigne
 	
 	def convertirEnTicks
 		#le /2 est un subterfuge pour 360°
-		@rayon=(@rayon*1.01315).to_i
+		@rayon=(@rayon*9.87020678).to_i
 		@angle=(@angle*1523.9085).to_i
 	end
 	
@@ -69,3 +69,4 @@ class ListeConsignes < Array
 	end
 	
 end
+
