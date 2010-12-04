@@ -33,6 +33,9 @@ class Point
 	
 	# Test d'égalité de 2 points
 	def == p
+		if p==nil
+			return nil
+		end
 		(p.x == @x && p.y == @y)
 	end
 	
@@ -45,6 +48,11 @@ class Point
 	        @x = @x.to_i
 	        @y = @y.to_i
                 self
+	end
+	
+	#calcule la distance à un autre point (évite de créer un vecteur juste pour ça...)
+	def distance point2
+		return Math.sqrt((point2.x - @x)**2 + (point2.y - @y)**2)
 	end
 	
 	def symetrie
@@ -91,6 +99,15 @@ class ListePoints < Array
 			@@listeConsignes.push(Consigne.new(@@consigneAPush.rayon,@@consigneAPush.angle))
 		end
 		return @@listeConsignes
+	end
+	
+	def elementCommun pointRecherche
+		each do |point|
+		    if(point.x==pointRecherche.x and point.y==pointRecherche.y)
+				return point
+		    end
+		end
+		return nil
 	end
 	
 end

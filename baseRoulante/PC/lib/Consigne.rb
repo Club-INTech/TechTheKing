@@ -1,4 +1,4 @@
-require "./SerieThread"
+require "SerieThread"
 
 class Consigne
 	attr_accessor :rayon, :angle
@@ -11,7 +11,7 @@ class Consigne
 	def transfertSerie interfaceDeTransfert
 		puts("g" + @angle.to_s.rjust(8, "0"))
 		puts("q" + @rayon.to_s.rjust(8, "0"))
-		interfaceDeTransfert.ecrire ("g" + @angle.to_s.rjust(8, "0")) #ajout de la distance à la consigne actuelle
+		interfaceDeTransfert.ecrire("g" + @angle.to_s.rjust(8, "0")) #ajout de la distance à la consigne actuelle
 		interfaceDeTransfert.ecrire("q" + @rayon.to_s.rjust(8, "0")) #ajout de l'angle puis ajout d'une case dans le tableaux de consigne.
 	end
 	
