@@ -144,8 +144,9 @@ private
 end
 
 pion = Obstacle.new(150,150,100)
+pion2 = Obstacle.new(300,450,100)
 puts pion.contientPoint(Point.new(100,100))
 listeObstacles = ListeObstacles.new
 listeObstacles.push(pion)
-puts listeObstacles.contientPoint(Point.new(100,100))
-AStar.new(Point.new(0,0),Noeud.new(1000,1000),listeObstacles).lissageBezier(100).convertirEnConsignes.convertirEnTicks.prettyPrint.prettyPrint
+listeObstacles.push(pion2)
+AStar.new(Point.new(0,0),Noeud.new(1000,1000),listeObstacles).lissageBezier(100).prettyPrint
