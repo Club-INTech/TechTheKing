@@ -32,7 +32,16 @@ class Consigne
 	end
 	
 	def prettyPrint
-		puts "A = " + @angle.to_i.to_s.rjust(8, "0") + ", R = " + @rayon.to_i.to_s.rjust(8, "0")
+		if(@angle>=0)
+			puts("g1" + @angle.to_s.rjust(7, "0"))
+		else
+			puts("g" + (-1*@angle).to_s.rjust(8, "0"))
+		end
+		if(@rayon>=0)
+			puts("q1" + @rayon.to_s.rjust(7, "0"))
+		else
+			puts("q" + (-1*@rayon).to_s.rjust(8, "0"))
+		end
 	end
 	
 end

@@ -31,7 +31,7 @@ end
 class AStar < ListePoints
 public
 
-	def initialize depart=Point.new(0,0), arrivee=Noeud.new(0,552)
+	def initialize depart=Point.new(0,0), arrivee=Noeud.new(1243,2785)
 		@depart=depart
 		@arrivee=arrivee
 		@listeFermee=ListePoints.new
@@ -43,11 +43,11 @@ public
 private
 
 	def ajouterCasesAdjacentes point
-		for i in [point.x-10,point.x,point.x+10]
+		for i in [point.x-50,point.x,point.x+50]
 			if(i<0 or i>3000)
 				next
 			end
-			for j in [point.y-10,point.y,point.y+10]
+			for j in [point.y-50,point.y,point.y+50]
 				if(j<0 or j>3000)
 					next
 				end
@@ -106,17 +106,14 @@ private
 	def rechercheChemin
 		@@courant=Noeud.new(@depart.x,@depart.y,0,@depart.distance(@arrivee))
 		@listeOuverte.push(@@courant)
-		puts @listeOuverte
 		transfererNoeud(@@courant)
-		puts @listeFermee
 		ajouterCasesAdjacentes(@@courant)
-		while(!(@@courant.cout2<10) and !@listeOuverte.empty?)
+		while(!(@@courant.cout2<50) and !@listeOuverte.empty?)
 			@@courant = trouverMeilleurNoeud
 			transfererNoeud @@courant
-			@@courant.prettyPrint
 			ajouterCasesAdjacentes @@courant
 		end
-		if(@@courant.cout2<10)
+		if(@@courant.cout2<50)
 			@arrivee.parent=@@courant
 			remonterChemin
 		else
@@ -126,4 +123,4 @@ private
 	
 end
 
-AStar.new().prettyPrint
+AStar.new().lissageBezier(100).convertirEnConsignes.convertirEnTicks.prettyPrint

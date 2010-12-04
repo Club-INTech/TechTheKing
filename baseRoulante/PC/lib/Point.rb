@@ -87,6 +87,14 @@ class ListePoints < Array
 		end
 	end
 	
+	def lissageBezier n
+		bezier=ListePoints.new
+		for i in (0..n)
+			bezier.push(PointBezier(self,i.to_f/n))
+		end
+		return bezier
+	end
+	
 	def convertirEnConsignes
 		@@listeConsignes = ListeConsignes.new
 		@@consigneAPush = Consigne.new
@@ -110,4 +118,19 @@ class ListePoints < Array
 		return nil
 	end
 	
+private
+
+	def PointBezier(listePointsControle,t)
+		#On initialiste la liste des barycentres
+		@@listeBarycentres=listePointsControle.clone
+		@@longueur=listePointsControle.length-1
+		#On recalcule les barycentres. (Algorithme de De Casteljau)
+		for i in (0..@@longueur-1)
+			for j in (0 ..@@longueur-1-i)
+				@@listeBarycentres[j]=@@listeBarycentres[j] * (1-t) + @@listeBarycentres[j+1] * (t)
+			end
+		end
+		#Le dernier barycentre calculé est le point de la courbe		
+		return @@listeBarycentres[0]
+	end
 end
