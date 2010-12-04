@@ -31,7 +31,7 @@ end
 class AStar < ListePoints
 public
 
-	def initialize depart=Point.new(0,0), arrivee=Noeud.new(0,500)
+	def initialize depart=Point.new(0,0), arrivee=Noeud.new(0,552)
 		@depart=depart
 		@arrivee=arrivee
 		@listeFermee=ListePoints.new
@@ -43,11 +43,11 @@ public
 private
 
 	def ajouterCasesAdjacentes point
-		for i in (point.x-1..point.x+1)
+		for i in [point.x-10,point.x,point.x+10]
 			if(i<0 or i>3000)
 				next
 			end
-			for j in (point.y-1..point.y+1)
+			for j in [point.y-10,point.y,point.y+10]
 				if(j<0 or j>3000)
 					next
 				end
@@ -104,21 +104,20 @@ private
 	end
 	
 	def rechercheChemin
-		@@courant=@depart.clone
+		@@courant=Noeud.new(@depart.x,@depart.y,0,@depart.distance(@arrivee))
 		@listeOuverte.push(@@courant)
 		puts @listeOuverte
 		transfererNoeud(@@courant)
 		puts @listeFermee
 		ajouterCasesAdjacentes(@@courant)
-		puts @listeOuverte.empty?
-		puts @@courant.x != @arrivee.x
-		puts @@courant.y != @arrivee.y
-		while(!(@@courant.x == @arrivee.x and @@courant.y == @arrivee.y) and !@listeOuverte.empty?)
+		while(!(@@courant.cout2<10) and !@listeOuverte.empty?)
 			@@courant = trouverMeilleurNoeud
 			transfererNoeud @@courant
+			@@courant.prettyPrint
 			ajouterCasesAdjacentes @@courant
 		end
-		if( @@courant.x = @arrivee.x and @@courant.y = @arrivee.y)
+		if(@@courant.cout2<10)
+			@arrivee.parent=@@courant
 			remonterChemin
 		else
 			puts("Pas de chemin trouvé");

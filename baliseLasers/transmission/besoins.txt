@@ -1,0 +1,35 @@
+Robot adverse : angle + distance  : données en polaire par rapport à notre robot.
+	angle : top laser -> retour robot -> angle connu direct
+	distance : calcul à partir du temps séparant les deux lasers dans l'avr de la balise robot adverse -> retour robot -> distance connue
+
+	envoie direct à notre robot -> besoin que notre robot gère les trames venant des balises fixes et de la balise robot adverse <- occupe du cpu (déjà chargé). 
+	envoie à notre robot via les balises fixes -> possibilité de calculer en plus les coordonnées (x,y) du robot adverse à partir de la position connue de notre robot et de l'instant de top sur les balises fixes. 
+
+Balise fixe : 
+	Calcul de la triangulation à partir des trois distances. 
+	Calcul de la triangulation à partir de deux distances et d'un angle séparant les deux balises <- possibilité de "perdre" une balise fixe et/ou de choisir les meilleurs balises.
+	
+	Renvoie des données brutes (?nécessaire?)
+	Renvoie de la coordonnée du robot calculée
+	Renvoie de la trame robot adverse si balise fixe utilisée en intermédiaire ou renvoie direct de la coordonnée du robot adverse
+
+Bilan : tous les calculs de position pourront être faits sur l'avr des balises fixes! On ne transmettra que les coordonnées de notre robot et du robot adverse.
+
+Décalages angulaires liés aux latences : 
+	tours par seconde : 	40		
+	durée (µs) : 		200	50	20
+	angle (°) : 		2,88	0,72	0,288
+	Un décalage angulaire commence à être critique s'il dépasse 0.5° tout en étant non compensables (~non constant)
+
+Distance : comprise entre 0 et 3m, précision minimale pour ne pas limiter le système : 5mm (ou mieux 1mm).
+	=> codable sur 12 bits (4096 niveaux), ou à la limite sur 11 bits (2048 niveaux) avec une table de conversion à la réception.
+Angle entre deux balises : toujours compris entre 0 et 180°, précision minimal pour ne pas limiter le système : 0.3° (ou mieux 0.1°).
+	=> codable sur 9 bits (512 niveaux).
+Trame envisagée : 
+	octet de start avec codage du type de trame (grosse redondance là dedans)
+	données (12+12=24 bits pour une trame coordonnées ou 12+9=21 bits pour la trame robot adverse)
+	crc (8 bits ou 3 bits pour rester rond sur nos octets)
+	soit des trames de : 40 bits=5 octets ou 32 bits = 4 octets selon les cas.
+
+
+Pour le codage de canal : maintenir une transmission sur le canal, typiqueme t 010101010101010... Et coder nos bits là dessus (ex : 1=11, 0=00 ; ou 1=pas de changement, et 0=on laisse le changement). Permet de conserver une utilisation du medium et calmer les réglages automatique des gains des différents récepteurs.

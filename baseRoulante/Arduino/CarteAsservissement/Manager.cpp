@@ -16,17 +16,17 @@ volatile char etatPins = 0;
 
 ISR(PCINT2_vect)
 {
-		unsigned char changementPins 	= (PIND & MASQUE) ^ etatPins;
-		etatPins 		= PIND & MASQUE;
+	unsigned char changementPins 	= (PIND & MASQUE) ^ etatPins;
+	etatPins 		= PIND & MASQUE;
     
-		if (changementPins & ENCGA){
+	if (changementPins & ENCGA){
 		if (etatPins & ENCGA) //front montant codeur 1 voix A
 			(etatPins & ENCGB)?encodeurG++:encodeurG--;
-				else                  //front descendant codeur 1 voix A
+		else                  //front descendant codeur 1 voix A
 			(etatPins & ENCGB)?encodeurG--:encodeurG++;
 	}
 
-		if (changementPins & ENCGB){
+	if (changementPins & ENCGB){
 		if (etatPins & ENCGB) //front montant codeur 1 voix B
 			(etatPins & ENCGA)?encodeurG--:encodeurG++;
 		else                  //front descendant codeur 1 voix B
@@ -43,7 +43,7 @@ ISR(PCINT2_vect)
 	if (changementPins & ENCDB){
 		if (etatPins & ENCDB) //front montant codeur 2 voix B
 			(etatPins & ENCDA)?encodeurD--:encodeurD++;
-			else                  //front descendant codeur 2 voix B
+		else                  //front descendant codeur 2 voix B
 			(etatPins & ENCDA)?encodeurD++:encodeurD--;
 	}
 
@@ -52,53 +52,46 @@ ISR(PCINT2_vect)
 void
 Manager::assPolaire()
 {
-
-/* Calculs de position du robot
-*
-*/
+	// Calculs de position du robot
 	long int angle = 	encodeurG - encodeurD;
 	long int distance = 	encodeurG + encodeurD;
 
-/*
-*Réactualisation des vitesses du robot
-*/
-
+	// R�actualisation des vitesses du robot
 	assRotation.setVitesse((angle-angleBkp)*1000); // 305 = 1000/(3.279ms)  pour avoir la vitesse en tic/s
 	assTranslation.setVitesse((distance-distanceBkp)*1000); // Meme chose
 	angleBkp = angle;
 	distanceBkp = distance;
 
-/*
-* On changera de consigne si :
-*	-on est suffisament proche de la consigne en distance
-*	-on est suffisament aligné avec la consigne
-* Ceci ne s'applique pas à la dernière consigne
-*/
+	/*
+	* On changera de consigne si :
+	*	-on est suffisament proche de la consigne en distance
+	*	-on est suffisament aligné avec la consigne
+	* Ceci ne s'applique pas à la dernière consigne
+	*/
 
 
-/*
-* factorisation de la désactivation de Kd
-*/
-if( indiceConsigneActuelle < tableauConsignes.nbConsignes ) {
-	assRotation.setActivationKd(0);
-	assTranslation.setActivationKd(1);
-}
-else{
-	assRotation.setActivationKd(1);
-	assTranslation.setActivationKd(1);
-}
-	
-
-if(ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).distance - distance) < 30
-	&& ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).angle - angle) < 8 ){
-		if( indiceConsigneActuelle < tableauConsignes.nbConsignes ){
-		indiceConsigneActuelle++;
+	/*
+	* factorisation de la désactivation de Kd
+	*/
+	if( indiceConsigneActuelle < tableauConsignes.nbConsignes ) {
+		assRotation.setActivationKd(0);
+		assTranslation.setActivationKd(0);
 	}
-}
+	else{
+		assRotation.setActivationKd(1);
+		assTranslation.setActivationKd(1);
+	}
+	
+	if(ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).distance - distance) < 60
+		&& ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).angle - angle) < 60 ){
+			if( indiceConsigneActuelle < tableauConsignes.nbConsignes ){
+			indiceConsigneActuelle++;
+		}
+	}
 
-/*
-*Calcul des PWM
-*/
+	/*
+	*Calcul des PWM
+	*/
 	int pwmRotation = (activationAssAngle?assRotation.calculePwm(((tableauConsignes.listeConsignes)[indiceConsigneActuelle-1]).angle,angle):0);
 	int pwmTranslation = (activationAssDistance?assTranslation.calculePwm(((tableauConsignes.listeConsignes)[indiceConsigneActuelle-1]).distance,distance):0);
 
@@ -106,10 +99,9 @@ if(ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).distance - di
 	int pwmD = pwmTranslation - pwmRotation;
 	
 
-/*
-*Envoi des PWM
-*/	
-
+	/*
+	* Envoi des PWM
+	*/	
 
 	if (pwmG > PWM_MAX) 
 		pwmG = PWM_MAX;
@@ -146,19 +138,6 @@ if(ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).distance - di
 		PORTB |= PINDIRD;
 			OCR1B = -pwmD;
 	}
-
-/*
-* Fin de la boucle
-*/
-
-		
-	/*
-	* Reprise TechTheWave
-	*/
-	 
-	// Réactivation des interruptions
-	// Reprise de l'envoi de position
-	//TIMSK2 |= savTIMSK2; 
 }
 
 /*
@@ -223,19 +202,19 @@ void Manager::init()
 	TIMSK2 |= (1 << TOIE2);
 	TIMSK2 &= ~(1 << OCIE2A);
 	
-	tableauConsignes.nbConsignes=1;
+	tableauConsignes.nbConsignes=0;
 	indiceConsigneActuelle=1;
 
 	assRotation.changeKp(10);
 	assRotation.changePWM(1023);
-	assRotation.changeKd(30);
+	assRotation.changeKd(50);
 	assRotation.changeKi(0);
 	assRotation.changeVmax(0);
 	assRotation.changeKpVitesse(0);
 
 	assTranslation.changeKp(15);
 	assTranslation.changePWM(1023);
-	assTranslation.changeKd(30);
+	assTranslation.changeKd(50);
 	assTranslation.changeKi(0);
 	assTranslation.changeVmax(0);
 	assTranslation.changeKpVitesse(0);	
@@ -304,7 +283,7 @@ void	Manager::test(){
 	changeIemeConsigne(4759, 7320,47);
 	changeIemeConsigne(4831, 7537,48);
 	changeIemeConsigne(4900, 7763,49);
-	changeIemeConsigne(4900, 7998,50);
+	changeIemeConsigne(4966, 7998,50);
 	sei();
 
 }
@@ -320,56 +299,44 @@ Manager::changeIemeConsigne(long int distanceDonnee, long int angleDonne,int i)
 /*
 * Fonctions utiles au transfert de la liste de points via la liaison série.
 */
-
-
 void
 Manager::setNbConsignes(int nbConsignesDonne)
 {
 	tableauConsignes.nbConsignes=nbConsignesDonne;
 }
 
-
 void 
 Manager::changeIemeConsigneDistance(long int distanceDonnee, int i)
 {
 	(tableauConsignes.listeConsignes[i-1]).distance=distanceDonnee;
-	(tableauConsignes.listeConsignes[i-1]).angle=0;
 }
 
 void
 Manager::changeIemeConsigneAngle(long int angleDonne, int i)
 {
 	(tableauConsignes.listeConsignes[i-1]).angle=angleDonne;
-	(tableauConsignes.listeConsignes[i-1]).distance=0;
 }
 
 /*
-*A voir, si on peut envoyer via un long int à la fois la distance et l'angle.
-*Diviserait par environ deux le temp de chargement de la liste de points en série.
+* A voir, si on peut envoyer via un long int à la fois la distance et l'angle.
+* Diviserait par environ deux le temp de chargement de la liste de points en série.
 */
-
-
 void 
 Manager::pushConsigneDistance(long int distanceDonnee) // on transfert d'abord la distance (pas d'incr�mentation de nbConsignes)
 {
+	tableauConsignes.nbConsignes+=1; //ajout d'une case dans le tableau.
 	changeIemeConsigneDistance(distanceDonnee, (tableauConsignes.nbConsignes));
 }
-
 
 void 
 Manager::pushConsigneAngle(long int angleDonne)
 {
 	changeIemeConsigneAngle(angleDonne, (tableauConsignes.nbConsignes) );
-	tableauConsignes.nbConsignes+=1; //ajout d'une case dans le tableau.
-
 }
-
 
 /*
 * Change les asservissements d'état
 */
-
-
 void 
 Manager::switchAssDistance()
 {
@@ -385,37 +352,30 @@ Manager::switchAssAngle()
 /*
 * reset l'asservissement
 */
-
 void Manager::reset()
 {
 	cli();
-	Serial.print(tableauConsignes.nbConsignes);
-	Serial.print(distanceTotale);
+	
+	Serial.print((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).distance);
+	Serial.print(" ");
+	Serial.print((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).angle);
 	Serial.print("   ");
-	Serial.print(angleTotal);
+	Serial.print(tableauConsignes.nbConsignes);
+	Serial.print("\n");
 	encodeurG=0;
 	encodeurD=0;
 	distanceBkp = 0;
 	angleBkp = 0;
 	indiceConsigneActuelle=1;
-	tableauConsignes.nbConsignes=1;
+	tableauConsignes.nbConsignes=0;
 	(tableauConsignes.listeConsignes[0]).distance = 0;
 	(tableauConsignes.listeConsignes[0]).angle = 0;
 	sei();
 }
 
-
-
-/*
-* Portion à modifier 
-* Réduire le préscaler à 500Hz
-*/
- 
-
 /*
 * Comprends pas.
 */
-
 unsigned char stator1 = 1;
 
 ISR(TIMER2_OVF_vect)
