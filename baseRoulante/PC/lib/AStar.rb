@@ -37,7 +37,8 @@ end
 class AStar < ListePoints
 public
 
-	def initialize depart=Point.new(0,0), arrivee=Noeud.new(1243,2785), listeObstacles=listeObstacles.new
+	def initialize precision=30, depart=Point.new(0,0), arrivee=Noeud.new(1243,2785), listeObstacles=listeObstacles.new
+		@precision=precision
 		@depart=depart
 		@arrivee=arrivee
 		@listeObstacles=listeObstacles
@@ -50,11 +51,11 @@ private
 
 	def ajouterCasesAdjacentes point
 	#on découpe en carrés de 100mm = 10cm.
-		for i in [point.x-30,point.x,point.x+30]
+		for i in [point.x-@precision,point.x,point.x+@precision]
 			if(i<0 or i>3000)
 				next
 			end
-			for j in [point.y-30,point.y,point.y+30]
+			for j in [point.y-@precision,point.y,point.y+@precision]
 				if(j<0 or j>3000)
 					next
 				end
@@ -72,11 +73,7 @@ private
 					@tmp.cout1 = @depart.distance(@tmp)
 					@tmp.cout2 = @arrivee.distance(@tmp)
 					@tmp.cout3 = @tmp.cout1 + @tmp.cout2
-					if(@tmp.cout2==0)
-						@arrivee.parent = point
-					else
-						@tmp.parent=point
-					end
+					@tmp.parent=point
 					if(@listeOuverte.elementCommun(@tmp)!=nil)
 						#si le noeud temporaire est mieux que celui qui existe actuellement dans la liste ouverte, on le met à jour
 						(@listeOuverte.elementCommun(@tmp)).cout1 = @tmp.cout1
@@ -110,12 +107,14 @@ private
 	
 	def remonterChemin
 		@@noeudCourant=@arrivee
-		while(@@noeudCourant.parent!=@depart)
-			self.push(Point.new(@@noeudCourant.x,@@noeudCourant.y))
+		while(@@noeudCourant!=@depart)
+			push(Point.new(@@noeudCourant.x,@@noeudCourant.y))
 			@@noeudCourant=@@noeudCourant.parent
 		end
+		push(@depart)
 		#ne pas oublier de remettre la liste dans l'ordre, ça évitera des absurdités.
-		self.reverse!
+		reverse!
+		
 	end
 	
 	def rechercheChemin
@@ -128,12 +127,12 @@ private
 		transfererNoeud(@@courant)
 		#on commence à remplir la liste ouverte
 		ajouterCasesAdjacentes(@@courant)
-		while(!(@@courant.cout2<30) and !@listeOuverte.empty?)
+		while(!(@@courant.cout2<@precision) and !@listeOuverte.empty?)
 			@@courant = trouverMeilleurNoeud
 			transfererNoeud @@courant
 			ajouterCasesAdjacentes @@courant
 		end
-		if(@@courant.cout2<30)
+		if(@@courant.cout2<=@precision)
 			@arrivee.parent=@@courant
 			remonterChemin
 		else
@@ -142,11 +141,3 @@ private
 	end
 	
 end
-
-pion = Obstacle.new(150,150,100)
-pion2 = Obstacle.new(300,450,100)
-puts pion.contientPoint(Point.new(100,100))
-listeObstacles = ListeObstacles.new
-listeObstacles.push(pion)
-listeObstacles.push(pion2)
-AStar.new(Point.new(0,0),Noeud.new(1000,1000),listeObstacles).lissageBezier(100).prettyPrint
