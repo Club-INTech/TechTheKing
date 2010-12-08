@@ -1,5 +1,13 @@
+#ifndef __POINT
+#define __POINT
+
+#define CONVERSION_ANGLE_TICKS 1523.9085
+#define CONVERSION_DISTANCE_TICKS 9.87020678
+
 #include <vector>
 #include <iostream>
+#include "Consigne.h"
+#include <cmath>
 
 using namespace std;
 
@@ -11,6 +19,17 @@ class Point{
 		 */
 		
 		Point(int x=0,int y=0);
+		
+		void print() const;
+		
+		/*
+		 * accesseurs
+		 */
+		
+		void setX(int x);
+		void setY(int y);
+		int getX() const;
+		int getY() const;
 		
 		/*
 		 * opérateurs classiques de multiplication, division de points par une constante,et d'ajouts, de soustraction et de comparaison de points
@@ -32,7 +51,6 @@ class Point{
 		
 		bool operator==(const Point& Point2);
 		
-		void print();
 		
 		
 	private:
@@ -47,3 +65,12 @@ class Point{
  */
 
 vector<Point> lissageBezier(const vector<Point>& pointsDeControle,int nbPointsBezier);
+
+/*
+ * la fonction permettant de convertir une liste de points en liste de consignes
+ */
+
+vector<Consigne> convertirEnConsignes(const vector<Point>& listePoints);
+
+
+#endif
