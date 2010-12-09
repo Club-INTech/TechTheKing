@@ -53,6 +53,10 @@ void Noeud::setParent(Noeud* noeud){
 
 //ce qui concerne AStar
 
+vector <Point> AStar::getChemin(){
+	return m_chemin;
+}
+
 
 AStar::AStar(int precision, Noeud depart, Noeud arrivee, vector<Obstacle*>listeObstacles){
 	m_precision=precision;
@@ -78,7 +82,6 @@ void AStar::ajouterCasesAdjacentes(Noeud noeud){
 			if(estDansListe(m_listeFermee,tmp)==-1){ //si le a déjà été étudié, on ne fait rien, sinon...
 				Noeud* parent = new Noeud;
 				(*parent)=noeud;
-// 				cout<<parent<<endl;
 				tmp.setCout1(tmp.rayon(m_depart));
 				tmp.setCout2(tmp.rayon(m_arrivee));
 				tmp.setCout3(tmp.getCout1()+tmp.getCout2());
