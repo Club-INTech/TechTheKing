@@ -9,7 +9,7 @@ Point::Point(int x,int y){
 	m_y=y;
 }
 
-void Point::print() const{
+void Point::print() {
 	cout << "x= " << m_x << " ; y= " << m_y << endl;
 }
 
@@ -38,7 +38,7 @@ int Point::getY() const{
  * différents opérateurs
  */
 
-Point Point::operator+(const Point& Point2){
+Point Point::operator+(Point Point2) const{
 	int x=m_x;
 	int y=m_y;
 	x+=Point2.m_x;
@@ -47,7 +47,7 @@ Point Point::operator+(const Point& Point2){
 	return resultat;
 }
 
-Point Point::operator-(const Point& Point2){
+Point Point::operator-(Point Point2) const{
 	int x=m_x;
 	int y=m_y;
 	x-=Point2.m_x;
@@ -56,12 +56,39 @@ Point Point::operator-(const Point& Point2){
 	return resultat;
 }
 
-bool Point::operator==(const Point& Point2){
+bool Point::operator==(Point Point2) const{
 	if(m_x==Point2.m_x && m_y==Point2.m_y)
 		return true;
 	else
 		return false;
 }
+
+
+double Point::rayon(Point Point2) const{
+	int dx=(Point2.m_x-m_x);
+	int dy=(Point2.m_y-m_y);
+	return sqrt(dx*dx + dy*dy);
+}
+
+double Point::angle(Point Point2) const{
+	int dx=(Point2.m_x-m_x);
+	int dy=(Point2.m_y-m_y);
+	return atan2(dx,dy);
+}
+
+
+/*
+ * opérateur de flux sortant pour les points
+ */
+
+ostream &operator<<(ostream &out, Point point){
+	point.print();
+	return out;
+}
+
+/*
+ * Toutes les fonctions qui agissent sur une liste de point
+ */
 
 vector<Point> lissageBezier(const vector<Point>& pointsDeControle,int nbPointsBezier) {
 	vector<Point> resultat;
@@ -86,28 +113,22 @@ vector<Consigne> convertirEnConsignes(const vector<Point>& listePoints){
 	double rayon;
 	double angle;
 	double angleBkp; //nécéssaire pour les modulos
-	int dx;
-	int dy;
+
 	int sensDeRotation;
 	Consigne nouvelleConsigne;
 	for(int i=0;i<longueur-1;i++){
 		
-		/*
-		 * calcul des coordonnées du vecteur
-		 */
-		dx = listePoints[i+1].getX() - listePoints[i].getX() ;
-		dy = listePoints[i+1].getY() - listePoints[i].getY() ;
 		
 		/*
 		 * mise à jour des paramètres de la consigne
 		 */
-		angle=(atan2( dx , dy ));
+		angle=listePoints[i].angle(listePoints[i+1]);
 		sensDeRotation = (angle>angleBkp)?1:-1; // 1 : sens horraire, -1 : sens antihorraire.
 		if((angle-angleBkp)>M_PI)
 			angle+=sensDeRotation*2*M_PI;
 		angleBkp=angle;
 		angle*=CONVERSION_ANGLE_TICKS;
-		rayon+=sqrt(dx*dx + dy*dy)*CONVERSION_DISTANCE_TICKS; //conversion en ticks...
+		rayon+=listePoints[i].rayon(listePoints[i+1])*CONVERSION_DISTANCE_TICKS; //conversion en ticks...
 		nouvelleConsigne.setRayon((int)rayon); //on ne caste que maintenant pour ne pas cumuler d'erreur sur un cast implicite précédent.
 		nouvelleConsigne.setAngle((int)angle); //angle /(Oy)
 		
@@ -115,4 +136,11 @@ vector<Consigne> convertirEnConsignes(const vector<Point>& listePoints){
 		nouvelleConsigne.print();
 	}
 	return resultat;
+}
+
+bool estDansListe(const vector<Point>& listePoints, Point point){
+	for(int i=0;i<listePoints.size();i++){
+		(listePoints[i]==point)?return true;
+	}
+	return false
 }

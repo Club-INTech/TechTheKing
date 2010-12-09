@@ -20,7 +20,7 @@ class Point{
 		
 		Point(int x=0,int y=0);
 		
-		void print() const;
+		void print();
 		
 		/*
 		 * accesseurs
@@ -45,32 +45,50 @@ class Point{
 			return resultat;
 		}
 		
-		Point operator+(const Point& Point2);
+		Point operator+(Point Point2) const;
 		
-		Point operator-(const Point& Point2);
+		Point operator<<(Point Point2) const;
 		
-		bool operator==(const Point& Point2);
+		Point operator-(Point Point2) const;
+		
+		bool operator==(Point Point2) const;
+		
+		/*
+		 * Calcul de distance et angle/(Oy) entre deux points
+		 */
+		
+		double rayon(Point Point2) const;
+		
+		double angle(Point Point2) const;
+		
+		/*
+		 * opérateur de flux sortant pour les points
+		 */
+		
+		friend ostream &operator<<(ostream &out, Point point);
 		
 		
-		
-	private:
+	protected:
 		
 		int m_x; // abscisse du point
 		
 		int m_y; //ordonnée du point
 };
 
+
+
+
 /*
  * fonction permettant le lissage d'une liste de points en l'utilisant comme liste de points de controles
  */
 
-vector<Point> lissageBezier(const vector<Point>& pointsDeControle,int nbPointsBezier);
+vector<Point> lissageBezier(const vector<Point>& pointsDeControle,int nbPointsBezier) ;
 
 /*
  * la fonction permettant de convertir une liste de points en liste de consignes
  */
 
-vector<Consigne> convertirEnConsignes(const vector<Point>& listePoints);
+vector<Consigne> convertirEnConsignes(const vector<Point>& listePoints) ;
 
 
 #endif

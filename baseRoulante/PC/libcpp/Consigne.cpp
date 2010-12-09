@@ -7,7 +7,7 @@ string Consigne::formaterInt(int entierDonne){
 	
 	/*
 	 * format "presque" compréhensible par les microcontrolleurs.
-	 * il manque un caractère pour spécifier le sens de marche du moteur (1 : avance, 0 : recule)
+	 * il manque en effet un caractère pour spécifier le sens de marche du moteur (1 : avance, 0 : recule)
 	 */
 	resultat.insert(0,7-resultat.size(),'0');
 	
