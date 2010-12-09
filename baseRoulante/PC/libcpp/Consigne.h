@@ -29,12 +29,23 @@ class Consigne{
 		void setAngle(int angle);
 		int getRayon() const;
 		int getAngle() const;
+		
+		void print() const;
+		
+		/*
+		 * Opérateurs
+		 */
+		
+		friend ostream &operator<<(ostream &out, Consigne consigne);
+		
 	private:
 		
 		int m_rayon;
 		int m_angle;
 		
 };
+
+ostream &operator<<(ostream &out, vector<Consigne> listeConsignes);
 
 
 #endif

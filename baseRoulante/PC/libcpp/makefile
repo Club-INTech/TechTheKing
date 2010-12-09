@@ -1,12 +1,12 @@
 OBJS=main.o Point.o Consigne.o Obstacles.o AStar.o
 CC=g++
 CFLAGS_LINK=-lm -lserial -o
-CFLAGS_COMP=-O -c
+CFLAGS_COMP=-O -Wall -c
 
 debug: $(OBJS)
 	g++ $(OBJS) $(CFLAGS_LINK) debug
 
-main.o : main.cpp Point.h
+main.o : main.cpp Point.h AStar.h
 	g++ $(CFLAGS_COMP) main.cpp
 
 Point.o : Point.cpp Point.h Consigne.h

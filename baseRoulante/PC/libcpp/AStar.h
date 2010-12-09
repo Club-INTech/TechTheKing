@@ -3,6 +3,7 @@
 
 #include "Point.h"
 #include "Obstacles.h"
+#include <algorithm>
 
 /*
  * la classe noeud, indispensable pour AStar

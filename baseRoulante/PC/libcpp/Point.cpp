@@ -4,7 +4,7 @@
  * constructeur
  */
 
-Point::Point(int x,int y){
+Point::Point(double x,double y){
 	m_x=x;
 	m_y=y;
 }
@@ -18,19 +18,19 @@ void Point::print() {
  * Accesseurs
  */
 
-void Point::setX(int x){
+void Point::setX(double x){
 	m_x=x;
 }
 
-void Point::setY(int y){
+void Point::setY(double y){
 	m_y=y;
 }
 
-int Point::getX() const{
+double Point::getX() const{
 	return m_x;
 }
 
-int Point::getY() const{
+double Point::getY() const{
 	return m_y;
 }
 
@@ -39,8 +39,8 @@ int Point::getY() const{
  */
 
 Point Point::operator+(Point Point2) const{
-	int x=m_x;
-	int y=m_y;
+	double x=m_x;
+	double y=m_y;
 	x+=Point2.m_x;
 	y+=Point2.m_y;
 	Point resultat(x,y);
@@ -48,8 +48,8 @@ Point Point::operator+(Point Point2) const{
 }
 
 Point Point::operator-(Point Point2) const{
-	int x=m_x;
-	int y=m_y;
+	double x=m_x;
+	double y=m_y;
 	x-=Point2.m_x;
 	y-=Point2.m_y;
 	Point resultat(x,y);
@@ -63,26 +63,36 @@ bool Point::operator==(Point Point2) const{
 		return false;
 }
 
+void Point::round(){
+	m_x=floor(m_x+0.5);
+	m_y=floor(m_y+0.5);
+}
 
 double Point::rayon(Point Point2) const{
-	int dx=(Point2.m_x-m_x);
-	int dy=(Point2.m_y-m_y);
+	double dx=(Point2.m_x-m_x);
+	double dy=(Point2.m_y-m_y);
 	return sqrt(dx*dx + dy*dy);
 }
 
 double Point::angle(Point Point2) const{
-	int dx=(Point2.m_x-m_x);
-	int dy=(Point2.m_y-m_y);
+	double dx=(Point2.m_x-m_x);
+	double dy=(Point2.m_y-m_y);
 	return atan2(dx,dy);
 }
 
 
 /*
- * opérateur de flux sortant pour les points
+ * opérateur de flux sortant pour les points et les vecteurs de points
  */
 
 ostream &operator<<(ostream &out, Point point){
 	point.print();
+	return out;
+}
+
+ostream &operator<<(ostream &out, vector<Point> listePoints){
+	for(unsigned int i=0;i<listePoints.size();i++)
+		listePoints[i].print();
 	return out;
 }
 
@@ -92,16 +102,19 @@ ostream &operator<<(ostream &out, Point point){
 
 vector<Point> lissageBezier(const vector<Point>& pointsDeControle,int nbPointsBezier) {
 	vector<Point> resultat;
+	vector<Point> listeBarycentres;
 	double t;
 	for(int k=0;k<=nbPointsBezier;k++){
 		t=(double)k/nbPointsBezier;
-		vector<Point> listeBarycentres(pointsDeControle);
+		listeBarycentres.clear();
+		listeBarycentres = pointsDeControle;
 		int longueur=pointsDeControle.size();
 		for(int i=0;i<longueur-1;i++){
 			for(int j=0;j<longueur-1-i;j++){
 				listeBarycentres[j]=listeBarycentres[j]*(1-t)+listeBarycentres[j+1]*t;
 			}
 		}
+		listeBarycentres[0].round();
 		resultat.push_back(listeBarycentres[0]);
 	}
 	return resultat;
@@ -110,9 +123,9 @@ vector<Point> lissageBezier(const vector<Point>& pointsDeControle,int nbPointsBe
 vector<Consigne> convertirEnConsignes(const vector<Point>& listePoints){
 	vector<Consigne> resultat;
 	int longueur=listePoints.size();
-	double rayon;
-	double angle;
-	double angleBkp; //nécéssaire pour les modulos
+	double rayon=0;
+	double angle=0;
+	double angleBkp=0; //nécéssaire pour les modulos
 
 	int sensDeRotation;
 	Consigne nouvelleConsigne;

@@ -106,7 +106,7 @@ void AStar::ajouterCasesAdjacentes(Noeud noeud){
 
 Noeud AStar::trouverMeilleurNoeud(){
 	Noeud meilleurNoeud=m_listeOuverte[0];
-	for(int i=0;i<m_listeOuverte.size();i++){
+	for(unsigned int i=0;i<m_listeOuverte.size();i++){
 		if(m_listeOuverte[i]>meilleurNoeud)
 			meilleurNoeud=m_listeOuverte[i];
 	}
@@ -128,12 +128,15 @@ void AStar::transfererNoeud(Noeud noeud){
 
 
 void AStar::remonterChemin(){
+	m_chemin.clear();
 	Noeud noeudCourant=m_arrivee;
+	m_chemin.push_back(noeudCourant);
 	while(!(*(noeudCourant.getParent())==m_depart)){
-		m_chemin.push_back(noeudCourant);
 		noeudCourant=*(noeudCourant.getParent());
-		cout<<noeudCourant<<endl;
+		m_chemin.push_back(noeudCourant);
 	}
+	m_chemin.push_back(m_depart);
+	reverse(m_chemin.begin(), m_chemin.end());
 }
 
 /*
@@ -142,7 +145,6 @@ void AStar::remonterChemin(){
 
 void AStar::trouverChemin(){
 	Noeud courant(m_depart.getX(),m_depart.getY(),0,m_depart.rayon(m_arrivee)); //initialisation du noeud courant..
-	cout<<courant.getCout2()<<endl;
 	m_listeOuverte.push_back(courant);
 	ajouterCasesAdjacentes(courant);
 	transfererNoeud(courant);
@@ -165,7 +167,7 @@ void AStar::trouverChemin(){
  */
 
 int estDansListe(const vector<Noeud>& listeNoeuds, Point point){
-	for(int i=0;i<listeNoeuds.size();i++){
+	for(unsigned int i=0;i<listeNoeuds.size();i++){
 		if(listeNoeuds[i]==point){
 			return i;
 		}
@@ -175,7 +177,7 @@ int estDansListe(const vector<Noeud>& listeNoeuds, Point point){
 
 
 bool contientPoint(Point pointDonne,const vector<Obstacle*> listeObstacles){
-	for(int i=0;i<listeObstacles.size();i++){
+	for(unsigned int i=0;i<listeObstacles.size();i++){
 		if(listeObstacles[i]->contientPoint(pointDonne))
 			return true;
 	}

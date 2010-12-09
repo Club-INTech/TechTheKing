@@ -55,3 +55,20 @@ int Consigne::getAngle() const{
 	return m_angle;
 }
 
+void Consigne::print()const{
+	cout << "R = " << m_rayon << "; A = " << m_angle;
+}
+/*
+ * Opérateurs
+ */
+
+ostream &operator<<(ostream &out, Consigne consigne){
+	consigne.print();
+	return out;
+}
+
+ostream &operator<<(ostream &out, vector<Consigne> listeConsignes){
+	for(unsigned int i=0;i<listeConsignes.size();i++)
+		listeConsignes[i].print();
+	return out;
+}

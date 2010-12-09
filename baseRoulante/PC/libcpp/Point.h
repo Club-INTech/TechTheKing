@@ -16,9 +16,10 @@ class Point{
 		
 		/*
 		 * coordonnées initialisées à 0 si pas de précision
+		 * tout est en double pour ne pas cumuler d'erreur lorsque l'on fait des opérations successives sur les points (lissage de Bézier par exemple)
 		 */
 		
-		Point(int x=0,int y=0);
+		Point(double x=0,double y=0);
 		
 		void print();
 		
@@ -26,10 +27,10 @@ class Point{
 		 * accesseurs
 		 */
 		
-		void setX(int x);
-		void setY(int y);
-		int getX() const;
-		int getY() const;
+		void setX(double x);
+		void setY(double y);
+		double getX() const;
+		double getY() const;
 		
 		/*
 		 * opérateurs classiques de multiplication, division de points par une constante,et d'ajouts, de soustraction et de comparaison de points
@@ -61,6 +62,8 @@ class Point{
 		
 		double angle(Point Point2) const;
 		
+		void round();
+		
 		/*
 		 * opérateur de flux sortant pour les points
 		 */
@@ -70,9 +73,9 @@ class Point{
 		
 	protected:
 		
-		int m_x; // abscisse du point
+		double m_x; // abscisse du point
 		
-		int m_y; //ordonnée du point
+		double m_y; //ordonnée du point
 };
 
 
@@ -81,6 +84,7 @@ class Point{
 /*
  * fonction permettant le lissage d'une liste de points en l'utilisant comme liste de points de controles
  */
+ostream &operator<<(ostream &out, vector<Point> listePoints);
 
 vector<Point> lissageBezier(const vector<Point>& pointsDeControle,int nbPointsBezier) ;
 
