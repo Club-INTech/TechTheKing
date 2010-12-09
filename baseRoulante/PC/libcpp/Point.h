@@ -91,4 +91,6 @@ vector<Point> lissageBezier(const vector<Point>& pointsDeControle,int nbPointsBe
 vector<Consigne> convertirEnConsignes(const vector<Point>& listePoints) ;
 
 
+int estDansListe(vector<Point>& listePoints, Point point);
+
 #endif

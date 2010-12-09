@@ -138,9 +138,3 @@ vector<Consigne> convertirEnConsignes(const vector<Point>& listePoints){
 	return resultat;
 }
 
-bool estDansListe(const vector<Point>& listePoints, Point point){
-	for(int i=0;i<listePoints.size();i++){
-		(listePoints[i]==point)?return true;
-	}
-	return false
-}
