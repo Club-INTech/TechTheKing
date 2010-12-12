@@ -41,7 +41,7 @@ LectureSerie::traitement() {
 		if (i >= 10000000)
 			//  tourne positivement de i
 			manager.changeIemeConsigneDistance(i-10000000,1);
-		if (i >= 0)
+		else if (i >= 0)
 			// tourne négativement i
 			manager.changeIemeConsigneDistance(-i,1);
 		break;

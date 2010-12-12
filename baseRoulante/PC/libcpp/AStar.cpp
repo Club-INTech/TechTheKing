@@ -154,7 +154,7 @@ void AStar::remonterChemin(){
 	
 	m_chemin.clear();
 	
-	unsigned int distanceAGarder = 200/m_precision; //on veut 20cm entre chaque point de contr^ole de la future courbe de Bézier...
+	unsigned int distanceAGarder = 150/m_precision; //on veut 20cm entre chaque point de contr^ole de la future courbe de Bézier...
 	
 	for(unsigned int i=0;i<listePointsTmp.size();i+=distanceAGarder)
 		m_chemin.push_back(listePointsTmp[i]);

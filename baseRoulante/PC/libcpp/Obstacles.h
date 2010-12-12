@@ -1,7 +1,7 @@
 #ifndef __OBSTACLE
 #define OBSTACLE
 
-#define TAILLE_ROBOT 200
+#define TAILLE_ROBOT 100
 
 #include "Point.h"
 

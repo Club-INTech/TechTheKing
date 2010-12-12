@@ -18,7 +18,7 @@ class Consigne{
 	public:
 		
 		Consigne(int rayon=0,int angle=0);
-		void transfertSerie(SerialStream interfaceDeTransfert); //charge une consigne donnée dans une interface série (actionneur, asservissement...)
+		void transfertSerie(SerialStream& interfaceDeTransfert); //charge une consigne donnée dans une interface série (actionneur, asservissement...)
 		void print() const; //affiche une consigne (debug surtout)
 		
 		/*

@@ -129,6 +129,8 @@ vector<Consigne> convertirEnConsignes(const vector<Point>& listePoints){
 
 	int sensDeRotation;
 	Consigne nouvelleConsigne;
+	
+	
 	for(int i=0;i<longueur-1;i++){
 		
 		

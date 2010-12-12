@@ -20,7 +20,7 @@ Consigne::Consigne(int rayon,int angle){
 	m_angle=angle;
 }
 
-void Consigne::transfertSerie(SerialStream interfaceDeTransfert){
+void Consigne::transfertSerie(SerialStream& interfaceDeTransfert){
 	if(m_angle>=0)
 		interfaceDeTransfert << "g1" + formaterInt(m_angle) << endl;
 	else
