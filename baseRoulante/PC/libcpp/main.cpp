@@ -54,6 +54,10 @@ void debugGraphique(vector<Point> listePoints, vector<Obstacle*> listeObstacles)
 	image.draw(DrawableEllipse(1325,1925, 50, 50, 0, 360));
 	image.draw(DrawableEllipse(1675,1925, 50, 50, 0, 360));
 	
+	/* Affiche les obstacles */
+	for(unsigned int i=0;i<listeObstacles.size();i++){
+		listeObstacles[i]->draw(&image);
+	}
 	
 	/* Affiche la courbe */
 	image.strokeColor("Dark Magenta");

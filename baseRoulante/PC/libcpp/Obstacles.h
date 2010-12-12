@@ -4,6 +4,7 @@
 #define TAILLE_ROBOT 150
 
 #include "Point.h"
+#include <Magick++.h>
 
 using namespace std;
 
@@ -12,6 +13,7 @@ using namespace std;
 class Obstacle : public Point{
 	public:
 		virtual bool contientPoint(Point& pointDonne) const  { };
+		virtual void draw(Magick::Image* image) const  { };
 	
 };
 
@@ -20,6 +22,7 @@ class Obstacle : public Point{
 class cercleObstacle : public Obstacle{
 	public:
 		cercleObstacle(int x=0,int y=0,int rayon=100);
+		void draw(Magick::Image* image) const  ;
 		bool contientPoint(Point& pointDonne) const ;
 	private:
 		int m_rayon;
@@ -28,6 +31,7 @@ class cercleObstacle : public Obstacle{
 
 class rectangleObstacle : public Obstacle{
 	public:
+		void draw(Magick::Image image) const  ;
 		bool contientPoint(Point& pointDonne) const ;
 	private:
 		int m_demiCoteX;
