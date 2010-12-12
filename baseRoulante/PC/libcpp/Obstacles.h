@@ -19,7 +19,7 @@ class Obstacle : public Point{
 
 class cercleObstacle : public Obstacle{
 	public:
-		cercleObstacle(int x=0,int y=0,int rayon=100);
+		cercleObstacle(int x=0,int y=0,int rayon=150);
 		bool contientPoint(Point& pointDonne) const ;
 	private:
 		int m_rayon;

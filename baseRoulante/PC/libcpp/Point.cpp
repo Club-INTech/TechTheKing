@@ -114,7 +114,6 @@ vector<Point> lissageBezier(const vector<Point>& pointsDeControle,int nbPointsBe
 				listeBarycentres[j]=listeBarycentres[j]*(1-t)+listeBarycentres[j+1]*t;
 			}
 		}
-		cout << listeBarycentres[0] << endl;
 		resultat.push_back(listeBarycentres[0]);
 	}
 	return resultat;

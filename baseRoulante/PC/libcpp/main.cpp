@@ -78,6 +78,7 @@ int main(){
 	cercleObstacle pion4(CASE43);
 	cercleObstacle pion5(CASE44);
 	cercleObstacle pion6(CASE54);
+	cercleObstacle pion7(CASE53);
 	
 	std::vector<Obstacle*> listeObstacle;
 	
@@ -87,15 +88,20 @@ int main(){
 	listeObstacle.push_back(&pion4);
 	listeObstacle.push_back(&pion5);
 	listeObstacle.push_back(&pion6);
+	listeObstacle.push_back(&pion7);
 	
 	/* Pathfinding */
 	std::vector<Point> listePoints;
 	AStar test(14,point1,point2,listeObstacle);
 	listePoints=lissageBezier(test.getChemin(),100);
 	vector<Consigne> listeConsignes = convertirEnConsignes(lissageBezier(test.getChemin(),100));
+
+	/* Debug Consignes series */
+	cout << listeConsignes << endl;
 	
 	/* Debug Graphique */
 	debugGraphique(listePoints,listeObstacle);
+	
 	
 	/* Envoi en série puis attente */
 	SerialStream my_serial_stream;
