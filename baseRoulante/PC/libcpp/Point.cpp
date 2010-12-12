@@ -114,7 +114,7 @@ vector<Point> lissageBezier(const vector<Point>& pointsDeControle,int nbPointsBe
 				listeBarycentres[j]=listeBarycentres[j]*(1-t)+listeBarycentres[j+1]*t;
 			}
 		}
-		listeBarycentres[0].round();
+		cout << listeBarycentres[0] << endl;
 		resultat.push_back(listeBarycentres[0]);
 	}
 	return resultat;
@@ -142,11 +142,10 @@ vector<Consigne> convertirEnConsignes(const vector<Point>& listePoints){
 		angleBkp=angle;
 		angle*=CONVERSION_ANGLE_TICKS;
 		rayon+=listePoints[i].rayon(listePoints[i+1])*CONVERSION_DISTANCE_TICKS; //conversion en ticks...
-		nouvelleConsigne.setRayon((int)rayon); //on ne caste que maintenant pour ne pas cumuler d'erreur sur un cast implicite précédent.
-		nouvelleConsigne.setAngle((int)angle); //angle /(Oy)
+		nouvelleConsigne.setRayon(floor(rayon+0.5)); //on ne caste que maintenant pour ne pas cumuler d'erreur sur un cast implicite précédent.
+		nouvelleConsigne.setAngle(floor(angle+0.5)); //angle /(Oy)
 		
 		resultat.push_back(nouvelleConsigne);
-		nouvelleConsigne.print();
 	}
 	return resultat;
 }

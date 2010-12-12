@@ -64,19 +64,19 @@ class ListeObstacles < ListePoints
 	#il y a quelques obstacles qui seront de toute façon là.
 	def initialize
 		#la planche en dessous de la case de départ rouge
-		push(RectangleObstacle.new(200,411,200,11))
-		#la planche en dessous de la case de départ bleue
-		push(RectangleObstacle.new(2800,411,200,11))
-		#la planche sous la zone protégée gauche
-		push(RectangleObstacle.new(800,2040,350,60))
-			#les deux petites planches
-			push(RectangleObstacle.new(461,1915,11,65))
-			push(RectangleObstacle.new(1139,1915,11,65))
-		#la planche sous la zone protégée droite
-		push(RectangleObstacle.new(2200,2040,350,60))
-			#les deux petites planches
-			push(RectangleObstacle.new(1861,1915,11,65))
-			push(RectangleObstacle.new(2539,1915,11,65))
+# 		push(RectangleObstacle.new(200,411,200,11))
+# 		#la planche en dessous de la case de départ bleue
+# 		push(RectangleObstacle.new(2800,411,200,11))
+# 		#la planche sous la zone protégée gauche
+# 		push(RectangleObstacle.new(800,2040,350,60))
+# 			#les deux petites planches
+# 			push(RectangleObstacle.new(461,1915,11,65))
+# 			push(RectangleObstacle.new(1139,1915,11,65))
+# 		#la planche sous la zone protégée droite
+# 		push(RectangleObstacle.new(2200,2040,350,60))
+# 			#les deux petites planches
+# 			push(RectangleObstacle.new(1861,1915,11,65))
+# 			push(RectangleObstacle.new(2539,1915,11,65))
 	end
 	
 	def contientPoint point

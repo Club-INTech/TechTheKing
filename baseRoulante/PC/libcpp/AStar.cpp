@@ -128,15 +128,40 @@ void AStar::transfererNoeud(Noeud noeud){
 
 
 void AStar::remonterChemin(){
-	m_chemin.clear();
+	
+	/*
+	 * on remonte le chemin dans les noeuds
+	 */
+	
+	
+	vector <Point> listePointsTmp; //liste de points temporaire (avec des points trop proches entre eux)
+	
 	Noeud noeudCourant=m_arrivee;
-	m_chemin.push_back(noeudCourant);
+	listePointsTmp.push_back(noeudCourant);
 	while(!(*(noeudCourant.getParent())==m_depart)){
 		noeudCourant=*(noeudCourant.getParent());
-		m_chemin.push_back(noeudCourant);
+		listePointsTmp.push_back(noeudCourant);
 	}
-	m_chemin.push_back(m_depart);
-	reverse(m_chemin.begin(), m_chemin.end());
+	
+// 	listePointsTmp.push_back(m_depart);  // Il faudrait théoriquement ajouter le noeud de départ mais autant l'ajouter directement à la liste définitive...
+	
+	/*
+	 * on ne peut pas garder tous les noeuds, car sinon le robot aura des trucs pas cool en consignes
+	 * (courbures quasi infinies par exemple puisque l'algorithme "longe" les obstacles), meme après un Bézier...
+	 * on aimerait donc garder environ une certaine distance d entre les points tout en bénéficiant de l'enveloppe convexe optimale
+	 * apportée par la précision du A*...
+	 */
+	
+	m_chemin.clear();
+	
+	unsigned int distanceAGarder = 200/m_precision; //on veut 20cm entre chaque point de contr^ole de la future courbe de Bézier...
+	
+	for(unsigned int i=0;i<listePointsTmp.size();i+=distanceAGarder)
+		m_chemin.push_back(listePointsTmp[i]);
+
+	reverse(m_chemin.begin(), m_chemin.end()); //ne pas oublier d'inverser la liste ... mieux vaut le faire maintenant qu'avant la recopie. 
+	
+	m_chemin.push_back(m_arrivee); // on ajoute enfin le point d'arrivee
 }
 
 /*

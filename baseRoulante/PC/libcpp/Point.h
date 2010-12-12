@@ -2,7 +2,7 @@
 #define __POINT
 
 #define CONVERSION_ANGLE_TICKS 1523.9085
-#define CONVERSION_DISTANCE_TICKS 9.87020678
+#define CONVERSION_DISTANCE_TICKS 4.935
 
 #include <vector>
 #include <iostream>

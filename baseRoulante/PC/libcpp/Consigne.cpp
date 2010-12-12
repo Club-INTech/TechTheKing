@@ -1,6 +1,6 @@
 #include "Consigne.h"
 	
-string Consigne::formaterInt(int entierDonne){
+string Consigne::formaterInt(int entierDonne)const{
 	ostringstream fluxDeSortie;
 	fluxDeSortie << entierDonne;
 	string resultat=fluxDeSortie.str(); //l'entier est converti en string.
@@ -31,8 +31,15 @@ void Consigne::transfertSerie(SerialStream interfaceDeTransfert){
 		interfaceDeTransfert << "q0" + formaterInt(-m_rayon) << endl;
 }
 
-void Consigne::print(){
-	cout << "rayon = " << m_rayon << " ; angle = " << m_angle << endl;
+void Consigne::print()const{
+	if(m_angle>=0)
+		cout << "g1" + formaterInt(m_angle) << endl;
+	else
+		cout << "g0" + formaterInt(-m_angle) << endl;
+	if(m_rayon>=0)
+		cout << "q1" + formaterInt(m_rayon) << endl;
+	else
+		cout << "q0" + formaterInt(-m_rayon) << endl;
 }
 
 /*
@@ -54,10 +61,6 @@ int Consigne::getRayon() const{
 int Consigne::getAngle() const{
 	return m_angle;
 }
-
-void Consigne::print()const{
-	cout << "R = " << m_rayon << "; A = " << m_angle;
-}
 /*
  * Opérateurs
  */
@@ -71,4 +74,10 @@ ostream &operator<<(ostream &out, vector<Consigne> listeConsignes){
 	for(unsigned int i=0;i<listeConsignes.size();i++)
 		listeConsignes[i].print();
 	return out;
+}
+
+void print(const vector<Consigne>& listeConsignes){
+	for(unsigned i=0;i<listeConsignes.size();i++){
+		listeConsignes[i].print();
+	}
 }

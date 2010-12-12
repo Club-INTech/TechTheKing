@@ -13,13 +13,13 @@ using namespace std ;
 class Consigne{
 	private:
 		
-		string formaterInt(int entierDonne); //convertir un entier en chaine de caractère compréhensibles par les microcontrolleurs
+		string formaterInt(int entierDonne)const; //convertir un entier en chaine de caractère compréhensibles par les microcontrolleurs
 		
 	public:
 		
 		Consigne(int rayon=0,int angle=0);
 		void transfertSerie(SerialStream interfaceDeTransfert); //charge une consigne donnée dans une interface série (actionneur, asservissement...)
-		void print(); //affiche une consigne (debug surtout)
+		void print() const; //affiche une consigne (debug surtout)
 		
 		/*
 		 * accesseurs classiques
@@ -29,8 +29,6 @@ class Consigne{
 		void setAngle(int angle);
 		int getRayon() const;
 		int getAngle() const;
-		
-		void print() const;
 		
 		/*
 		 * Opérateurs
@@ -46,6 +44,8 @@ class Consigne{
 };
 
 ostream &operator<<(ostream &out, vector<Consigne> listeConsignes);
+
+void print(const vector<Consigne>& listeConsignes);
 
 
 #endif

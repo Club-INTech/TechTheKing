@@ -107,11 +107,13 @@ private
 	
 	def remonterChemin
 		@@noeudCourant=@arrivee
+		@@listeTmp=Array.new
 		while(@@noeudCourant!=@depart)
-			push(Point.new(@@noeudCourant.x,@@noeudCourant.y))
+			@@listeTmp.push(Point.new(@@noeudCourant.x,@@noeudCourant.y))
 			@@noeudCourant=@@noeudCourant.parent
 		end
-		push(@depart)
+		@@listeTmp.push(@depart)
+		
 		#ne pas oublier de remettre la liste dans l'ordre, ça évitera des absurdités.
 		reverse!
 		

@@ -59,6 +59,7 @@ class ListeConsignes < Array
 	def convertirEnTicks
 		each do |consigne|
 			consigne.convertirEnTicks
+			consigne.prettyPrint
 		end
 	end
 	
