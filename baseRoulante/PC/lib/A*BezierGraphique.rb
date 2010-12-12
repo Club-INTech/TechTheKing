@@ -67,7 +67,6 @@ gc.ellipse(1675,1925, 50, 50, 0, 360)
 
 #affiche les obstacles
 
-#affiche les rectangles(planches)
 listeObstacles.each do |obstacle|
 	obstacle.afficher gc
 end

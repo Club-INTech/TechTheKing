@@ -1,21 +1,21 @@
 #ifndef __OBSTACLE
 #define OBSTACLE
 
-#define TAILLE_ROBOT 100
+#define TAILLE_ROBOT 150
 
 #include "Point.h"
 
 using namespace std;
 
-/*
- * définition de la classe abstraite Obstacle
- */
+/* définition de la classe abstraite Obstacle */
 
 class Obstacle : public Point{
 	public:
 		virtual bool contientPoint(Point& pointDonne) const  { };
 	
 };
+
+/* obstacles particuliers */
 
 class cercleObstacle : public Obstacle{
 	public:

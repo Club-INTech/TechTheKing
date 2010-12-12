@@ -143,7 +143,6 @@ void AStar::remonterChemin(){
 		listePointsTmp.push_back(noeudCourant);
 	}
 	
-// 	listePointsTmp.push_back(m_depart);  // Il faudrait théoriquement ajouter le noeud de départ mais autant l'ajouter directement à la liste définitive...
 	
 	/*
 	 * on ne peut pas garder tous les noeuds, car sinon le robot aura des trucs pas cool en consignes
@@ -154,14 +153,16 @@ void AStar::remonterChemin(){
 	
 	m_chemin.clear();
 	
-	unsigned int distanceAGarder = 150/m_precision; //on veut 20cm entre chaque point de contr^ole de la future courbe de Bézier...
+	
+	unsigned int distanceAGarder = 150/m_precision; //on veut 15cm entre chaque point de contr^ole de la future courbe de Bézier...
 	
 	for(unsigned int i=0;i<listePointsTmp.size();i+=distanceAGarder)
 		m_chemin.push_back(listePointsTmp[i]);
+	
+	m_chemin.push_back(m_depart); // on ajoute le point de départ du robot
 
 	reverse(m_chemin.begin(), m_chemin.end()); //ne pas oublier d'inverser la liste ... mieux vaut le faire maintenant qu'avant la recopie. 
-	
-	m_chemin.push_back(m_arrivee); // on ajoute enfin le point d'arrivee
+	 // on ajoute enfin le point d'arrivee
 }
 
 /*
