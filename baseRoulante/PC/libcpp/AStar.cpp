@@ -1,57 +1,71 @@
 #include "AStar.h"
 
-//ce qui concerne les noeuds
+/*ce qui concerne les noeuds*/
 
-
-
-Noeud::Noeud(int x,int y,int cout1,int cout2, Noeud* parent){
+Noeud::Noeud(int x,int y,double cout1,double cout2){
 	m_x=x;
 	m_y=y;
+
 	m_cout1=cout1;
 	m_cout2=cout2;
 	m_cout3=cout1+cout2;
-	m_parent=parent;
+	
+	m_distancePionAdverse=TAILLE_PION+RAYON_DE_DETECTION;
+	
+	m_parent=this;
 }
 
 bool Noeud::operator>(Noeud noeud2) const{
-	if(m_cout3<noeud2.m_cout3)
-		return true;
-	return false;
+	if(m_distancePionAdverse < TAILLE_PION+RAYON_DE_DETECTION && m_distancePionAdverse > TAILLE_PION+TAILLE_ROBOT-EMPIETEMENT)
+		return  (m_distancePionAdverse<noeud2.m_distancePionAdverse);
+	return(m_cout3<noeud2.m_cout3);
 }
 
-int Noeud::getCout1() const{
+double Noeud::getCout1() const{
 	return m_cout1;
 }
 
-int Noeud::getCout2() const{
+double Noeud::getCout2() const{
 	return m_cout2;
 }
 
-int Noeud::getCout3() const{
+double Noeud::getCout3() const{
 	return m_cout3;
 }
+
 
 Noeud* Noeud::getParent() const{
 	return m_parent;
 }
 
-void Noeud::setCout1(int cout1){
+void Noeud::setCout1(double cout1){
 	m_cout1=cout1;
 }
 
-void Noeud::setCout2(int cout2){
+void Noeud::setCout2(double cout2){
 	m_cout2=cout2;
 }
 
-void Noeud::setCout3(int cout3){
+void Noeud::setCout3(double cout3){
 	m_cout3=cout3;
+}
+
+void Noeud::setDistancePionAdverse(double distance){
+	m_distancePionAdverse=distance;
 }
 
 void Noeud::setParent(Noeud* noeud){
 	m_parent=noeud;
 }
 
-//ce qui concerne AStar
+Noeud::~Noeud(){
+}
+
+
+
+/* ce qui concerne AStar */
+
+
 
 vector <Point> AStar::getChemin(){
 	return m_chemin;
@@ -63,6 +77,7 @@ AStar::AStar(int precision, Noeud depart, Noeud arrivee, vector<Obstacle*>listeO
 	m_depart=depart;
 	m_arrivee=arrivee;
 	m_listeObstacles=listeObstacles;
+
 	trouverChemin();
 };
 
@@ -72,14 +87,28 @@ void AStar::ajouterCasesAdjacentes(Noeud noeud){
 		if(i<0 || i>3000)
 			continue; //Si on est en dehors de la carte, on ignore...
 		for (int j=noeud.getY()-m_precision;j<=noeud.getY()+m_precision;j+=m_precision){
+			//si on est en dehors de la carte, on ignore...
 			if(j<0 || j>2100)
-				continue; //si on est en dehors de la carte, on ignore...
+				continue; 
+			 //on est à l'étape actuelle, on ignore...
 			if(i==noeud.getX() && j==noeud.getY())
-				continue; //on est à l'étape actuelle, on ignore...
-			if(contientPoint(noeud,m_listeObstacles))
-				continue; // si le point est dans un obstacle, on ignore...
+				continue;
+			 // si le point est dans un obstacle de la couleur du robot, on ignore pour ne pas le déplacer
+			if(contientCercle(noeud,TAILLE_ROBOT,m_listeObstacles,COULEUR_ROBOT)!=NULL)
+				continue;
 			Noeud tmp(i,j);
 			if(estDansListe(m_listeFermee,tmp)==-1){ //si le a déjà été étudié, on ne fait rien, sinon...
+				Obstacle* estSurPionAdverse=contientCercle(tmp,RAYON_DE_DETECTION,m_listeObstacles,COULEUR_ADVERSE);
+				if(estSurPionAdverse!=NULL){
+					/*si pousser le pion adverse nous fait pousser le notre aussi*/
+					if(contientCercle(*estSurPionAdverse,TAILLE_PION+50,m_listeObstacles,COULEUR_ROBOT)!=NULL)
+						continue;
+					else
+					{
+						tmp.setDistancePionAdverse(tmp.rayon(*estSurPionAdverse));
+					}
+
+				}
 				Noeud* parent = new Noeud;
 				(*parent)=noeud;
 				tmp.setCout1(tmp.rayon(m_depart));
@@ -129,6 +158,8 @@ void AStar::transfererNoeud(Noeud noeud){
 
 void AStar::remonterChemin(){
 	
+	m_chemin.clear();
+	
 	/*
 	 * on remonte le chemin dans les noeuds
 	 */
@@ -145,16 +176,13 @@ void AStar::remonterChemin(){
 	
 	
 	/*
-	 * on ne peut pas garder tous les noeuds, car sinon le robot aura des trucs pas cool en consignes
-	 * (courbures quasi infinies par exemple puisque l'algorithme "longe" les obstacles), meme après un Bézier...
-	 * on aimerait donc garder environ une certaine distance d entre les points tout en bénéficiant de l'enveloppe convexe optimale
-	 * apportée par la précision du A*...
+	 * On garde pas tous les noeuds pour alléger le futur calcul de la trajectoire de bézier, et pour réduire la courbure de la courbe . (le robot n'aime pas trop les grosses courbures)
 	 */
 	
-	m_chemin.clear();
+
 	
 	
-	unsigned int distanceAGarder = 300/m_precision; //on veut 15cm entre chaque point de contr^ole de la future courbe de Bézier...
+	unsigned int distanceAGarder = 3; //on garde un point sur trois
 	
 	for(unsigned int i=0;i<listePointsTmp.size();i+=distanceAGarder)
 		m_chemin.push_back(listePointsTmp[i]);
@@ -162,7 +190,6 @@ void AStar::remonterChemin(){
 	m_chemin.push_back(m_depart); // on ajoute le point de départ du robot
 
 	reverse(m_chemin.begin(), m_chemin.end()); //ne pas oublier d'inverser la liste ... mieux vaut le faire maintenant qu'avant la recopie. 
-	 // on ajoute enfin le point d'arrivee
 }
 
 /*
@@ -170,21 +197,34 @@ void AStar::remonterChemin(){
  */
 
 void AStar::trouverChemin(){
-	Noeud courant(m_depart.getX(),m_depart.getY(),0,m_depart.rayon(m_arrivee)); //initialisation du noeud courant..
-	m_listeOuverte.push_back(courant);
-	ajouterCasesAdjacentes(courant);
-	transfererNoeud(courant);
-	while(courant.getCout2()>m_precision && !(m_listeOuverte.empty())){
-		courant = trouverMeilleurNoeud();
-		transfererNoeud(courant);
+	if(contientCercle(m_arrivee,TAILLE_ROBOT,m_listeObstacles,COULEUR_ROBOT)!=NULL || contientCercle(m_depart,TAILLE_ROBOT,m_listeObstacles,COULEUR_ROBOT)!=NULL ) 
+		cerr<<"Le robot est bloqué ou croit être bloqué dans un obstacle"<<endl;
+	else
+	{
+		Noeud courant(m_depart.getX(),m_depart.getY(),0,m_depart.rayon(m_arrivee)); //initialisation du noeud courant..
+		m_listeOuverte.push_back(courant);
 		ajouterCasesAdjacentes(courant);
-	}
-	if(courant.getCout2()<=m_precision){
-		m_arrivee.setParent(&courant);
-		remonterChemin();
-	}
-	else{
-		cout<<"pas de chemin"<<endl;
+		transfererNoeud(courant);
+		while(courant.getCout2()>m_precision && !(m_listeOuverte.empty())){
+			courant = trouverMeilleurNoeud();
+			transfererNoeud(courant);
+			ajouterCasesAdjacentes(courant);
+		}
+		/* on libère la mémoire inutile correspondant aux parents de la liste ouverte */
+		if(courant.getCout2()<=m_precision){
+			m_arrivee.setParent(&courant);
+			remonterChemin();
+		}
+		else{
+			cerr<<"pas de chemin"<<endl;
+			m_chemin.push_back(m_depart);
+		}
+		for(unsigned int i=0;i<m_listeOuverte.size();i++){
+			delete m_listeOuverte[i].getParent();
+		}
+		for(unsigned int i=1;i<m_listeFermee.size();i++){
+			delete m_listeFermee[i].getParent();
+		}
 	}
 }
 
@@ -199,13 +239,4 @@ int estDansListe(const vector<Noeud>& listeNoeuds, Point point){
 		}
 	}
 	return -1;
-}
-
-
-bool contientPoint(Point pointDonne,const vector<Obstacle*> listeObstacles){
-	for(unsigned int i=0;i<listeObstacles.size();i++){
-		if(listeObstacles[i]->contientPoint(pointDonne))
-			return true;
-	}
-		return false;
 }

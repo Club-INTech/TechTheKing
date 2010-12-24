@@ -1,7 +1,7 @@
 OBJS=main.o Point.o Consigne.o Obstacles.o AStar.o
 CC=g++ `Magick++-config --cxxflags --cppflags --ldflags --libs`
 CFLAGS_LINK=-lm -lserial `Magick++-config --cxxflags --cppflags --ldflags --libs` -o 
-CFLAGS_COMP=-O -Wall `Magick++-config --cxxflags --cppflags --ldflags --libs` -c
+CFLAGS_COMP=-g -Wall `Magick++-config --cxxflags --cppflags --ldflags --libs` -c
 
 debug: $(OBJS)
 	g++ $(OBJS) $(CFLAGS_LINK) debug
@@ -26,6 +26,9 @@ clean :
 
 mrpropre :
 	rm -f $(OBJS) debug
+
+rmtmp :
+	rm *~
 
 
 

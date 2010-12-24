@@ -1,8 +1,12 @@
 #ifndef __POINT
 #define __POINT
 
+/* coefficients de conversion */
+
 #define CONVERSION_ANGLE_TICKS 1523.9085
 #define CONVERSION_DISTANCE_TICKS 9.870
+
+/*define des endroits remarquables */
 
 #define CASE_DEPART_ROUGE 200,1900
 #define CASE_DEPART_BLEU 2800,1900
@@ -68,9 +72,7 @@ class Point{
 		
 		void print();
 		
-		/*
-		 * accesseurs
-		 */
+		/* accesseurs */
 		
 		void setX(double x);
 		void setY(double y);
@@ -78,7 +80,8 @@ class Point{
 		double getY() const;
 		
 		/*
-		 * opérateurs classiques de multiplication, division de points par une constante,et d'ajouts, de soustraction et de comparaison de points
+		 * opérateurs classiques de multiplication, division de points par une constante,et d'ajouts, de soustraction et de comparaison de points.
+		 * opérateur de flux sortant
 		 */
 		
 		template<typename T> Point operator*(T k){
@@ -92,53 +95,47 @@ class Point{
 		}
 		
 		Point operator+(Point Point2) const;
-		
-		Point operator<<(Point Point2) const;
-		
 		Point operator-(Point Point2) const;
-		
 		bool operator==(Point Point2) const;
 		
-		/*
-		 * Calcul de distance et angle/(Oy) entre deux points
-		 */
+		friend ostream &operator<<(ostream &out, Point point);
+		
+		/* Arrondis les coordonnées du points aux entiers les plus proches */
+		
+		void round();
+		
+		/* Calcul de distance et angle/(Oy) entre deux points */
 		
 		double rayon(Point Point2) const;
 		
 		double angle(Point Point2) const;
 		
-		void round();
-		
-		/*
-		 * opérateur de flux sortant pour les points
-		 */
-		
-		friend ostream &operator<<(ostream &out, Point point);
+
 		
 		
 	protected:
 		
-		double m_x; // abscisse du point
+		/* Abscisse et ordonnée du point */
 		
-		double m_y; //ordonnée du point
+		double m_x;
+		
+		double m_y;
+		
 };
 
+/*Operateur pour les listes de points*/
 
-
-
-/*
- * fonction permettant le lissage d'une liste de points en l'utilisant comme liste de points de controles
- */
 ostream &operator<<(ostream &out, vector<Point> listePoints);
+
+/* fonction permettant le lissage d'une liste de points en l'utilisant comme liste de points de controles*/
 
 vector<Point> lissageBezier(const vector<Point>& pointsDeControle,int nbPointsBezier) ;
 
-/*
- * la fonction permettant de convertir une liste de points en liste de consignes
- */
+/* la fonction permettant de convertir une liste de points en liste de consignes */
 
 vector<Consigne> convertirEnConsignes(const vector<Point>& listePoints) ;
 
+/* vérifie l'existence d'un point dans une liste donnée */
 
 int estDansListe(vector<Point>& listePoints, Point point);
 

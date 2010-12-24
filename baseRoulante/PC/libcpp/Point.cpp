@@ -104,18 +104,21 @@ vector<Point> lissageBezier(const vector<Point>& pointsDeControle,int nbPointsBe
 	vector<Point> resultat;
 	vector<Point> listeBarycentres;
 	double t;
-	for(int k=0;k<=nbPointsBezier;k++){
-		t=(double)k/nbPointsBezier;
-		listeBarycentres.clear();
-		listeBarycentres = pointsDeControle;
-		int longueur=pointsDeControle.size();
-		for(int i=0;i<longueur-1;i++){
-			for(int j=0;j<longueur-1-i;j++){
-				listeBarycentres[j]=listeBarycentres[j]*(1-t)+listeBarycentres[j+1]*t;
+	/*si la liste de points reçue est nulle, une exception est générée*/
+// 	try{
+		for(int k=0;k<=nbPointsBezier;k++){
+			t=(double)k/nbPointsBezier;
+			listeBarycentres.clear();
+			listeBarycentres = pointsDeControle;
+			int longueur=pointsDeControle.size();
+			for(int i=0;i<longueur-1;i++){
+				for(int j=0;j<longueur-1-i;j++){
+					listeBarycentres[j]=listeBarycentres[j]*(1-t)+listeBarycentres[j+1]*t;
+				}
 			}
+			resultat.push_back(listeBarycentres[0]);
 		}
-		resultat.push_back(listeBarycentres[0]);
-	}
+// 	}
 	return resultat;
 }
 
@@ -129,25 +132,27 @@ vector<Consigne> convertirEnConsignes(const vector<Point>& listePoints){
 	int sensDeRotation;
 	Consigne nouvelleConsigne;
 	
-	
-	for(int i=0;i<longueur-1;i++){
-		
-		
-		/*
-		 * mise à jour des paramètres de la consigne
-		 */
-		angle=listePoints[i].angle(listePoints[i+1]);
-		sensDeRotation = (angle>angleBkp)?1:-1; // 1 : sens horraire, -1 : sens antihorraire.
-		if((angle-angleBkp)>M_PI)
-			angle+=sensDeRotation*2*M_PI;
-		angleBkp=angle;
-		angle*=CONVERSION_ANGLE_TICKS;
-		rayon+=listePoints[i].rayon(listePoints[i+1])*CONVERSION_DISTANCE_TICKS; //conversion en ticks...
-		nouvelleConsigne.setRayon(floor(rayon+0.5)); //on ne caste que maintenant pour ne pas cumuler d'erreur sur un cast implicite précédent.
-		nouvelleConsigne.setAngle(floor(angle+0.5)); //angle /(Oy)
-		
-		resultat.push_back(nouvelleConsigne);
-	}
+		/*si la liste de points reçue est nulle, une exception est générée*/
+// 	try{
+		for(int i=0;i<longueur-1;i++){
+			
+			
+			/*
+			* mise à jour des paramètres de la consigne
+			*/
+			angle=listePoints[i].angle(listePoints[i+1]);
+			sensDeRotation = (angle>angleBkp)?1:-1; // 1 : sens horraire, -1 : sens antihorraire.
+			if((angle-angleBkp)>M_PI)
+				angle+=sensDeRotation*2*M_PI;
+			angleBkp=angle;
+			angle*=CONVERSION_ANGLE_TICKS;
+			rayon+=listePoints[i].rayon(listePoints[i+1])*CONVERSION_DISTANCE_TICKS; //conversion en ticks...
+			nouvelleConsigne.setRayon(floor(rayon+0.5)); //on ne caste que maintenant pour ne pas cumuler d'erreur sur un cast implicite précédent.
+			nouvelleConsigne.setAngle(floor(angle+0.5)); //angle /(Oy)
+			
+			resultat.push_back(nouvelleConsigne);
+		}
+	//}
 	return resultat;
 }
 
