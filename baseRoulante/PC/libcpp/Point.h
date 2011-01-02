@@ -1,12 +1,19 @@
-#ifndef __POINT
-#define __POINT
+#ifndef POINT_H
+#define POINT_H
 
-/* coefficients de conversion */
+/*!
+ * \file Point.h
+ * \brief La gestion des points.
+ * \author Philippe Tillet.
+ * \version 1.0
+ */
+
+/*!coefficients de conversion */
 
 #define CONVERSION_ANGLE_TICKS 1523.9085
 #define CONVERSION_DISTANCE_TICKS 9.870
 
-/*define des endroits remarquables */
+/*!define des endroits remarquables */
 
 #define CASE_DEPART_ROUGE 200,1900
 #define CASE_DEPART_BLEU 2800,1900
@@ -60,83 +67,123 @@
 
 using namespace std;
 
+/*!
+ * \class Point
+ *
+ * \brief Classe représentant les points.
+ */
+
 class Point{
 	public:
 		
-		/*
+		/*!
+		 * \brief Constructeur de la classe point.
+		 * 
 		 * coordonnées initialisées à 0 si pas de précision
 		 * tout est en double pour ne pas cumuler d'erreur lorsque l'on fait des opérations successives sur les points (lissage de Bézier par exemple)
 		 */
-		
 		Point(double x=0,double y=0);
-		
+
+		/*!\brief Fonction d'affichage du point sur la sortie standart*/
 		void print();
+
 		
-		/* accesseurs */
+		/*!\brief Arrondis les coordonnées du point aux entiers les plus proches.*/
+		void round();
 		
+		/*! \brief Calcul de la distance entre deux points */
+		double rayon(Point Point2) const;
+
+		/*!
+		 * \brief Calcul de l'angle entre deux points.
+		 * 
+		 * L'angle est calculé par rapport à (Oy) et est entre -Pi et Pi.
+		 */
+		double angle(Point Point2) const;
+
+		
+		/*! \brief Accesseur setX*/
 		void setX(double x);
+		/*! \brief Accesseur setY*/
 		void setY(double y);
+		/*! \brief Accesseur getX*/
 		double getX() const;
+		/*! \brief Accesseur getY*/
 		double getY() const;
 		
-		/*
-		 * opérateurs classiques de multiplication, division de points par une constante,et d'ajouts, de soustraction et de comparaison de points.
-		 * opérateur de flux sortant
-		 */
-		
+		/*! \brief Opérateur de multiplication par une constante*/
 		template<typename T> Point operator*(T k){
 			Point resultat(m_x*k,m_y*k);
 			return resultat;
 		}
-		
+
+		/*! \brief Opérateur de division par une constante*/
 		template<typename T> Point operator/(T k){
 			Point resultat(m_x/k,m_y/k);
 			return resultat;
 		}
-		
+
+		/*! \brief Opérateur d'addition de deux points*/
 		Point operator+(Point Point2) const;
+		
+		/*! \brief Opérateur de soustraction de deux points*/
 		Point operator-(Point Point2) const;
+
+		/*! \brief Opérateur d'égalité entre deux points*/
 		bool operator==(Point Point2) const;
-		
+
+		/*! \brief Opérateur de flux sortant*/
 		friend ostream &operator<<(ostream &out, Point point);
-		
-		/* Arrondis les coordonnées du points aux entiers les plus proches */
-		
-		void round();
-		
-		/* Calcul de distance et angle/(Oy) entre deux points */
-		
-		double rayon(Point Point2) const;
-		
-		double angle(Point Point2) const;
 		
 
 		
 		
 	protected:
 		
-		/* Abscisse et ordonnée du point */
-		
-		double m_x;
-		
-		double m_y;
+		double m_x; /*!< Abscisse du point*/
+		double m_y; /*!< Ordonnée du point*/
 		
 };
 
-/*Operateur pour les listes de points*/
 
+/*! \brief Operateur de flux sortant pour une liste de points. */
 ostream &operator<<(ostream &out, vector<Point> listePoints);
 
-/* fonction permettant le lissage d'une liste de points en l'utilisant comme liste de points de controles*/
 
+/*!
+ * \namespace ListePoints
+ *
+ * Toutes les fonctions concernant les listes de points.
+ */
+
+namespace ListePoints
+{
+/*!
+ *\brief Lissage de Bézier.
+ *
+ * fonction permettant le lissage d'une liste de points en l'utilisant comme liste de points de controles.
+ *
+ * \param nbPointsBezier nombre de points souhaités sur la courbe.
+ * \return la liste de points lissée
+ */
 vector<Point> lissageBezier(const vector<Point>& pointsDeControle,int nbPointsBezier) ;
 
-/* la fonction permettant de convertir une liste de points en liste de consignes */
-
+/*!
+ *\brief Conversion en consignes.
+ *
+ * permet de convertir une liste de points en liste de consignes
+ *\return la liste de consignes.
+ */
 vector<Consigne> convertirEnConsignes(const vector<Point>& listePoints) ;
 
-/* vérifie l'existence d'un point dans une liste donnée */
-
+/*!
+ * \brief Est dans liste ?
+ *
+ * Verifie l'existence d'un point dans une liste donnée
+ * 
+ *\return l'indice (entre 0 et n-1) de la correspondance si elle existe. -1 sinon.
+  */
 int estDansListe(vector<Point>& listePoints, Point point);
+}
 
 #endif

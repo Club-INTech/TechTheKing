@@ -22,13 +22,11 @@ AStar.o : AStar.cpp AStar.h Point.h Obstacles.h
 	g++ $(CFLAGS_COMP) AStar.cpp
 
 clean :
-	rm -f $(OBJS)
+	rm -f $(OBJS) rm *~
 
 mrpropre :
-	rm -f $(OBJS) debug
-
-rmtmp :
-	rm *~
+	rm -f $(OBJS) rm *~ debug
+	
 
 
 

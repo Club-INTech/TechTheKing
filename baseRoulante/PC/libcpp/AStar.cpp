@@ -11,11 +11,15 @@ Noeud::Noeud(int x,int y,double cout1,double cout2){
 	m_cout3=cout1+cout2;
 	
 	m_distancePionAdverse=TAILLE_PION+RAYON_DE_DETECTION;
+
+	m_collision=false;
 	
 	m_parent=this;
 }
 
 bool Noeud::operator>(Noeud noeud2) const{
+	if(m_collision==true)
+		return false;
 	if(m_distancePionAdverse < TAILLE_PION+RAYON_DE_DETECTION && m_distancePionAdverse > TAILLE_PION+TAILLE_ROBOT-EMPIETEMENT)
 		return  (m_distancePionAdverse<noeud2.m_distancePionAdverse);
 	return(m_cout3<noeud2.m_cout3);
@@ -72,11 +76,10 @@ vector <Point> AStar::getChemin(){
 }
 
 
-AStar::AStar(int precision, Noeud depart, Noeud arrivee, vector<Obstacle*>listeObstacles){
+AStar::AStar(int precision, Noeud depart, Noeud arrivee){
 	m_precision=precision;
 	m_depart=depart;
 	m_arrivee=arrivee;
-	m_listeObstacles=listeObstacles;
 
 	trouverChemin();
 };
@@ -84,25 +87,27 @@ AStar::AStar(int precision, Noeud depart, Noeud arrivee, vector<Obstacle*>listeO
 
 void AStar::ajouterCasesAdjacentes(Noeud noeud){
 	for(int i=noeud.getX()-m_precision;i<=noeud.getX()+m_precision;i+=m_precision){
-		if(i<0 || i>3000)
-			continue; //Si on est en dehors de la carte, on ignore...
+		if(i>3000 || i < - m_precision)
+			continue;
 		for (int j=noeud.getY()-m_precision;j<=noeud.getY()+m_precision;j+=m_precision){
-			//si on est en dehors de la carte, on ignore...
-			if(j<0 || j>2100)
-				continue; 
+			if(j>2100 || j < - m_precision)
+				continue;
 			 //on est à l'étape actuelle, on ignore...
 			if(i==noeud.getX() && j==noeud.getY())
 				continue;
-			 // si le point est dans un obstacle de la couleur du robot, on ignore pour ne pas le déplacer
-			if(contientCercle(noeud,TAILLE_ROBOT,m_listeObstacles,COULEUR_ROBOT)!=NULL)
-				continue;
 			Noeud tmp(i,j);
+			 // si le point est dans un obstacle de la couleur du robot ou sur une planche de bois, on ignore pour ne pas le déplacer ou se bloquer
+			if(ListeObstacles::contientCercle(noeud,TAILLE_ROBOT+MARGE_SECURITE_PION,COULEUR_ROBOT)!=NULL
+				|| ListeObstacles::contientCercle(noeud,TAILLE_ROBOT,NOIR)!=NULL
+				){
+				tmp.setCollision(true);
+			}
 			if(estDansListe(m_listeFermee,tmp)==-1){ //si le a déjà été étudié, on ne fait rien, sinon...
-				Obstacle* estSurPionAdverse=contientCercle(tmp,RAYON_DE_DETECTION,m_listeObstacles,COULEUR_ADVERSE);
+				Obstacle* estSurPionAdverse=ListeObstacles::contientCercle(tmp,RAYON_DE_DETECTION,COULEUR_ADVERSE);
 				if(estSurPionAdverse!=NULL){
 					/*si pousser le pion adverse nous fait pousser le notre aussi*/
-					if(contientCercle(*estSurPionAdverse,TAILLE_PION+50,m_listeObstacles,COULEUR_ROBOT)!=NULL)
-						continue;
+					if(ListeObstacles::contientCercle(*estSurPionAdverse,TAILLE_PION+50,COULEUR_ROBOT)!=NULL)
+						tmp.setCollision(true);
 					else
 					{
 						tmp.setDistancePionAdverse(tmp.rayon(*estSurPionAdverse));
@@ -197,10 +202,6 @@ void AStar::remonterChemin(){
  */
 
 void AStar::trouverChemin(){
-	if(contientCercle(m_arrivee,TAILLE_ROBOT,m_listeObstacles,COULEUR_ROBOT)!=NULL || contientCercle(m_depart,TAILLE_ROBOT,m_listeObstacles,COULEUR_ROBOT)!=NULL ) 
-		cerr<<"Le robot est bloqué ou croit être bloqué dans un obstacle"<<endl;
-	else
-	{
 		Noeud courant(m_depart.getX(),m_depart.getY(),0,m_depart.rayon(m_arrivee)); //initialisation du noeud courant..
 		m_listeOuverte.push_back(courant);
 		ajouterCasesAdjacentes(courant);
@@ -225,7 +226,6 @@ void AStar::trouverChemin(){
 		for(unsigned int i=1;i<m_listeFermee.size();i++){
 			delete m_listeFermee[i].getParent();
 		}
-	}
 }
 
 /*

@@ -1,74 +1,121 @@
-#ifndef __ASTAR
-#define __ASTAR
+#ifndef ASTAR_H
+#define ASTAR_H
 
 #include "Point.h"
 #include "Obstacles.h"
 #include <algorithm>
 
-/* le périmetre dans lequel le robot se déplacera pour aller bouger un pion à l'adversaire... */
+/*!
+ *\def RAYON_DE_DETECTION
+ *
+ * le périmetre dans lequel le robot se déplacera pour aller bouger un pion à l'adversaire...
+ */
+#define RAYON_DE_DETECTION 300
 
-#define RAYON_DE_DETECTION 700
+/*!
+ * \def EMPIETEMENT
+ * l'empietement du robot sur le pion adverse, lorsque celui ci n'est pas sur le chemin le plus court
+ */
+#define EMPIETEMENT 150
 
-/* l'empietement du robot sur le pion adverse, lorsque celui ci n'est pas sur le chemin le plus court */
-
-#define EMPIETEMENT 400
-
-/* la classe noeud, indispensable pour AStar */
-
+/*!
+ * \class Noeud
+ *
+ * La classe Noeud, indispensable pour tout algorithme de pathfinding.
+ */
 class Noeud : public Point{
 	public:
-		
+
+		/*!
+		 * \brief Constructeur
+		 * \param cout1 : Distance au point de départ
+		 * \param cout2 : Distance au point d'arrivee
+		 */
 		Noeud(int x=0,int y=0, double cout1=0,double cout2=0);
+
+		/*!
+		 * \brief Destructeur
+		 */
 		~Noeud();
 		
-		/* Opérateur de comparaison entre deux noeuds */
-		
-		bool operator>(Noeud noeudDonne) const;
-		
-		/* accesseurs */
-		
+		/*!
+		 *\brief Accesseurs
+		 */
 		double getCout1() const;
 		double getCout2() const;
-		double getCout3() const;
-		
+		double getCout3() const;	
 		Noeud* getParent() const;
+		bool getCollision() const { return m_collision ; };
 		
 		void setCout1(double cout1);
 		void setCout2(double cout2);
 		void setCout3(double cout3);
+		void setCollision(bool etat) { m_collision = etat ;};
 		
 		void setDistancePionAdverse(double distance);
 		void setParent(Noeud* parent);
+
+		/*!
+		 * \brief Opérateur de comparaison entre deux noeuds
+		 * Sert pour déterminer le "meilleur" chemin.
+		 */
+		bool operator>(Noeud noeudDonne) const;
 	
 	private:
 		
-		double m_cout1;
-		double m_cout2;
-		double m_cout3;
+		double m_cout1; /*!< Distance du noeud au point de départ.*/
+		double m_cout2; /*!< Distance du noeud au point d'arrivee.*/
+		double m_cout3; /*!< Somme des deux couts précédents.*/
 
-		double m_distancePionAdverse;
+		double m_distancePionAdverse; /*!< La distance qui sépare un noeud d'un pion adverse. Nécéssaire pour l'attraction de la trajectoire par ce point.*/
+
+		bool m_collision; /*!< si on emp^eche toute collision avec les obstacles, ça va planter à cause des imprécisions. Il faut juste les éviter*/
 		
-		Noeud* m_parent;
+		Noeud* m_parent; /*!< Le parent du noeud. Necessaire pour retrouver son chemin*/
 };
 
 
-/*
- * Tout ce qui concerne l'algorithme A*....
+/*!
+ * \class AStar
+ * \brief Tout ce qui concerne l'algorithme A*....
  */
-
 class AStar {
 	
 	private:
 		
-		void ajouterCasesAdjacentes(Noeud noeud);
-		Noeud trouverMeilleurNoeud();
-		void remonterChemin();
-		void transfererNoeud(Noeud noeud);
+		/*!
+		 * \brief trouverChemin
+		 * C'est la boucle principale de recherche.
+		 */
 		void trouverChemin();
-		
+
+
+		/*!
+		 * \brief trouverMeilleurNoeud
+		 * Boucle, Etape 1 : Cherche le meilleur noeud de la liste ouverte pour continuer l'algorithme au meilleur endroit.
+		 */
+		Noeud trouverMeilleurNoeud();
+
+		/*!
+		 * \brief ajouterCasesAdjacentes
+		 * Boucle, Etape 2 : Le principe de l'algorithme A* est d 'ajouter les cases de recherche au fur et à mesure
+		 */
+		void ajouterCasesAdjacentes(Noeud noeud);
+
+		/*!
+		 * \brief transfererNoeud
+		 * Boucle, Etape 3 : Transfert d'un noeud de la liste ouverte vers la liste fermée (le noeud a été étudié.)
+		 */
+		void transfererNoeud(Noeud noeud);
+
+		/*!
+		 * \brief remonterChemin
+		 * Après la boucle, on doit remonter le chemin de parent en parent
+		 */
+		void remonterChemin();
 	public:
 		
-		AStar(int precision, Noeud depart, Noeud arrivee, vector<Obstacle*>listeObstacles);
+		AStar(int precision, Noeud depart, Noeud arrivee);
 		
 		vector<Point> getChemin();
 		
@@ -77,8 +124,6 @@ class AStar {
 		vector<Noeud> m_listeOuverte;
 		
 		vector<Noeud> m_listeFermee;
-		
-		vector<Obstacle*> m_listeObstacles;
 		
 		int m_precision;
 		

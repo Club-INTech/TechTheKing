@@ -73,13 +73,13 @@ Manager::assPolaire()
 	/*
 	* factorisation de la désactivation de Kd
 	*/
-	if( indiceConsigneActuelle < tableauConsignes.nbConsignes ) {
-		assRotation.setActivationKd(0);
-		assTranslation.setActivationKd(0);
-	}
-	else{
+	if( indiceConsigneActuelle ==0 || indiceConsigneActuelle ==tableauConsignes.nbConsignes ) {
 		assRotation.setActivationKd(1);
 		assTranslation.setActivationKd(1);
+	}
+	else{
+		assRotation.setActivationKd(0);
+		assTranslation.setActivationKd(0);
 	}
 	
 	if(ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).distance - distance) < 60

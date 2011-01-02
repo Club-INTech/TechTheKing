@@ -1,5 +1,9 @@
 #include "Obstacles.h"
 
+
+std::vector <Obstacle*> listeObstacles ;
+
+
 Obstacle::Obstacle(double x,double y,Couleur couleur){
 	m_x=x;
 	m_y=y;
@@ -28,11 +32,6 @@ bool cercleObstacle::contientCercle(Point& centreCercle, int rayonDonne) const{
 	if(rayon(centreCercle) < (m_rayon + rayonDonne))
 		return true;
 	return false;
-}
-
-void cercleObstacle::deplacer(double newX, double newY) {
-	m_x=newX;
-	m_y=newY;
 }
 
 /* Determination automatique de la couleur d'un pion : si il est à nous, à l'adversaire ou à personne */
@@ -69,21 +68,26 @@ Couleur cercleObstacle::couleurPlusProche() const{
 }
 				
 		
-		
+rectangleObstacle::rectangleObstacle(double x,double y,int demiCoteX,int demiCoteY) : Obstacle(x,y,NOIR),m_demiCoteX(demiCoteX),m_demiCoteY(demiCoteY)
+{
+	
+}
+
+void rectangleObstacle::draw(Magick::Image* image) const{
+	image->fillColor("Dark Orange");
+	image->draw(Magick::DrawableRectangle(m_x-m_demiCoteX,2100-(m_y-m_demiCoteY),m_x+m_demiCoteX,2100-(m_y+m_demiCoteY)));
+}
 	
 
 bool rectangleObstacle::contientCercle(Point& centreCercle, int rayon)const {
-	if(fabs(centreCercle.getX()-m_x) < m_demiCoteX+rayon && fabs(centreCercle.getY()-m_y) < m_demiCoteY+rayon)
-		return true;
-	return false;
+	return(rayon > fabs( (m_y+m_demiCoteY-centreCercle.getY()) )
+		|| rayon > fabs( (m_y-m_demiCoteY-centreCercle.getY()) )
+		|| rayon > fabs( (m_x-m_demiCoteX-centreCercle.getX()) )
+		|| rayon > fabs( (m_y+m_demiCoteX-centreCercle.getX()) )
+	);
 }
 
-
-/* cette fonction regarde si un cercle est inclu dans un obstacle d'une couleur donnée. 
- * Renvoie l'obstacle le plus proche trouvé, ou Null si il n'y en a pas...
- */
-
-Obstacle* contientCercle(Point centreCercle,int rayon, const vector<Obstacle*> listeObstacles,Couleur couleur){
+Obstacle* ListeObstacles::contientCercle(Point centreCercle,int rayon,Couleur couleur){
 	vector<Obstacle*> tmp; // contient la liste des correspondances.
 	Obstacle* min=NULL;
 	for(unsigned int i=0;i<listeObstacles.size();i++){
@@ -99,7 +103,32 @@ Obstacle* contientCercle(Point centreCercle,int rayon, const vector<Obstacle*> l
 		return min;
 }
 
-void setCouleursAuto(vector<Obstacle*> listeObstacles){
+void ListeObstacles::setCouleursAuto(){
 	for(unsigned int i=0;i<listeObstacles.size();i++)
 		listeObstacles[i]->setCouleur(listeObstacles[i]->couleurPlusProche());
+}
+
+void ListeObstacles::refreshPositions(const char nomFichier[]){
+	listeObstacles.clear();
+
+	listeObstacles.push_back(new rectangleObstacle(200,1689,200,11));
+	listeObstacles.push_back(new rectangleObstacle(2800,1689,200,11));
+	listeObstacles.push_back(new rectangleObstacle(800,60,350,60));
+	listeObstacles.push_back(new rectangleObstacle(461,185,11,65));
+	listeObstacles.push_back(new rectangleObstacle(1139,185,11,65));
+	listeObstacles.push_back(new rectangleObstacle(2200,60,350,60));
+	listeObstacles.push_back(new rectangleObstacle(1861,185,11,65));
+	listeObstacles.push_back(new rectangleObstacle(2539,185,11,65));
+
+	ifstream fichierObstacles(nomFichier, ios::in);
+	if(fichierObstacles)
+	{
+		double x,y;
+		while(fichierObstacles >> x >> y){
+			cercleObstacle* pion = new cercleObstacle(x,y);
+			listeObstacles.push_back(pion);
+		}
+	}
+		else
+			cerr<<"ouverture du fichier impossible"<<endl;
 }

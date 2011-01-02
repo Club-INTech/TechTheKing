@@ -16,10 +16,10 @@ listeObstacles.push(pion1)
 listeObstacles.push(pion2)
 listeObstacles.push(pion3)
 listeObstacles.push(pion4)
-
-points = AStar.new(20,Point.new(2350,550),Noeud.new(600,200),listeObstacles).lissageBezier(100)
-points.prettyPrint
-points.convertirEnConsignes.convertirEnTicks
+# 
+# points = AStar.new(20,Point.new(2350,550),Noeud.new(600,200),listeObstacles).lissageBezier(100)
+# points.prettyPrint
+# points.convertirEnConsignes.convertirEnTicks
 
 #affiche le terrain
 gc.fill('Red')
@@ -73,11 +73,11 @@ end
 
 
 ##affiche la courbe,
-gc.stroke('Dark Magenta')
-gc.stroke_width(10)
-for i in (0..99)
-	gc.line(points[i].x, points[i].y,points[i+1].x, points[i+1].y)
-end
+# gc.stroke('Dark Magenta')
+# gc.stroke_width(10)
+# for i in (0..99)
+# 	gc.line(points[i].x, points[i].y,points[i+1].x, points[i+1].y)
+# end
 
 gc.draw(canvas)
 canvas.adaptive_resize(1000, 700).display

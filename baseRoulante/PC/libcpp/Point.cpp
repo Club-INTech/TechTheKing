@@ -100,7 +100,7 @@ ostream &operator<<(ostream &out, vector<Point> listePoints){
  * Toutes les fonctions qui agissent sur une liste de point
  */
 
-vector<Point> lissageBezier(const vector<Point>& pointsDeControle,int nbPointsBezier) {
+vector<Point> ListePoints::lissageBezier(const vector<Point>& pointsDeControle,int nbPointsBezier) {
 	vector<Point> resultat;
 	vector<Point> listeBarycentres;
 	double t;
@@ -122,7 +122,7 @@ vector<Point> lissageBezier(const vector<Point>& pointsDeControle,int nbPointsBe
 	return resultat;
 }
 
-vector<Consigne> convertirEnConsignes(const vector<Point>& listePoints){
+vector<Consigne> ListePoints::convertirEnConsignes(const vector<Point>& listePoints){
 	vector<Consigne> resultat;
 	int longueur=listePoints.size();
 	double rayon=0;
