@@ -14,6 +14,7 @@ bool Obstacle::contientCercle(Point& centreCercle, int rayon) const{
 	return false;
 }
 
+
 Couleur Obstacle::couleurPlusProche() const {
 	return NEUTRE;
 }
