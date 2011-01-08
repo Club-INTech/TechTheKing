@@ -32,4 +32,9 @@ Trame envisagée :
 	soit des trames de : 40 bits=5 octets ou 32 bits = 4 octets selon les cas.
 
 
-Pour le codage de canal : maintenir une transmission sur le canal, typiqueme t 010101010101010... Et coder nos bits là dessus (ex : 1=11, 0=00 ; ou 1=pas de changement, et 0=on laisse le changement). Permet de conserver une utilisation du medium et calmer les réglages automatique des gains des différents récepteurs (inspiration csma/cd, le csma/ca semble trop lourd).
+Pour le codage de canal : maintenir une transmission sur le canal, typiquement 010101010101010... Et coder nos bits là dessus (ex : 1=11, 0=00 ; ou 1=pas de changement, et 0=on laisse le changement). 
+	Permet de conserver une utilisation du medium et calmer le réglage automatique de gain des différents récepteurs (inspiration csma/cd, le csma/ca semble trop lourd).
+Autre possibilité : la balise fixe emet en permanence une horloge 0101010101 et controle sur chaque 0 qu'il y a bien un 0 (concept à tester). 
+	La balise robot adverse se synchronise sur cette horloge, quand il veut emettre il envoie un octet de 1, la balise fixe le voit (ya plus de 0), arrête d'emettre son horloge et écoute. A la fin de la trame elle recommence à emettre son horloge. 
+	Notre robot se synchronise sur cette horloge et la surveille, quand la balise fixe veut emettre, elle modifie son horloge (00110011, 00111100, 11000011, 11010111, 11010011 ou autre), notre robot le voit et commence à écouter jusqu'à la fin de la trame. Selon l'octet de start, on peut aussi indiquer le type de trame qui va suivre.
+Autre possibilité d'horloge : un codage manchester (à étudier, voir si on peut faire une application deux emetteurs avec)
