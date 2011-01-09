@@ -46,7 +46,7 @@ int main() {
 					uint8_t tmp = checksum((message >> 8) & 0xFFFFFFFF);
 					printUShort(tmp);
 					printString(" ");
-					printlnUShort(tmp == message & 0xFF);
+					printlnUShort(tmp == (message & 0xFF));
 					message = 0;
 				}
 			}
@@ -55,7 +55,7 @@ int main() {
 					transmetteur = ((ptn-1) << 2);
 				}
 				else {
-					transmetteur = (32<<2);
+					transmetteur = (32<<2) + 1;
 					if ((message >> 24) == SYNC_BYTE) {
 						sbi(transmetteur,1);
 					}
