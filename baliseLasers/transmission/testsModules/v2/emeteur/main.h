@@ -12,10 +12,14 @@
 //calculate period rate
 #define PERIOD_RATE 416 //1000000/(BAUDRATE*total/utile)
 //define receive parameters
-#define BASE_BYTE 0xAA//Byte de base
-#define SYNC_BYTE 0xD7//synchro signal//11010111
-#define COORD_X 0x149//signal 1
-#define COORD_Y 0x37B//signal 2
+//#define BASE_BYTE 0xAA//Byte de base
+//#define SYNC_BYTE 0xD7//synchro signal//11010111
+//#define COORD_X 0x149//signal 1
+//#define COORD_Y 0x37B//signal 2
+#define BASE_BYTE 0b01010101//Byte de base
+#define SYNC_BYTE 0b11010011//synchro signal//11010111
+#define COORD_X 0b000101101011//signal 1
+#define COORD_Y 0b011010011100//signal 2
 
 typedef uint64_t Trame;
 

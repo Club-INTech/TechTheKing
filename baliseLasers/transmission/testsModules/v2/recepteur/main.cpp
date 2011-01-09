@@ -1,7 +1,8 @@
 #include "main.h"
 
-volatile uint8_t transmetteur = 0b11111100;//bit 0 : info, bit 1 : flag, bits 2-7 : pointeur
+volatile uint8_t transmetteur = 0b10000000;//bit 0 : flag bit reçu, bit 1 : flag init trame, bits 2-7 : pointeur
 Trame message = 0;
+uint8_t init = 0;
 uint8_t mesure[3]={0,0,0};
 
 int main() {
@@ -15,43 +16,54 @@ int main() {
 	sbi(EICRA,ISC00);
 	sbi(EIMSK,INT0);
 	while(1) {
-		if (transmetteur & (1 << 1)){
+		if (transmetteur & 1){
 			//Desactivation des interruptions d'entree
 			cbi(EIMSK,INT0);
 			uint8_t ptn = transmetteur >> 2;
-			if (ptn>0) {
-				transmetteur = ((ptn-1) << 2);
-			}
-			else {
-				transmetteur = (39 << 2);
-				printUShort(message >> 31);
-				printString(" ");
-				printUInt((message >> 19) & 0xFFF);
-				printString(" ");
-				printUInt((message >> 7) & 0xFFF);
-				printString(" ");
-				printUShort(message & 0xFF);
-				printString(" ");
-				uint8_t tmp = checksum((message >> 8)&0xFFFFFFFF);
-				printUShort(tmp);
-				printString(" ");
-				printlnUShort(tmp == message & 0xFF);
-			}
 			mesure[0] = (OUT_PIN >> OUT_BIT) & 1;
 			_delay_us(PERIOD_RATE/3);
 			mesure[1] = (OUT_PIN >> OUT_BIT) & 1;
 			_delay_us(PERIOD_RATE/3);
 			mesure[2] = (OUT_PIN >> OUT_BIT) & 1;
-
-			//Reactivation des interruptions d'entree
-			sbi(EIMSK,INT0);
-
 			if (((mesure[0]+mesure[1]+mesure[2])/2) & 1) {
 				sbi(message,ptn);//ce 2 est une grosse magouille...
 			}
 			else {
 				cbi(message,ptn);
 			}
+			if (transmetteur & (1 << 1)){
+				if (ptn>0) {
+					transmetteur = ((ptn-1) << 2);
+				}
+				else {
+					transmetteur = (32 << 2);
+					printUInt((message >> 19) & 0xFFF);
+					printString(" ");
+					printUInt((message >> 7) & 0xFFF);
+					printString(" ");
+					printUShort(message & 0xFF);
+					printString(" ");
+					uint8_t tmp = checksum((message >> 8) & 0xFFFFFFFF);
+					printUShort(tmp);
+					printString(" ");
+					printlnUShort(tmp == message & 0xFF);
+					message = 0;
+				}
+			}
+			else {		
+				if (ptn>24) {
+					transmetteur = ((ptn-1) << 2);
+				}
+				else {
+					transmetteur = (32<<2);
+					if ((message >> 24) == SYNC_BYTE) {
+						sbi(transmetteur,1);
+					}
+				}
+			}
+
+			//Reactivation des interruptions d'entree
+			sbi(EIMSK,INT0);
 		}
 	}
 	return 0;

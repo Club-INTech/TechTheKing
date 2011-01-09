@@ -7,11 +7,11 @@ int main() {
 	//On active la sortie sur le bon bit/port
 	sbi(OUT_DDR,OUT_BIT);
 	//On prepare le message a transmettre
-	uint32_t contenu = (SYNC_BYTE << 23) + (COORD_X << 15) + COORD_Y;
+	uint32_t contenu = (SYNC_BYTE << 24) + (COORD_X << 16) + COORD_Y;
 	uint8_t cks = checksum(contenu);
-	message = ( (contenu << 7) + cks );
+	message = ( (contenu << 8) + cks );
 	//On prépare le registre d'emission
-	transmetteur = (message >> 39) & 1;//on veut que le premier bit.
+	transmetteur = (message >> 40) & 1;//on veut que le premier bit.
 	//On active le timer pour l'horloge d'emission sur overflow, taille réglable
 	cbi(TCCR2A,WGM20);
 	sbi(TCCR2A,WGM21);
@@ -56,12 +56,13 @@ ISR(TIMER2_OVF_vect) {
 		transmetteur = ((ptn-1) << 2) + ((message >> ptn) & 1 ) + (1 << 1);
 	}
 	else {
-		transmetteur = (39 << 2) + ((message >> 39) & 1 ) + (1 << 1);
+		//transmetteur = (40 << 2) + ((message >> 40) & 1 ) + (1 << 1);
+		transmetteur = (48 << 2) + ((message >> 48) & 1 ) + (1 << 1);
 	}
 }
 
 uint8_t checksum(uint32_t data) {
-	return ((uint8_t)data + (uint8_t)(data << 7) + (uint8_t)(data << 15) + (uint8_t)(data << 23));
+	return ((uint8_t)data + (uint8_t)(data << 8) + (uint8_t)(data << 16) + (uint8_t)(data << 24));
 }
 
 /* utilite faible, calcul lourd?, le checksum a été préféré
