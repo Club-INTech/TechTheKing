@@ -1,5 +1,6 @@
 #include <avr/io.h>
 #include <util/delay.h>
+#include <avr/interrupt.h>
 
 //set output pin : 
 #define OUT_DDR DDRD
@@ -16,6 +17,8 @@
 #define COORD_X 0x149//signal 1
 #define COORD_Y 0x37B//signal 2
 
+typedef uint64_t Trame;
+
 #ifndef sbi
 #define sbi(port,bit) (port) |= (1 << (bit))
 #endif
@@ -24,3 +27,6 @@
 #define cbi(port,bit) (port) &= ~(1 << (bit))
 #endif
 
+
+// Declaration des fonctions
+uint8_t checksum(uint32_t data);
