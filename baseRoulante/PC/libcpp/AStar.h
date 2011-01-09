@@ -10,7 +10,7 @@
  *
  * le périmetre dans lequel le robot se déplacera pour aller bouger un pion à l'adversaire...
  */
-#define RAYON_DE_DETECTION 300
+#define RAYON_DE_DETECTION 350
 
 /*!
  * \def EMPIETEMENT
@@ -60,6 +60,7 @@ class Noeud : public Point{
 		 * Sert pour déterminer le "meilleur" chemin.
 		 */
 		bool operator>(Noeud noeudDonne) const;
+		
 	
 	private:
 		
@@ -94,7 +95,7 @@ class AStar {
 		 * \brief trouverMeilleurNoeud
 		 * Boucle, Etape 1 : Cherche le meilleur noeud de la liste ouverte pour continuer l'algorithme au meilleur endroit.
 		 */
-		Noeud trouverMeilleurNoeud();
+		list<Noeud>::iterator trouverMeilleurNoeud();
 
 		/*!
 		 * \brief ajouterCasesAdjacentes
@@ -121,9 +122,9 @@ class AStar {
 		
 	private:
 		
-		vector<Noeud> m_listeOuverte;
+		list<Noeud> m_listeOuverte;
 		
-		vector<Noeud> m_listeFermee;
+		list<Noeud> m_listeFermee;
 		
 		int m_precision;
 		
@@ -137,6 +138,6 @@ class AStar {
 
 /* Point est noeud est il dans une liste? */
 
-int estDansListe(const vector<Noeud>& listeNoeuds, Point point);
+list<Noeud>::iterator estDansListe(list<Noeud>& listeNoeuds, Point point);
 
 #endif

@@ -80,12 +80,8 @@ void rectangleObstacle::draw(Magick::Image* image) const{
 }
 	
 
-bool rectangleObstacle::contientCercle(Point& centreCercle, int rayon)const {
-	return(rayon > fabs( (m_y+m_demiCoteY-centreCercle.getY()) )
-		|| rayon > fabs( (m_y-m_demiCoteY-centreCercle.getY()) )
-		|| rayon > fabs( (m_x-m_demiCoteX-centreCercle.getX()) )
-		|| rayon > fabs( (m_y+m_demiCoteX-centreCercle.getX()) )
-	);
+bool rectangleObstacle::contientCercle(Point& centreCercle, int rayonDonne)const {
+		return rayon(centreCercle) < (m_demiCoteX + rayonDonne) && rayon(centreCercle) < (m_demiCoteY + rayonDonne);
 }
 
 Obstacle* ListeObstacles::contientCercle(Point centreCercle,int rayon,Couleur couleur){
@@ -105,8 +101,9 @@ Obstacle* ListeObstacles::contientCercle(Point centreCercle,int rayon,Couleur co
 }
 
 void ListeObstacles::setCouleursAuto(){
-	for(unsigned int i=0;i<listeObstacles.size();i++)
+	for(unsigned int i=0;i<listeObstacles.size();i++){
 		listeObstacles[i]->setCouleur(listeObstacles[i]->couleurPlusProche());
+	}
 }
 
 void ListeObstacles::refreshPositions(const char nomFichier[]){

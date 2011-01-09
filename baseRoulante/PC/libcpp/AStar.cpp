@@ -10,7 +10,7 @@ Noeud::Noeud(int x,int y,double cout1,double cout2){
 	m_cout2=cout2;
 	m_cout3=cout1+cout2;
 	
-	m_distancePionAdverse=TAILLE_PION+RAYON_DE_DETECTION;
+	m_distancePionAdverse=0;
 
 	m_collision=false;
 	
@@ -20,7 +20,7 @@ Noeud::Noeud(int x,int y,double cout1,double cout2){
 bool Noeud::operator>(Noeud noeud2) const{
 	if(m_collision==true)
 		return false;
-	if(m_distancePionAdverse < TAILLE_PION+RAYON_DE_DETECTION && m_distancePionAdverse > TAILLE_PION+TAILLE_ROBOT-EMPIETEMENT)
+	if(m_distancePionAdverse > TAILLE_PION+TAILLE_ROBOT-EMPIETEMENT && m_distancePionAdverse!=noeud2.m_distancePionAdverse)
 		return  (m_distancePionAdverse<noeud2.m_distancePionAdverse);
 	return(m_cout3<noeud2.m_cout3);
 }
@@ -95,14 +95,14 @@ void AStar::ajouterCasesAdjacentes(Noeud noeud){
 			 //on est à l'étape actuelle, on ignore...
 			if(i==noeud.getX() && j==noeud.getY())
 				continue;
-			Noeud tmp(i,j);
+			Noeud tmp(i,j,tmp.rayon(m_depart),tmp.rayon(m_arrivee));
 			 // si le point est dans un obstacle de la couleur du robot ou sur une planche de bois, on ignore pour ne pas le déplacer ou se bloquer
-			if(ListeObstacles::contientCercle(noeud,TAILLE_ROBOT+MARGE_SECURITE_PION,COULEUR_ROBOT)!=NULL
+			if(ListeObstacles::contientCercle(noeud,TAILLE_ROBOT+m_precision+MARGE_SECURITE_PION,COULEUR_ROBOT)!=NULL
 				|| ListeObstacles::contientCercle(noeud,TAILLE_ROBOT,NOIR)!=NULL
 				){
 				tmp.setCollision(true);
-			}
-			if(estDansListe(m_listeFermee,tmp)==-1){ //si le a déjà été étudié, on ne fait rien, sinon...
+				}
+			if(estDansListe(m_listeFermee,tmp)==m_listeFermee.end()){ //si le a déjà été étudié, on ne fait rien, sinon...
 				Obstacle* estSurPionAdverse=ListeObstacles::contientCercle(tmp,RAYON_DE_DETECTION,COULEUR_ADVERSE);
 				if(estSurPionAdverse!=NULL){
 					/*si pousser le pion adverse nous fait pousser le notre aussi*/
@@ -114,16 +114,12 @@ void AStar::ajouterCasesAdjacentes(Noeud noeud){
 					}
 
 				}
-				Noeud* parent = new Noeud;
-				(*parent)=noeud;
-				tmp.setCout1(tmp.rayon(m_depart));
-				tmp.setCout2(tmp.rayon(m_arrivee));
-				tmp.setCout3(tmp.getCout1()+tmp.getCout2());
-				tmp.setParent(parent);
-				int indiceCommun = estDansListe(m_listeOuverte,tmp);
-				if(indiceCommun>-1){//si le noeud est déjà présent dans la liste ouverte...
-					if(tmp>m_listeOuverte[indiceCommun]){	//si le noeud actuel est meilleur, on le remplace
-						m_listeOuverte[indiceCommun]=tmp;
+				tmp.setParent(new Noeud(noeud));
+				list<Noeud>::iterator noeudCommun = estDansListe(m_listeOuverte,tmp);
+				if(noeudCommun!=m_listeOuverte.end()){//si le noeud est déjà présent dans la liste ouverte...
+					if(tmp>*noeudCommun){	//si le noeud actuel est meilleur, on le remplace
+						m_listeOuverte.erase(noeudCommun);
+						m_listeOuverte.push_back(tmp);
 					}
 				}
 				else
@@ -138,11 +134,12 @@ void AStar::ajouterCasesAdjacentes(Noeud noeud){
  * trouve le meilleur noeud dans la liste ouverte
  */
 
-Noeud AStar::trouverMeilleurNoeud(){
-	Noeud meilleurNoeud=m_listeOuverte[0];
-	for(unsigned int i=0;i<m_listeOuverte.size();i++){
-		if(m_listeOuverte[i]>meilleurNoeud)
-			meilleurNoeud=m_listeOuverte[i];
+list<Noeud>::iterator AStar::trouverMeilleurNoeud(){
+	list<Noeud>::iterator it;
+	list<Noeud>::iterator meilleurNoeud=m_listeOuverte.begin();
+	for(it=m_listeOuverte.begin();it!=m_listeOuverte.end();it++){
+		if(*it>*meilleurNoeud)
+			meilleurNoeud=it;
 	}
 	return meilleurNoeud;
 }
@@ -153,17 +150,15 @@ Noeud AStar::trouverMeilleurNoeud(){
 
 void AStar::transfererNoeud(Noeud noeud){
 	m_listeFermee.push_back(noeud);
-	int indiceNoeud = estDansListe(m_listeOuverte,noeud);
-	if(indiceNoeud==-1)
+	list<Noeud>::iterator indiceNoeud = estDansListe(m_listeOuverte,noeud);
+	if(indiceNoeud==m_listeOuverte.end())
 		cerr << "le noeud n'apparait pas dans la liste ouverte" << endl;
 	else
-		m_listeOuverte.erase(m_listeOuverte.begin()+indiceNoeud);
+		m_listeOuverte.erase(indiceNoeud);
 }
 
 
 void AStar::remonterChemin(){
-	
-	m_chemin.clear();
 	
 	/*
 	 * on remonte le chemin dans les noeuds
@@ -187,9 +182,9 @@ void AStar::remonterChemin(){
 
 	
 	
-	unsigned int distanceAGarder = 3; //on garde un point sur trois
+	unsigned int espacement = 3; //on garde un point sur trois
 	
-	for(unsigned int i=0;i<listePointsTmp.size();i+=distanceAGarder)
+	for(unsigned int i=0;i<listePointsTmp.size();i+=espacement)
 		m_chemin.push_back(listePointsTmp[i]);
 	
 	m_chemin.push_back(m_depart); // on ajoute le point de départ du robot
@@ -202,16 +197,16 @@ void AStar::remonterChemin(){
  */
 
 void AStar::trouverChemin(){
+		m_chemin.clear();
 		Noeud courant(m_depart.getX(),m_depart.getY(),0,m_depart.rayon(m_arrivee)); //initialisation du noeud courant..
 		m_listeOuverte.push_back(courant);
 		ajouterCasesAdjacentes(courant);
 		transfererNoeud(courant);
 		while(courant.getCout2()>m_precision && !(m_listeOuverte.empty())){
-			courant = trouverMeilleurNoeud();
+			courant = *trouverMeilleurNoeud();
 			transfererNoeud(courant);
 			ajouterCasesAdjacentes(courant);
 		}
-		/* on libère la mémoire inutile correspondant aux parents de la liste ouverte */
 		if(courant.getCout2()<=m_precision){
 			m_arrivee.setParent(&courant);
 			remonterChemin();
@@ -220,23 +215,20 @@ void AStar::trouverChemin(){
 			cerr<<"pas de chemin"<<endl;
 			m_chemin.push_back(m_depart);
 		}
-		for(unsigned int i=0;i<m_listeOuverte.size();i++){
-			delete m_listeOuverte[i].getParent();
-		}
-		for(unsigned int i=1;i<m_listeFermee.size();i++){
-			delete m_listeFermee[i].getParent();
-		}
+		m_listeOuverte.clear();
+		m_listeFermee.clear();
 }
 
 /*
  * cette fonction teste la présence d'un élement dans la liste. Si il est présent, elle renvoie son indice, sinon, elle renvoie -1
  */
 
-int estDansListe(const vector<Noeud>& listeNoeuds, Point point){
-	for(unsigned int i=0;i<listeNoeuds.size();i++){
-		if(listeNoeuds[i]==point){
-			return i;
+list<Noeud>::iterator estDansListe(list<Noeud>& listeNoeuds, Point point){
+	list<Noeud>::reverse_iterator it;
+	for(it=listeNoeuds.rbegin() ; it!=listeNoeuds.rend() ;it++){
+		if(*it==point){
+			return (++it).base();
 		}
 	}
-	return -1;
+	return (++it).base();
 }

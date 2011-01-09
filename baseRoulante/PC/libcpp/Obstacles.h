@@ -10,7 +10,7 @@
 
 
 #define TAILLE_ROBOT 140 /*!< Le robot est assimilé à un cercle de rayon TAILLE_ROBOT*/
-#define MARGE_SECURITE_PION 100
+#define MARGE_SECURITE_PION 30
 #define TAILLE_PION 100 /*!< Le pion est un cercle de rayon TAILLE_PION*/
 
 #define TOLERANCE_X 150 /*!< Le pion est considéré dans une case si son abscisse est à moins de TOLERANCE_X du centre*/
