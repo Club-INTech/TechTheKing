@@ -189,7 +189,7 @@ void AStar::remonterChemin(){
 	
 	m_chemin.push_back(m_depart); // on ajoute le point de départ du robot
 
-	reverse(m_chemin.begin(), m_chemin.end()); //ne pas oublier d'inverser la liste ... mieux vaut le faire maintenant qu'avant la recopie. 
+	reverse(m_chemin.begin(), m_chemin.end()); //ne pas oublier d'inverser la liste ... mieux vaut le faire maintenant qu'avant la recopie.
 }
 
 /*

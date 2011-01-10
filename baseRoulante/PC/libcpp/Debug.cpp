@@ -8,7 +8,7 @@ void Debug::debugConsignes(vector<Consigne> listeConsignes){
 }
 
 void Debug::debugGraphique(vector<Point> listePoints){
-	
+	cout<<"Conversion du chemin emprunté par le robot en graphique..."<<endl;
 	Image image( Geometry(3000,2100), Color("white") );
 	
 	image.fillColor("red");
@@ -71,9 +71,8 @@ void Debug::debugGraphique(vector<Point> listePoints){
 	
 	Geometry echelle(1000,700);
 	image.resize(echelle);
-	image.display();
 
 	image.magick("png");
 	image.write("cheminRobot");
-	
+	cout<<"chemin emprunté dans le robot écrit dans cheminRobot.png"<<endl;
 }
