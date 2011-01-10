@@ -38,3 +38,6 @@ Autre possibilité : la balise fixe emet en permanence une horloge 0101010101 et
 	La balise robot adverse se synchronise sur cette horloge, quand il veut emettre il envoie un octet de 1, la balise fixe le voit (ya plus de 0), arrête d'emettre son horloge et écoute. A la fin de la trame elle recommence à emettre son horloge. 
 	Notre robot se synchronise sur cette horloge et la surveille, quand la balise fixe veut emettre, elle modifie son horloge (00110011, 00111100, 11000011, 11010111, 11010011 ou autre), notre robot le voit et commence à écouter jusqu'à la fin de la trame. Selon l'octet de start, on peut aussi indiquer le type de trame qui va suivre.
 Autre possibilité d'horloge : un codage manchester (à étudier, voir si on peut faire une application deux emetteurs avec)
+Pour la lecture :	-> mesures à 3x débit -> interruption sur pin reception change -> n bit = etat_pin, n=sum(mesures)/3
+			-> mesure temporelle entre chaque interruptions donne nombre bit à assigner à etat ?
+	-puis décodage du signal : 010101 = 000000, 011010=001000, ...

@@ -1,16 +1,27 @@
 #include <avr/io.h>
-#include <avr/interrupt.h>
 #include <util/delay.h>
+#include <avr/interrupt.h>
+#include "lib/temps.h"
+#include "../../../../../common-AVR/usart.h"
+
+//set output pin : 
+#define OUT_DDR DDRD
+#define OUT_PIN PIND
+#define OUT_PORT PORTD
+#define OUT_BIT PORTD2
 
 //set desired baud rate
 #define BAUDRATE 2400
 //calculate period rate
-#define PERIOD_RATE 416 //1000000/(BAUDRATE*total/utile)
+#define PERIOD_RATE 417 //1000000/(BAUDRATE*total/utile)
+#define PERIOD_RATE_FAST 139
 //define receive parameters
-#define SYNC_BYTE 0XAA// synchro signal
-#define RADDR_BYTE 0x44//Receiver address
-#define SIG1_BYTE 0x11//signal 1
-#define SIG2_BYTE 0x22//signal 2
+#define BASE_BYTE 0xAA//Byte de base
+#define SYNC_BYTE 0xD7//synchro signal//11010111
+#define COORD_X 0x149//signal 1
+#define COORD_Y 0x37B//signal 2
+
+typedef uint64_t Trame;
 
 #ifndef sbi
 #define sbi(port,bit) (port) |= (1 << (bit))
@@ -20,7 +31,6 @@
 #define cbi(port,bit) (port) &= ~(1 << (bit))
 #endif
 
-#ifndef rbi
-#define rbi(port,bit) ((port & (1 << bit)) >> bit)
-#endif
 
+// Declaration des fonctions
+uint8_t checksum(uint32_t data);
