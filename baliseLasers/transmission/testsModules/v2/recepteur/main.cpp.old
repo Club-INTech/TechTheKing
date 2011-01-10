@@ -3,71 +3,34 @@
 volatile uint8_t transmetteur = 0b10000000;//bit 0 : flag bit reçu, bit 1 : flag init trame, bits 2-7 : pointeur
 Trame message = 0;
 uint8_t init = 0;
-volatile uint32_t temps[2] = {0,0};
-uint32_t mesures=0;
-uint32_t nb_bit=0;
-uint8_t ind_mesures=0;
+uint8_t mesure[3]={0,0,0};
 
 int main() {
 	//on initialise la transmission série (pour le debug)
 	uart_init();
 
 	//On active la sortie sur le bon bit/port
-	sbi(OUT_DDR,OUT_BIT);
-	//Activation des interruptions d'entree on CHANGE
-	cbi(EICRA,ISC01);
+	cbi(OUT_DDR,OUT_BIT);
+	//Activation des interruptions d'entree
+	sbi(EICRA,ISC01);
 	sbi(EICRA,ISC00);
 	sbi(EIMSK,INT0);
-	temps[0] = micros();
 	while(1) {
-		// On travaille en échantillonage
-		//si changement de bit 
 		if (transmetteur & 1){
-			//on prend la main
-			cbi(transmetteur,0);
-			//on stocke le nombre de bits lues
-			nb_bit = (temps[0]-temps[1])/PERIOD_RATE;
-			//on enregistre le nombre de bit correspondant
+			//Desactivation des interruptions d'entree
+			cbi(EIMSK,INT0);
 			uint8_t ptn = transmetteur >> 2;
-			if ((OUT_PIN >> OUT_BIT) & 1) {
-				while (nb_bit) {
-					cbi(message,ptn-nb_bit);
-					nb_bit--;
-				}
-				if (ptn-nb_bit <= 24) {
-					if (((message >> 24) & 0xFF) == SYNC_BYTE) {
-						sbi(transmetteur,1);
-					}
-					transmetteur = (transmetteur & 0b11) + 0x80;
-				}
-				else {
-					transmetteur = (transmetteur & 0b11) + ((ptn-nb_bit)<<2);
-				}
+			mesure[0] = (OUT_PIN >> OUT_BIT) & 1;
+			_delay_us(PERIOD_RATE/3);
+			mesure[1] = (OUT_PIN >> OUT_BIT) & 1;
+			_delay_us(PERIOD_RATE/3);
+			mesure[2] = (OUT_PIN >> OUT_BIT) & 1;
+			if (((mesure[0]+mesure[1]+mesure[2])/2) & 1) {//ce 2 est une grosse magouille...
+				sbi(message,ptn);
 			}
 			else {
-				while (nb_bit) {
-					sbi(message,ptn-nb_bit);
-					nb_bit--;
-				}
+				cbi(message,ptn);
 			}
-			//On décale le pointeur de message, et si l'en-tête est bonne, on place le flag pour demarrer l'analyse de la trame.
-			if (ptn-nb_bit <= 24) {
-				if (((message >> 24) & 0xFF) == SYNC_BYTE) {
-					sbi(transmetteur,1);
-				}
-				transmetteur = (transmetteur & 0b11) + 0x80;
-			}
-			else {
-
-				transmetteur = (transmetteur & 0b11) + ((ptn-nb_bit)<<2);
-			}
-			//
-			//
-			//
-		}
-		//fin de trame?
-		if (false) {
-			uint8_t ptn = transmetteur >> 2;
 			if (transmetteur & (1 << 1)){
 				if (ptn>0) {
 					transmetteur = ((ptn-1) << 2);
@@ -87,7 +50,7 @@ int main() {
 					message = 0;
 				}
 			}
-			else {
+			else {		
 				if (ptn>24) {
 					transmetteur = ((ptn-1) << 2);
 				}
@@ -98,6 +61,9 @@ int main() {
 					}
 				}
 			}
+
+			//Reactivation des interruptions d'entree
+			sbi(EIMSK,INT0);
 		}
 	}
 	return 0;
@@ -105,11 +71,7 @@ int main() {
 
 //Interruptions overflow timer2 -> transmission
 ISR(INT0_vect) {
-	// On informe du changement
-	sbi(transmetteur,0);
-	// On stoque la durée depuis le dernier bit
-	temps[1] = temps[0];
-	temps[0] = micros();
+	sbi(transmetteur,1);
 }
 
 uint8_t checksum(uint32_t data) {

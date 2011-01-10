@@ -1,6 +1,7 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
+#include "lib/temps.h"
 #include "../../../../../common-AVR/usart.h"
 
 //set output pin : 
@@ -12,7 +13,8 @@
 //set desired baud rate
 #define BAUDRATE 2400
 //calculate period rate
-#define PERIOD_RATE 416 //1000000/(BAUDRATE*total/utile)
+#define PERIOD_RATE 417 //1000000/(BAUDRATE*total/utile)
+#define PERIOD_RATE_FAST 139
 //define receive parameters
 #define BASE_BYTE 0xAA//Byte de base
 #define SYNC_BYTE 0xD7//synchro signal//11010111

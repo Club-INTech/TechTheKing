@@ -8,11 +8,14 @@ all: recepteur.hex
 recepteur.hex: recepteur.out
 	avr-objcopy -O ihex -R .eeprom recepteur.out recepteur.hex
 
-recepteur.out: main.o usart.o
-	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) main.o usart.o -o recepteur.out
+recepteur.out: main.o usart.o temps.o
+	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) main.o usart.o temps.o -o recepteur.out
 
 main.o: main.cpp
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) main.cpp -c
+
+temps.o: ./lib/temps.cpp
+	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) ./lib/temps.cpp -c
 
 usart.o: ../../../../../common-AVR/usart.c
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) ../../../../../common-AVR/usart.c -c
