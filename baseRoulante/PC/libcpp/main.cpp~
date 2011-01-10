@@ -40,5 +40,6 @@ int main(){
 		listeConsignes[i].transfertSerie(liaisonSerie);
 	my_serial_stream << "e" << endl;
 	while(1);
+
 	
 }

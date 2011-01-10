@@ -1,31 +1,45 @@
-OBJS=main.o Point.o Consigne.o Obstacles.o AStar.o
+OBJS=main.o Point.o Consigne.o Obstacles.o AStar.o Debug.o 
 CC=g++ `Magick++-config --cxxflags --cppflags --ldflags --libs`
 CFLAGS_LINK=-lm -lserial `Magick++-config --cxxflags --cppflags --ldflags --libs` -o 
 CFLAGS_COMP=-g -Wall `Magick++-config --cxxflags --cppflags --ldflags --libs` -c
 
-debug: $(OBJS)
-	g++ $(OBJS) $(CFLAGS_LINK) debug
+all:	debug clean
 
-main.o : main.cpp Point.h AStar.h
-	g++ $(CFLAGS_COMP) main.cpp
+debug: $(OBJS)
+	@echo "Création de l'executable"
+	@g++ $(OBJS) $(CFLAGS_LINK) debug
+
+main.o : main.cpp Point.h AStar.h Debug.h
+	@echo "Compilation de main.cpp"
+	@g++ $(CFLAGS_COMP) main.cpp
 
 Point.o : Point.cpp Point.h Consigne.h
-	g++ $(CFLAGS_COMP) Point.cpp
+	@echo "Compilation de Point.cpp"
+	@g++ $(CFLAGS_COMP) Point.cpp
 
 Consigne.o : Consigne.cpp Consigne.h
-	g++ $(CFLAGS_COMP) Consigne.cpp
+	@echo "Compilation de Consigne.cpp"
+	@g++ $(CFLAGS_COMP) Consigne.cpp
 
 Obstacles.o : Obstacles.cpp Obstacles.h Point.h
-	g++ $(CFLAGS_COMP) Obstacles.cpp
+	@echo "Compilation de Obstacles.cpp"
+	@g++ $(CFLAGS_COMP) Obstacles.cpp
 
 AStar.o : AStar.cpp AStar.h Point.h Obstacles.h
-	g++ $(CFLAGS_COMP) AStar.cpp
+	@echo "Compilation de AStar.cpp"
+	@g++ $(CFLAGS_COMP) AStar.cpp
+	
+Debug.o : Debug.cpp Debug.h Point.h Obstacles.h Consigne.h
+	@echo "Compilation de Debug.cpp"
+	@g++ $(CFLAGS_COMP) Debug.cpp
 
 clean :
-	rm -f $(OBJS) rm *~
+	@echo "Suppression des .o et des .~"
+	@rm -f $(OBJS) rm *~
 
-mrpropre :
-	rm -f $(OBJS) rm *~ debug
+mrpropre : clean
+	@echo "Suppression de l'executable."
+	@rm -f debug
 	
 
 
