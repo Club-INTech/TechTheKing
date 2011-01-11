@@ -1,7 +1,8 @@
 #include "main.h"
 
-volatile uint8_t transmetteur = 0b10000000;//bit 0 : flag bit reçu, bit 1 : flag init trame, bits 2-7 : pointeur
-Trame message = 0;
+volatile uint8_t transmetteur = 0b11111000;//bit 0 : flag bit reçu, bit 1 : flag init trame, bit 2 : flag fin trame, bits 3-7 : pointeur
+//Trame message = 0;
+uint32_t message = 0;
 uint8_t init = 0;
 volatile uint32_t temps[2] = {0,0};
 uint32_t mesures=0;
@@ -28,20 +29,11 @@ int main() {
 			//on stocke le nombre de bits lues
 			nb_bit = (temps[0]-temps[1])/PERIOD_RATE;
 			//on enregistre le nombre de bit correspondant
-			uint8_t ptn = transmetteur >> 2;
+			uint8_t ptn = transmetteur >> 3;
 			if ((OUT_PIN >> OUT_BIT) & 1) {
 				while (nb_bit) {
 					cbi(message,ptn-nb_bit);
 					nb_bit--;
-				}
-				if (ptn-nb_bit <= 24) {
-					if (((message >> 24) & 0xFF) == SYNC_BYTE) {
-						sbi(transmetteur,1);
-					}
-					transmetteur = (transmetteur & 0b11) + 0x80;
-				}
-				else {
-					transmetteur = (transmetteur & 0b11) + ((ptn-nb_bit)<<2);
 				}
 			}
 			else {
@@ -51,52 +43,43 @@ int main() {
 				}
 			}
 			//On décale le pointeur de message, et si l'en-tête est bonne, on place le flag pour demarrer l'analyse de la trame.
-			if (ptn-nb_bit <= 24) {
+			if ((ptn-nb_bit <= 24) && ((transmetteur >> 1) & 1)) {
 				if (((message >> 24) & 0xFF) == SYNC_BYTE) {
 					sbi(transmetteur,1);
 				}
-				transmetteur = (transmetteur & 0b11) + 0x80;
+				transmetteur = (transmetteur & 0b111) + 0xF8;
+			}
+			else if (ptn <= nb_bit) {//!!!risque d'écraser le début de trame
+				sbi(transmetteur,2);
+				transmetteur = (transmetteur & 0b111) + 0xF8;
 			}
 			else {
 
-				transmetteur = (transmetteur & 0b11) + ((ptn-nb_bit)<<2);
+				transmetteur = (transmetteur & 0b111) + ((ptn-nb_bit)<<3);
 			}
 			//
 			//
 			//
 		}
 		//fin de trame?
-		if (false) {
-			uint8_t ptn = transmetteur >> 2;
-			if (transmetteur & (1 << 1)){
-				if (ptn>0) {
-					transmetteur = ((ptn-1) << 2);
-				}
-				else {
-					transmetteur = (32 << 2);
-					printUInt((message >> 19) & 0xFFF);
-					printString(" ");
-					printUInt((message >> 7) & 0xFFF);
-					printString(" ");
-					printUShort(message & 0xFF);
-					printString(" ");
-					uint8_t tmp = checksum((message >> 8) & 0xFFFFFFFF);
-					printUShort(tmp);
-					printString(" ");
-					printlnUShort(tmp == (message & 0xFF));
-					message = 0;
-				}
+		if ((transmetteur >> 2) & 1){
+			uint8_t ptn = transmetteur >> 3;
+			if (ptn>0) {
+				transmetteur = ((ptn-1) << 3);
 			}
 			else {
-				if (ptn>24) {
-					transmetteur = ((ptn-1) << 2);
-				}
-				else {
-					transmetteur = (32<<2) + 1;
-					if ((message >> 24) == SYNC_BYTE) {
-						sbi(transmetteur,1);
-					}
-				}
+				transmetteur = (32 << 2);
+				printUInt((message >> 19) & 0xFFF);
+				printString(" ");
+				printUInt((message >> 7) & 0xFFF);
+				printString(" ");
+				printUShort(message & 0xFF);
+				printString(" ");
+				uint8_t tmp = checksum((message >> 8) & 0xFFFFFFFF);
+				printUShort(tmp);
+				printString(" ");
+				printlnUShort(tmp == (message & 0xFF));
+				message = 0;
 			}
 		}
 	}
