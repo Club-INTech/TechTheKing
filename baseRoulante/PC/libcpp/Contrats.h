@@ -31,14 +31,17 @@
 #include <sstream>
 class contract_violation_exception : public std::exception {
         std::string message;
+		std::string m_condition;
 public:
-        contract_violation_exception(char const * condition, char const * file, int line)
+        contract_violation_exception(std::string condition, char const * file, int line)
         {
+				m_condition=condition;
                 std::ostringstream str;
                 str << file << " : ligne " << line << " - Violation du contrat : " << condition;
                 message = str.str();
         };
         char const * what() const throw() { return message.c_str(); };
+		char const * why() const throw() { return m_condition.c_str(); };
         ~contract_violation_exception() throw() {};
 };
 
@@ -53,8 +56,9 @@ public:
 		try{\
 			_contract_check_invariants();\
 		}\
-		catch(contract_violation_exception){\
-			cout << file << " : ligne " << line << " - Echec de vérification des invariants." << endl;\
+		catch(contract_violation_exception contratVioletOlol){\
+			cout << file << " : ligne " << line << endl;\
+			cout << "Echec de vérification de l'invariant : " << contratVioletOlol.why() << endl << endl;\
 		}\
 	}
 #define CHECK_INVARIANTS contracts_handle_invariants(__FILE__,__LINE__)
