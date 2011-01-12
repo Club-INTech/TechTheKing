@@ -21,6 +21,14 @@
 #define COORD_X 0x149//signal 1
 #define COORD_Y 0x37B//signal 2
 
+//flags pour l'octet transmetteur : 
+#define FLAG_INIT_BIT 0
+#define FLAG_INIT_TRAME 1
+#define FLAG_FIN_TRAME 2
+#define FLAG_COMPTEUR 3
+#define FLAG_MASQUE 0b111
+
+
 typedef uint64_t Trame;
 
 #ifndef sbi
