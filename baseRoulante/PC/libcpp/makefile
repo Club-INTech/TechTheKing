@@ -3,7 +3,7 @@ CC=g++ `Magick++-config --cxxflags --cppflags --ldflags --libs`
 CFLAGS_LINK=-O3 -lm -lserial `Magick++-config --cxxflags --cppflags --ldflags --libs` -o 
 CFLAGS_COMP=-O3 -Wall `Magick++-config --cxxflags --cppflags --ldflags --libs` -c
 
-all:	debug clean
+all:	debug
 
 debug: $(OBJS)
 	@echo "Création de l'executable"

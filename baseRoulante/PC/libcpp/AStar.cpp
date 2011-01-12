@@ -77,25 +77,30 @@ vector <Point> AStar::getChemin(){
 
 
 AStar::AStar(int precision, Noeud depart, Noeud arrivee){
+	REQUIRE(precision>=0, "La précision est positive");
+	REQUIRE(depart!=arrivee, "Le point de départ est différent du point d'arrivée du robot");
+	REQUIRE(TAILLE_ROBOT<arrivee.getX() && arrivee.getX()<3000-TAILLE_ROBOT, "L'abscisse du point d'arrivee du robot est tel qu'il ne touche pas le bord de la table");
+	REQUIRE(TAILLE_ROBOT<arrivee.getY() && arrivee.getY()<2100-TAILLE_ROBOT, "L'ordonnée du point d'arrivee du robot est tel qu'il ne touche pas le bord de la table");
 	m_precision=precision;
 	m_depart=depart;
 	m_arrivee=arrivee;
-
 	trouverChemin();
 };
 
 
 void AStar::ajouterCasesAdjacentes(Noeud noeud){
 	for(int i=noeud.getX()-m_precision;i<=noeud.getX()+m_precision;i+=m_precision){
-		if(i>3000 || i < - m_precision)
+		if(i>3000 || i < 0 )
 			continue;
 		for (int j=noeud.getY()-m_precision;j<=noeud.getY()+m_precision;j+=m_precision){
-			if(j>2100 || j < - m_precision)
+			if(j>2100 || j < 0 )
 				continue;
 			 //on est à l'étape actuelle, on ignore...
 			if(i==noeud.getX() && j==noeud.getY())
 				continue;
-			Noeud tmp(i,j,tmp.rayon(m_depart),tmp.rayon(m_arrivee));
+			Noeud tmp(i,j);
+			tmp.setCout1(tmp.rayon(m_depart)); 
+			tmp.setCout2(tmp.rayon(m_arrivee));
 			 // si le point est dans un obstacle de la couleur du robot ou sur une planche de bois, on ignore pour ne pas le déplacer ou se bloquer
 			if(ListeObstacles::contientCercle(noeud,TAILLE_ROBOT+m_precision+MARGE_SECURITE_PION,COULEUR_ROBOT)!=NULL
 				|| ListeObstacles::contientCercle(noeud,TAILLE_ROBOT,NOIR)!=NULL

@@ -66,14 +66,14 @@ class Obstacle : public Point{
 		 *
 		 * \return true si le cercle donné chevauche l'obstacle.
 		 */
-		virtual bool contientCercle(Point& centreCercle, int rayon) const ;
+		virtual bool contientCercle(Point& centreCercle, int rayon);
 
 		/*!
 		 * \brief draw
 		 *
 		 * Dessine l'e pion obstacle dans une image ImageMagick.
 		 */
-		virtual void draw(Magick::Image* image) const  { };
+		virtual void draw(Magick::Image* image){ };
 
 		/*!
 		 * \brief deplacer
@@ -89,12 +89,12 @@ class Obstacle : public Point{
 		 *
 		 * \return la couleur du robot à qui l'obstacle est, ou neutre si il n'est à personne.
 		 */
-		virtual Couleur couleurPlusProche() const;
+		virtual Couleur couleurPlusProche();
 
 		/*!
 		 * \brief Accesseurs
 		 */
-		virtual Couleur getCouleur() const  { return m_couleur; };
+		virtual Couleur getCouleur()  { return m_couleur; };
 		void setCouleur(Couleur couleur){ m_couleur=couleur; };
 		
 	protected:
@@ -117,11 +117,11 @@ class cercleObstacle : public Obstacle{
 		
 		cercleObstacle(double x,double y,Couleur m_couleur=NEUTRE);
 		
-		void draw(Magick::Image* image) const  ;
+		void draw(Magick::Image* image);
 		
-		bool contientCercle(Point& centreCercle,int rayon) const ;
+		bool contientCercle(Point& centreCercle,int rayon);
 		
-		Couleur couleurPlusProche() const;
+		Couleur couleurPlusProche();
 		
 	private:
 		
@@ -142,11 +142,11 @@ class rectangleObstacle : public Obstacle{
 		
 		rectangleObstacle(double x,double y,int demiCoteX,int demiCoteY);
 		
-		void draw(Magick::Image* image) const  ;
+		void draw(Magick::Image* image);
 
-		bool contientCercle(Point& centreCercle,int rayon) const ;
+		bool contientCercle(Point& centreCercle,int rayon);
 		
-		Couleur couleurPlusProche() const {return NOIR;};
+		Couleur couleurPlusProche(){return NOIR;};
 		
 	private:
 		

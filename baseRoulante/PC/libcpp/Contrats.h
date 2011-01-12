@@ -1,44 +1,63 @@
+
 #ifndef CONTRACTS_H
+
 #define CONTRACTS_H
 
-#ifdef CONTRACTS_ABORT
+#define CONTRACTS_USE_EXCEPTION
+
+#ifdef CONTRACTS_USE_ABORT
 #include <stdlib.h>
 #define REQUIRE(cond,texte) if(!(cond)) abort()
 #define ENSURE(cond, texte) if(!(cond)) abort()
 #define INVARIANT(cond, texte) if(!(cond)) abort()
-#define BEGIN_INVARIANT_BLOCK(className) void _contract_check_invariants(){#define END_INVARIANT_BLOCK }
+#define BEGIN_INVARIANT_BLOCK(className) void _contract_check_invariants() {
+#define END_INVARIANT_BLOCK }
 #define CHECK_INVARIANTS _contract_check_invariants
 #endif
 
-#ifdef CONTRACTS_ASSERT
-#include <stdlib.h>
-#define REQUIRE(cond,texte) assert(cond)
-#define ENSURE(cond,texte) assert(cond)
-#define BEGIN_INVARIANT_BLOCK(className) void _contract_check_invariants(){#define END_INVARIANT_BLOCK }
+#ifdef CONTRACTS_USE_ASSERT
+#include <assert.h>
+#define REQUIRE(cond, texte) assert(cond)
+#define ENSURE(cond, texte) assert(cond)
+#define INVARIANT(cond, texte) assert(cond)
+#define BEGIN_INVARIANT_BLOCK(className) void _contract_check_invariants() {
+#define END_INVARIANT_BLOCK }
 #define CHECK_INVARIANTS _contract_check_invariants
 #endif
 
-#ifdef CONTRACTS_EXCEPTION
+#ifdef CONTRACTS_USE_EXCEPTION
+
 #include <string>
 #include <sstream>
 class contract_violation_exception : public std::exception {
-private:
-	std::string message
+        std::string message;
 public:
-	contract_violation_exception(char const* condition, char const* file, int line){
-		std::ostringstream str;
-		str<<file<<" : ligne"<<line<<" - Violation du contrat : "<<condition;
-		message=str.str();
-	};
-	char const *what() const throw() { return message.c_str(); };
-	~contract_violation_exception() throw() {};
-}
+        contract_violation_exception(char const * condition, char const * file, int line)
+        {
+                std::ostringstream str;
+                str << file << " : ligne " << line << " - Violation du contrat : " << condition;
+                message = str.str();
+        };
+        char const * what() const throw() { return message.c_str(); };
+        ~contract_violation_exception() throw() {};
+};
+
+
+
 #define REQUIRE(cond, texte) if(!(cond)) throw contract_violation_exception(texte, __FILE__, __LINE__)
 #define ENSURE(cond, texte) if(!(cond)) throw contract_violation_exception(texte, __FILE__, __LINE__)
 #define INVARIANT(cond, texte) if(!(cond)) throw contract_violation_exception(texte, __FILE__, __LINE__)
 #define BEGIN_INVARIANT_BLOCK(className) void _contract_check_invariants() {
-#define END_INVARIANT_BLOCK }
-#define CHECK_INVARIANTS _contract_check_invariants
+#define END_INVARIANT_BLOCK } \
+	void contracts_handle_invariants(char const * file, int line){\
+		try{\
+			_contract_check_invariants();\
+		}\
+		catch(contract_violation_exception){\
+			cout << file << " : ligne " << line << " - Echec de vérification des invariants." << endl;\
+		}\
+	}
+#define CHECK_INVARIANTS contracts_handle_invariants(__FILE__,__LINE__)
 #endif
 
 #ifdef CONTRACTS_NO_CHECK

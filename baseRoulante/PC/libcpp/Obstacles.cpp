@@ -10,12 +10,12 @@ Obstacle::Obstacle(double x,double y,Couleur couleur){
 	m_couleur=couleur;
 }
 
-bool Obstacle::contientCercle(Point& centreCercle, int rayon) const{
+bool Obstacle::contientCercle(Point& centreCercle, int rayon){
 	return false;
 }
 
 
-Couleur Obstacle::couleurPlusProche() const {
+Couleur Obstacle::couleurPlusProche() {
 	return NEUTRE;
 }
 
@@ -24,19 +24,19 @@ cercleObstacle::cercleObstacle(double x,double y,Couleur couleur) : Obstacle(x,y
 
 }
 
-void cercleObstacle::draw(Magick::Image* image) const{
+void cercleObstacle::draw(Magick::Image* image){
 	image->fillColor("yellow");
 	image->draw(Magick::DrawableEllipse(m_x,2100-m_y, m_rayon, m_rayon, 0, 360));
 }
 
-bool cercleObstacle::contientCercle(Point& centreCercle, int rayonDonne) const{
+bool cercleObstacle::contientCercle(Point& centreCercle, int rayonDonne){
 	if(rayon(centreCercle) < (m_rayon + rayonDonne))
 		return true;
 	return false;
 }
 
 /* Determination automatique de la couleur d'un pion : si il est à nous, à l'adversaire ou à personne */
-Couleur cercleObstacle::couleurPlusProche() const{
+Couleur cercleObstacle::couleurPlusProche() {
 	Couleur couleurCase=ROUGE;
 	for(unsigned j=175;j<=1925;j+=350)
 	{
@@ -74,13 +74,13 @@ rectangleObstacle::rectangleObstacle(double x,double y,int demiCoteX,int demiCot
 	
 }
 
-void rectangleObstacle::draw(Magick::Image* image) const{
+void rectangleObstacle::draw(Magick::Image* image){
 	image->fillColor("Dark Orange");
 	image->draw(Magick::DrawableRectangle(m_x-m_demiCoteX,2100-(m_y-m_demiCoteY),m_x+m_demiCoteX,2100-(m_y+m_demiCoteY)));
 }
 	
 
-bool rectangleObstacle::contientCercle(Point& centreCercle, int rayonDonne)const {
+bool rectangleObstacle::contientCercle(Point& centreCercle, int rayonDonne) {
 		return rayon(centreCercle) < (m_demiCoteX + rayonDonne) && rayon(centreCercle) < (m_demiCoteY + rayonDonne);
 }
 

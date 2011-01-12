@@ -7,9 +7,11 @@
 Point::Point(double x,double y){
 	m_x=x;
 	m_y=y;
+	CHECK_INVARIANTS;
 }
 
 void Point::print() {
+	CHECK_INVARIANTS;
 	cout << "x= " << m_x << " ; y= " << m_y << endl;
 }
 
@@ -19,18 +21,26 @@ void Point::print() {
  */
 
 void Point::setX(double x){
+	CHECK_INVARIANTS;
+	REQUIRE(0<=x && x<=3000, "Réactualisation de l'abscisse d'un point avec une abscisse dans les limites du terrain");
 	m_x=x;
+	CHECK_INVARIANTS;
+	
 }
 
 void Point::setY(double y){
+	CHECK_INVARIANTS;
+	REQUIRE(0<=y && y<=2100, "Réactualisation de l'ordonnée d'un point avec une dans les limites du terrain");
 	m_y=y;
 }
 
-double Point::getX() const{
+double Point::getX(){
+	CHECK_INVARIANTS;
 	return m_x;
 }
 
-double Point::getY() const{
+double Point::getY(){
+	CHECK_INVARIANTS;
 	return m_y;
 }
 
@@ -38,7 +48,9 @@ double Point::getY() const{
  * différents opérateurs
  */
 
-Point Point::operator+(Point Point2) const{
+Point Point::operator+(Point Point2){
+	CHECK_INVARIANTS;
+	Point2.CHECK_INVARIANTS;
 	double x=m_x;
 	double y=m_y;
 	x+=Point2.m_x;
@@ -47,34 +59,51 @@ Point Point::operator+(Point Point2) const{
 	return resultat;
 }
 
-Point Point::operator-(Point Point2) const{
+Point Point::operator-(Point Point2){
+	CHECK_INVARIANTS;
+	REQUIRE(Point2.m_x>=0, "Abscisse du point à soustraire positive");
+	REQUIRE(Point2.m_y>=0, "Ordonnée du point à soustraire positive");
 	double x=m_x;
 	double y=m_y;
 	x-=Point2.m_x;
 	y-=Point2.m_y;
 	Point resultat(x,y);
+	ENSURE(resultat.m_x>=0, "Abscisse de la différence des deux points positive");
+	ENSURE(resultat.m_y>=0, "Ordonnée de la différence des deux points positive");
 	return resultat;
 }
 
-bool Point::operator==(Point Point2) const{
-	if(m_x==Point2.m_x && m_y==Point2.m_y)
-		return true;
-	else
-		return false;
+bool Point::operator==(Point Point2){
+	CHECK_INVARIANTS;
+	Point2.CHECK_INVARIANTS;
+	return(m_x==Point2.m_x && m_y==Point2.m_y);
+}
+
+bool Point::operator!=(Point Point2){
+	CHECK_INVARIANTS;
+	Point2.CHECK_INVARIANTS;
+	return(m_x!=Point2.m_x || m_y!=Point2.m_y);
 }
 
 void Point::round(){
+	CHECK_INVARIANTS;
 	m_x=floor(m_x+0.5);
 	m_y=floor(m_y+0.5);
 }
 
-double Point::rayon(Point Point2) const{
+double Point::rayon(Point Point2){
+	CHECK_INVARIANTS;
+	REQUIRE(Point2.m_x>=0, "Abscisse du point dont on veut trouver la distance est positive");
+	REQUIRE(Point2.m_y>=0, "Ordonnée du point dont on veut trouver la distance est positive");
 	double dx=(Point2.m_x-m_x);
 	double dy=(Point2.m_y-m_y);
 	return sqrt(dx*dx + dy*dy);
 }
 
-double Point::angle(Point Point2) const{
+double Point::angle(Point Point2){
+	CHECK_INVARIANTS;
+	REQUIRE(Point2.m_x>=0, "Abscisse du point avec lequel on détermine l'angle est positive");
+	REQUIRE(Point2.m_y>=0, "Ordonnée du point avec lequel on détermine l'angle est positive");
 	double dx=(Point2.m_x-m_x);
 	double dy=(Point2.m_y-m_y);
 	return atan2(dx,dy);
@@ -122,7 +151,7 @@ vector<Point> ListePoints::lissageBezier(const vector<Point>& pointsDeControle,i
 	return resultat;
 }
 
-vector<Consigne> ListePoints::convertirEnConsignes(const vector<Point>& listePoints){
+vector<Consigne> ListePoints::convertirEnConsignes(vector<Point>& listePoints){
 	vector<Consigne> resultat;
 	int longueur=listePoints.size();
 	double rayon=0;

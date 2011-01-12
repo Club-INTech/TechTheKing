@@ -1,6 +1,12 @@
 #ifndef POINT_H
 #define POINT_H
 
+#include <vector>
+#include <iostream>
+#include "Consigne.h"
+#include <cmath>
+#include "Contrats.h"
+
 /*!
  * \file Point.h
  * \brief La gestion des points.
@@ -60,11 +66,6 @@
 #define CASE65 2025,1925
 #define CASE66 2375,1925
 
-#include <vector>
-#include <iostream>
-#include "Consigne.h"
-#include <cmath>
-
 using namespace std;
 
 /*!
@@ -92,14 +93,14 @@ class Point{
 		void round();
 		
 		/*! \brief Calcul de la distance entre deux points */
-		double rayon(Point Point2) const;
+		double rayon(Point Point2);
 
 		/*!
 		 * \brief Calcul de l'angle entre deux points.
 		 * 
 		 * L'angle est calculé par rapport à (Oy) et est entre -Pi et Pi.
 		 */
-		double angle(Point Point2) const;
+		double angle(Point Point2);
 
 		
 		/*! \brief Accesseur setX*/
@@ -107,9 +108,9 @@ class Point{
 		/*! \brief Accesseur setY*/
 		void setY(double y);
 		/*! \brief Accesseur getX*/
-		double getX() const;
+		double getX();
 		/*! \brief Accesseur getY*/
-		double getY() const;
+		double getY();
 		
 		/*! \brief Opérateur de multiplication par une constante*/
 		template<typename T> Point operator*(T k){
@@ -124,13 +125,14 @@ class Point{
 		}
 
 		/*! \brief Opérateur d'addition de deux points*/
-		Point operator+(Point Point2) const;
+		Point operator+(Point Point2);
 		
 		/*! \brief Opérateur de soustraction de deux points*/
-		Point operator-(Point Point2) const;
+		Point operator-(Point Point2);
 
 		/*! \brief Opérateur d'égalité entre deux points*/
-		bool operator==(Point Point2) const;
+		bool operator==(Point Point2);
+		bool operator!=(Point Point2);
 
 		/*! \brief Opérateur de flux sortant*/
 		friend ostream &operator<<(ostream &out, Point point);
@@ -142,7 +144,10 @@ class Point{
 		
 		double m_x; /*!< Abscisse du point*/
 		double m_y; /*!< Ordonnée du point*/
-		
+		BEGIN_INVARIANT_BLOCK(Point)
+		INVARIANT(0<=m_x && m_x<=3000, "L'abscisse est dans les limites du terrain");
+		INVARIANT(0<=m_y && m_y<=2100, "L'ordonnée est dans les limites du terrain");
+		END_INVARIANT_BLOCK;
 };
 
 
@@ -174,7 +179,7 @@ vector<Point> lissageBezier(const vector<Point>& pointsDeControle,int nbPointsBe
  * permet de convertir une liste de points en liste de consignes
  *\return la liste de consignes.
  */
-vector<Consigne> convertirEnConsignes(const vector<Point>& listePoints) ;
+vector<Consigne> convertirEnConsignes(vector<Point>& listePoints) ;
 
 /*!
  * \brief Est dans liste ?
