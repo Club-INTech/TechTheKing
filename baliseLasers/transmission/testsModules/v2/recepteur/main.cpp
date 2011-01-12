@@ -23,13 +23,31 @@ int main() {
 	while(1) {
 		// On travaille en échantillonage
 		//si changement de bit 
+		//analyse couche 2 - OSI
 		if (transmetteur & 1) {
 			//on prend la main
 			cbi(transmetteur,FLAG_INIT_BIT);
-			//on stocke le nombre de bits lues
+			//on stocke le nombre de bits lues et la position où on va les écrire
 			nb_bit = (temps[0]-temps[1])/PERIOD_RATE;
+			uint8_t ptn = (transmetteur >> FLAG_POINTEUR_MESSAGE);
+
+			//On décale le pointeur de message, et si l'en-tête est bonne, on place le flag pour demarrer l'analyse de la trame.
+			if ((ptn <= 24) && (((transmetteur >> FLAG_INIT_TRAME) & 1)==0)) {
+				if (((message >> 24) & 0xFF) == SYNC_BYTE) {
+					sbi(transmetteur,FLAG_INIT_TRAME);
+				}
+				transmetteur = (transmetteur & FLAG_MASQUE) + 0xF8;
+			}
+			else if (ptn <= nb_bit) { //!!!risque d'écraser le début de trame, mise en place d'une petite rustine!!!
+				sbi(transmetteur,FLAG_FIN_TRAME);
+				cbi(transmetteur,FLAG_INIT_TRAME);
+				transmetteur = (transmetteur & FLAG_MASQUE) + 0xF8;
+			}
+			else {
+				transmetteur = (transmetteur & FLAG_MASQUE) + ((ptn-nb_bit) << FLAG_POINTEUR_MESSAGE);
+			}
+
 			//on enregistre le nombre de bit correspondant, avec décodage du codage source à la volee.
-			uint8_t ptn = (transmetteur >> FLAG_COMPTEUR);
 			uint8_t compteur = nb_bit;
 			cbi(message,ptn-compteur);
 			compteur--;
@@ -37,30 +55,14 @@ int main() {
 				sbi(message,ptn-compteur);
 				compteur--;
 			}
-			//On décale le pointeur de message, et si l'en-tête est bonne, on place le flag pour demarrer l'analyse de la trame.
-			if ((ptn <= 24) && ((transmetteur >> FLAG_INIT_TRAME) & 1)) {
-				if (((message >> 24) & 0xFF) == SYNC_BYTE) {
-					sbi(transmetteur,FLAG_INIT_TRAME);
-				}
-				transmetteur = (transmetteur & FLAG_MASQUE) + 0xF8;
-			}
-			else if (ptn <= nb_bit) {//!!!risque d'écraser le début de trame, mise en place d'une petite rustine!!!
-				sbi(transmetteur,FLAG_FIN_TRAME);
-				transmetteur = (transmetteur & FLAG_MASQUE) + 0xF8;
-			}
-			else {
-
-				transmetteur = (transmetteur & FLAG_MASQUE) + ((ptn-nb_bit) << FLAG_COMPTEUR);
-			}
-			//
-			//
-			//
+			cbi(transmetteur,FLAG_INIT_BIT);
 		}
-		//fin de trame?
+		//fin de trame
+		//analyse couche 3 - OSI
 		if ((transmetteur >> FLAG_FIN_TRAME) & 1){
-			uint8_t ptn = transmetteur >> FLAG_COMPTEUR;
+			uint8_t ptn = transmetteur >> FLAG_POINTEUR_MESSAGE;
 			if (ptn>0) {
-				transmetteur = ((ptn-1) << FLAG_COMPTEUR);
+				transmetteur = ((ptn-1) << FLAG_POINTEUR_MESSAGE);
 			}
 			else {
 				transmetteur = (32 << 2);

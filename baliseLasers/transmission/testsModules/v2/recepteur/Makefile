@@ -11,13 +11,13 @@ recepteur.hex: recepteur.out
 recepteur.out: main.o usart.o temps.o
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) main.o usart.o temps.o -o recepteur.out
 
-main.o: main.cpp
+main.o: main.cpp main.h
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) main.cpp -c
 
-temps.o: ./lib/temps.cpp
+temps.o: ./lib/temps.cpp ./lib/temps.h
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) ./lib/temps.cpp -c
 
-usart.o: ../../../../../common-AVR/usart.c
+usart.o: ../../../../../common-AVR/usart.c ../../../../../common-AVR/usart.h
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) ../../../../../common-AVR/usart.c -c
 
 clean:

@@ -17,7 +17,7 @@
 #define PERIOD_RATE_FAST 139
 //define receive parameters
 #define BASE_BYTE 0xAA//Byte de base
-#define SYNC_BYTE 0xD7//synchro signal//11010111
+#define SYNC_BYTE 0xD7//synchro signal//11010111//etudier des bytes de synchro adaptes a la methode de detection (juste apres un CHANGE)
 #define COORD_X 0x149//signal 1
 #define COORD_Y 0x37B//signal 2
 
@@ -25,12 +25,13 @@
 #define FLAG_INIT_BIT 0
 #define FLAG_INIT_TRAME 1
 #define FLAG_FIN_TRAME 2
-#define FLAG_COMPTEUR 3
+#define FLAG_POINTEUR_MESSAGE 3
 #define FLAG_MASQUE 0b111
 
-
+//le type Trame
 typedef uint64_t Trame;
 
+//les sbi et cbi, hyper-pratiques, ameliorent la lisibilite.
 #ifndef sbi
 #define sbi(port,bit) (port) |= (1 << (bit))
 #endif
