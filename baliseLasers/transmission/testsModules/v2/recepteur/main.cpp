@@ -23,49 +23,46 @@ int main() {
 	while(1) {
 		// On travaille en échantillonage
 		//si changement de bit 
-		if (transmetteur & 1){
+		//analyse couche 2 - OSI
+		if (transmetteur & 1) {
 			//on prend la main
-			cbi(transmetteur,0);
-			//on stocke le nombre de bits lues
+			cbi(transmetteur,FLAG_INIT_BIT);
+			//on stocke le nombre de bits lues et la position où on va les écrire
 			nb_bit = (temps[0]-temps[1])/PERIOD_RATE;
-			//on enregistre le nombre de bit correspondant
-			uint8_t ptn = transmetteur >> 3;
-			if ((OUT_PIN >> OUT_BIT) & 1) {
-				while (nb_bit) {
-					cbi(message,ptn-nb_bit);
-					nb_bit--;
-				}
-			}
-			else {
-				while (nb_bit) {
-					sbi(message,ptn-nb_bit);
-					nb_bit--;
-				}
-			}
-			//On décale le pointeur de message, et si l'en-tête est bonne, on place le flag pour demarrer l'analyse de la trame.
-			if ((ptn-nb_bit <= 24) && ((transmetteur >> 1) & 1)) {
-				if (((message >> 24) & 0xFF) == SYNC_BYTE) {
-					sbi(transmetteur,1);
-				}
-				transmetteur = (transmetteur & 0b111) + 0xF8;
-			}
-			else if (ptn <= nb_bit) {//!!!risque d'écraser le début de trame
-				sbi(transmetteur,2);
-				transmetteur = (transmetteur & 0b111) + 0xF8;
-			}
-			else {
+			uint8_t ptn = (transmetteur >> FLAG_POINTEUR_MESSAGE);
 
-				transmetteur = (transmetteur & 0b111) + ((ptn-nb_bit)<<3);
+			//On décale le pointeur de message, et si l'en-tête est bonne, on place le flag pour demarrer l'analyse de la trame.
+			if ((ptn <= 24) && (((transmetteur >> FLAG_INIT_TRAME) & 1)==0)) {
+				if (((message >> 24) & 0xFF) == SYNC_BYTE) {
+					sbi(transmetteur,FLAG_INIT_TRAME);
+				}
+				transmetteur = (transmetteur & FLAG_MASQUE) + 0xF8;
 			}
-			//
-			//
-			//
+			else if (ptn <= nb_bit) { //!!!risque d'écraser le début de trame, mise en place d'une petite rustine!!!
+				sbi(transmetteur,FLAG_FIN_TRAME);
+				cbi(transmetteur,FLAG_INIT_TRAME);
+				transmetteur = (transmetteur & FLAG_MASQUE) + 0xF8;
+			}
+			else {
+				transmetteur = (transmetteur & FLAG_MASQUE) + ((ptn-nb_bit) << FLAG_POINTEUR_MESSAGE);
+			}
+
+			//on enregistre le nombre de bit correspondant, avec décodage du codage source à la volee.
+			uint8_t compteur = nb_bit;
+			cbi(message,ptn-compteur);
+			compteur--;
+			while (nb_bit>0) {
+				sbi(message,ptn-compteur);
+				compteur--;
+			}
+			cbi(transmetteur,FLAG_INIT_BIT);
 		}
-		//fin de trame?
-		if ((transmetteur >> 2) & 1){
-			uint8_t ptn = transmetteur >> 3;
+		//fin de trame
+		//analyse couche 3 - OSI
+		if ((transmetteur >> FLAG_FIN_TRAME) & 1){
+			uint8_t ptn = transmetteur >> FLAG_POINTEUR_MESSAGE;
 			if (ptn>0) {
-				transmetteur = ((ptn-1) << 3);
+				transmetteur = ((ptn-1) << FLAG_POINTEUR_MESSAGE);
 			}
 			else {
 				transmetteur = (32 << 2);
@@ -89,7 +86,7 @@ int main() {
 //Interruptions overflow timer2 -> transmission
 ISR(INT0_vect) {
 	// On informe du changement
-	sbi(transmetteur,0);
+	sbi(transmetteur,FLAG_INIT_BIT);
 	// On stoque la durée depuis le dernier bit
 	temps[1] = temps[0];
 	temps[0] = micros();
