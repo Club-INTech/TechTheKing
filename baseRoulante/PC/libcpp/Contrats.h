@@ -29,6 +29,7 @@
 
 #include <string>
 #include <sstream>
+#include <stdlib.h>
 class contract_violation_exception : public std::exception {
         std::string message;
 		std::string m_condition;
@@ -52,16 +53,17 @@ public:
 #define INVARIANT(cond, texte) if(!(cond)) throw contract_violation_exception(texte, __FILE__, __LINE__)
 #define BEGIN_INVARIANT_BLOCK(className) void _contract_check_invariants() {
 #define END_INVARIANT_BLOCK } \
-	void contracts_handle_invariants(char const * file, int line){\
+	void contracts_handle_invariants(char const * file, int line, char const * fonction){\
 		try{\
 			_contract_check_invariants();\
 		}\
 		catch(contract_violation_exception contratVioletOlol){\
-			cout << file << " : ligne " << line << endl;\
+			cout << file << " : ligne " << line << " dans " << fonction << endl;\
 			cout << "Echec de vérification de l'invariant : " << contratVioletOlol.why() << endl << endl;\
+			abort();\
 		}\
 	}
-#define CHECK_INVARIANTS contracts_handle_invariants(__FILE__,__LINE__)
+#define CHECK_INVARIANTS contracts_handle_invariants(__FILE__,__LINE__,__FUNCTION__)
 #endif
 
 #ifdef CONTRACTS_NO_CHECK

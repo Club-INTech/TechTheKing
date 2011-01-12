@@ -15,9 +15,11 @@ Noeud::Noeud(int x,int y,double cout1,double cout2){
 	m_collision=false;
 	
 	m_parent=this;
+	CHECK_INVARIANTS;
 }
 
-bool Noeud::operator>(Noeud noeud2) const{
+bool Noeud::operator>(Noeud noeud2){
+	CHECK_INVARIANTS;
 	if(m_collision==true)
 		return false;
 	if(m_distancePionAdverse > TAILLE_PION+TAILLE_ROBOT-EMPIETEMENT && m_distancePionAdverse!=noeud2.m_distancePionAdverse)
@@ -25,20 +27,20 @@ bool Noeud::operator>(Noeud noeud2) const{
 	return(m_cout3<noeud2.m_cout3);
 }
 
-double Noeud::getCout1() const{
+double Noeud::getCout1(){
 	return m_cout1;
 }
 
-double Noeud::getCout2() const{
+double Noeud::getCout2(){
 	return m_cout2;
 }
 
-double Noeud::getCout3() const{
+double Noeud::getCout3(){
 	return m_cout3;
 }
 
 
-Noeud* Noeud::getParent() const{
+Noeud* Noeud::getParent(){
 	return m_parent;
 }
 

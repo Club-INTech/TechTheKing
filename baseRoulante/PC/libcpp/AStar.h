@@ -41,11 +41,11 @@ class Noeud : public Point{
 		/*!
 		 *\brief Accesseurs
 		 */
-		double getCout1() const;
-		double getCout2() const;
-		double getCout3() const;	
-		Noeud* getParent() const;
-		bool getCollision() const { return m_collision ; };
+		double getCout1();
+		double getCout2();
+		double getCout3();	
+		Noeud* getParent();
+		bool getCollision(){ return m_collision ; };
 		
 		void setCout1(double cout1);
 		void setCout2(double cout2);
@@ -59,7 +59,7 @@ class Noeud : public Point{
 		 * \brief Opérateur de comparaison entre deux noeuds
 		 * Sert pour déterminer le "meilleur" chemin.
 		 */
-		bool operator>(Noeud noeudDonne) const;
+		bool operator>(Noeud noeudDonne);
 		
 	
 	private:
