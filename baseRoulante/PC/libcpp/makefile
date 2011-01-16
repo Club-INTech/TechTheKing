@@ -1,4 +1,4 @@
-OBJS=main.o Point.o Consigne.o Obstacles.o AStar.o Debug.o 
+OBJS=main.o Point.o Consigne.o Obstacles.o AStar.o Debug.o Interfaces.o
 CC=g++ `Magick++-config --cxxflags --cppflags --ldflags --libs`
 CFLAGS_LINK=-O3 -lm -lserial `Magick++-config --cxxflags --cppflags --ldflags --libs` -o 
 CFLAGS_COMP=-O3 -Wall `Magick++-config --cxxflags --cppflags --ldflags --libs` -c
@@ -28,6 +28,10 @@ Obstacles.o : Obstacles.cpp Obstacles.h Point.h Contrats.h
 AStar.o : AStar.cpp AStar.h Point.h Obstacles.h Contrats.h
 	@echo "Compilation de AStar.cpp"
 	@g++ $(CFLAGS_COMP) AStar.cpp
+	
+Interfaces.o : Interfaces.cpp Interfaces.h Point.h AStar.h
+	@echo "Compilation de Interfaces.cpp"
+	@c++ $(CFLAGS_COMP) Interfaces.cpp
 	
 Debug.o : Debug.cpp Debug.h Point.h Obstacles.h Consigne.h Contrats.h
 	@echo "Compilation de Debug.cpp"

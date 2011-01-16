@@ -19,10 +19,11 @@ Noeud::Noeud(int x,int y,double cout1,double cout2){
 }
 
 bool Noeud::operator>(Noeud noeud2){
-	CHECK_INVARIANTS;
+	if(noeud2.m_collision==true)
+		return true;
 	if(m_collision==true)
 		return false;
-	if(m_distancePionAdverse > TAILLE_PION+TAILLE_ROBOT-EMPIETEMENT && m_distancePionAdverse!=noeud2.m_distancePionAdverse)
+	if(m_distancePionAdverse > TAILLE_PION+TAILLE_ROBOT-EMPIETEMENT && noeud2.m_distancePionAdverse > TAILLE_PION+TAILLE_ROBOT-EMPIETEMENT)
 		return  (m_distancePionAdverse<noeud2.m_distancePionAdverse);
 	return(m_cout3<noeud2.m_cout3);
 }
@@ -73,22 +74,26 @@ Noeud::~Noeud(){
 
 
 
-vector <Point> AStar::getChemin(){
+vector <Point> AStar::getChemin(Noeud depart, Noeud arrivee){
+	REQUIRE(depart!=arrivee, "Le point de départ est différent du point d'arrivée du robot");
+	REQUIRE(TAILLE_ROBOT<arrivee.getX() && arrivee.getX()<3000-TAILLE_ROBOT, "L'abscisse du point d'arrivee du robot est tel qu'il ne touche pas le bord de la table");
+	REQUIRE(TAILLE_ROBOT<arrivee.getY() && arrivee.getY()<2100-TAILLE_ROBOT, "L'ordonnée du point d'arrivee du robot est tel qu'il ne touche pas le bord de la table");
+	m_depart=depart;
+	m_arrivee=arrivee;
+	trouverChemin();
 	return m_chemin;
 }
 
 
-AStar::AStar(int precision, Noeud depart, Noeud arrivee){
+AStar::AStar(int precision){
 	REQUIRE(precision>=0, "La précision est positive");
-	REQUIRE(depart!=arrivee, "Le point de départ est différent du point d'arrivée du robot");
-	REQUIRE(TAILLE_ROBOT<arrivee.getX() && arrivee.getX()<3000-TAILLE_ROBOT, "L'abscisse du point d'arrivee du robot est tel qu'il ne touche pas le bord de la table");
-	REQUIRE(TAILLE_ROBOT<arrivee.getY() && arrivee.getY()<2100-TAILLE_ROBOT, "L'ordonnée du point d'arrivee du robot est tel qu'il ne touche pas le bord de la table");
 	m_precision=precision;
-	m_depart=depart;
-	m_arrivee=arrivee;
-	trouverChemin();
-};
+}
 
+void AStar::setPrecision(int precision){
+	REQUIRE(precision>=0, "La précision est positive");
+	m_precision=precision;
+}
 
 void AStar::ajouterCasesAdjacentes(Noeud noeud){
 	for(int i=noeud.getX()-m_precision;i<=noeud.getX()+m_precision;i+=m_precision){
@@ -148,6 +153,7 @@ list<Noeud>::iterator AStar::trouverMeilleurNoeud(){
 		if(*it>*meilleurNoeud)
 			meilleurNoeud=it;
 	}
+	cout << meilleurNoeud->getCollision() << endl;
 	return meilleurNoeud;
 }
 

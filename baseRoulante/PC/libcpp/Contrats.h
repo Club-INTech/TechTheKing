@@ -72,7 +72,7 @@ public:
 #define INVARIANT(cond, texte)
 #define BEGIN_INVARIANT_BLOCK(className)
 #define END_INVARIANT_BLOCK
-#define CHECK_INVARIANTS()
+#define CHECK_INVARIANTS
 #endif
 
 #ifdef CONTRACTS_NO_PRECONDITION

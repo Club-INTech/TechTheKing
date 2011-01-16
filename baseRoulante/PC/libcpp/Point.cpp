@@ -50,7 +50,6 @@ double Point::getY(){
 
 Point Point::operator+(Point Point2){
 	CHECK_INVARIANTS;
-	Point2.CHECK_INVARIANTS;
 	double x=m_x;
 	double y=m_y;
 	x+=Point2.m_x;
@@ -75,13 +74,11 @@ Point Point::operator-(Point Point2){
 
 bool Point::operator==(Point Point2){
 	CHECK_INVARIANTS;
-	Point2.CHECK_INVARIANTS;
 	return(m_x==Point2.m_x && m_y==Point2.m_y);
 }
 
 bool Point::operator!=(Point Point2){
 	CHECK_INVARIANTS;
-	Point2.CHECK_INVARIANTS;
 	return(m_x!=Point2.m_x || m_y!=Point2.m_y);
 }
 
@@ -178,7 +175,6 @@ vector<Consigne> ListePoints::convertirEnConsignes(vector<Point>& listePoints){
 			rayon+=listePoints[i].rayon(listePoints[i+1])*CONVERSION_DISTANCE_TICKS; //conversion en ticks...
 			nouvelleConsigne.setRayon(floor(rayon+0.5)); //on ne caste que maintenant pour ne pas cumuler d'erreur sur un cast implicite précédent.
 			nouvelleConsigne.setAngle(floor(angle+0.5)); //angle /(Oy)
-			
 			resultat.push_back(nouvelleConsigne);
 		}
 	//}

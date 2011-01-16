@@ -17,12 +17,12 @@ int main(){
 	
 	/* Pathfinding */
 	std::vector<Point> listePoints;
-	AStar test(50,point1,point2);
-	listePoints=ListePoints::lissageBezier(test.getChemin(),200);
+	AStar test(50);
+	listePoints=ListePoints::lissageBezier(test.getChemin(point1,point2),200);
 	vector<Consigne> listeConsignes = ListePoints::convertirEnConsignes(listePoints);
 
 	/* Debug Graphique */
-// 	Debug::debugGraphique(listePoints);
+	Debug::debugGraphique(listePoints);
 	
 	/*debug consignes */
 // 	Debug::debugConsignes(listeConsignes);

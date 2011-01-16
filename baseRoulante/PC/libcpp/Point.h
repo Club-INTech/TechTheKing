@@ -145,10 +145,10 @@ class Point{
 		double m_x; /*!< Abscisse du point*/
 		double m_y; /*!< Ordonnée du point*/
 		BEGIN_INVARIANT_BLOCK(Point)
-		INVARIANT(0<=m_x, "L'abscisse du point est positive");
-		INVARIANT(m_x<=3000, "L'abscisse du point est inférieure à 3000");
-		INVARIANT(0<=m_y, "L'ordonnée du point est positive");
-		INVARIANT(m_y<=2100, "L'ordonnée du point est inférieure à 2100");
+		INVARIANT(0<=m_x, "Abscisse du point positive");
+		INVARIANT(m_x<=3000, "Abscisse du point inférieure à 3000");
+		INVARIANT(0<=m_y, "Ordonnée du point positive");
+		INVARIANT(m_y<=2100, "Ordonnée du point inférieure à 2100");
 		END_INVARIANT_BLOCK;
 };
 

@@ -9,7 +9,7 @@
  */
 
 
-#define TAILLE_ROBOT 140 /*!< Le robot est assimilé à un cercle de rayon TAILLE_ROBOT*/
+#define TAILLE_ROBOT 150 /*!< Le robot est assimilé à un cercle de rayon TAILLE_ROBOT*/
 #define MARGE_SECURITE_PION 30
 #define TAILLE_PION 100 /*!< Le pion est un cercle de rayon TAILLE_PION*/
 

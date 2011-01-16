@@ -10,7 +10,7 @@
  *
  * le périmetre dans lequel le robot se déplacera pour aller bouger un pion à l'adversaire...
  */
-#define RAYON_DE_DETECTION 350
+#define RAYON_DE_DETECTION 300
 
 /*!
  * \def EMPIETEMENT
@@ -24,6 +24,8 @@
  * La classe Noeud, indispensable pour tout algorithme de pathfinding.
  */
 class Noeud : public Point{
+	
+	
 	public:
 
 		/*!
@@ -116,9 +118,9 @@ class AStar {
 		void remonterChemin();
 	public:
 		
-		AStar(int precision, Noeud depart, Noeud arrivee);
-		
-		vector<Point> getChemin();
+		AStar(int precision=50);
+		void setPrecision(int precision);
+		vector<Point> getChemin(Noeud depart, Noeud arrivee);
 		
 	private:
 		
