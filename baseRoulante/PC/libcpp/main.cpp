@@ -9,7 +9,7 @@ int main(){
 	
 	/* Points de départ et d'arrivée */
 	Noeud point1(CASE11);
-	Noeud point2(CASE46);
+	Noeud point2(CASE63);
 	
 	ListeObstacles::refreshPositions("PositionsPions.dat");
 

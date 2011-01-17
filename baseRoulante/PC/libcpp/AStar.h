@@ -4,6 +4,7 @@
 #include "Point.h"
 #include "Obstacles.h"
 #include <algorithm>
+#include <memory>
 
 /*!
  *\def RAYON_DE_DETECTION
@@ -34,7 +35,7 @@ class Noeud : public Point{
 		 * \param cout2 : Distance au point d'arrivee
 		 */
 		Noeud(int x=0,int y=0, double cout1=0,double cout2=0);
-
+		Noeud(const Noeud& noeud);
 		/*!
 		 * \brief Destructeur
 		 */
@@ -46,7 +47,7 @@ class Noeud : public Point{
 		double getCout1();
 		double getCout2();
 		double getCout3();	
-		Noeud* getParent();
+		auto_ptr<Noeud> getParent();
 		bool getCollision(){ return m_collision ; };
 		
 		void setCout1(double cout1);
@@ -55,7 +56,7 @@ class Noeud : public Point{
 		void setCollision(bool etat) { m_collision = etat ;};
 		
 		void setDistancePionAdverse(double distance);
-		void setParent(Noeud* parent);
+		void setParent(Noeud parent);
 
 		/*!
 		 * \brief Opérateur de comparaison entre deux noeuds
@@ -74,7 +75,7 @@ class Noeud : public Point{
 
 		bool m_collision; /*!< si on emp^eche toute collision avec les obstacles, ça va planter à cause des imprécisions. Il faut juste les éviter*/
 		
-		Noeud* m_parent; /*!< Le parent du noeud. Necessaire pour retrouver son chemin*/
+		auto_ptr<Noeud> m_parent; /*!< Le parent du noeud. Necessaire pour retrouver son chemin*/
 };
 
 

@@ -2,19 +2,16 @@
 
 /*ce qui concerne les noeuds*/
 
-Noeud::Noeud(int x,int y,double cout1,double cout2){
-	m_x=x;
-	m_y=y;
+Noeud::Noeud(const Noeud& noeud) : Point(noeud), m_cout1(noeud.m_cout1), m_cout2(noeud.m_cout2),m_cout3(noeud.m_cout3),m_distancePionAdverse(noeud.m_distancePionAdverse),m_collision(noeud.m_collision){
+	if(noeud.m_parent.get()!=0)
+		m_parent.reset( new Noeud(*noeud.m_parent) );
+}
 
-	m_cout1=cout1;
-	m_cout2=cout2;
+Noeud::Noeud(int x,int y,double cout1,double cout2) : Point(x,y), m_cout1(cout1), m_cout2(cout2){
 	m_cout3=cout1+cout2;
-	
 	m_distancePionAdverse=0;
-
 	m_collision=false;
 	
-	m_parent=this;
 	CHECK_INVARIANTS;
 }
 
@@ -41,7 +38,7 @@ double Noeud::getCout3(){
 }
 
 
-Noeud* Noeud::getParent(){
+auto_ptr<Noeud> Noeud::getParent(){
 	return m_parent;
 }
 
@@ -61,8 +58,8 @@ void Noeud::setDistancePionAdverse(double distance){
 	m_distancePionAdverse=distance;
 }
 
-void Noeud::setParent(Noeud* noeud){
-	m_parent=noeud;
+void Noeud::setParent(Noeud noeud){
+	m_parent.reset(new Noeud(noeud));
 }
 
 Noeud::~Noeud(){
@@ -113,20 +110,24 @@ void AStar::ajouterCasesAdjacentes(Noeud noeud){
 				|| ListeObstacles::contientCercle(noeud,TAILLE_ROBOT,NOIR)!=NULL
 				){
 				tmp.setCollision(true);
+				noeud.setCollision(true);
 				}
 			if(estDansListe(m_listeFermee,tmp)==m_listeFermee.end()){ //si le a déjà été étudié, on ne fait rien, sinon...
 				Obstacle* estSurPionAdverse=ListeObstacles::contientCercle(tmp,RAYON_DE_DETECTION,COULEUR_ADVERSE);
 				if(estSurPionAdverse!=NULL){
 					/*si pousser le pion adverse nous fait pousser le notre aussi*/
-					if(ListeObstacles::contientCercle(*estSurPionAdverse,TAILLE_PION+50,COULEUR_ROBOT)!=NULL)
+					if(ListeObstacles::contientCercle(*estSurPionAdverse,TAILLE_PION+50,COULEUR_ROBOT)!=NULL){
 						tmp.setCollision(true);
+						noeud.setCollision(true);
+				}
 					else
 					{
 						tmp.setDistancePionAdverse(tmp.rayon(*estSurPionAdverse));
+						noeud.setDistancePionAdverse(tmp.rayon(*estSurPionAdverse));
 					}
 
 				}
-				tmp.setParent(new Noeud(noeud));
+				tmp.setParent(noeud);
 				list<Noeud>::iterator noeudCommun = estDansListe(m_listeOuverte,tmp);
 				if(noeudCommun!=m_listeOuverte.end()){//si le noeud est déjà présent dans la liste ouverte...
 					if(tmp>*noeudCommun){	//si le noeud actuel est meilleur, on le remplace
@@ -153,7 +154,6 @@ list<Noeud>::iterator AStar::trouverMeilleurNoeud(){
 		if(*it>*meilleurNoeud)
 			meilleurNoeud=it;
 	}
-	cout << meilleurNoeud->getCollision() << endl;
 	return meilleurNoeud;
 }
 
@@ -180,14 +180,12 @@ void AStar::remonterChemin(){
 	
 	vector <Point> listePointsTmp; //liste de points temporaire (avec des points trop proches entre eux)
 	
-	Noeud noeudCourant=m_arrivee;
-	listePointsTmp.push_back(noeudCourant);
-	while(!(*(noeudCourant.getParent())==m_depart)){
-		noeudCourant=*(noeudCourant.getParent());
-		listePointsTmp.push_back(noeudCourant);
+	auto_ptr<Noeud> noeudCourant(new Noeud(m_arrivee));
+	listePointsTmp.push_back(*noeudCourant);
+	while(!(*noeudCourant==m_depart)){
+		noeudCourant=noeudCourant->getParent();
+		listePointsTmp.push_back(*noeudCourant);
 	}
-	
-	
 	/*
 	 * On garde pas tous les noeuds pour alléger le futur calcul de la trajectoire de bézier, et pour réduire la courbure de la courbe . (le robot n'aime pas trop les grosses courbures)
 	 */
@@ -221,7 +219,7 @@ void AStar::trouverChemin(){
 			ajouterCasesAdjacentes(courant);
 		}
 		if(courant.getCout2()<=m_precision){
-			m_arrivee.setParent(&courant);
+			m_arrivee.setParent(courant);
 			remonterChemin();
 		}
 		else{

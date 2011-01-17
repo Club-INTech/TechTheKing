@@ -3,7 +3,7 @@
 
 #define CONTRACTS_H
 
-#define CONTRACTS_USE_EXCEPTION
+#define CONTRACTS_NO_CHECK
 
 #ifdef CONTRACTS_USE_ABORT
 #include <stdlib.h>
