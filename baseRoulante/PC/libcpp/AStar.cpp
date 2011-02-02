@@ -184,13 +184,12 @@ void AStar::remonterChemin(){
 	
 	vector <Point> listePointsTmp; //liste de points temporaire (avec des points trop proches entre eux)
 	
-	Noeud* noeudCourant = new Noeud(m_arrivee);
-	listePointsTmp.push_back(*noeudCourant);
-	while(!(*noeudCourant==m_depart)){
-		noeudCourant=noeudCourant->getParent();
-		listePointsTmp.push_back(*noeudCourant);
+	Noeud noeudCourant=m_arrivee;
+	listePointsTmp.push_back(noeudCourant);
+	while(!(noeudCourant==m_depart)){
+		noeudCourant=*(noeudCourant.getParent());
+		listePointsTmp.push_back(noeudCourant);
 	}
-	delete noeudCourant;
 	/*
 	 * On garde pas tous les noeuds pour alléger le futur calcul de la trajectoire de bézier, et pour réduire la courbure de la courbe . (le robot n'aime pas trop les grosses courbures)
 	 */
@@ -200,8 +199,9 @@ void AStar::remonterChemin(){
 	
 	unsigned int espacement = 3; //on garde un point sur trois
 	
-	for(unsigned int i=0;i<listePointsTmp.size();i+=espacement)
+	for(unsigned int i=0;i<listePointsTmp.size();i+=espacement){
 		m_chemin.push_back(listePointsTmp[i]);
+	}
 	
 	m_chemin.push_back(m_depart); // on ajoute le point de départ du robot
 
@@ -216,6 +216,8 @@ void AStar::trouverChemin(){
 		m_chemin.clear();
 		Noeud* courant = new Noeud(m_depart.getX(),m_depart.getY(),0,m_depart.rayon(m_arrivee)); //initialisation du noeud courant..
 		m_listeOuverte.push_back(courant);
+		transfererNoeud(courant);
+		ajouterCasesAdjacentes(courant);	
 		while(courant->getCout2()>m_precision && !(m_listeOuverte.empty())){
 			courant = *trouverMeilleurNoeud();
 			transfererNoeud(courant);
@@ -229,20 +231,18 @@ void AStar::trouverChemin(){
 			cerr<<"pas de chemin"<<endl;
 			m_chemin.push_back(m_depart);
 		}
-		delete courant;
-		
 		for(list<Noeud*>::iterator it = m_listeOuverte.begin();it!=m_listeOuverte.end();it++){
-			delete *it;
+			if(*it)
+				delete *it;
 		}
 		for(list<Noeud*>::iterator it = m_listeFermee.begin();it!=m_listeFermee.end();it++){
-		if(*it)
-			delete *it;
-		}                                                                                    
+			if(*it){
+				delete *it;
+			}
+				
+		}                                                                                
 		m_listeOuverte.clear();
 		m_listeFermee.clear();
-		
-		
-		
 }
 
 /*

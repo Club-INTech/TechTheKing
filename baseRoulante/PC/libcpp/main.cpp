@@ -2,14 +2,13 @@
 #include "AStar.h"
 #include "Consigne.h"
 #include "Obstacles.h"
-#include <Magick++.h>
 #include "Debug.h"
 
 int main(){
 	
 	/* Points de départ et d'arrivée */
 	Noeud point1(CASE11);
-	Noeud point2(CASE64);
+	Noeud point2(CASE63);
 	
 	ListeObstacles::refreshPositions("PositionsPions.dat");
 
@@ -18,14 +17,12 @@ int main(){
 	/* Pathfinding */
 	std::vector<Point> listePoints;
 	AStar test(50);
-	test.getChemin(point1,point2);
+	listePoints=ListePoints::lissageBezier(test.getChemin(point1,point2),200);
 	vector<Consigne> listeConsignes = ListePoints::convertirEnConsignes(listePoints);
 
-	/* Debug Graphique */
-// Debug::debugGraphique(listePoints);
-	
+	Debug::debugGraphique(listePoints);
 	/*debug consignes */
-// 	Debug::debugConsignes(listeConsignes);
+//	Debug::debugConsignes(listeConsignes);
 	
 	/* Envoi en série puis attente */
 // 	SerialStream my_serial_stream;

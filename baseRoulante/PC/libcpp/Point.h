@@ -6,6 +6,7 @@
 #include "Consigne.h"
 #include <cmath>
 #include "Contrats.h"
+#include <SerialStream.h>
 
 /*!
  * \file Point.h
