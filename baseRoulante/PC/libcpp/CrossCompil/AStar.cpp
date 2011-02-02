@@ -2,7 +2,6 @@
 
 /*ce qui concerne les noeuds*/
 
-
 Noeud::Noeud(int x,int y,double cout1,double cout2) : Point(x,y), m_cout1(cout1), m_cout2(cout2){
 	m_cout3=cout1+cout2;
 	m_distancePionAdverse=0;

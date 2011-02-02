@@ -64,7 +64,7 @@ void Debug::debugGraphique(vector<Point> listePoints){
 	
 	/* Affiche la courbe */
 	image.strokeColor(Color(MaxRGB,MaxRGB,MaxRGB,MaxRGB/2));
-	image.strokeWidth(5); //??!! Ca marche donc c'est cool :)
+	image.strokeWidth(2*TAILLE_ROBOT); //??!! Ca marche donc c'est cool :)
 	for(unsigned int i=0;i<listePoints.size()-1;i++)
 		image.draw(DrawableLine(listePoints[i].getX(),2100-listePoints[i].getY(),listePoints[i+1].getX(),2100-listePoints[i+1].getY()));
 
@@ -72,7 +72,7 @@ void Debug::debugGraphique(vector<Point> listePoints){
 	Geometry echelle(1000,700);
 	image.resize(echelle);
 	image.display();
-// 	image.magick("png");
-// 	image.write("cheminRobot");
+	image.magick("png");
+	image.write("cheminRobot");
 // 	cout<<"chemin emprunté dans le robot écrit dans cheminRobot.png"<<endl;
 }

@@ -1,12 +1,11 @@
 
 OBJS=main.o Point.o Consigne.o Obstacles.o AStar.o Debug.o Interfaces.o
-CC=g++
-MAGIC_CONFIG=`Magick++-config --cxxflags --cppflags --ldflags --libs`
-CFLAGS_LINK=-O3 -lm -lserial $(MAGIC_CONFIG) -o 
-CFLAGS_COMP=-O3 -Wall $(MAGIC_CONFIG) -c
+CC=arm-linux-gnueabi-g++ -static
+CFLAGS_LINK=-O -L /usr/lib/gcc/arm-linux-gnueabi/4.5.1/lib/ -lm -lserial -o 
+CFLAGS_COMP=-O -Wall -c
 
 compil: $(OBJS)
-	@echo "Création de l'executable : compilation classique"
+	@echo "Création de l'executable : Cross-Compilation"
 	@$(CC) $(OBJS) $(CFLAGS_LINK) debug
 
 main.o : main.cpp Point.h AStar.h Debug.h Contrats.h
