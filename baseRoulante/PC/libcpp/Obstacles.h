@@ -66,14 +66,14 @@ class Obstacle : public Point{
 		 *
 		 * \return true si le cercle donné chevauche l'obstacle.
 		 */
-		virtual bool contientCercle(Point& centreCercle, int rayon);
+		virtual bool contientCercle(int centreX, int centreY, int rayon) = 0;
 
 		/*!
 		 * \brief draw
 		 *
 		 * Dessine l'e pion obstacle dans une image ImageMagick.
 		 */
-		virtual void draw(Magick::Image* image){ };
+		virtual void draw(Magick::Image* image) = 0;
 
 		/*!
 		 * \brief deplacer
@@ -119,7 +119,7 @@ class cercleObstacle : public Obstacle{
 		
 		void draw(Magick::Image* image);
 		
-		bool contientCercle(Point& centreCercle,int rayon);
+		bool contientCercle(int centreX, int centreY, int rayon);
 		
 		Couleur couleurPlusProche();
 		
@@ -144,7 +144,7 @@ class rectangleObstacle : public Obstacle{
 		
 		void draw(Magick::Image* image);
 
-		bool contientCercle(Point& centreCercle,int rayon);
+		bool contientCercle(int centreX, int centreY, int rayon);
 		
 		Couleur couleurPlusProche(){return NOIR;};
 		
@@ -170,7 +170,7 @@ namespace ListeObstacles{
  *
  * \return Si il existe, l'obstacle en question le plus proche du centre du cercle. NULL sinon.
  */
-Obstacle* contientCercle(Point centreCercle,int rayon, Couleur couleur);
+Obstacle* contientCercle(int centreX,int centreY,int rayon, Couleur couleur);
 
 /*!
  * \brief setCouleursAuto

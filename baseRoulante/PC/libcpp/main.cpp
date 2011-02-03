@@ -7,8 +7,8 @@
 int main(){
 	
 	/* Points de départ et d'arrivée */
-	Noeud point1(CASE11);
-	Noeud point2(CASE66);
+	Noeud point1(CASE24);
+	Noeud point2(CASE54);
 	
 	ListeObstacles::refreshPositions("PositionsPions.dat");
 
@@ -16,11 +16,11 @@ int main(){
 	
 	/* Pathfinding */
 	std::vector<Point> listePoints;
-	AStar test(50);
+	AStar test(70);
 	listePoints=ListePoints::lissageBezier(test.getChemin(point1,point2),200);
 	vector<Consigne> listeConsignes = ListePoints::convertirEnConsignes(listePoints);
 
-//	Debug::debugGraphique(listePoints);
+	Debug::debugGraphique(listePoints);
 	/*debug consignes */
 //	Debug::debugConsignes(listeConsignes);
 	

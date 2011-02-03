@@ -73,6 +73,6 @@ void Debug::debugGraphique(vector<Point> listePoints){
 	image.resize(echelle);
 	image.display();
 	image.magick("png");
-	image.write("cheminRobot");
-// 	cout<<"chemin emprunté dans le robot écrit dans cheminRobot.png"<<endl;
+	image.write("cheminRobot70");
+	cout<<"chemin emprunté dans le robot écrit dans cheminRobot.png"<<endl;
 }
