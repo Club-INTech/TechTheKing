@@ -17,7 +17,7 @@ volatile uint32_t milAV=0;//micros avant top
 //uint32_t asservAv = 0;//compteur de temps pour l'asservissement
 //static int16_t kP = 1000;//coefficient de conversion entre la période de consigne et la période de commande (dépend du nombre de pas/tr du moteur et du nombre de commandes par pas).
 //pour la commande du moteur
-uint16_t periode = 40000;//periode de commande du moteur, en microsecondes
+uint16_t periode = 20000;//periode de commande du moteur, en microsecondes
 uint16_t incPeriode = 5000; //periode d'incrémentation de periode pour le démarrage, en microseconde
 uint32_t incTemps = 0;//stoque le temps écoulé depuis le début pour le démarrage
 uint32_t micTemps = 0;//stoque le temps écoulé depuis le début pour les commutions du moteur
@@ -36,7 +36,7 @@ int main() {
 	//on initialise les ports de commande du moteur
 	sbi(DDRB,pinMot1);
 	sbi(DDRB,pinMot2);
-	sbi(DDRB,pinMot3);
+	//sbi(DDRB,pinMot3);
 	//on initialise les interruptions du top tour sur front descendant
 	sbi(EICRA,ISC01);
 	cbi(EICRA,ISC00);
@@ -53,14 +53,15 @@ int main() {
 
 	//démarrage : 
 	printlnString("demarrage");
-	while (periode > 5556) {
+	//while (periode > 5556) {
+	while (periode > 5000) {
 		//calcul de la valeur de periode à utiliser ici (en gros pour le démarrage, on se contente pour l'instant d'une simple rampe) : 
 		if (micros() > incTemps + incPeriode) {
 			incTemps = micros();
 			if (periode > 10000) {
-				periode--;
+				periode-=2;
 			}
-			else if (periode > 2778) {
+			else if (periode > 5000) {
 				periode--;
 			}
 		}
@@ -74,17 +75,23 @@ int main() {
 			printString("\t");
 			printlnInt(1000000/temps[1]);
 			micTemps = micros();
-			if (ind==0)		cbi(portMot3,pinMot3);
-			else if (ind==1)	sbi(portMot2,pinMot2);
-			else if (ind==2)	cbi(portMot1,pinMot1);
-			else if (ind==3)	sbi(portMot3,pinMot3);
-			else if (ind==4)	cbi(portMot2,pinMot2);
-			else			sbi(portMot1,pinMot1);
-			if (ind<5) 		ind++;
+			/*
+			   if (ind==0)		cbi(portMot3,pinMot3);
+			   else if (ind==1)	sbi(portMot2,pinMot2);
+			   else if (ind==2)	cbi(portMot1,pinMot1);
+			   else if (ind==3)	sbi(portMot3,pinMot3);
+			   else if (ind==4)	cbi(portMot2,pinMot2);
+			   else			sbi(portMot1,pinMot1);
+			   */
+			if (ind==0)		sbi(portMot2,pinMot2);
+			else if (ind==1)	cbi(portMot2,pinMot2);
+			else if (ind==4)	sbi(portMot1,pinMot1);
+			else			cbi(portMot1,pinMot1);
+			if (ind<7) 		ind++;
 			else 			ind = 0;
 		}
 	}
-	periode=5556;
+	periode=5000;
 	while (1) {
 		//commutation des bobines du moteur : 
 		if (micros() > micTemps + periode) {
@@ -96,13 +103,21 @@ int main() {
 			printString("\t");
 			printlnInt(1000000/temps[1]);
 			micTemps = micros();
-			if (ind==0)		cbi(portMot3,pinMot3);
-			else if (ind==1)	sbi(portMot2,pinMot2);
-			else if (ind==2)	cbi(portMot1,pinMot1);
-			else if (ind==3)	sbi(portMot3,pinMot3);
-			else if (ind==4)	cbi(portMot2,pinMot2);
-			else			sbi(portMot1,pinMot1);
-			if (ind<5) 		ind++;
+			/*
+			   if (ind==0)		cbi(portMot3,pinMot3);
+			   else if (ind==1)	sbi(portMot2,pinMot2);
+			   else if (ind==2)	cbi(portMot1,pinMot1);
+			   else if (ind==3)	sbi(portMot3,pinMot3);
+			   else if (ind==4)	cbi(portMot2,pinMot2);
+			   else			sbi(portMot1,pinMot1);
+			   if (ind<5) 		ind++;
+			   else 			ind = 0;
+			   */
+			if (ind==0)		sbi(portMot2,pinMot2);
+			else if (ind==1)	cbi(portMot2,pinMot2);
+			else if (ind==2)	sbi(portMot1,pinMot1);
+			else			cbi(portMot1,pinMot1);
+			if (ind<3) 		ind++;
 			else 			ind = 0;
 		}
 	}
