@@ -10,10 +10,6 @@ Obstacle::Obstacle(double x,double y,Couleur couleur){
 	m_couleur=couleur;
 }
 
-bool Obstacle::contientCercle(Point& centreCercle, int rayon){
-	return false;
-}
-
 
 Couleur Obstacle::couleurPlusProche() {
 	return NEUTRE;
@@ -24,8 +20,10 @@ cercleObstacle::cercleObstacle(double x,double y,Couleur couleur) : Obstacle(x,y
 
 }
 
-bool cercleObstacle::contientCercle(Point& centreCercle, int rayonDonne){
-	if(rayon(centreCercle) < (m_rayon + rayonDonne))
+bool cercleObstacle::contientCercle(int centreX, int centreY, int rayonDonne){
+	double dx=(centreX-m_x);
+	double dy=(centreY-m_y);
+	if(dx*dx+dy*dy < (m_rayon + rayonDonne)*(m_rayon+rayonDonne))
 		return true;
 	return false;
 }
@@ -68,22 +66,33 @@ rectangleObstacle::rectangleObstacle(double x,double y,int demiCoteX,int demiCot
 {
 	
 }
+	
 
-bool rectangleObstacle::contientCercle(Point& centreCercle, int rayonDonne) {
-		return rayon(centreCercle) < (m_demiCoteX + rayonDonne) && rayon(centreCercle) < (m_demiCoteY + rayonDonne);
+bool rectangleObstacle::contientCercle(int centreX, int centreY, int rayonDonne) { //cercle non penché.
+	double dx=(centreX-m_x);
+	double dy=(centreY-m_y);
+		return ( dx*dx+dy*dy < (m_demiCoteX + rayonDonne)*(m_demiCoteX + rayonDonne) && dx*dx+dy*dy < (m_demiCoteY + rayonDonne)*(m_demiCoteY + rayonDonne) );
 }
 
-Obstacle* ListeObstacles::contientCercle(Point centreCercle,int rayon,Couleur couleur){
+Obstacle* ListeObstacles::contientCercle(int centreX, int centreY, int rayon,Couleur couleur){
 	vector<Obstacle*> tmp; // contient la liste des correspondances.
 	Obstacle* min=NULL;
 	for(unsigned int i=0;i<listeObstacles.size();i++){
-		if(listeObstacles[i]->contientCercle(centreCercle,rayon) && listeObstacles[i]->getCouleur() == couleur)
+		if(listeObstacles[i]->contientCercle(centreX,centreY,rayon) && listeObstacles[i]->getCouleur() == couleur)
 			tmp.push_back(listeObstacles[i]);
 	}
 	if(tmp.size()>0)
 		min=tmp[0];
+	double dx;
+	double dy;
+	double dxs;
+	double dys;
 	for(unsigned int i=0;i<tmp.size();i++){
-		if(tmp[i]->rayon(centreCercle)<min->rayon(centreCercle))
+		dx=(centreX-tmp[i]->getX());
+		dy=(centreY-tmp[i]->getY());
+		dxs=(centreX-min->getX());
+		dys=(centreY-min->getY());
+		if(dx*dx+dy*dy<dxs*dxs+dys*dys)
 			min=tmp[i];
 	}
 		return min;

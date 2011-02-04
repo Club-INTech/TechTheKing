@@ -8,7 +8,7 @@ int main(){
 	
 	/* Points de départ et d'arrivée */
 	Noeud point1(CASE11);
-	Noeud point2(CASE63);
+	Noeud point2(CASE66);
 	
 	ListeObstacles::refreshPositions("PositionsPions.dat");
 
@@ -22,7 +22,7 @@ int main(){
 
 	
 	/*debug consignes */
-	Debug::debugConsignes(listeConsignes);
+//	Debug::debugConsignes(listeConsignes);
 	
 	/* Envoi en série puis attente */
 // 	SerialStream my_serial_stream;

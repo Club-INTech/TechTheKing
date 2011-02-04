@@ -4,30 +4,36 @@
 #include <iostream>
 #include "Point.h"
 #include "AStar.h"
-#include <SerialStream.h>
+#include <SerialPort.h>
 #include "Singleton.h"
 
 
 typedef enum{Positif,Negatif}SensDeplacement;
-typedef enum{Indefini, Asservissement='0', Capteur='1', Actionneurs='2'}TypeCarte;
-
-
+std::string exec(char* cmd);
+class InterfaceAsservissement;
+std::vector<char> getTtyUSB();
 
 class Interface {
+public:
+	friend void detectionSerieUsb(InterfaceAsservissement* asserv); 
 protected:
 	Interface();
-	std::string detectionSerieUsb();
+	virtual ~Interface(){};
 protected:
-	TypeCarte m_idCarte;
+	std::string m_idCarte;
 	SerialStream m_liaisonSerie;
 };
 
-class InterfaceAsservissement : public Interface,public Singleton<InterfaceAsservissement>{
+class InterfaceAsservissement : public Interface{
 public:
-	InterfaceAsservissement();
+	static InterfaceAsservissement* instance();
+	static void creer();
 	void goTo(Point depart, Point arrivee);
 	void avancer(unsigned int distance, SensDeplacement sens);
 	void tourner(unsigned int angle, SensDeplacement sens);
+private:
+	InterfaceAsservissement();
+	static InterfaceAsservissement* m_instance;
 private:
 	unsigned int vitesseMax;
 	AStar m_pathfinding;
