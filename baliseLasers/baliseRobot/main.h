@@ -9,7 +9,7 @@
 
 
 /**
- * tout d'abord quelques defines pour écrire et lire nos bits plus simplement.
+ * d'abord quelques defines pour écrire et lire nos bits plus simplement.
  */
 #ifndef sbi
 #define sbi(port,bit) (port) |= (1 << (bit))
