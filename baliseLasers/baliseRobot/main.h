@@ -9,7 +9,7 @@
 
 
 /**
- * tout d'abord quelques defines pour écrire et lire nos bits plus simplement.
+ * d'abord quelques defines pour écrire et lire nos bits plus simplement.
  */
 #ifndef sbi
 #define sbi(port,bit) (port) |= (1 << (bit))
@@ -33,8 +33,8 @@
 #define pinMot1 PORTB0 //pin8 de l'arduino
 #define portMot2 PORTB 
 #define pinMot2 PORTB1 //pin9 de l'arduino
-#define portMot3 PORTB 
-#define pinMot3 PORTB2 //pin10 de l'arduino
+//#define portMot3 PORTB 
+//#define pinMot3 PORTB2 //pin10 de l'arduino
 #endif
 
 /**

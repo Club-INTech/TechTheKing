@@ -1,12 +1,13 @@
 #include "temps.h"
 
-volatile uint32_t cnt_ovf_timer1=0;//compteur d'interruptions timer1
+volatile uint32_t cnt_ovf_timer1=0;	//compteur d'interruptions timer1
 
 void temps_init() {
-	cbi(TCCR1B,CS12);//|choix d'une clock 
-	cbi(TCCR1B,CS11);//|sans prescaler pour 
-	sbi(TCCR1B,CS10);//|plus de précision
-	sbi(TIMSK1,TOIE1);//pour activer les interruptions sur overflow
+	cbi(TCCR1B,CS12);	//|choix d'une clock 
+	cbi(TCCR1B,CS11);	//|sans prescaler pour 
+	sbi(TCCR1B,CS10);	//|plus de précision
+
+	sbi(TIMSK1,TOIE1);	//pour activer les interruptions sur overflow
 }
 
 uint32_t micros() {
