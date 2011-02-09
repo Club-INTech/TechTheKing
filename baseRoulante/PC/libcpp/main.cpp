@@ -15,22 +15,22 @@ int main(){
 
 	ListeObstacles::setCouleursAuto();
 	
-	/* Pathfinding 
+	
 	std::vector<Point> listePoints;
 	AStar test(50);
 	listePoints=ListePoints::lissageBezier(test.getChemin(point1,point2),200);
 	vector<Consigne> listeConsignes = ListePoints::convertirEnConsignes(listePoints);
 
 	Debug::debugGraphique(listePoints);
-	Debug::debugConsignes(listeConsignes);
-	*/
+//	Debug::debugConsignes(listeConsignes);
+	
 	
 	/*Detection Interface Asservissement */
 	//InterfaceAsservissement test;
 	
 	/* Envoi en série puis attente */
-	InterfaceAsservissement::creer();
- 	detectionSerieUsb(InterfaceAsservissement::instance());
+//	InterfaceAsservissement::creer();
+// 	detectionSerieUsb(InterfaceAsservissement::instance());
 // 	SerialStream& liaisonSerie = my_serial_stream;
 // 	for(unsigned int i=0;i<listeConsignes.size();i++)
 // 		listeConsignes[i].transfertSerie(liaisonSerie);
