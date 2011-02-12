@@ -187,6 +187,14 @@ void setCouleursAuto();
  *
  */
 void refreshPositions(const char nomFichier[]);
+
+/*!
+ * \brief
+ * 
+ * Ajout des planches de bois
+ * 
+ */
+void initialisation();
 }
 
 

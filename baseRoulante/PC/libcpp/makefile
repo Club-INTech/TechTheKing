@@ -1,7 +1,8 @@
-OBJS=main.o Point.o Consigne.o Obstacles.o AStar.o Debug.o Interfaces.o Server.o
+OBJS=main.o Point.o Consigne.o Obstacles.o AStar.o \
+		Debug.o Interfaces.o Server.o Thread.o
 CC=g++
 MAGIC_CONFIG=`Magick++-config --cxxflags --cppflags --ldflags --libs`
-CFLAGS_LINK=-O3 -lm -lserial $(MAGIC_CONFIG) -o 
+CFLAGS_LINK=-O3 -lm -lserial -lboost_thread $(MAGIC_CONFIG) -o 
 CFLAGS_COMP=-O3 -Wall $(MAGIC_CONFIG) -c
 
 compil: $(OBJS)
@@ -9,12 +10,17 @@ compil: $(OBJS)
 	@$(CC) $(OBJS) $(CFLAGS_LINK) debug
 	@echo " fait."
 
-Server.o : Server.cpp Server.h Obstacles.h
+Thread.o : Thread.cpp Thread.h
+	@echo -n "Compilation de Thread.cpp ..."
+	@$(CC) $(CFLAGS_COMP) Thread.cpp
+	@echo " fait."
+
+Server.o : Server.cpp Server.h Obstacles.h Thread.h
 	@echo -n "Compilation de Server.cpp ..."
 	@$(CC) $(CFLAGS_COMP) Server.cpp
 	@echo " fait."
 	
-main.o : main.cpp Point.h AStar.h Debug.h Contrats.h
+main.o : main.cpp Point.h AStar.h Debug.h Contrats.h Server.h
 	@echo -n "Compilation de main.cpp ..."
 	@$(CC) $(CFLAGS_COMP) main.cpp
 	@echo  " fait."

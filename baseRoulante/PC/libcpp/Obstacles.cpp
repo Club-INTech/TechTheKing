@@ -114,9 +114,7 @@ void ListeObstacles::setCouleursAuto(){
 	}
 }
 
-void ListeObstacles::refreshPositions(const char nomFichier[]){
-	listeObstacles.clear();
-
+void ListeObstacles::initialisation(){
 	listeObstacles.push_back(new rectangleObstacle(200,1689,200,11));
 	listeObstacles.push_back(new rectangleObstacle(2800,1689,200,11));
 	listeObstacles.push_back(new rectangleObstacle(800,60,350,60));
@@ -125,7 +123,10 @@ void ListeObstacles::refreshPositions(const char nomFichier[]){
 	listeObstacles.push_back(new rectangleObstacle(2200,60,350,60));
 	listeObstacles.push_back(new rectangleObstacle(1861,185,11,65));
 	listeObstacles.push_back(new rectangleObstacle(2539,185,11,65));
-
+}
+	
+void ListeObstacles::refreshPositions(const char nomFichier[]){
+	listeObstacles.clear();
 	ifstream fichierObstacles(nomFichier, ios::in);
 	if(fichierObstacles)
 	{

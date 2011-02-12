@@ -11,12 +11,11 @@ int main(){
     /* Points de départ et d'arrivée */
     Noeud point1(CASE11);
     Noeud point2(CASE66);
-    Socket comTel(57373);
-    comTel.onOpen();
-    listeObstacles.push_back((comTel.onRead()));
-    ListeObstacles::setCouleursAuto();
-    
-    
+    Socket::creer(57373);
+    Socket::instance()->ouvrirThread();
+	while(1){
+		sleep(2);
+	}
     std::vector<Point> listePoints;
     AStar test(50);
     listePoints=ListePoints::lissageBezier(test.getChemin(point1,point2),200);

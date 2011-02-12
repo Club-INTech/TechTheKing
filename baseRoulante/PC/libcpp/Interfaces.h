@@ -9,6 +9,7 @@
 
 
 typedef enum{Positif,Negatif}SensDeplacement;
+
 std::string exec(char* cmd);
 class InterfaceAsservissement;
 std::vector<char> getTtyUSB();

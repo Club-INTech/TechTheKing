@@ -10,7 +10,7 @@ protected:
 	static T m_i;
 
 private:
-        T& operator= (const T&){}
+        T& operator=(const T&){}
 };
 
 #endif
