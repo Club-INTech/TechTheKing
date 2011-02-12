@@ -18,7 +18,9 @@ void Socket::thread(){
 			cout<<"Fermeture du thread"<<endl;
 			break;
 			case 'x':
+			m_mutex.lock();
 			listeObstacles.push_back(trouverObstacle());
+			m_mutex.unlock();
 			break;
 			case 'y':
 			cerr<<"La trame ne peut pas commencer par l'ordonnée"<<endl;

@@ -1,7 +1,6 @@
 #include <boost/bind.hpp>
 #include <boost/thread.hpp>
 
-
 class Thread{
 	public:
 		void ouvrirThread();

@@ -11,6 +11,7 @@
 #include <netinet/in.h>
 #include "Obstacles.h"
 #include "Thread.h"
+#include <boost/thread/mutex.hpp>
 #define TAILLE_BUFFER 256
 	
 class Socket : public Thread{
@@ -30,8 +31,9 @@ class Socket : public Thread{
 		Socket& operator=(const Socket&);
 		Socket(const Socket&){};
 	private:
-		char m_buffer[256];
+		char m_buffer[TAILLE_BUFFER];
 		static Socket* m_instance;
+		boost::mutex m_mutex;
 		int m_sockfd;
 		int m_newsockfd;
 		int m_port;
