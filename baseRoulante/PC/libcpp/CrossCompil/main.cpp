@@ -3,8 +3,16 @@
 #include "Consigne.h"
 #include "Obstacles.h"
 #include "Debug.h"
+#include "Interfaces.h"
+#include "Server.h"
 
 int main(){
+	
+	Socket::creer(57373);
+    Socket::instance()->ouvrirThread();
+	while(1){
+		sleep(2);
+	}
 	
 	/* Points de départ et d'arrivée */
 	Noeud point1(CASE11);

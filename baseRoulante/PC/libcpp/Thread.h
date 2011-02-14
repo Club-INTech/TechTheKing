@@ -1,3 +1,6 @@
+#ifndef THREAD_H
+#define THREAD_H
+
 #include <boost/bind.hpp>
 #include <boost/thread.hpp>
 
@@ -12,3 +15,5 @@ class Thread{
 	protected:
 		boost::thread* m_thread;
 };
+
+#endif

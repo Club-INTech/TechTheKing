@@ -1,5 +1,6 @@
-/* A simple server in the internet domain using TCP
-   The port number is passed as an argument */
+#ifndef SERVER_H
+#define SERVER_H
+
 #include <iostream>
 #include <cstdio>
 #include <stdlib.h>
@@ -8,22 +9,40 @@
 #include <sys/types.h> 
 #include <sys/socket.h>
 #include <netinet/in.h>
-
-class Socket{
+#include "Obstacles.h"
+#include "Thread.h"
+#include <boost/thread/mutex.hpp>
+#define TAILLE_BUFFER 256
+	
+class Socket : public Thread{
 	public:
+		static void creer(int port);
+		static Socket* instance();
+		void SetPort();
+		~Socket();
+	private:
+		void thread();
+		Obstacle* trouverObstacle();
 		Socket(int port);
 		void onOpen();
-		void onSetPort();
 		void onWrite(string msg);
 		void onRead();
 		void onClose();
-		~Socket();
+		Socket& operator=(const Socket&);
+		Socket(const Socket&){};
 	private:
+		char m_buffer[TAILLE_BUFFER];
+		static Socket* m_instance;
+		boost::mutex m_mutex;
 		int m_sockfd;
 		int m_newsockfd;
 		int m_port;
+		bool m_isOpened;
+		bool m_isReading;
+		bool m_isWriting;
 		socklen_t m_cliLen;
-		char m_buffer[256];
 		struct sockaddr_in m_servAddr;
 		struct sockaddr_in m_cliAddr;
 };
+
+#endif
