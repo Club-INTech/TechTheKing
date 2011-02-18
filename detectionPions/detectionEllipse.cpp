@@ -1,5 +1,7 @@
 #include <list>
 
+using namespace std ;
+
 struct Point{
 	int x,y;
 };
@@ -97,6 +99,7 @@ inline void transfererContours(std::list<Point>& contoursEtudies, std::list<Poin
 std::list<Point> trouverCentresMotifs(Image image){
 	Point tmp;
 	Point barycentreCourant;
+	int noirALasuite;
 	std::list<Point> contoursEtudies;
 	std::list<Point> listeCentres;
 	for(int i=0;i<NX;i++){
@@ -104,11 +107,14 @@ std::list<Point> trouverCentresMotifs(Image image){
 			if(image[i][j]==1){
 				tmp.x=i;
 				tmp.y=j;
-				if(!estInterieurMotif( tmp , image )  && !estDansListe(tmp,contoursEtudies)){
+				if(!estInterieurMotif( tmp , image ) && !estDansListe(tmp,contoursEtudies)){
 					std::list<Point> contour = trouverContour(image, i, j);
-					transfererContours(contoursEtudies,contour);
-					barycentreCourant = trouverBarycentre(contour);
-					listeCentres.push_back(barycentreCourant);
+					if(contour.size()>100){
+						transfererContours(contoursEtudies,contour);
+						barycentreCourant = trouverBarycentre(contour);
+						listeCentres.push_back(barycentreCourant);
+						cout<< barycentreCourant.x << "  " << barycentreCourant.y << endl;
+					}
 				}
 			}
 		}
