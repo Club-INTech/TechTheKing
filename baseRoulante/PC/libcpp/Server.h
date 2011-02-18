@@ -18,7 +18,6 @@ class Socket : public Thread{
 	public:
 		static void creer(int port);
 		static Socket* instance();
-		void SetPort();
 		~Socket();
 	private:
 		void thread();

@@ -2,7 +2,7 @@ OBJS=main.o Point.o Consigne.o Obstacles.o AStar.o \
 		Debug.o Interfaces.o Server.o Thread.o
 CC=g++
 MAGIC_CONFIG=`Magick++-config --cxxflags --cppflags --ldflags --libs`
-CFLAGS_LINK=-O3 -lm -lserial -lboost_thread $(MAGIC_CONFIG) -o 
+CFLAGS_LINK=-O3 -lm -lserial -lboost_thread-mt $(MAGIC_CONFIG) -o 
 CFLAGS_COMP=-O3 -Wall $(MAGIC_CONFIG) -c
 
 compil: $(OBJS)

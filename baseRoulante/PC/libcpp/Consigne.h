@@ -77,15 +77,17 @@ class Consigne{
 		int m_angle;
 		
 };
-
-
-/*!
+ 
+ /*!
  * \brief Opérateur de flux sortant pour une liste de consignes.
  *
  * Se sert de la fonction print qui affiche le résultat sur la sortie standart
  */
 ostream &operator<<(ostream &out, vector<Consigne> listeConsignes);
-void print(const vector<Consigne>& listeConsignes);
+
+namespace ListeConsignes{
+void transfertSerie(vector<Consigne>& listeConsignes,SerialStream& interfaceDeTransfert);
+}
 
 
 #endif

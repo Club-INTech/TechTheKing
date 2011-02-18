@@ -21,6 +21,11 @@ bool Noeud::operator>(Noeud noeud2){
 	return(m_cout3<noeud2.m_cout3);
 }
 
+void Noeud::operator=(Point pointDonne){
+	m_x=pointDonne.getX();
+	m_y=pointDonne.getY();
+}
+
 double Noeud::getCout1(){
 	return m_cout1;
 }
@@ -67,7 +72,7 @@ Noeud::~Noeud(){
 
 
 
-vector <Point> AStar::getChemin(Noeud depart, Noeud arrivee){
+vector <Point> AStar::getChemin(Point depart, Point arrivee){
 	REQUIRE(depart!=arrivee, "Le point de départ est différent du point d'arrivée du robot");
 	REQUIRE(TAILLE_ROBOT<arrivee.getX() && arrivee.getX()<3000-TAILLE_ROBOT, "L'abscisse du point d'arrivee du robot est tel qu'il ne touche pas le bord de la table");
 	REQUIRE(TAILLE_ROBOT<arrivee.getY() && arrivee.getY()<2100-TAILLE_ROBOT, "L'ordonnée du point d'arrivee du robot est tel qu'il ne touche pas le bord de la table");

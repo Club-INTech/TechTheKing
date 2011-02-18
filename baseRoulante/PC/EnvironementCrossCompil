@@ -1,0 +1,14 @@
+cd /tmp
+wget http://freefr.dl.sourceforge.net/project/libserial/libserial/libserial-0.5.2/libserial-0.5.2.tar.gz
+tar xzvf libserial-0.5.2.tar.gz
+cd libserial-0.5.2/
+./configure CC=arm-none-linux-gnueabi-g++ --host=arm-none-linux-gnueabi --prefix=~/CodeSourcery/Sourcery_G++_Lite/arm-none-linux-gnueabi/
+make
+make install
+wget http://sourceforge.net/projects/boost/files/boost/1.44.0/boost_1_44_0.tar.gz
+tar xzvf boost_1_44_0.tar.gz
+cd boost_1_44_0/
+GPP_PATH=~/CodeSourcery/Sourcery_G++_Lite/bin/arm-none-linux-gnueabi-g++
+GPP_VER=`${GPP_PATH} -v 2>&1 | tail -1 | awk '{print $3}'`
+echo "using gcc : ${GPP_VER} : ${GPP_PATH}  ; " > tools/build/v2/user-config.jam
+sudo bjam --toolset=gcc-${GPP_VER} --prefix=/home/phil/CodeSourcery/Sourcery_G++_Lite/arm-none-linux-gnueabi/ install

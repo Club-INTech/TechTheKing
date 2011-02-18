@@ -164,8 +164,7 @@ ostream &operator<<(ostream &out, vector<Point> listePoints);
  * Toutes les fonctions concernant les listes de points.
  */
 
-namespace ListePoints
-{
+namespace ListePoints{
 /*!
  *\brief Lissage de Bézier.
  *

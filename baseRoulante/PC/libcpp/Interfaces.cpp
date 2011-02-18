@@ -70,13 +70,20 @@ void detectionSerieUsb(InterfaceAsservissement* asserv){
 	}
 }
 
-void InterfaceAsservissement::creer(){
+void InterfaceAsservissement::creer(int precision){
 	if(m_instance)
 		std::cerr<<"Instance déjà créée"<<std::endl;
 	else
-		m_instance = new InterfaceAsservissement();
+		m_instance = new InterfaceAsservissement(precision);
 }
 
-InterfaceAsservissement::InterfaceAsservissement() : Interface(){
+void InterfaceAsservissement::goTo(Point depart,Point arrivee,int nbPoints){
+	vector<Point> listePointsTmp=m_pathfinding.getChemin(depart,arrivee);
+	vector<Point> listePointsLissee=ListePoints::lissageBezier(listePointsTmp,nbPoints);
+	std::vector<Consigne> listeConsignes=ListePoints::convertirEnConsignes(listePointsLissee); 
+    ListeConsignes::transfertSerie(listeConsignes,m_liaisonSerie);
+}
+
+InterfaceAsservissement::InterfaceAsservissement(int precision) : Interface(),m_pathfinding(precision){
 	m_idCarte="0";
 }

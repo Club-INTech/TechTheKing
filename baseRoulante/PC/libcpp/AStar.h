@@ -63,8 +63,8 @@ class Noeud : public Point{
 		 * Sert pour déterminer le "meilleur" chemin.
 		 */
 		bool operator>(Noeud noeudDonne);
+		void operator=(Point pointDonne);
 		
-	
 	private:
 		
 		double m_cout1; /*!< Distance du noeud au point de départ.*/
@@ -121,7 +121,7 @@ class AStar {
 		
 		AStar(int precision=50);
 		void setPrecision(int precision);
-		vector<Point> getChemin(Noeud depart, Noeud arrivee);
+		vector<Point> getChemin(Point depart, Point arrivee);
 		
 	private:
 		

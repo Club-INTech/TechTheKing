@@ -15,10 +15,10 @@ int main(){
 	}
 	
     /* Points de départ et d'arrivée */
-    Noeud point1(CASE11);
-    Noeud point2(CASE66);
-    std::vector<Point> listePoints;
+    Point point1(CASE11);
+    Point point2(CASE66);
     AStar test(50);
+    std::vector<Point> listePoints;
     listePoints=ListePoints::lissageBezier(test.getChemin(point1,point2),200);
     vector<Consigne> listeConsignes = ListePoints::convertirEnConsignes(listePoints);
 

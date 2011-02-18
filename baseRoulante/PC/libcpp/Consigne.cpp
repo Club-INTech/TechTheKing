@@ -71,13 +71,13 @@ ostream &operator<<(ostream &out, Consigne consigne){
 }
 
 ostream &operator<<(ostream &out, vector<Consigne> listeConsignes){
-	for(unsigned int i=0;i<listeConsignes.size();i++)
-		listeConsignes[i].print();
+	for(vector<Consigne>::iterator it=listeConsignes.begin();it!=listeConsignes.end();it++)
+		it->print();
 	return out;
 }
 
-void print(const vector<Consigne>& listeConsignes){
-	for(unsigned i=0;i<listeConsignes.size();i++){
-		listeConsignes[i].print();
-	}
+void ListeConsignes::transfertSerie(vector<Consigne>& listeConsignes, SerialStream& liaisonSerie){
+	for(vector<Consigne>::iterator it=listeConsignes.begin();it!=listeConsignes.end();it++)
+		it->transfertSerie(liaisonSerie);
+	liaisonSerie << "e" << endl;
 }
