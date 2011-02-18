@@ -1,14 +1,35 @@
+#!/bin/sh
+
+#installer la toolchain de crosscompilation :
+cd /tmp
+wget http://www.codesourcery.com/sgpp/lite/arm/portal/package7853/public/arm-none-linux-gnueabi/arm-2010.09-50-arm-none-linux-gnueabi.bin
+chmod +x arm-2010.09-50-arm-none-linux-gnueabi.bin
+./arm-2010.09-50-arm-none-linux-gnueabi.bin
+
+#installer bjam pour pouvoir compiler boost
+sudo apt-get install bjam
+
+#compiler
 cd /tmp
 wget http://freefr.dl.sourceforge.net/project/libserial/libserial/libserial-0.5.2/libserial-0.5.2.tar.gz
 tar xzvf libserial-0.5.2.tar.gz
 cd libserial-0.5.2/
-./configure CC=arm-none-linux-gnueabi-g++ --host=arm-none-linux-gnueabi --prefix=~/CodeSourcery/Sourcery_G++_Lite/arm-none-linux-gnueabi/
+./configure CC=arm-none-linux-gnueabi-g++ --host=arm-none-linux-gnueabi --prefix=$HOME/CodeSourcery/Sourcery_G++_Lite/arm-none-linux-gnueabi/
+sed -i.bak '15i#include <string.h>' src/SerialStreamBuf.h
+sed -i.bak '23i#include <string.h>' src/SerialPort.h
+sed -i.bak '23i#include <cstdlib>' src/SerialPort.h
+sed -i.bak '15i#include <string.h>' src/PosixSignalDispatcher.h
+sed -i.bak '1i#include <cstdlib>' examples/read_port.cpp
+sed -i.bak '1i#include <cstdlib>' examples/write_port.cpp
 make
 make install
+
+#compiler boost
+cd /tmp
 wget http://sourceforge.net/projects/boost/files/boost/1.44.0/boost_1_44_0.tar.gz
 tar xzvf boost_1_44_0.tar.gz
 cd boost_1_44_0/
-GPP_PATH=~/CodeSourcery/Sourcery_G++_Lite/bin/arm-none-linux-gnueabi-g++
+GPP_PATH=$HOME/CodeSourcery/Sourcery_G++_Lite/bin/arm-none-linux-gnueabi-g++
 GPP_VER=`${GPP_PATH} -v 2>&1 | tail -1 | awk '{print $3}'`
 echo "using gcc : ${GPP_VER} : ${GPP_PATH}  ; " > tools/build/v2/user-config.jam
-sudo bjam --toolset=gcc-${GPP_VER} --prefix=/home/phil/CodeSourcery/Sourcery_G++_Lite/arm-none-linux-gnueabi/ install
+sudo bjam --toolset=gcc-${GPP_VER} --prefix=$HOME/CodeSourcery/Sourcery_G++_Lite/arm-none-linux-gnueabi/ install

@@ -1,7 +1,7 @@
 OBJS=main.o Point.o Consigne.o Obstacles.o AStar.o \
 		Debug.o Interfaces.o Server.o Thread.o
-CC=arm-none-linux-gnueabi-g++
-CFLAGS_LINK=-O3 -lm -lserial -lboost_thread -o 
+CC=arm-none-linux-gnueabi-g++ -static
+CFLAGS_LINK=-O3 -lm -lserial -lboost_thread -lpthread -o 
 CFLAGS_COMP=-O -Wall -c
 
 compil: $(OBJS)
