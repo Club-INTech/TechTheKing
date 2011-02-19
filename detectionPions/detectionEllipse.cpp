@@ -1,4 +1,5 @@
 #include <list>
+#include <stack>
 
 using namespace std ;
 
@@ -31,11 +32,9 @@ bool estDansListe(Point point,std::list<Point>& listePoints){
 	return false;
 }
 
-bool estInterieurMotif(Point point, Image image){
+bool estInterieurMotif(Point& point, Image image){
 	for(int i=point.x-1;i<=point.x+1;i++){
 		for(int j=point.y-1;j<=point.y+1;j++){
-// 			if(i==j) // test inutile puisque un 0 n'est pas à l'interieur d'un motif.
-// 				continue;
 			if(image[i][j]==0)
 				return false;
 		}
@@ -90,35 +89,55 @@ std::list<Point> trouverContour(Image image, int extremiteTrouveeX, int extremit
 	return contour;
 }
 
-inline void transfererContours(std::list<Point>& contoursEtudies, std::list<Point>& contour){
-	for(std::list<Point>::iterator it=contour.begin(); it!=contour.end(); it++){
-		contoursEtudies.push_back(*it);
+void annulerEllipse(Image image, Point centre)
+{
+	if (centre.x < 0 || centre.x >= NX || centre.y < 0 || centre.y>=NY)
+		return;
+	
+	stack<Point> pile;
+	pile.push(centre);
+	while (!pile.empty())
+	{
+		Point courant = pile.top();
+		pile.pop();
+		int x = courant.x;
+		int y = courant.y;
+		if (courant.x < 0 || courant.x >= NX || courant.y < 0 || courant.y>=NY)
+			continue;
+		if (image[x][y]==1)
+		{
+			image[x][y]=0;
+			pile.push((Point){x - 1, y});
+			pile.push((Point){x + 1, y});
+			pile.push((Point){x , y - 1});
+			pile.push((Point){x , y + 1});
+			pile.push((Point){x - 10, y});
+			pile.push((Point){x + 10, y});
+			pile.push((Point){x , y - 10});
+			pile.push((Point){x , y + 10});
+		}
 	}
 }
 
 std::list<Point> trouverCentresMotifs(Image image){
-	Point tmp;
+	int ranru=0;
 	Point barycentreCourant;
-	int noirALasuite;
-	std::list<Point> contoursEtudies;
 	std::list<Point> listeCentres;
 	for(int i=0;i<NX;i++){
 		for(int j=0;j<NY;j++){
 			if(image[i][j]==1){
-				tmp.x=i;
-				tmp.y=j;
-				if(!estInterieurMotif( tmp , image ) && !estDansListe(tmp,contoursEtudies)){
+				ranru++;
 					std::list<Point> contour = trouverContour(image, i, j);
+					barycentreCourant = trouverBarycentre(contour);
+					annulerEllipse(image,barycentreCourant);
+					cout<<i<<"  "<<j<<endl;
 					if(contour.size()>100){
-						transfererContours(contoursEtudies,contour);
-						barycentreCourant = trouverBarycentre(contour);
 						listeCentres.push_back(barycentreCourant);
-						cout<< barycentreCourant.x << "  " << barycentreCourant.y << endl;
 					}
 				}
 			}
 		}
-	}
+	cout << "Nombre total de contour : " << ranru << endl;
 	return listeCentres;
 }
 

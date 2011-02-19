@@ -13,7 +13,7 @@ IplImage *img ;
 char vue ;
 CvMat* homogMatrix;
 
-int cfg_seuil = 205 ;
+int cfg_seuil = 180 ;
 int cfg_morph_rows = 5 ;
 int cfg_morph_cols = 5 ;
 
@@ -24,7 +24,7 @@ void detection()
 	IplImage *imgBin ;
 	binarisation_nvg(img,imgBin,cfg_seuil) ;
 	cvShowImage( "Binarisation", imgBin);
-	
+
 	// Suppression des pixels isolés
 	IplImage *imgBinOp ;
 	ouverture(imgBin,imgBinOp,cfg_morph_cols,cfg_morph_rows) ;
@@ -33,6 +33,7 @@ void detection()
 	// Détection des pions
 	std::list<Point> listeCentres;
 	listeCentres = detectionEllipse(imgBinOp) ;
+
 	
 	// Passage des centres des pions dans les coordonnées de la table
 	std::list<Point> listeCentresTable = homogListe(listeCentres, homogMatrix) ;
