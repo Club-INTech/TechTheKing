@@ -3,7 +3,7 @@
 #installer la toolchain de crosscompilation :
 echo -n "Installer la toolchain de cross-compilation ? (y/n)"
 read TOOLCHAIN
-if [ "$TOOLCHAIN" == "y" ]
+if [ "$TOOLCHAIN" = "y" ]
 then
 	echo "Installation de la toolchain"
 	cd /tmp
@@ -19,7 +19,7 @@ echo -n "Installer la librairie Libserial ? (y/n)"
 read LIBSERIAL
 
 
-if [ "$LIBSERIAL" == "y" ]
+if [ "$LIBSERIAL" = "y" ]
 then
 	cd /tmp
 	echo " Récupération des sources "
@@ -48,7 +48,7 @@ echo -n "Installer la librairie boost ? (y/n)"
 read BOOST
 
 
-if [ "$BOOST" == "y" ]
+if [ "$BOOST" =  "y" ]
 then
 	
 	echo "Dependance : bjam"
