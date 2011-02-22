@@ -120,13 +120,11 @@ void annulerEllipse(Image image, Point centre)
 }
 
 std::list<Point> trouverCentresMotifs(Image image){
-	int ranru=0;
 	Point barycentreCourant;
 	std::list<Point> listeCentres;
 	for(int i=0;i<NX;i++){
 		for(int j=0;j<NY;j++){
 			if(image[i][j]==1){
-				ranru++;
 					std::list<Point> contour = trouverContour(image, i, j);
 					barycentreCourant = trouverBarycentre(contour);
 					annulerEllipse(image,barycentreCourant);
@@ -137,7 +135,6 @@ std::list<Point> trouverCentresMotifs(Image image){
 				}
 			}
 		}
-	cout << "Nombre total de contour : " << ranru << endl;
 	return listeCentres;
 }
 
