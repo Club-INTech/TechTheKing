@@ -111,10 +111,10 @@ void annulerEllipse(Image image, Point centre)
 			pile.push((Point){x + 1, y});
 			pile.push((Point){x , y - 1});
 			pile.push((Point){x , y + 1});
-			pile.push((Point){x - 10, y});
-			pile.push((Point){x + 10, y});
-			pile.push((Point){x , y - 10});
-			pile.push((Point){x , y + 10});
+			pile.push((Point){x - 20, y});
+			pile.push((Point){x + 20, y});
+			pile.push((Point){x , y - 20});
+			pile.push((Point){x , y + 20});
 		}
 	}
 }
@@ -126,7 +126,6 @@ std::list<Point> trouverCentresMotifs(Image image){
 	for(int i=0;i<NX;i++){
 		for(int j=0;j<NY;j++){
 			if(image[i][j]==1){
-				ranru++;
 					std::list<Point> contour = trouverContour(image, i, j);
 					barycentreCourant = trouverBarycentre(contour);
 					annulerEllipse(image,barycentreCourant);
@@ -137,7 +136,6 @@ std::list<Point> trouverCentresMotifs(Image image){
 				}
 			}
 		}
-	cout << "Nombre total de contour : " << ranru << endl;
 	return listeCentres;
 }
 
