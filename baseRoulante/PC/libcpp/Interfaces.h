@@ -58,8 +58,8 @@ public:
 	void positionAimantDroit(ModeAimant mode);
 	void setMode(ModeBras mode);
 private:
-	unsigned char PourcentageHauteurConversion(); // D'un pourcentage à une valeur entre 0 et 255
-	(unsigned char)* PourcentageAngleConversion(); // D'un pourcentage à une valeur entre 0 et 1023 à envoyer via i2c
+	unsigned char PourcentageHauteurConversion(unsigned char pourcentage); // D'un pourcentage à une valeur entre 0 et 255
+	(unsigned char)[2] PourcentageAngleConversion(unsigned char pourcentage); // D'un pourcentage à une valeur entre 0 et 1023 à envoyer via i2c
 private:
 	bool m_modePince;
 	I2cBus* m_busI2c;

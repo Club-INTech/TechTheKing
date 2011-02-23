@@ -85,6 +85,15 @@ InterfaceAsservissement::InterfaceAsservissement(int precision) : m_pathfinding(
 	m_liaisonSerie.SetNumOfStopBits(1);
 }
 
+unsigned char InterfaceActionneurs::PourcentageHauteurConversion(unsigned char pourcentage){
+	return (pourcentage*2.55);
+}
+
+unsigned char[2] InterfaceActionneurs::PourcentageAngleConversion(unsigned char pourcentage){
+	(unsigned char)[2] resultatFinal;
+	int resultatTmp=pourcentage*10.24;
+}
+
 void InterfaceCapteurs::thread(){
 	while(1){
 		//Tant que le capteur ne détecte pas d'obstacle
