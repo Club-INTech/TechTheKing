@@ -1,11 +1,11 @@
 #!/bin/sh
 
 #installer la toolchain de crosscompilation :
-echo -n "Installer la toolchain de cross-compilation ? (y/n)"
+echo -n "Installer la toolchain (compilateur, binutils, glibc ...) de cross-compilation CodeSourcery (y/n) ?"
 read TOOLCHAIN
 if [ "$TOOLCHAIN" = "y" ]
 then
-	echo "Installation de la toolchain"
+	echo "Installation de la toolchain ..."
 	cd /tmp
 	wget http://www.codesourcery.com/sgpp/lite/arm/portal/package7853/public/arm-none-linux-gnueabi/arm-2010.09-50-arm-none-linux-gnueabi.bin
 	chmod +x arm-2010.09-50-arm-none-linux-gnueabi.bin
@@ -15,7 +15,7 @@ else
 fi
 
 
-echo -n "Installer la librairie Libserial ? (y/n)"
+echo -n "Installer la librairie Libserial (y/n) ?"
 read LIBSERIAL
 
 
@@ -27,7 +27,16 @@ then
 	tar xzvf libserial-0.5.2.tar.gz
 	cd libserial-0.5.2/
 	echo "Configuration des sources"
-	./configure CC=arm-none-linux-gnueabi-g++ --host=arm-none-linux-gnueabi --prefix=$HOME/CodeSourcery/Sourcery_G++_Lite/arm-none-linux-gnueabi/
+	DEFAULT_PATH=$HOME/CodeSourcery/Sourcery_G++_Lite/arm-none-linux-gnueabi/
+	echo -n " Où est installé le cross-compilateur (default : "
+	echo -n $DEFAULT_PATH
+	echo -n " ) ?"
+	read CROSS_COMPILER_PATH
+	if [ CROSS_COMPILER_PATH -n ]
+	then
+	DEFAULT_PATH=CROSS_COMPILER_PATH
+	fi
+	./configure CC=arm-none-linux-gnueabi-g++ --host=arm-none-linux-gnueabi --prefix=$DEFAULT_PATH
 	echo "Modification des sources (il manque des #include)"
 	sed -i.bak '15i#include <string.h>' src/SerialStreamBuf.h
 	sed -i.bak '23i#include <string.h>' src/SerialPort.h
@@ -44,17 +53,15 @@ else
 fi
 
 
-echo -n "Installer la librairie boost ? (y/n)"
+echo -n "Installer la librairie boost . Cette opération est longue . (y/n) ? "
 read BOOST
-
-
 if [ "$BOOST" =  "y" ]
 then
-	
+	echo "Installation de boost (la totalité) ..."
 	echo "Dependance : bjam"
-	echo -n "Installation de bjam? (y/n)"
+	echo -n "Installation de bjam (Equivalent de make propre à boost. Nécéssaire à la compilation) (y/n) ?"
 	read BJAM
-	if [ "$BJAM" == "y" ]
+	if [ "$BJAM" = "y" ]
 	then
 		echo "Installation de bjam"
 		#installer bjam pour pouvoir compiler boost
@@ -78,3 +85,15 @@ then
 else
 	echo "Pas d'installation de boost"
 fi
+
+vlc --vout caca http://www.youtube.com/watch?v=EK2tWVj6lXw
+echo
+echo
+echo
+echo "*********************"
+echo "*ASCII RICKROLLED !!*"
+echo "*********************"
+echo
+echo
+echo
+

@@ -6,6 +6,10 @@
 #include "Interfaces.h"
 #include "Server.h"
 
+
+std::vector <Obstacle*> listeObstacles ;
+bool isObstacleDetected;
+
 int main(){
     
     Socket::creer(57373);

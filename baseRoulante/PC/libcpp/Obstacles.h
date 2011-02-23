@@ -197,6 +197,4 @@ void refreshPositions(const char nomFichier[]);
 void initialisation();
 }
 
-
-
 #endif
