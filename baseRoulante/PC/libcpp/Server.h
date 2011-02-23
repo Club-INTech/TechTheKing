@@ -32,7 +32,6 @@ class Socket : public Thread{
 	private:
 		char m_buffer[TAILLE_BUFFER];
 		static Socket* m_instance;
-		boost::mutex m_mutex;
 		int m_sockfd;
 		int m_newsockfd;
 		int m_port;

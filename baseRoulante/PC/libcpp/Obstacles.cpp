@@ -1,9 +1,6 @@
 #include "Obstacles.h"
 
 
-std::vector <Obstacle*> listeObstacles ;
-
-
 Obstacle::Obstacle(double x,double y,Couleur couleur){
 	m_x=x;
 	m_y=y;

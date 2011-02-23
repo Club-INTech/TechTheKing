@@ -1,5 +1,5 @@
 OBJS=main.o Point.o Consigne.o Obstacles.o AStar.o \
-		Debug.o Interfaces.o Server.o Thread.o
+		Debug.o Interfaces.o Server.o Thread.o I2cBus.o
 CC=g++
 MAGIC_CONFIG=`Magick++-config --cxxflags --cppflags --ldflags --libs`
 CFLAGS_LINK=-O3 -lm -lserial -lboost_thread-mt $(MAGIC_CONFIG) -o 
@@ -10,6 +10,11 @@ compil: $(OBJS)
 	@$(CC) $(OBJS) $(CFLAGS_LINK) debug
 	@echo " fait."
 
+I2cBus.o : I2cBus.cpp I2cBus.h Singleton.h
+	@echo -n "Compilation de I2cBus.o"
+	@$(CC) $(CFLAGS_COMP) I2cBus.cpp
+	@echo " fait."
+	
 Thread.o : Thread.cpp Thread.h
 	@echo -n "Compilation de Thread.cpp ..."
 	@$(CC) $(CFLAGS_COMP) Thread.cpp

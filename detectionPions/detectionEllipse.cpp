@@ -120,7 +120,6 @@ void annulerEllipse(Image image, Point centre)
 }
 
 std::list<Point> trouverCentresMotifs(Image image){
-	int ranru=0;
 	Point barycentreCourant;
 	std::list<Point> listeCentres;
 	for(int i=0;i<NX;i++){

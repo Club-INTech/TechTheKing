@@ -19,11 +19,6 @@ std::vector<char> getTtyUSB(){
 	}
 	return portsOuverts;
 }
-Interface::Interface() : m_idCarte(""){
-	 m_liaisonSerie.SetBaudRate(SerialStreamBuf::BAUD_57600);
-	 m_liaisonSerie.SetCharSize( SerialStreamBuf::CHAR_SIZE_8);
-	 m_liaisonSerie.SetNumOfStopBits(1);
- }
 
 std::string exec(char* cmd) {
     FILE* pipe = popen(cmd, "r");
@@ -84,6 +79,25 @@ void InterfaceAsservissement::goTo(Point depart,Point arrivee,int nbPoints){
     ListeConsignes::transfertSerie(listeConsignes,m_liaisonSerie);
 }
 
-InterfaceAsservissement::InterfaceAsservissement(int precision) : Interface(),m_pathfinding(precision){
-	m_idCarte="0";
+InterfaceAsservissement::InterfaceAsservissement(int precision) : m_pathfinding(precision){
+	m_liaisonSerie.SetBaudRate(SerialStreamBuf::BAUD_57600);
+	m_liaisonSerie.SetCharSize( SerialStreamBuf::CHAR_SIZE_8);
+	m_liaisonSerie.SetNumOfStopBits(1);
+}
+
+unsigned char InterfaceActionneurs::PourcentageHauteurConversion(unsigned char pourcentage){
+	return (pourcentage*2.55);
+}
+
+unsigned char[2] InterfaceActionneurs::PourcentageAngleConversion(unsigned char pourcentage){
+	(unsigned char)[2] resultatFinal;
+	int resultatTmp=pourcentage*10.24;
+}
+
+void InterfaceCapteurs::thread(){
+	while(1){
+		//Tant que le capteur ne détecte pas d'obstacle
+			//traiterAbsenceObstacle()
+		//traiterPresenceObstacle()
+	}	
 }
