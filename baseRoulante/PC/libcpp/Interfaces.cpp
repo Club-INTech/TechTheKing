@@ -1,17 +1,19 @@
 #include "Interfaces.h"
 
+using namespace std;
+
 InterfaceAsservissement* InterfaceAsservissement::m_instance=0;
 
 InterfaceAsservissement* InterfaceAsservissement::instance(){
 	if(!m_instance)
-		std::cerr<<"La classe n'a pas d'instance"<<std::endl;
+		cerr<<"La classe n'a pas d'instance"<<endl;
 	return m_instance;
 }
 
 
-std::vector<char> getTtyUSB(){
-	std::vector<char> portsOuverts;
-	std::string stringTmp = exec((char*)"ls -1 /dev/ttyUSB* | cut -d '/' -f 3 | sed -e 's/ttyUSB//'");
+vector<char> getTtyUSB(){
+	vector<char> portsOuverts;
+	string stringTmp = exec((char*)"ls -1 /dev/ttyUSB* | cut -d '/' -f 3 | sed -e 's/ttyUSB//'");
 	for(unsigned int i=0;i<stringTmp.length();i++){
 		if(stringTmp[i+1]=='\n'){
 			portsOuverts.push_back(stringTmp[i]);
@@ -20,11 +22,11 @@ std::vector<char> getTtyUSB(){
 	return portsOuverts;
 }
 
-std::string exec(char* cmd) {
+string exec(char* cmd) {
     FILE* pipe = popen(cmd, "r");
     if (!pipe) return "";
     char buffer[128];
-    std::string result = "";
+    string result = "";
     while(!feof(pipe)) {
         if(fgets(buffer, 128, pipe) != NULL)
                 result += buffer;
@@ -34,14 +36,14 @@ std::string exec(char* cmd) {
 }
 
 void detectionSerieUsb(InterfaceAsservissement* asserv){
-	std::vector<char> portsOuverts;
+	vector<char> portsOuverts;
 	SerialStream streamTmp;
-	std::string stringTmp;
+	string stringTmp;
 	char charTmp;
  	streamTmp.SetBaudRate( SerialStreamBuf::BAUD_57600 ) ;
  	streamTmp.SetCharSize( SerialStreamBuf::CHAR_SIZE_8 ) ;
  	streamTmp.SetNumOfStopBits(1) ;
-	std::string listePorts = exec((char*)"ls -1 /dev/ttyUSB* | cut -d '/' -f 3 | sed -e 's/ttyUSB//'");
+	string listePorts = exec((char*)"ls -1 /dev/ttyUSB* | cut -d '/' -f 3 | sed -e 's/ttyUSB//'");
 	for(unsigned int i=0;i<listePorts.length();i++){
 		if(listePorts[i+1]=='\n'){
 			stringTmp="/dev/ttyUSB";
@@ -67,7 +69,7 @@ void detectionSerieUsb(InterfaceAsservissement* asserv){
 
 void InterfaceAsservissement::creer(int precision){
 	if(m_instance)
-		std::cerr<<"Instance déjà créée"<<std::endl;
+		cerr<<"Instance déjà créée"<<endl;
 	else
 		m_instance = new InterfaceAsservissement(precision);
 }
@@ -75,7 +77,7 @@ void InterfaceAsservissement::creer(int precision){
 void InterfaceAsservissement::goTo(Point depart,Point arrivee,int nbPoints){
 	vector<Point> listePointsTmp=m_pathfinding.getChemin(depart,arrivee);
 	vector<Point> listePointsLissee=ListePoints::lissageBezier(listePointsTmp,nbPoints);
-	std::vector<Consigne> listeConsignes=ListePoints::convertirEnConsignes(listePointsLissee); 
+	vector<Consigne> listeConsignes=ListePoints::convertirEnConsignes(listePointsLissee); 
     ListeConsignes::transfertSerie(listeConsignes,m_liaisonSerie);
 }
 
@@ -85,13 +87,28 @@ InterfaceAsservissement::InterfaceAsservissement(int precision) : m_pathfinding(
 	m_liaisonSerie.SetNumOfStopBits(1);
 }
 
-unsigned char InterfaceActionneurs::PourcentageHauteurConversion(unsigned char pourcentage){
+unsigned char InterfaceActionneurs::pourcentageHauteurConversion(unsigned char pourcentage){
 	return (pourcentage*2.55);
 }
 
-unsigned char[2] InterfaceActionneurs::PourcentageAngleConversion(unsigned char pourcentage){
-	(unsigned char)[2] resultatFinal;
-	int resultatTmp=pourcentage*10.24;
+
+template <typename T>  stack<unsigned char> InterfaceActionneurs::decToBin(T dec){
+	stack<unsigned char> res;
+	for(int i=0;i<sizeof(T);i++){
+	bitset<8> charTmp;
+		for(int j=0;j<8;j++){
+			charTmp.set(j,dec%2);
+			dec=dec>>1;
+		}
+		unsigned char resTmp = (charTmp.to_ulong() << 8 * i);
+		if(resTmp) res.push(resTmp);
+	}
+	return res;
+}
+
+
+unsigned int InterfaceActionneurs::pourcentageAngleConversion(unsigned char pourcentage){
+	return(pourcentage*10.24);
 }
 
 void InterfaceCapteurs::thread(){

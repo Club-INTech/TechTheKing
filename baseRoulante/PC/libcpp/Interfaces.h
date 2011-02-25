@@ -2,6 +2,8 @@
 #define INTERFACES_H
 
 #include <iostream>
+#include <bitset>
+#include <stack>
 #include "Point.h"
 #include "AStar.h"
 #include <SerialPort.h>
@@ -48,6 +50,8 @@ private:
 	I2cBus* m_busI2c;
 };
 
+
+
 class InterfaceActionneurs : public Singleton<InterfaceActionneurs>{
 public:
 	void hauteurBrasGauche(unsigned char pourcentageHauteur);
@@ -58,8 +62,10 @@ public:
 	void positionAimantDroit(ModeAimant mode);
 	void setMode(ModeBras mode);
 private:
-	unsigned char PourcentageHauteurConversion(unsigned char pourcentage); // D'un pourcentage à une valeur entre 0 et 255
-	(unsigned char)[2] PourcentageAngleConversion(unsigned char pourcentage); // D'un pourcentage à une valeur entre 0 et 1023 à envoyer via i2c
+	unsigned char pourcentageHauteurConversion(unsigned char pourcentage); // D'un pourcentage à une valeur entre 0 et 255
+	unsigned int pourcentageAngleConversion(unsigned char pourcentage); // D'un pourcentage à une valeur entre 0 et 1023 à envoyer via i2c
+	template <class T>  std::stack<unsigned char> decToBin(T dec);
+
 private:
 	bool m_modePince;
 	I2cBus* m_busI2c;
