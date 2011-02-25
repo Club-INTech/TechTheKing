@@ -1,7 +1,6 @@
 /*
-  ax12.cpp - arbotiX Library for AX-12 Servos
+  ax12.c - arbotiX Library for AX-12 Servos
   Copyright (c) 2008,2009 Michael E. Ferguson.  All right reserved.
-  Modificada el 15/11/09 por Pablo Gindel. 
 */
 
 #include "ax12.h"
@@ -73,7 +72,9 @@ void ax12SendPacket (byte id, byte datalength, byte instruction, byte *data){
     checksum += ax12writeB(id);
     checksum += ax12writeB(datalength + 2);
     checksum += ax12writeB(instruction);
-    for (byte f=0; f<datalength; f++) {
+
+    byte f;
+    for (f=0; f<datalength; f++) {
       checksum += ax12writeB(data[f]);
     }
     // checksum = 
@@ -112,7 +113,9 @@ byte ax12ReadPacket(){
     status_length = 2 + ax_rx_buffer[offset+1];
     if (bcount != status_length) error+=2;
     checksum = 0;
-    for (byte f=0; f<status_length; f++) 
+
+    byte f;
+    for (f=0; f<status_length; f++)
         checksum += ax_rx_buffer[offset+f];
     if (checksum != 255) error+=4;
     if (error == 0) {
@@ -137,21 +140,21 @@ byte ax12ReadPacket(){
 
 /** ping */
 byte ping (byte id) {
-     byte *data;
+     byte *data = 0;
      ax12SendPacket (id, 0, AX_PING, data); 
      return ax12ReadPacket(); 
 }
 
 /** reset */
 byte reset (byte id) {
-     byte *data;
+     byte *data = 0;
      ax12SendPacket (id, 0, AX_RESET, data); 
      return ax12ReadPacket(); 
 }
 
 /** action */
 byte action (byte id) {
-     byte *data;
+     byte *data = 0;
      ax12SendPacket (id, 0, AX_ACTION, data); 
      return ax12ReadPacket(); 
 }
@@ -180,31 +183,4 @@ byte regWrite (byte id, byte regstart, byte reglength, int value) {
     if (reglength > 1) {data[2] = (value&0xFF00)>>8;}
     ax12SendPacket (id, reglength+1, AX_REG_WRITE, data);
     return ax12ReadPacket();
-}
-
-/******************************************************************************
- * High Level Functions
- ******************************************************************************/
-
-void AX12Init (uint8_t ID, uint16_t angleCC, uint16_t angleCCW, uint16_t vitesse)
-{
-	// Active l'asservissement
-	writeData (ID, AX_TORQUE_ENABLE, 1, 1);
-	// Définit les angles mini et maxi
-	writeData (ID, AX_CW_ANGLE_LIMIT_L, 2, angleCC);
-	writeData (ID, AX_CCW_ANGLE_LIMIT_L, 2, angleCCW);
-	// Définit la vitesse de rotation
-	writeData (ID, AX_GOAL_SPEED_L, 2, vitesse);
-	// Fonction bas niveau pour la transmission série
-	ax12Init (1000000);
-}
-
-void AX12GoTo (uint8_t ID, uint16_t angle) 
-{
-	writeData (ID, AX_GOAL_POSITION_L, 2, angle);
-}
-
-int main ()
-{
-	while (1);
 }
