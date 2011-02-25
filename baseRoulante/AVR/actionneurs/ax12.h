@@ -82,15 +82,15 @@ typedef unsigned char byte;
 
 void ax12Init(long baud);
 
-// los 4 comandos del AX-12 actualmente implementados:
 byte ping (byte id);
 byte reset (byte id);
 byte readData (byte id, byte regstart, byte reglength);
 byte writeData (byte id, byte regstart, byte reglength, int value);
 
-// las 3 variables donde queda la información del paquete de respuesta:
 extern int status_id;
 extern int status_error;
 extern int status_data;
+
+
 
 #endif
