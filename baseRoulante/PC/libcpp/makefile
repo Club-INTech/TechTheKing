@@ -1,0 +1,75 @@
+OBJS=main.o Point.o Consigne.o Obstacles.o AStar.o \
+		Debug.o Interfaces.o Server.o Thread.o I2cBus.o
+CC=g++
+MAGIC_CONFIG=`Magick++-config --cxxflags --cppflags --ldflags --libs`
+CFLAGS_LINK=-O3 -lm -lserial -lboost_thread-mt $(MAGIC_CONFIG) -o 
+CFLAGS_COMP=-O3 -Wall $(MAGIC_CONFIG) -c
+
+compil: $(OBJS)
+	@echo -n "Création de l'executable : compilation classique ..."
+	@$(CC) $(OBJS) $(CFLAGS_LINK) debug
+	@echo " fait."
+
+I2cBus.o : I2cBus.cpp I2cBus.h Singleton.h
+	@echo -n "Compilation de I2cBus.o"
+	@$(CC) $(CFLAGS_COMP) I2cBus.cpp
+	@echo " fait."
+	
+Thread.o : Thread.cpp Thread.h
+	@echo -n "Compilation de Thread.cpp ..."
+	@$(CC) $(CFLAGS_COMP) Thread.cpp
+	@echo " fait."
+
+Server.o : Server.cpp Server.h Obstacles.h Thread.h
+	@echo -n "Compilation de Server.cpp ..."
+	@$(CC) $(CFLAGS_COMP) Server.cpp
+	@echo " fait."
+	
+main.o : main.cpp Point.h AStar.h Debug.h Contrats.h Server.h
+	@echo -n "Compilation de main.cpp ..."
+	@$(CC) $(CFLAGS_COMP) main.cpp
+	@echo  " fait."
+	
+Point.o : Point.cpp Point.h Consigne.h Contrats.h
+	@echo -n "Compilation de Point.cpp ..."
+	@$(CC) $(CFLAGS_COMP) Point.cpp
+	@echo " fait."
+	
+Consigne.o : Consigne.cpp Consigne.h Contrats.h
+	@echo -n "Compilation de Consigne.cpp ..."
+	@$(CC) $(CFLAGS_COMP) Consigne.cpp
+	@echo " fait."
+	
+Obstacles.o : Obstacles.cpp Obstacles.h Point.h Contrats.h
+	@echo -n "Compilation de Obstacles.cpp ..."
+	@$(CC) $(CFLAGS_COMP) Obstacles.cpp
+	@echo " fait."
+	
+AStar.o : AStar.cpp AStar.h Point.h Obstacles.h Contrats.h
+	@echo -n "Compilation de AStar.cpp ..."
+	@$(CC) $(CFLAGS_COMP) AStar.cpp
+	@echo " fait."
+	
+Interfaces.o : Interfaces.cpp Interfaces.h Point.h AStar.h
+	@echo -n "Compilation de Interfaces.cpp ..."
+	@$(CC) $(CFLAGS_COMP) Interfaces.cpp
+	@echo " fait."
+	
+Debug.o : Debug.cpp Debug.h Point.h Obstacles.h Consigne.h Contrats.h
+	@echo -n "Compilation de Debug.cpp ..."
+	@$(CC) $(CFLAGS_COMP) Debug.cpp
+	@echo " fait."
+	
+clean :
+	@echo -n "Suppression des .o et des ~ ..."
+	@rm -f $(OBJS) rm *~
+	@echo " fait."
+	
+mrpropre : clean
+	@echo "Suppression de l'executable ..."
+	@rm -f debug
+	@echo -n " fait."
+	
+
+
+
