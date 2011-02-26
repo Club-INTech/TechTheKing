@@ -11,7 +11,10 @@ main.hex: main.out
 main.out: main.o actionneurs.o i2c.o ax12.o
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) main.o actionneurs.o i2c.o ax12.o -o main.out
 
-actionneurs.o : actionneurs.c
+main.o: main.c
+	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) main.c -c
+
+actionneurs.o: actionneurs.c
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) actionneurs.c -c
 
 i2c.o: i2c.c

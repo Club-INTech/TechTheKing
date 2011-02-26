@@ -7,6 +7,8 @@
 #ifndef i2c_h
 #define i2c_h
 
+  #include <stdint.h>
+
   //#define ATMEGA8
 
   #define CPU_FREQ 16000000L

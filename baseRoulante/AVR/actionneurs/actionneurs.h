@@ -2,6 +2,8 @@
 #define ACTIONNEURS_H
 
 #include <stdint.h>
+#include <avr/io.h>
+#include <avr/interrupt.h>
 
 /*
  *  Valeurs de comparaison pour le fast PWM
