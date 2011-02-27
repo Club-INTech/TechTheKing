@@ -2169,89 +2169,25 @@ free_Thread(Thread *arg1) {
 swig_class SwigClassSocket;
 
 SWIGINTERN VALUE
-_wrap_new_Socket__SWIG_0(int argc, VALUE *argv, VALUE self) {
+_wrap_Socket_instance(int argc, VALUE *argv, VALUE self) {
   int arg1 ;
   int val1 ;
   int ecode1 = 0 ;
   Socket *result = 0 ;
+  VALUE vresult = Qnil;
   
   if ((argc < 1) || (argc > 1)) {
     rb_raise(rb_eArgError, "wrong # of arguments(%d for 1)",argc); SWIG_fail;
   }
   ecode1 = SWIG_AsVal_int(argv[0], &val1);
   if (!SWIG_IsOK(ecode1)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode1), Ruby_Format_TypeError( "", "int","Socket", 1, argv[0] ));
+    SWIG_exception_fail(SWIG_ArgError(ecode1), Ruby_Format_TypeError( "", "int","Socket::instance", 1, argv[0] ));
   } 
   arg1 = static_cast< int >(val1);
-  result = (Socket *)new Socket(arg1);
-  DATA_PTR(self) = result;
-  return self;
+  result = (Socket *)Socket::instance(arg1);
+  vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_Socket, 0 |  0 );
+  return vresult;
 fail:
-  return Qnil;
-}
-
-
-#ifdef HAVE_RB_DEFINE_ALLOC_FUNC
-SWIGINTERN VALUE
-_wrap_Socket_allocate(VALUE self) {
-#else
-  SWIGINTERN VALUE
-  _wrap_Socket_allocate(int argc, VALUE *argv, VALUE self) {
-#endif
-    
-    
-    VALUE vresult = SWIG_NewClassInstance(self, SWIGTYPE_p_Socket);
-#ifndef HAVE_RB_DEFINE_ALLOC_FUNC
-    rb_obj_call_init(vresult, argc, argv);
-#endif
-    return vresult;
-  }
-  
-
-SWIGINTERN VALUE
-_wrap_new_Socket__SWIG_1(int argc, VALUE *argv, VALUE self) {
-  Socket *result = 0 ;
-  
-  if ((argc < 0) || (argc > 0)) {
-    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
-  }
-  result = (Socket *)new Socket();
-  DATA_PTR(self) = result;
-  return self;
-fail:
-  return Qnil;
-}
-
-
-SWIGINTERN VALUE _wrap_new_Socket(int nargs, VALUE *args, VALUE self) {
-  int argc;
-  VALUE argv[1];
-  int ii;
-  
-  argc = nargs;
-  if (argc > 1) SWIG_fail;
-  for (ii = 0; (ii < argc); ++ii) {
-    argv[ii] = args[ii];
-  }
-  if (argc == 0) {
-    return _wrap_new_Socket__SWIG_1(nargs, args, self);
-  }
-  if (argc == 1) {
-    int _v;
-    {
-      int res = SWIG_AsVal_int(argv[0], NULL);
-      _v = SWIG_CheckState(res);
-    }
-    if (_v) {
-      return _wrap_new_Socket__SWIG_0(nargs, args, self);
-    }
-  }
-  
-fail:
-  Ruby_Format_OverloadedError( argc, 1, "Socket.new", 
-    "    Socket.new(int port)\n"
-    "    Socket.new()\n");
-  
   return Qnil;
 }
 
@@ -3091,8 +3027,8 @@ SWIGEXPORT void Init_libChessUp(void) {
   
   SwigClassSocket.klass = rb_define_class_under(mLibChessUp, "Socket", ((swig_class *) SWIGTYPE_p_Thread->clientdata)->klass);
   SWIG_TypeClientData(SWIGTYPE_p_Socket, (void *) &SwigClassSocket);
-  rb_define_alloc_func(SwigClassSocket.klass, _wrap_Socket_allocate);
-  rb_define_method(SwigClassSocket.klass, "initialize", VALUEFUNC(_wrap_new_Socket), -1);
+  rb_undef_alloc_func(SwigClassSocket.klass);
+  rb_define_singleton_method(SwigClassSocket.klass, "instance", VALUEFUNC(_wrap_Socket_instance), -1);
   SwigClassSocket.mark = 0;
   SwigClassSocket.destroy = (void (*)(void *)) free_Socket;
   SwigClassSocket.trackObjects = 0;

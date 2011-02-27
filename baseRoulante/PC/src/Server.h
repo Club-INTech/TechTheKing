@@ -16,11 +16,12 @@
     
 class Socket : public Thread{
     public:
-        Socket(int port = 42000);
+        static Socket* instance(int port);
         ~Socket();
     private:
         void thread();
         Obstacle* trouverObstacle();
+        Socket(int port);
         void onOpen();
         void onWrite(string msg);
         void onRead();
@@ -29,6 +30,7 @@ class Socket : public Thread{
         Socket(const Socket&){};
     private:
         char m_buffer[TAILLE_BUFFER];
+        static Socket* m_instance;
         int m_sockfd;
         int m_newsockfd;
         int m_port;

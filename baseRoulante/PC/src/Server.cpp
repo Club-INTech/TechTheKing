@@ -1,5 +1,7 @@
 #include "Server.h"
 
+Socket* Socket::m_instance=NULL;
+
 Socket::Socket(int port):Thread(), m_port(port){
 }
 
@@ -26,6 +28,18 @@ void Socket::thread(){
         }
     }
     onClose();
+}
+
+
+Socket* Socket::instance(int port){
+    if(m_instance==NULL){
+        m_instance= new Socket(port);
+    }
+    else{
+        cerr<<"Instance déjà créée"<<endl;
+    }
+    std::cout<<m_instance->m_port<<std::endl;
+    return m_instance;
 }
 
 void Socket::onOpen(){
@@ -86,5 +100,5 @@ Obstacle* Socket::trouverObstacle(){
             i++;
         }
     }
-    return(new CercleObstacle(atoi(x.c_str()),atoi(y.c_str())));
+    return (new CercleObstacle(atoi(x.c_str()),atoi(y.c_str())));
 }
