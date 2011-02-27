@@ -13,34 +13,31 @@
 #include "Thread.h"
 #include <boost/thread/mutex.hpp>
 #define TAILLE_BUFFER 256
-	
+    
 class Socket : public Thread{
-	public:
-		static void creer(int port);
-		static Socket* instance();
-		~Socket();
-	private:
-		void thread();
-		Obstacle* trouverObstacle();
-		Socket(int port);
-		void onOpen();
-		void onWrite(string msg);
-		void onRead();
-		void onClose();
-		Socket& operator=(const Socket&);
-		Socket(const Socket&){};
-	private:
-		char m_buffer[TAILLE_BUFFER];
-		static Socket* m_instance;
-		int m_sockfd;
-		int m_newsockfd;
-		int m_port;
-		bool m_isOpened;
-		bool m_isReading;
-		bool m_isWriting;
-		socklen_t m_cliLen;
-		struct sockaddr_in m_servAddr;
-		struct sockaddr_in m_cliAddr;
+    public:
+        Socket(int port = 42000);
+        ~Socket();
+    private:
+        void thread();
+        Obstacle* trouverObstacle();
+        void onOpen();
+        void onWrite(string msg);
+        void onRead();
+        void onClose();
+        Socket& operator=(const Socket&);
+        Socket(const Socket&){};
+    private:
+        char m_buffer[TAILLE_BUFFER];
+        int m_sockfd;
+        int m_newsockfd;
+        int m_port;
+        bool m_isOpened;
+        bool m_isReading;
+        bool m_isWriting;
+        socklen_t m_cliLen;
+        struct sockaddr_in m_servAddr;
+        struct sockaddr_in m_cliAddr;
 };
 
 #endif
