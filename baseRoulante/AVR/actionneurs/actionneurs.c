@@ -1,5 +1,3 @@
-#include <avr/io.h>
-#include <avr/interrupt.h>
 #include "actionneurs.h"
 #include "ax12.h"
 
