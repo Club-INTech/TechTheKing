@@ -319,25 +319,25 @@ uint8_t i2c_writeTo(uint8_t address, uint8_t* data, uint8_t length, uint8_t wait
   {
     continue;
   }
-  
+
   i2c_state = I2C_MTX;
   i2c_error = 0xFF;
 
   i2c_masterBufferIndex = 0;
   i2c_masterBufferLength = length;
-  
+
   // on balance le message dans le buffer
   for(i = 0; i < length; ++i)
   {
     i2c_masterBuffer[i] = data[i];
   }
-  
+
   // on se met en écriture
   i2c_slarw = TW_WRITE;
   i2c_slarw |= address << 1;
   
   // on démarre la com
-  TWCR = _BV(TWEN) | _BV(TWIE) | _BV(TWEA) | _BV(TWINT) | _BV(TWSTA);
+  TWCR = /*_BV(TWEN) |*/ _BV(TWIE) | _BV(TWEA) | _BV(TWINT) | _BV(TWSTA);
 
   // on attend d'avoir fini
   while(wait && (I2C_MTX == i2c_state))
@@ -346,7 +346,7 @@ uint8_t i2c_writeTo(uint8_t address, uint8_t* data, uint8_t length, uint8_t wait
   }
   
   if (i2c_error == 0xFF)
-    return 0;	// success
+    return 0;	// ok
   else if (i2c_error == TW_MT_SLA_NACK)
     return 2;	// le slave n'accuse pas réception de son adresse
   else if (i2c_error == TW_MT_DATA_NACK)

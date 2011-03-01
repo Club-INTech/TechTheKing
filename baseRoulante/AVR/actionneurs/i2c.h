@@ -25,6 +25,7 @@
   #define I2C_STX   4
 
   // Fonctions bas niveau
+  // Ne pas utiliser
   
   void i2c_init(void);
   void i2c_setAddress(uint8_t);
@@ -38,6 +39,8 @@
   void i2c_releaseBus(void);
 
   // Fonctions haut niveau
+  // S'utilise comme les équivalents Arduino
+  // Regarder les exemple pour le fonctionnement
 
   void i2c_beginMaster(void);
   void i2c_beginSlave(uint8_t address);

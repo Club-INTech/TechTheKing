@@ -1,5 +1,5 @@
 CC=avr-gcc
-CFLAGS=-Wall -O2
+CFLAGS=-Wall -O2 
 MMCU=atmega328p
 FREQ=16000000
 
