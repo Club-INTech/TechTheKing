@@ -6,39 +6,40 @@ Socket::Socket(int port):Thread(), m_port(port){
 }
 
 Socket::~Socket(){
-	
+    
 }
 
 void Socket::thread(){
-	onOpen();
-	while(m_buffer[0]!='e'){
-		onRead();
-		switch(m_buffer[0]){
-			case 'e':
-			cout<<"Fermeture du thread"<<endl;
-			break;
-			case 'x':
-			m_mutex.lock();
-			listeObstacles.push_back(trouverObstacle());
-			m_mutex.unlock();
-			break;
-			case 'y':
-			cerr<<"La trame ne peut pas commencer par l'ordonnée"<<endl;
-			break;
-		}
-	}
-	onClose();
+    onOpen();
+    while(m_buffer[0]!='e'){
+        onRead();
+        switch(m_buffer[0]){
+            case 'e':
+            cout<<"Fermeture du thread"<<endl;
+            break;
+            case 'x':
+            m_mutex.lock();
+            listeObstacles.push_back(trouverObstacle());
+            m_mutex.unlock();
+            break;
+            case 'y':
+            cerr<<"La trame ne peut pas commencer par l'ordonnée"<<endl;
+            break;
+        }
+    }
+    onClose();
 }
 
-void Socket::creer(int port){
-	if(m_instance)
-		std::cerr<<"Instance déjà créée"<<std::endl;
-	else
-		m_instance = new Socket(port);
-}
 
-Socket* Socket::instance(){
-	return m_instance;
+Socket* Socket::instance(int port){
+    if(m_instance==NULL){
+        m_instance= new Socket(port);
+    }
+    else{
+        cerr<<"Instance déjà créée"<<endl;
+    }
+    std::cout<<m_instance->m_port<<std::endl;
+    return m_instance;
 }
 
 void Socket::onOpen(){
@@ -77,9 +78,9 @@ void Socket::onClose(){
 }
 
 Obstacle* Socket::trouverObstacle(){
-	int i=1;
-	std::string x,y;
-	while(m_buffer[i]!='y'){
+    int i=1;
+    std::string x,y;
+    while(m_buffer[i]!='y'){
         if(m_buffer[i]<48 || m_buffer[i]>57){
              return NULL;
         }
@@ -87,17 +88,17 @@ Obstacle* Socket::trouverObstacle(){
              x.push_back(m_buffer[i]);
         }
         i++;
-	}
-	i++;
+    }
+    i++;
     while(m_buffer[i]!='\n'){
-		if(m_buffer[i]<48 || m_buffer[i]>57){
-			cerr<<"Trame invalide"<<endl;
-			return NULL;
-		}
+        if(m_buffer[i]<48 || m_buffer[i]>57){
+            cerr<<"Trame invalide"<<endl;
+            return NULL;
+        }
         else{
             y.push_back(m_buffer[i]);
             i++;
         }
-	}
-	return(new cercleObstacle(atoi(x.c_str()),atoi(y.c_str())));
+    }
+    return (new CercleObstacle(atoi(x.c_str()),atoi(y.c_str())));
 }

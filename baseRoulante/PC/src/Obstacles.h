@@ -16,7 +16,7 @@
 #endif
 
 #define COULEUR_ROBOT BLEU
-#define	COULEUR_ADVERSE ROUGE
+#define COULEUR_ADVERSE ROUGE
 #define TAILLE_ROBOT 150 /*!< Le robot est assimilé à un cercle de rayon TAILLE_ROBOT*/
 #define MARGE_SECURITE_PION 50
 #define TAILLE_PION 100 /*!< Le pion est un cercle de rayon TAILLE_PION*/
@@ -32,10 +32,10 @@ using namespace std;
  */
 typedef enum
 {
-	ROUGE, /*!< Le pion est au robot rouge. */
-	BLEU, /*!< Le pion est au robot bleu. */
-	NEUTRE, /*!< Le pion n'est à personne.*/
-	NOIR /*!<L'obstacle est une planche de bois*/
+    ROUGE, /*!< Le pion est au robot rouge. */
+    BLEU, /*!< Le pion est au robot bleu. */
+    NEUTRE, /*!< Le pion n'est à personne.*/
+    NOIR /*!<L'obstacle est une planche de bois*/
 }
 Couleur;
 
@@ -47,121 +47,121 @@ Couleur;
  */
 
 class Obstacle : public Point{
-	
-	public:
+    
+    public:
 
-		/*!
-		 *  \brief Constructeur
-		 *
-		 *  Constructeur de la classe Obstacle
-		 *
-		 *  \param x : Abscisse du centre de masse de l'obstacle.
-		 *  \param y : Ordonnée du centre de masse de l'obstacle.
-		 *  \param couleur : A qui est le pion.
-		 */
-		Obstacle(double x=0,double y=0,Couleur couleur=NEUTRE);
+        /*!
+         *  \brief Constructeur
+         *
+         *  Constructeur de la classe Obstacle
+         *
+         *  \param x : Abscisse du centre de masse de l'obstacle.
+         *  \param y : Ordonnée du centre de masse de l'obstacle.
+         *  \param couleur : A qui est le pion.
+         */
+        Obstacle(double x=0,double y=0,Couleur couleur=NEUTRE);
 
-		/*!
-		 * \brief contientCercle
-		 *
-		 * L'obstacle est il en collision avec un cercle?
-		 *
-		 * \return true si le cercle donné chevauche l'obstacle.
-		 */
-		virtual bool contientCercle(int centreX, int centreY, int rayon) = 0;
+        /*!
+         * \brief contientCercle
+         *
+         * L'obstacle est il en collision avec un cercle?
+         *
+         * \return true si le cercle donné chevauche l'obstacle.
+         */
+        virtual bool contientCercle(int centreX, int centreY, int rayon) = 0;
 
 #ifdef DEBUG_GRAPHIQUE
-		/*!
-		 * \brief draw
-		 *
-		 * Dessine l'e pion obstacle dans une image ImageMagick.
-		 */
-		virtual void draw(Magick::Image* image) = 0;
+        /*!
+         * \brief draw
+         *
+         * Dessine l'e pion obstacle dans une image ImageMagick.
+         */
+        virtual void draw(Magick::Image* image) = 0;
 #endif
-		
-		/*!
-		 * \brief deplacer
-		 *
-		 * Déplace un obstacle en (newX,newY)
-		 */
-		void deplacer(double newX,double newY) { m_x=newX; m_y=newY; };
+        
+        /*!
+         * \brief deplacer
+         *
+         * Déplace un obstacle en (newX,newY)
+         */
+        void deplacer(double newX,double newY) { m_x=newX; m_y=newY; };
 
-		/*!
-		 * \brief couleurPlusProche
-		 *
-		 * L'obstacle est-il à quelqu'un? Si oui, à qui?
-		 *
-		 * \return la couleur du robot à qui l'obstacle est, ou neutre si il n'est à personne.
-		 */
-		virtual Couleur couleurPlusProche();
+        /*!
+         * \brief couleurPlusProche
+         *
+         * L'obstacle est-il à quelqu'un? Si oui, à qui?
+         *
+         * \return la couleur du robot à qui l'obstacle est, ou neutre si il n'est à personne.
+         */
+        virtual Couleur couleurPlusProche();
 
-		/*!
-		 * \brief Accesseurs
-		 */
-		virtual Couleur getCouleur()  { return m_couleur; };
-		void setCouleur(Couleur couleur){ m_couleur=couleur; };
-		
-	protected:
-		
-		Couleur m_couleur;
-		
+        /*!
+         * \brief Accesseurs
+         */
+        virtual Couleur getCouleur()  { return m_couleur; };
+        void setCouleur(Couleur couleur){ m_couleur=couleur; };
+        
+    protected:
+        
+        Couleur m_couleur;
+        
 };
 
 /*!
- * \class cercleObstacle
+ * \class CercleObstacle
  *
  * \brief classe représentant un obstacle circulaire.
  *
  * Cette classe correspond à priori uniquement aux pions cette année.
  */
 
-class cercleObstacle : public Obstacle{
-	
-	public:
-		
-		cercleObstacle(double x,double y,Couleur m_couleur=NEUTRE);
+class CercleObstacle : public Obstacle{
+    
+    public:
+        
+        CercleObstacle(double x,double y,Couleur m_couleur=NEUTRE);
 
-		
+        
 #ifdef DEBUG_GRAPHIQUE
-		void draw(Magick::Image* image);
+        void draw(Magick::Image* image);
 #endif
-		
-		
-		bool contientCercle(int centreX, int centreY, int rayon);
-		
-		Couleur couleurPlusProche();
-		
-	private:
-		
-		int m_rayon;
+        
+        
+        bool contientCercle(int centreX, int centreY, int rayon);
+        
+        Couleur couleurPlusProche();
+        
+    private:
+        
+        int m_rayon;
 };
 
 /*!
- * \class rectangleObstacle
+ * \class RectangleObstacle
  *
  * \brief classe représentant un obstacle rectangulaire.
  *
  * Cette classe correspond à priori uniquement aux planches de bois cette annee.
  */
 
-class rectangleObstacle : public Obstacle{
-	
-	public:
-		
-		rectangleObstacle(double x,double y,int demiCoteX,int demiCoteY);
+class RectangleObstacle : public Obstacle{
+    
+    public:
+        
+        RectangleObstacle(double x,double y,int demiCoteX,int demiCoteY);
 
 #ifdef DEBUG_GRAPHIQUE
-		void draw(Magick::Image* image);
+        void draw(Magick::Image* image);
 #endif
 
-		bool contientCercle(int centreX, int centreY, int rayon);
-		
-		Couleur couleurPlusProche(){return NOIR;};
-		
-	private:
-		
-		int m_demiCoteX;
-		int m_demiCoteY;
+        bool contientCercle(int centreX, int centreY, int rayon);
+        
+        Couleur couleurPlusProche(){return NOIR;};
+        
+    private:
+        
+        int m_demiCoteX;
+        int m_demiCoteY;
 };
 
 extern std::vector <Obstacle*> listeObstacles ; /*!< La liste d'obstacles dans la mémoire du robot*/

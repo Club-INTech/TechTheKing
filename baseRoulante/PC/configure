@@ -15116,6 +15116,8 @@ $as_echo "#define DEBUG_GRAPHIQUE /**/" >>confdefs.h
     CPPFLAGS="${CPPFLAGS} ${MAGICK_CPPFLAGS}"
 fi
 
+CPPFLAGS="${CPPFLAGS} -I/usr/lib/ruby/1.8/x86_64-linux/"
+
 # Checks for libraries.
 
 saved_ldflags="${LDFLAGS}"
