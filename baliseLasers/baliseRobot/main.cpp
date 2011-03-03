@@ -20,8 +20,8 @@ volatile uint32_t milAV=0;	//micros avant top
 //static int16_t kP = 1000;	//coefficient de conversion entre la période de consigne et la période de commande (dépend du nombre de pas/tr du moteur et du nombre de commandes par pas).
 
 //pour la commande du moteur
-uint16_t periode = 40000;	//periode de commande du moteur, en microsecondes
-uint16_t incPeriode = 5000;	//periode d'incrémentation de periode pour le démarrage, en microseconde
+uint32_t periode = 80000;	//periode de commande du moteur, en microsecondes
+uint16_t incPeriode = 200;	//periode d'incrémentation de periode pour le démarrage, en microseconde
 uint32_t incTemps = 0;	//stocke le temps écoulé depuis le début pour le démarrage
 uint32_t micTemps = 0;	//stocke le temps écoulé depuis le début pour les commutions du moteur
 uint8_t ind = 0;	//code la position dans le chronogramme de commande du moteur
@@ -33,15 +33,17 @@ int main() {
 	//on initialise la transmission série (pour le debug)
 	uart_init();
 	printlnString("Start");
-	
+
 	//on initialise la notion temporelle sur l'AVR
 	temps_init();
 	//on initialise l'alimentation des lasers (par pwm)
 	//lasers_init();
 
 	//on initialise les ports de commande du moteur
-	sbi(DDRB,pinMot1);
-	sbi(DDRB,pinMot2);
+	sbi(DDRB,pinMot11);
+	sbi(DDRB,pinMot12);
+	sbi(DDRB,pinMot21);
+	sbi(DDRB,pinMot22);
 	//sbi(DDRB,pinMot3);
 	//on initialise les interruptions du top tour sur front descendant
 	sbi(EICRA,ISC01);
@@ -52,7 +54,7 @@ int main() {
 	sbi(portSens,pinSens);//pull-up
 
 	//on calcule la valeur de la consigne en microsecondes en fonction de la fréquence de rotation demandée
-	consigne=1000000/freqD;
+	//consigne=1000000/freqD;
 
 	//et on y va ;)
 	printlnString("Go");
@@ -60,14 +62,15 @@ int main() {
 	//démarrage : 
 	printlnString("demarrage");
 	//while (periode > 5556) {
-	while (periode > 5000) {
+	//while (periode > 5000) {
+	while(42) {
 		//calcul de la valeur de periode à utiliser ici (en gros pour le démarrage, on se contente pour l'instant d'une simple rampe) : 
 		if (micros() > incTemps + incPeriode) {
 			incTemps = micros();
-			if (periode > 5000) {
+			if (periode > 12000) {
 				periode-=2;
 			}
-			else if (periode > 2500) {
+			else if (periode > 6000) {
 				periode--;
 			}
 		}
@@ -85,19 +88,79 @@ int main() {
 			//printString("\t");
 			//printlnInt(1000000/temps[1]);
 			micTemps = micros();
-			/*
-			   if (ind==0)		cbi(portMot3,pinMot3);
-			   else if (ind==1)	sbi(portMot2,pinMot2);
-			   else if (ind==2)	cbi(portMot1,pinMot1);
-			   else if (ind==3)	sbi(portMot3,pinMot3);
-			   else if (ind==4)	cbi(portMot2,pinMot2);
-			   else			sbi(portMot1,pinMot1);
-			   */
-			if (ind==0)		sbi(portMot2,pinMot2);
-			else if (ind==1)	cbi(portMot2,pinMot2);
-			else if (ind==2)	sbi(portMot1,pinMot1);
-			else			cbi(portMot1,pinMot1);
-			if (ind<3) 		ind++;
+			if (ind==0) {
+				sbi(portMot11,pinMot11);
+				cbi(portMot12,pinMot12);
+				sbi(portMot21,pinMot21);
+				cbi(portMot22,pinMot22);
+			}
+			else if (ind==1) {
+				cbi(portMot11,pinMot11);
+				cbi(portMot12,pinMot12);
+				cbi(portMot21,pinMot21);
+				cbi(portMot22,pinMot22);
+			}
+			else if (ind==2) {
+				sbi(portMot11,pinMot11);
+				cbi(portMot12,pinMot12);
+				sbi(portMot21,pinMot21);
+				cbi(portMot22,pinMot22);
+			}
+			else if (ind==3) {
+				cbi(portMot11,pinMot11);
+				sbi(portMot12,pinMot12);
+				sbi(portMot21,pinMot21);
+				cbi(portMot22,pinMot22);
+			}
+			else if (ind==4) {
+				cbi(portMot11,pinMot11);
+				cbi(portMot12,pinMot12);
+				cbi(portMot21,pinMot21);
+				cbi(portMot22,pinMot22);
+			}
+			else if (ind==5) {
+				cbi(portMot11,pinMot11);
+				sbi(portMot12,pinMot12);
+				sbi(portMot21,pinMot21);
+				cbi(portMot22,pinMot22);
+			}
+			else if (ind==6) {
+				cbi(portMot11,pinMot11);
+				sbi(portMot12,pinMot12);
+				cbi(portMot21,pinMot21);
+				sbi(portMot22,pinMot22);
+			}
+			else if (ind==7) {
+				cbi(portMot11,pinMot11);
+				cbi(portMot12,pinMot12);
+				cbi(portMot21,pinMot21);
+				cbi(portMot22,pinMot22);
+			}
+			else if (ind==8) {
+				cbi(portMot11,pinMot11);
+				sbi(portMot12,pinMot12);
+				cbi(portMot21,pinMot21);
+				sbi(portMot22,pinMot22);
+			}
+			else if (ind==9) {
+				sbi(portMot11,pinMot11);
+				cbi(portMot12,pinMot12);
+				cbi(portMot21,pinMot21);
+				sbi(portMot22,pinMot22);
+			}
+			else if (ind==10) {
+				cbi(portMot11,pinMot11);
+				cbi(portMot12,pinMot12);
+				cbi(portMot21,pinMot21);
+				cbi(portMot22,pinMot22);
+			}
+			else {
+				sbi(portMot11,pinMot11);
+				cbi(portMot12,pinMot12);
+				cbi(portMot21,pinMot21);
+				sbi(portMot22,pinMot22);
+			}
+			if (ind<11) 		ind++;
 			else 			ind = 0;
 		}
 	}
@@ -117,21 +180,79 @@ int main() {
 			//printString("\t");
 			//printlnInt(1000000/temps[1]);
 			micTemps = micros();
-			/*
-			   if (ind==0)		cbi(portMot3,pinMot3);
-			   else if (ind==1)	sbi(portMot2,pinMot2);
-			   else if (ind==2)	cbi(portMot1,pinMot1);
-			   else if (ind==3)	sbi(portMot3,pinMot3);
-			   else if (ind==4)	cbi(portMot2,pinMot2);
-			   else			sbi(portMot1,pinMot1);
-			   if (ind<5) 		ind++;
-			   else 			ind = 0;
-			   */
-			if (ind==0)		sbi(portMot2,pinMot2);
-			else if (ind==1)	cbi(portMot2,pinMot2);
-			else if (ind==2)	sbi(portMot1,pinMot1);
-			else			cbi(portMot1,pinMot1);
-			if (ind<3) 		ind++;
+			if (ind==0) {
+				sbi(portMot11,pinMot11);
+				cbi(portMot12,pinMot12);
+				sbi(portMot21,pinMot21);
+				cbi(portMot22,pinMot22);
+			}
+			else if (ind==1) {
+				cbi(portMot11,pinMot11);
+				cbi(portMot12,pinMot12);
+				cbi(portMot21,pinMot21);
+				cbi(portMot22,pinMot22);
+			}
+			else if (ind==2) {
+				sbi(portMot11,pinMot11);
+				cbi(portMot12,pinMot12);
+				sbi(portMot21,pinMot21);
+				cbi(portMot22,pinMot22);
+			}
+			else if (ind==3) {
+				cbi(portMot11,pinMot11);
+				sbi(portMot12,pinMot12);
+				sbi(portMot21,pinMot21);
+				cbi(portMot22,pinMot22);
+			}
+			else if (ind==4) {
+				cbi(portMot11,pinMot11);
+				cbi(portMot12,pinMot12);
+				cbi(portMot21,pinMot21);
+				cbi(portMot22,pinMot22);
+			}
+			else if (ind==5) {
+				cbi(portMot11,pinMot11);
+				sbi(portMot12,pinMot12);
+				sbi(portMot21,pinMot21);
+				cbi(portMot22,pinMot22);
+			}
+			else if (ind==6) {
+				cbi(portMot11,pinMot11);
+				sbi(portMot12,pinMot12);
+				cbi(portMot21,pinMot21);
+				sbi(portMot22,pinMot22);
+			}
+			else if (ind==7) {
+				cbi(portMot11,pinMot11);
+				cbi(portMot12,pinMot12);
+				cbi(portMot21,pinMot21);
+				cbi(portMot22,pinMot22);
+			}
+			else if (ind==8) {
+				cbi(portMot11,pinMot11);
+				sbi(portMot12,pinMot12);
+				cbi(portMot21,pinMot21);
+				sbi(portMot22,pinMot22);
+			}
+			else if (ind==9) {
+				sbi(portMot11,pinMot11);
+				cbi(portMot12,pinMot12);
+				cbi(portMot21,pinMot21);
+				sbi(portMot22,pinMot22);
+			}
+			else if (ind==10) {
+				cbi(portMot11,pinMot11);
+				cbi(portMot12,pinMot12);
+				cbi(portMot21,pinMot21);
+				cbi(portMot22,pinMot22);
+			}
+			else {
+				sbi(portMot11,pinMot11);
+				cbi(portMot12,pinMot12);
+				cbi(portMot21,pinMot21);
+				sbi(portMot22,pinMot22);
+			}
+			if (ind<11) 		ind++;
 			else 			ind = 0;
 		}
 	}

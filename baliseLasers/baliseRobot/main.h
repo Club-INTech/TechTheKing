@@ -29,12 +29,14 @@
 #ifndef PINMOT
 #define portTop PORTD
 #define pinTop PORTD2 //pin2 de l'arduino
-#define portMot1 PORTB 
-#define pinMot1 PORTB0 //pin8 de l'arduino
-#define portMot2 PORTB 
-#define pinMot2 PORTB1 //pin9 de l'arduino
-//#define portMot3 PORTB 
-//#define pinMot3 PORTB2 //pin10 de l'arduino
+#define portMot11 PORTB 
+#define pinMot11 PORTB0 //pin8 de l'arduino
+#define portMot12 PORTB 
+#define pinMot12 PORTB1 //pin9 de l'arduino
+#define portMot21 PORTB 
+#define pinMot21 PORTB2 //pin10 de l'arduino
+#define portMot22 PORTB 
+#define pinMot22 PORTB3 //pin11 de l'arduino
 #endif
 
 /**
