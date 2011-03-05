@@ -28,7 +28,7 @@
  */
 #ifndef PINMOT
 #define portTop PORTD
-#define pinTop PORTD2 //pin2 de l'arduino
+#define pinTop PORTD2	//pin2 de l'arduino
 #define portMot11 PORTB 
 #define pinMot11 PORTB0 //pin8 de l'arduino
 #define portMot12 PORTB 
@@ -46,5 +46,7 @@
 #define portSens PORTC
 #define pinSens PINC1 //pin 1 analog de l'arduino
 #endif
+
+void commuter(uint8_t pas_commuter[4]);
 
 #endif

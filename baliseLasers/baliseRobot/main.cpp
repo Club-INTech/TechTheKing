@@ -5,8 +5,8 @@
  * besoins) qu'on va utiliser pour le moteur.
  */
 //pour la consigne en vitesse de rotation du moteur : 
-#define freqD 10		//fréquence demandée en tr/s
-static uint32_t consigne;	//période pour la consigne de commande
+//#define freqD 10		//fréquence demandée en tr/s
+//static uint32_t consigne;	//période pour la consigne de commande
 
 //pour la mesure des periodes de rotation du moteur
 volatile uint32_t temps[2]={65535,65535};	//contient les périodes de rotation mesurées
@@ -25,6 +25,20 @@ uint16_t incPeriode = 200;	//periode d'incrémentation de periode pour le démar
 uint32_t incTemps = 0;	//stocke le temps écoulé depuis le début pour le démarrage
 uint32_t micTemps = 0;	//stocke le temps écoulé depuis le début pour les commutions du moteur
 uint8_t ind = 0;	//code la position dans le chronogramme de commande du moteur
+uint8_t pas[12][4] = {
+	{1,0,1,0},
+	{0,0,0,0},
+	{1,0,1,0},
+	{0,1,1,0},
+	{0,0,0,0},
+	{0,1,1,0},
+	{0,1,0,1},
+	{0,0,0,0},
+	{0,1,0,1},
+	{1,0,0,1},
+	{0,0,0,0},
+	{1,0,0,1}
+};
 
 /**
  * et on y va pour la fonction main
@@ -88,78 +102,8 @@ int main() {
 			//printString("\t");
 			//printlnInt(1000000/temps[1]);
 			micTemps = micros();
-			if (ind==0) {
-				sbi(portMot11,pinMot11);
-				cbi(portMot12,pinMot12);
-				sbi(portMot21,pinMot21);
-				cbi(portMot22,pinMot22);
-			}
-			else if (ind==1) {
-				cbi(portMot11,pinMot11);
-				cbi(portMot12,pinMot12);
-				cbi(portMot21,pinMot21);
-				cbi(portMot22,pinMot22);
-			}
-			else if (ind==2) {
-				sbi(portMot11,pinMot11);
-				cbi(portMot12,pinMot12);
-				sbi(portMot21,pinMot21);
-				cbi(portMot22,pinMot22);
-			}
-			else if (ind==3) {
-				cbi(portMot11,pinMot11);
-				sbi(portMot12,pinMot12);
-				sbi(portMot21,pinMot21);
-				cbi(portMot22,pinMot22);
-			}
-			else if (ind==4) {
-				cbi(portMot11,pinMot11);
-				cbi(portMot12,pinMot12);
-				cbi(portMot21,pinMot21);
-				cbi(portMot22,pinMot22);
-			}
-			else if (ind==5) {
-				cbi(portMot11,pinMot11);
-				sbi(portMot12,pinMot12);
-				sbi(portMot21,pinMot21);
-				cbi(portMot22,pinMot22);
-			}
-			else if (ind==6) {
-				cbi(portMot11,pinMot11);
-				sbi(portMot12,pinMot12);
-				cbi(portMot21,pinMot21);
-				sbi(portMot22,pinMot22);
-			}
-			else if (ind==7) {
-				cbi(portMot11,pinMot11);
-				cbi(portMot12,pinMot12);
-				cbi(portMot21,pinMot21);
-				cbi(portMot22,pinMot22);
-			}
-			else if (ind==8) {
-				cbi(portMot11,pinMot11);
-				sbi(portMot12,pinMot12);
-				cbi(portMot21,pinMot21);
-				sbi(portMot22,pinMot22);
-			}
-			else if (ind==9) {
-				sbi(portMot11,pinMot11);
-				cbi(portMot12,pinMot12);
-				cbi(portMot21,pinMot21);
-				sbi(portMot22,pinMot22);
-			}
-			else if (ind==10) {
-				cbi(portMot11,pinMot11);
-				cbi(portMot12,pinMot12);
-				cbi(portMot21,pinMot21);
-				cbi(portMot22,pinMot22);
-			}
-			else {
-				sbi(portMot11,pinMot11);
-				cbi(portMot12,pinMot12);
-				cbi(portMot21,pinMot21);
-				sbi(portMot22,pinMot22);
-			}
+			// et on commute
+			commuter(pas[ind]);
 			if (ind<11) 		ind++;
 			else 			ind = 0;
 		}
@@ -180,78 +124,8 @@ int main() {
 			//printString("\t");
 			//printlnInt(1000000/temps[1]);
 			micTemps = micros();
-			if (ind==0) {
-				sbi(portMot11,pinMot11);
-				cbi(portMot12,pinMot12);
-				sbi(portMot21,pinMot21);
-				cbi(portMot22,pinMot22);
-			}
-			else if (ind==1) {
-				cbi(portMot11,pinMot11);
-				cbi(portMot12,pinMot12);
-				cbi(portMot21,pinMot21);
-				cbi(portMot22,pinMot22);
-			}
-			else if (ind==2) {
-				sbi(portMot11,pinMot11);
-				cbi(portMot12,pinMot12);
-				sbi(portMot21,pinMot21);
-				cbi(portMot22,pinMot22);
-			}
-			else if (ind==3) {
-				cbi(portMot11,pinMot11);
-				sbi(portMot12,pinMot12);
-				sbi(portMot21,pinMot21);
-				cbi(portMot22,pinMot22);
-			}
-			else if (ind==4) {
-				cbi(portMot11,pinMot11);
-				cbi(portMot12,pinMot12);
-				cbi(portMot21,pinMot21);
-				cbi(portMot22,pinMot22);
-			}
-			else if (ind==5) {
-				cbi(portMot11,pinMot11);
-				sbi(portMot12,pinMot12);
-				sbi(portMot21,pinMot21);
-				cbi(portMot22,pinMot22);
-			}
-			else if (ind==6) {
-				cbi(portMot11,pinMot11);
-				sbi(portMot12,pinMot12);
-				cbi(portMot21,pinMot21);
-				sbi(portMot22,pinMot22);
-			}
-			else if (ind==7) {
-				cbi(portMot11,pinMot11);
-				cbi(portMot12,pinMot12);
-				cbi(portMot21,pinMot21);
-				cbi(portMot22,pinMot22);
-			}
-			else if (ind==8) {
-				cbi(portMot11,pinMot11);
-				sbi(portMot12,pinMot12);
-				cbi(portMot21,pinMot21);
-				sbi(portMot22,pinMot22);
-			}
-			else if (ind==9) {
-				sbi(portMot11,pinMot11);
-				cbi(portMot12,pinMot12);
-				cbi(portMot21,pinMot21);
-				sbi(portMot22,pinMot22);
-			}
-			else if (ind==10) {
-				cbi(portMot11,pinMot11);
-				cbi(portMot12,pinMot12);
-				cbi(portMot21,pinMot21);
-				cbi(portMot22,pinMot22);
-			}
-			else {
-				sbi(portMot11,pinMot11);
-				cbi(portMot12,pinMot12);
-				cbi(portMot21,pinMot21);
-				sbi(portMot22,pinMot22);
-			}
+			// et on commute
+			commuter(pas[ind]);
 			if (ind<11) 		ind++;
 			else 			ind = 0;
 		}
@@ -273,4 +147,34 @@ ISR(INT0_vect) {
 	else 
 		indT=0;
 	sei();
+}
+
+/**
+ * fonction de commutation
+ */
+void commuter(uint8_t pas_commuter[4]) {
+	if (pas_commuter[0] == 1) {
+		sbi(portMot11,pinMot11);
+	}
+	else {
+		cbi(portMot11,pinMot11);
+	}
+	if (pas_commuter[1] == 1) {
+		sbi(portMot12,pinMot12);
+	}
+	else {
+		cbi(portMot12,pinMot12);
+	}
+	if (pas_commuter[2] == 1) {
+		sbi(portMot21,pinMot21);
+	}
+	else {
+		cbi(portMot21,pinMot21);
+	}
+	if (pas_commuter[3] == 1) {
+		sbi(portMot22,pinMot22);
+	}
+	else {
+		cbi(portMot22,pinMot22);
+	}
 }
