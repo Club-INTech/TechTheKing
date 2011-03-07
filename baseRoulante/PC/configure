@@ -15104,6 +15104,8 @@ else
   USE_MAGICK="no"
 fi
 
+
+
 if test $USE_MAGICK = yes ; then
 
 $as_echo "#define DEBUG_GRAPHIQUE /**/" >>confdefs.h
@@ -15116,11 +15118,12 @@ $as_echo "#define DEBUG_GRAPHIQUE /**/" >>confdefs.h
     CPPFLAGS="${CPPFLAGS} ${MAGICK_CPPFLAGS}"
 fi
 
-CPPFLAGS="${CPPFLAGS} -I/usr/lib/ruby/1.8/x86_64-linux/"
+CPPFLAGS="${CPPFLAGS} -I/usr/lib/ruby/1.8/$(arch)-linux/"
 
 # Checks for libraries.
 
 saved_ldflags="${LDFLAGS}"
+
 LDFLAGS="${LDFLAGS} -lboost_thread -lserial -lm"
 ac_ext=cpp
 ac_cpp='$CXXCPP $CPPFLAGS'
@@ -15150,11 +15153,11 @@ rm -f core conftest.err conftest.$ac_objext \
 echo -n "checking for lib serial... "
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
-#include <boost/thread.hpp>
+#include <SerialStream.h>
 int
 main ()
 {
-boost::thread dummy
+LibSerial::SerialStream dummy
   ;
   return 0;
 }
