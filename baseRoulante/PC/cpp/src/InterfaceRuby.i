@@ -21,6 +21,26 @@ std::string exec(char* cmd);
 class InterfaceAsservissement;
 std::vector<char> getTtyUSB();
 
+class Point{
+	public:
+		Point(double x=0,double y=0);
+		void print();
+		void round();
+		double rayon(Point Point2);
+		double angle(Point Point2);
+		void setX(double x);
+		void setY(double y);
+		double getX();
+		double getY();
+		template<typename T> Point operator*(T k);
+		template<typename T> Point operator/(T k);
+		Point operator+(Point Point2);
+		Point operator-(Point Point2);
+		bool operator==(Point Point2);
+		bool operator!=(Point Point2);
+		friend ostream &operator<<(ostream &out, Point point);
+};
+
 class Thread{
     public:
         void ouvrirThread();

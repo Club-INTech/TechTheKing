@@ -71,7 +71,7 @@ am__installdirs = "$(DESTDIR)$(libdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libChessUp_la_LIBADD =
 am_libChessUp_la_OBJECTS = AStar.lo Consigne.lo Debug.lo Interfaces.lo \
-	Interfaces_wrap.lo Obstacles.lo Point.lo Server.lo \
+	InterfaceRuby_wrap.lo Obstacles.lo Point.lo Server.lo \
 	Singleton.lo Thread.lo
 libChessUp_la_OBJECTS = $(am_libChessUp_la_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
@@ -210,7 +210,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 lib_LTLIBRARIES = libChessUp.la
-libChessUp_la_SOURCES = AStar.cpp Consigne.cpp Debug.cpp Interfaces.cpp Interfaces_wrap.cxx Obstacles.cpp Point.cpp Server.cpp Singleton.cpp Thread.cpp
+libChessUp_la_SOURCES = AStar.cpp Consigne.cpp Debug.cpp Interfaces.cpp InterfaceRuby_wrap.cxx Obstacles.cpp Point.cpp Server.cpp Singleton.cpp Thread.cpp
 noinst_HEADERS = AStar.h Consigne.h Contrats.h Debug.h Interfaces.h Obstacles.h Point.h Server.h Singleton.h Thread.h
 all: all-am
 
@@ -289,8 +289,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AStar.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Consigne.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Debug.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/InterfaceRuby_wrap.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Interfaces.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Interfaces_wrap.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Obstacles.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Point.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Server.Plo@am__quote@
@@ -546,6 +546,9 @@ uninstall-am: uninstall-libLTLIBRARIES
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
 	tags uninstall uninstall-am uninstall-libLTLIBRARIES
 
+
+InterfaceRuby_wrap.cxx: InterfaceRuby.i
+	swig -c++ -ruby InterfaceRuby.i
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
