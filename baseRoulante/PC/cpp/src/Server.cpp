@@ -31,7 +31,7 @@ void Socket::thread(){
 }
 
 
-Socket* Socket::instance(int port){
+Socket* Socket::Instance(int port){
     if(m_instance==NULL){
         m_instance= new Socket(port);
     }
