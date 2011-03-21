@@ -26,8 +26,8 @@
 /*
  *  Position des ascenseurs
  */
-volatile int ascenseur1;
-volatile int ascenseur2;
+volatile uint8_t ascenseur1;
+volatile uint8_t ascenseur2;
 
 /*
  *  Initialisations
