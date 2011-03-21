@@ -3,7 +3,7 @@
 
 #include "Singleton.h"
 
-class I2cBus : public Singleton<I2cBus>{
+class I2cBus : public Singleton{
 	public:
 		void onOpen(char* device);
 		void onClose(int descripteurDevice);

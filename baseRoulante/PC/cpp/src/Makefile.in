@@ -72,7 +72,7 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 libChessUp_la_LIBADD =
 am_libChessUp_la_OBJECTS = AStar.lo Consigne.lo Debug.lo Interfaces.lo \
 	InterfaceRuby_wrap.lo Obstacles.lo Point.lo Server.lo \
-	Singleton.lo Thread.lo
+	Thread.lo
 libChessUp_la_OBJECTS = $(am_libChessUp_la_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -210,8 +210,8 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 lib_LTLIBRARIES = libChessUp.la
-libChessUp_la_SOURCES = AStar.cpp Consigne.cpp Debug.cpp Interfaces.cpp InterfaceRuby_wrap.cxx Obstacles.cpp Point.cpp Server.cpp Singleton.cpp Thread.cpp
-noinst_HEADERS = AStar.h Consigne.h Contrats.h Debug.h Interfaces.h Obstacles.h Point.h Server.h Singleton.h Thread.h
+libChessUp_la_SOURCES = AStar.cpp Consigne.cpp Debug.cpp Interfaces.cpp InterfaceRuby_wrap.cxx Obstacles.cpp Point.cpp Server.cpp Thread.cpp
+noinst_HEADERS = AStar.h Consigne.h Contrats.h Debug.h Interfaces.h Obstacles.h Point.h Server.h Thread.h
 all: all-am
 
 .SUFFIXES:
@@ -294,7 +294,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Obstacles.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Point.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Server.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Singleton.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Thread.Plo@am__quote@
 
 .cpp.o:

@@ -2,7 +2,18 @@
 
 using namespace std;
 
+InterfaceAsservissement* InterfaceAsservissement::m_instance=NULL;
 
+
+InterfaceAsservissement* InterfaceAsservissement::Instance(int precisionAStar){
+    if(m_instance==NULL){
+        m_instance= new InterfaceAsservissement(precisionAStar);
+    }
+    else{
+        cerr<<"Instance déjà créée"<<endl;
+    }
+    return m_instance;
+}
 
 vector<char> getTtyUSB(){
     vector<char> portsOuverts;
@@ -93,6 +104,8 @@ template <typename T>  stack<unsigned char> InterfaceActionneurs::decToBin(T dec
     return res;
 }
 
+InterfaceActionneurs::InterfaceActionneurs(){
+}
 
 unsigned int InterfaceActionneurs::pourcentageAngleConversion(unsigned char pourcentage){
     return(pourcentage*10.24);

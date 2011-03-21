@@ -16,7 +16,7 @@
     
 class Socket : public Thread{
     public:
-        static Socket* instance(int port);
+        static Socket* Instance(int port);
         ~Socket();
     private:
         void thread();

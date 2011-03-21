@@ -1,12 +1,13 @@
 #include "Singleton.h"
+#include "Interfaces.h"
 
 using namespace std;
 
-template <class T> T Singleton<T>::m_instance=NULL;
+Singleton* Singleton::m_instance=NULL;
 
-template <class T> T& Singleton<T>::Instance(){
+Singleton* Singleton::Instance(){
 	if(m_instance==NULL){
-		m_instance= new T();
+		m_instance= new Singleton();
 	}
 	else{
 		cerr<<"Instance déjà créée"<<endl;
@@ -14,9 +15,9 @@ template <class T> T& Singleton<T>::Instance(){
 	return m_instance;
 }
 
-template <class T> template<typename C> T& Singleton<T>::Instance(C a){
+template<typename C> Singleton* Singleton::Instance(C a){
 	if(m_instance==NULL){
-		m_instance= new T(a);
+		m_instance= new Singleton(a);
 	}
 	else{
 		cerr<<"Instance déjà créée"<<endl;
@@ -24,9 +25,9 @@ template <class T> template<typename C> T& Singleton<T>::Instance(C a){
 	return m_instance;
 }
 
-template <class T> template<typename C, typename M> T& Singleton<T>::Instance(C a,M b){
+template<typename C, typename M> Singleton* Singleton::Instance(C a,M b){
 	if(m_instance==NULL){
-		m_instance= new T(a,b);
+		m_instance= new Singleton(a,b);
 	}
 	else{
 		cerr<<"Instance déjà créée"<<endl;
