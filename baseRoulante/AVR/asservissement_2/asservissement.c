@@ -1,7 +1,11 @@
 #include "asservissement.h"
 
+
 void init (void)
 {
+	x = 0;
+	y = 0;
+	
     // Initialisation PWM pour les PH sur timer0
     // Initialisation pin 12
     DDRD |= ( 1 << PORTD6 );

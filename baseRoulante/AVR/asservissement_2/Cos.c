@@ -1,5 +1,4 @@
-#include "TableCos.h"
-#include <avr/pgmspace.h>
+#include "Cos.h"
 #define ABS(x) ( (x)>0?(x):-(x))
 const float COS_TABLE[NOMBRE_COS] PROGMEM = { COS_LIST };
 
@@ -22,12 +21,4 @@ float getCos(float angleRadian){
 
 float getSin(float angleRadian){
   return getCos(angleRadian-PI/2);
-}
-
-
-int main(){
-	int x=0;
-	int y=0;
-	while(1){
-	}
 }

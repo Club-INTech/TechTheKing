@@ -54,4 +54,13 @@ int32_t lireBuffer (uint8_t decalage);
 int32_t angle (void);
 int32_t distance (void);
 
+/*
+ * Coordonnees du robot
+ */ 
+#define CONVERSION_ANGLE 1000
+#define CONVERSION_DISTANCE 1000
+
+int32_t x,
+int32_t y;
+
 #endif
