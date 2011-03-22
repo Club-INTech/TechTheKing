@@ -3,14 +3,14 @@
 #include <math.h>
 #include "TableCos.h"
 
-int main(int argc, char* argv[]){
+int16_t main(int16_t argc, char* argv[]){
 	FILE* f=fopen("TableCos.h","w+");
-	int i;
+	int16_t i;
 	if(argc==1){
 		fprintf(stderr,"usage : %s N\n",argv[0]);
 		exit(1);
 	}
-	int N=atoi(argv[1]);
+	int16_t N=atoi(argv[1]);
 	if(!f){
 		fprintf(stderr,"couldn't open TableCos.h");
 	}

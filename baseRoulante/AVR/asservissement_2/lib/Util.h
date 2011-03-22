@@ -27,37 +27,20 @@ void init (void);
 
 /*
  *  Lecture analogique de la sortie sense des PHs
- *    int entre 0 et 1024
+ *    int16_t entre 0 et 1024
  *    sert au contrôle du courant
  */
-int adc_sense1 (void); // PH 1
-int adc_sense2 (void); // PH 2
-
-/*
- *  Variables et define pour l'i2c
- */
-uint8_t buffer[4];
-
-/*
- *  Variable de boucle
- */
-uint8_t i;
+int16_t adc_sense1 (void); // PH 1
+int16_t adc_sense2 (void); // PH 2
 
 /*
  *  Fonctions pour récupérer les données de l'AVR compteur
  *  lireBuffer est appellée par les deux autres, dans l'idéal, ne pas l'utiliser
  */
 int32_t lireBuffer (uint8_t decalage);
-int32_t angle (void);
-int32_t distance (void);
+int32_t getAngle (void);
+int32_t getDistance (void);
 
-/*
- * Coordonnees du robot
- */ 
-#define CONVERSION_ANGLE 1000
-#define CONVERSION_DISTANCE 1000
-
-int32_t x,
-int32_t y;
+extern uint8_t buffer[];
 
 #endif

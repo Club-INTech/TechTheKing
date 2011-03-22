@@ -13,6 +13,7 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <stdint.h> 
 
 /**
  * @defgroup inline
@@ -24,13 +25,13 @@
 
 /**
  * @defgroup print
- * @brief Fonction pour print des choses
+ * @brief Fonction pour print16_t des choses
  * Cette fonction permet de printer des données sans envoyer de retour chariot.
  */
 
 /**
  * @defgroup println
- * @brief Fonction pour print d'autres choses
+ * @brief Fonction pour print16_t d'autres choses
  * Cette fonction permet de printer des données avec un retour chariot automatique.
  */
 
@@ -67,8 +68,8 @@
 struct ring_buffer
 {
 	unsigned char buffer[RX_BUFFER_SIZE];
-	int head;
-	int tail;
+	int16_t head;
+	int16_t tail;
 };
 
 //Fonction de base de la liaison série
@@ -122,11 +123,11 @@ inline void printShortNumber( unsigned short );
 
 /**
  * @ingroup inline
- * @fn inline void printIntNumber( unsigned int)
+ * @fn inline void printIntNumber( uint16_t)
  * @brief Permet l'envoi d'un nombre sur 2 octet et non signé
- * @param n C'est l'int à envoyer
+ * @param n C'est l'int16_t à envoyer
  */
-inline void printIntNumber( unsigned int );
+inline void printIntNumber( uint16_t );
 
 /**
  * @ingroup inline
@@ -154,7 +155,7 @@ void printString( const char * );
  * @param entier Le nombre a envoyer
  * Cette fonction permet d'envoyer un nombre codé sur 1 octet et signé et sans retour automatique à la ligne
  */
-void printShort( short );
+void printShort( int8_t );
 
 /**
  * @ingroup print
@@ -163,25 +164,25 @@ void printShort( short );
  * @param entier Le nombre à envoyer
  * Cette fonction permet d'envoyer un ombre codé sur 1 octet, non signé et sans retour automatique à la ligne.
  */
-void printUShort( unsigned short );
+void printUShort( uint8_t );
 
 /**
  * @ingroup print
- * @fn void printInt( int )
+ * @fn void printInt( int16_t )
  * @brief Permet d'envoyer un int
  * @param entier Le nombre à envoyer
  * Cette fonction permet d'envoyer un ombre codé sur 2 octet, signé et sans retour automatique à la ligne.
  */
-void printInt( int );
+void printInt( int16_t );
 
 /**
  * @ingroup print
- * @fn void printUInt( unsigned int )
- * @brief Permet d'envoyer un unsigned int
+ * @fn void printUInt( uint16_t )
+ * @brief Permet d'envoyer un uint16_t
  * @param entier Le nombre à envoyer
  * Cette fonction permet d'envoyer un ombre codé sur 2 octet, non signé et sans retour automatique à la ligne.
  */
-void printUInt( unsigned int );
+void printUInt( uint16_t );
 
 /**
  * @ingroup print
@@ -236,7 +237,7 @@ void printlnString( const char * );
  * @param entier Le nombre a envoyer
  * Cette fonction permet d'envoyer un nombre codé sur 1 octet et signé et avec retour automatique à la ligne
  */
-void printlnShort( short );
+void printlnShort( int8_t );
 
 /**
  * @ingroup println
@@ -245,25 +246,25 @@ void printlnShort( short );
  * @param entier Le nombre à envoyer
  * Cette fonction permet d'envoyer un ombre codé sur 1 octet, non signé et avec retour automatique à la ligne.
  */
-void printlnUShort( unsigned short );
+void printlnUShort( uint8_t );
 
 /**
  * @ingroup println
- * @fn void printlnInt( int )
+ * @fn void printlnInt( int16_t )
  * @brief Permet d'envoyer un int
  * @param entier Le nombre à envoyer
  * Cette fonction permet d'envoyer un ombre codé sur 2 octet, signé et avec retour automatique à la ligne.
  */
-void printlnInt( int );
+void printlnInt( int16_t );
 
 /**
  * @ingroup println
- * @fn void printlnUInt( unsigned int )
- * @brief Permet d'envoyer un unsigned int
+ * @fn void printlnUInt( uint16_t )
+ * @brief Permet d'envoyer un uint16_t
  * @param entier Le nombre à envoyer
  * Cette fonction permet d'envoyer un ombre codé sur 2 octet, non signé et avec retour automatique à la ligne.
  */
-void printlnUInt( unsigned int );
+void printlnUInt( uint16_t );
 
 /**
  * @ingroup println
@@ -312,11 +313,11 @@ inline void store_char(unsigned char, struct ring_buffer *);
 
 /**
  * @ingroup reception
- * @fn int read( void )
+ * @fn int16_t read( void )
  * @brief Permet à l'utilisateur de récupérer les DATA reçues
  * @return La DATA stockée dans le buffer circulaire
  */
-int read(void);
+int16_t read(void);
 
 /**
  * @ingroup reception

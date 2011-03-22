@@ -1,14 +1,14 @@
 #include "Cos.h"
-#define ABS(x) ( (x)>0?(x):-(x))
+
 const float COS_TABLE[NOMBRE_COS] PROGMEM = { COS_LIST };
 
 
 float getCos(float angleRadian){
   uint32_t t;
   float result;
-  int offsetSigne=1;
+  int16_t offsetSigne=1;
   angleRadian=ABS(angleRadian);
-  int quotient = (int) (angleRadian/(2*PI));
+  int16_t quotient = (int) (angleRadian/(2*PI));
   angleRadian=angleRadian - (float) (quotient * 2 * PI) ;
   if(angleRadian>PI){
     angleRadian-=PI;

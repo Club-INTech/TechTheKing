@@ -6,43 +6,6 @@
 
 volatile char etatPins = 0;
 
-ISR(PCINT2_vect)
-{
-    	unsigned char changementPins 	= (PIND & MASQUE) ^ etatPins;
-    	etatPins 		= PIND & MASQUE;
-    
-    	if (changementPins & (ENC_PORT & ( 1 << ENCGA)))
-	{
-		if (etatPins & (ENC_PORT & ( 1 << ENCGA))) //front montant codeur 1 voix A
-			(etatPins & ( 1 << ENCGB ))?encodeurG++:encodeurG--;
-	      	else                  //front descendant codeur 1 voix A
-			(etatPins & ( 1 << ENCGB ))?encodeurG--:encodeurG++;
-	}
-
-    	if (changementPins & (ENC_PORT & ( 1 << ENCGB)))
-	{
-		if (etatPins & (ENC_PORT & ( 1 << ENCGB))) //front montant codeur 1 voix B
-			(etatPins & ( 1 << ENCGA ))?encodeurG--:encodeurG++;
-		else                  //front descendant codeur 1 voix B
-			(etatPins & ( 1 << ENCGA ))?encodeurG++:encodeurG--;
-	}
-    
-	if (changementPins & (ENC_PORT & ( 1 << ENCDA)))
-	{
-		if (etatPins & (ENC_PORT & ( 1 << ENCDA))) //front montant codeur 2 voix A
-			(etatPins & ( 1 << ENCDB ))?encodeurD++:encodeurD--;
-		else                  //front descendant codeur 2 voix A
-			(etatPins & ( 1 << ENCDB ))?encodeurD--:encodeurD++;
-	}
- 
-	if (changementPins & (ENC_PORT & ( 1 << ENCDB)))
-	{
-		if (etatPins & (ENC_PORT & ( 1 << ENCDB))) //front montant codeur 2 voix B
-			(etatPins & ( 1 << ENCDA ))?encodeurD--:encodeurD++;
-	        else                  //front descendant codeur 2 voix B
-			(etatPins & ( 1 << ENCDA ))?encodeurD++:encodeurD--;
-	}
-}
 /*
  * Fonction à exécuter à intervalle de temps régulier (~1kHz)
  * Ajouter un timer, priorité sur les interruptions
@@ -50,10 +13,6 @@ ISR(PCINT2_vect)
 void 
 Manager::assPolaire()
 {
-	//static int stator1337 = 100;
-	
-	long int angle = 	encodeurG - encodeurD;
-	long int distance = 	encodeurG + encodeurD;
 
 	/*
 	 * Reprise TechTheWave, priorité des interruptions
@@ -69,8 +28,8 @@ Manager::assPolaire()
 	//assRotation.calculePositionIntermediaire(angle);
 	//assTranslation.calculePositionIntermediaire(distance);
 
-	int pwmRotation = (activationAssAngle?assRotation.calculePwm(angle):0);
-	int pwmTranslation = (activationAssDistance?assTranslation.calculePwm(distance):0);
+	int pwmRotation = (activationAssAngle?assRotation.calculePwm(angle()):0);
+	int pwmTranslation = (activationAssDistance?assTranslation.calculePwm(distance()):0);
 
 	// Coefficient trouvé de manière empirique
 	int pwmG = pwmTranslation + pwmRotation;

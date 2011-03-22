@@ -81,15 +81,15 @@ EnvoiPosition::intToHex(unsigned char *data)
 
 char stator = 3;
 
-long int bufferG;
-long int bufferD;
+int32_t bufferG;
+int32_t bufferD;
 
 ISR(TIMER0_COMPA_vect)
 {
 	if (stator == 0) {
 		stator = 3;
-		bufferG = encodeurG;
-		bufferD = encodeurD;		
+		bufferG = x;
+		bufferD = y;		
 		sei();
 		printLong(bufferG);
 		printChar(' ');

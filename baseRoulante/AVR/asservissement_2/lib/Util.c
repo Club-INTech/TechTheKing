@@ -1,11 +1,9 @@
-#include "asservissement.h"
+#include "Util.h"
 
+uint8_t buffer[8] = {0};
 
 void init (void)
 {
-	x = 0;
-	y = 0;
-	
     // Initialisation PWM pour les PH sur timer0
     // Initialisation pin 12
     DDRD |= ( 1 << PORTD6 );
@@ -42,7 +40,7 @@ void init (void)
  */
 
 
-int adc_sense1 (void)
+int16_t adc_sense1 (void)
 {
     // Sélectionne ADC1 pour la lecture
     ADMUX |= 1;
@@ -57,7 +55,7 @@ int adc_sense1 (void)
     return (ADCH | ADCL);
 }
 
-int adc_sense2 (void)
+int16_t adc_sense2 (void)
 {
     // Sélectionne ADC0 pour la lecture
     ADMUX &= ~1;
@@ -95,8 +93,9 @@ int32_t lireBuffer (uint8_t decalage)
     return temp;
 }
 
-int32_t angle (void)
+int32_t getAngle (void)
 {
+	uint8_t i;
     i2c_requestFrom(2, 8);
     i = 0;
 
@@ -109,8 +108,9 @@ int32_t angle (void)
     return lireBuffer(4);
 }
 
-int32_t distance (void)
+int32_t getDistance (void)
 {
+	uint8_t i;
     i2c_requestFrom(2, 8);
     i = 0;
 
