@@ -36,9 +36,6 @@ int adc_sense2 (void); // PH 2
 /*
  *  Variables et define pour l'i2c
  */
-#define ANGLE 12
-#define DISTANCE 24
-uint8_t typeDonnee;
 uint8_t buffer[4];
 
 /*
