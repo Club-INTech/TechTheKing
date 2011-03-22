@@ -1,0 +1,350 @@
+#include "Manager.h"
+
+int32_t x;
+int32_t y;
+
+/*
+* Fonction d'interruption sur les codeurs
+*/
+
+volatile char etatPins = 0;
+
+void
+Manager::assPolaire()
+{
+
+	int32_t angle=getAngle();
+	int32_t distance=getDistance();
+	
+	// R�actualisation des vitesses du robot
+	assRotation.setVitesse((angle-angleBkp)*1000); // 305 = 1000/(3.279ms)  pour avoir la vitesse en tic/s
+	assTranslation.setVitesse((distance-distanceBkp)*1000); // Meme chose
+	angleBkp = angle;
+	distanceBkp = distance;
+
+	/*
+	* On changera de consigne si :
+	*	-on est suffisament proche de la consigne en distance
+	*	-on est suffisament aligné avec la consigne
+	* Ceci ne s'applique pas à la dernière consigne
+	*/
+
+
+	/*
+	* factorisation de la désactivation de Kd
+	*/
+	if( indiceConsigneActuelle ==0 || indiceConsigneActuelle ==tableauConsignes.nbConsignes ) {
+		assRotation.setActivationKd(1);
+		assTranslation.setActivationKd(1);
+	}
+	else{
+		assRotation.setActivationKd(0);
+		assTranslation.setActivationKd(0);
+	}
+	
+	if(ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).distance - distance) < 60
+		&& ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).angle - angle) < 60 ){
+			if( indiceConsigneActuelle < tableauConsignes.nbConsignes ){
+			indiceConsigneActuelle++;
+		}
+	}
+
+	/*
+	*Calcul des PWM
+	*/
+	int16_t pwmRotation = (activationAssAngle?assRotation.calculePwm(((tableauConsignes.listeConsignes)[indiceConsigneActuelle-1]).angle,angle):0);
+	int16_t pwmTranslation = (activationAssDistance?assTranslation.calculePwm(((tableauConsignes.listeConsignes)[indiceConsigneActuelle-1]).distance,distance):0);
+
+	int16_t pwmG = pwmTranslation + pwmRotation;
+	int16_t pwmD = pwmTranslation - pwmRotation;
+	
+
+	/*
+	* Envoi des PWM
+	*/	
+
+	if (pwmG > PWM_MAX) 
+		pwmG = PWM_MAX;
+	else if (pwmG < -PWM_MAX) 
+		pwmG = -PWM_MAX;
+
+	if (pwmD > PWM_MAX) 
+		pwmD = PWM_MAX;
+	else if (pwmD < -PWM_MAX) 
+		pwmD = -PWM_MAX;
+	
+	if (pwmG > 0) {
+		// Direction gauche = 0
+		// PWM gauche = pwmG
+		PORTB &= ~PINDIRG;
+		OCR1A = pwmG;
+	}
+	else {
+		// Direction gauche = 1
+		// PWM gauche = -pwmG
+		PORTB |= PINDIRG; 
+		OCR1A = -pwmG;
+	}
+
+	if (pwmD > 0) {
+		// Direction droite = 0
+		// PWM droite = pwmD
+		PORTB &= ~PINDIRD;
+		OCR1B = pwmD;
+	}
+	else {
+		// Direction droite = 1
+		// PWM droite = -pwmD
+		PORTB |= PINDIRD;
+			OCR1B = -pwmD;
+	}
+}
+
+/*
+* Initialisation des pins
+*/
+Manager::Manager(){
+}
+
+
+void Manager::init()
+{
+	x=0;
+	y=0;
+	
+	activationAssDistance = true;
+	activationAssAngle = true;
+	/*
+	* Réglage des pins (codeurs)
+	*/
+	
+	/* TODO
+	pinMode(PORTB2, INPUT);
+	pinMode(PORTB3, INPUT);
+	pinMode(PORTB4, INPUT);
+	pinMode(PORTB5, INPUT);
+	
+	digitalWrite(PORTB2, HIGH);
+	digitalWrite(PORTB3, HIGH);
+	digitalWrite(PORTB4, HIGH);
+	digitalWrite(PORTB5, HIGH);*/
+	
+	
+	// Initialisation de l'interruption
+	PCICR |= (1 << PCIE2);
+	PCMSK2 |= (1 << PCINT18) | (1 << PCINT19) | (1 << PCINT20) | (1 << PCINT21);
+	
+	/*
+	* Réglage des PWM
+	*/
+
+	/*TODO
+	pinMode(DIRG, OUTPUT);
+	pinMode(PWMG, OUTPUT);
+	
+	pinMode(DIRD, OUTPUT);
+	pinMode(PWMD, OUTPUT);
+	
+	digitalWrite(PWMG, 0);
+	digitalWrite(PWMD, 0);
+	
+	digitalWrite(DIRG, 0);
+	digitalWrite(DIRD, 0);*/
+	
+	
+	// Fast PWM
+	TCCR1A = (1 << WGM11) | (1 << WGM10);
+	TCCR1B = (1<<CS10); 			// Divise la fréq du timer par1
+	TCCR1A |= (1 << COM1A1); 		// Timer de base, 2 ports spéciaux pour les créneaux
+	TCCR1A |= (1 << COM1B1);
+	 
+	/*
+	* Initialisation du timer de l'asservissement @ 78.125 KHz
+	* C'est un timer 8bit donc la fréquence de l'asservissement
+	* est 78.125/256 Khz = 305Hz soit environ un asservissement toutes les 3.279ms
+	*/
+	TCCR2A &= ~(1 << CS22);
+	TCCR2A |= (1 << CS21);
+	TCCR2A &= ~(1 << CS20);
+	TCCR2A &= ~(1 << WGM21) & (1 << WGM20);
+	TIMSK2 |= (1 << TOIE2);
+	TIMSK2 &= ~(1 << OCIE2A);
+	
+	tableauConsignes.nbConsignes=0;
+	indiceConsigneActuelle=1;
+
+	assRotation.changeKp(10);
+	assRotation.changePWM(1023);
+	assRotation.changeKd(50);
+	assRotation.changeKi(0);
+	assRotation.changeVmax(0);
+	assRotation.changeKpVitesse(0);
+
+	assTranslation.changeKp(15);
+	assTranslation.changePWM(1023);
+	assTranslation.changeKd(50);
+	assTranslation.changeKi(0);
+	assTranslation.changeVmax(0);
+	assTranslation.changeKpVitesse(0);	
+
+	distanceTotale=0;
+	angleTotal=0;
+	angleBkp=0;
+	distanceBkp=0;
+
+}
+
+/*
+* Fonctions de test : courbe de B�zier quasi parabolique.
+*/
+
+void	Manager::test(){
+	cli();	
+	tableauConsignes.nbConsignes=50;
+	changeIemeConsigne( 32, 235,1);
+	changeIemeConsigne( 98, 461,2);
+	changeIemeConsigne( 167, 678,3);
+	changeIemeConsigne( 238, 887,4);
+	changeIemeConsigne( 313, 1087,5);
+	changeIemeConsigne( 391, 1280,6);
+	changeIemeConsigne( 471, 1466,7);
+	changeIemeConsigne( 555, 1645,8);
+	changeIemeConsigne( 642, 1817,9);
+	changeIemeConsigne( 733, 1983,10);
+	changeIemeConsigne( 826, 2144,11);
+	changeIemeConsigne( 923, 2299,12);
+	changeIemeConsigne( 1023, 2449,13);
+	changeIemeConsigne( 1127, 2594,14);
+	changeIemeConsigne( 1233, 2735,15);
+	changeIemeConsigne( 1343, 2872,16);
+	changeIemeConsigne( 1456, 3006,17);
+	changeIemeConsigne( 1571, 3137,18);
+	changeIemeConsigne( 1689, 3265,19);
+	changeIemeConsigne( 1809, 3391,20);
+	changeIemeConsigne( 1932, 3515,21);
+	changeIemeConsigne( 2056, 3637,22);
+	changeIemeConsigne( 2181, 3758,23);
+	changeIemeConsigne( 2308, 3879,24);
+	changeIemeConsigne( 2435, 3999,25);
+	changeIemeConsigne( 2562, 4119,26);
+	changeIemeConsigne( 2689, 4239,27);
+	changeIemeConsigne( 2816, 4361,28);
+	changeIemeConsigne(2941, 4483,29);
+	changeIemeConsigne( 3065, 4607,30);
+	changeIemeConsigne( 3188, 4733,31);
+	changeIemeConsigne( 3308, 4861,32);
+	changeIemeConsigne( 3426, 4991,33);
+	changeIemeConsigne( 3542, 5125,34);
+	changeIemeConsigne( 3654, 5263,35);
+	changeIemeConsigne( 3764, 5404,36);
+	changeIemeConsigne( 3871, 5549,37);
+	changeIemeConsigne( 3974, 5699,38);
+	changeIemeConsigne(4074, 5854,39);
+	changeIemeConsigne(4171, 6014,40);
+	changeIemeConsigne(4265, 6181,41);
+	changeIemeConsigne(4355, 6353,42);
+	changeIemeConsigne(4442, 6532,43);
+	changeIemeConsigne(4526, 6717,44);
+	changeIemeConsigne(4607, 6910,45);
+	changeIemeConsigne(4684, 7111,46);
+	changeIemeConsigne(4759, 7320,47);
+	changeIemeConsigne(4831, 7537,48);
+	changeIemeConsigne(4900, 7763,49);
+	changeIemeConsigne(4966, 7998,50);
+	sei();
+
+}
+
+void
+Manager::changeIemeConsigne(int32_t distanceDonnee, int32_t angleDonne,int16_t i)
+{
+	(tableauConsignes.listeConsignes[i-1]).distance=distanceDonnee;
+	(tableauConsignes.listeConsignes[i-1]).angle=angleDonne;
+}
+
+
+/*
+* Fonctions utiles au transfert de la liste de points via la liaison série.
+*/
+void
+Manager::setNbConsignes(int16_t nbConsignesDonne)
+{
+	tableauConsignes.nbConsignes=nbConsignesDonne;
+}
+
+void 
+Manager::changeIemeConsigneDistance(int32_t distanceDonnee, int16_t i)
+{
+	(tableauConsignes.listeConsignes[i-1]).distance=distanceDonnee;
+}
+
+void
+Manager::changeIemeConsigneAngle(int32_t angleDonne, int16_t i)
+{
+	(tableauConsignes.listeConsignes[i-1]).angle=angleDonne;
+}
+
+/*
+* A voir, si on peut envoyer via un int32_t à la fois la distance et l'angle.
+* Diviserait par environ deux le temp de chargement de la liste de points en série.
+*/
+void 
+Manager::pushConsigneDistance(int32_t distanceDonnee) // on transfert d'abord la distance (pas d'incr�mentation de nbConsignes)
+{
+	tableauConsignes.nbConsignes+=1; //ajout d'une case dans le tableau.
+	changeIemeConsigneDistance(distanceDonnee, (tableauConsignes.nbConsignes));
+}
+
+void 
+Manager::pushConsigneAngle(int32_t angleDonne)
+{
+	changeIemeConsigneAngle(angleDonne, (tableauConsignes.nbConsignes) );
+}
+
+/*
+* Change les asservissements d'état
+*/
+void 
+Manager::switchAssDistance()
+{
+	activationAssDistance = !activationAssDistance;
+}
+
+void 
+Manager::switchAssAngle()
+{
+	activationAssAngle = !activationAssAngle;
+}
+
+/*
+* reset l'asservissement
+*/
+void Manager::reset()
+{
+	cli();
+	x=0;
+	y=0;
+	distanceBkp = 0;
+	angleBkp = 0;
+	indiceConsigneActuelle=1;
+	tableauConsignes.nbConsignes=0;
+	(tableauConsignes.listeConsignes[0]).distance = 0;
+	(tableauConsignes.listeConsignes[0]).angle = 0;
+	sei();
+}
+
+/*
+* Comprends pas.
+*/
+unsigned char stator1 = 1;
+
+ISR(TIMER2_OVF_vect)
+{
+	manager.assPolaire();
+}
+
+
+volatile int32_t encodeurG = 0;
+volatile int32_t encodeurD = 0;
+
+Manager manager;

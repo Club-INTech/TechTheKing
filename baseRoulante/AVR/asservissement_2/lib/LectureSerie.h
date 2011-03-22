@@ -4,6 +4,7 @@
 #include "serial.h"
 #include "EnvoiPosition.h"
 #include "Manager.h"
+#include <stdint.h> 
 
 class LectureSerie {
 	public:
@@ -12,8 +13,8 @@ class LectureSerie {
 		void	traitement();
 		
 	private:
-		bool	litEntier(int *);
-		bool	litEntierLong(long int *);
+		bool	litEntier(int16_t *);
+		bool	litEntierLong(int32_t *);
 };
 
 extern LectureSerie lectureSerie;
