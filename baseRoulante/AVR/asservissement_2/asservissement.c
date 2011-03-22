@@ -32,6 +32,12 @@ void init (void)
     
 }
 
+
+/*
+ * Contrôle des moteurs
+ */
+
+
 int adc_sense1 (void)
 {
     // Sélectionne ADC1 pour la lecture
@@ -62,6 +68,12 @@ int adc_sense2 (void)
     // On recompose le résultat et on le renvoie
     return (ADCH | ADCL);
 }
+
+
+/*
+ * Obtention des données des codeuses
+ */
+
 
 int32_t lireBuffer (uint8_t decalage)
 {
