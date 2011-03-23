@@ -11,32 +11,15 @@
 #define ABS(x) 		((x) < 0 ? - (x) : (x))
 
 // Puissance maximal de chaque moteur (1023 MAX)
-#define PWM_MAX	1023
-
-/*
- * Réglage des masques des codeurs
- * On utilise PORTB2 à 5
- */
-#define ENCGA (1 << PORTB2)
-#define ENCGB (1 << PORTB4)
-
-#define ENCDA (1 << PORTB3)
-#define ENCDB (1 << PORTB5)
-
-#define MASQUE B0111100
-
+#define PWM_MAX	255
 #define NB_MAX_CONSIGNES 200
-
-/*
- * Réglage des pins des PWM
- */
 
 /*
  *  Valeurs de comparaison pour le fast PWM
  *    entre 0 et 255
  */
 #define MOTEUR2     OCR0A
-#define MOTEUR1     OCR0B
+#define MOTEUR1     OCR2B
 
 /*
  *  Pins de direction des PH
@@ -53,7 +36,7 @@ class Manager {
 		void 	pushConsigneAngle(int32_t );
 		void 	pushConsigneDistance(int32_t );
 		void 	changeIemeConsigne(int32_t , int32_t ,int16_t i);		
-		void setNbConsignes(int16_t nbConsignesDonne);
+		void    setNbConsignes(int16_t nbConsignesDonne);
 		void 	changeIemeConsigneDistance (int32_t,int16_t i);
 		void 	changeIemeConsigneAngle (int32_t,int16_t i);
 
@@ -110,6 +93,9 @@ class Manager {
 extern int32_t x;
 extern int32_t y;
 
-extern Manager 			manager;
+extern volatile int32_t angle;
+extern volatile int32_t distance;
+
+extern Manager  manager;
 
 #endif

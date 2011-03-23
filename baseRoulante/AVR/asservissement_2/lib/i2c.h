@@ -8,7 +8,7 @@
 #define i2c_h
 
   #include <stdint.h>
-  
+
   //#define ATMEGA8
 
   #define CPU_FREQ 16000000L
@@ -51,7 +51,7 @@
   void i2c_send(uint8_t data);
   uint8_t i2c_available(void);
   uint8_t i2c_receive(void);
-  void i2c_onReceiveService(uint8_t* inBytes, int16_t numBytes);
+  void i2c_onReceiveService(uint8_t* inBytes, int numBytes);
   void i2c_onRequestService(void);
   void i2c_onReceive( void (*function)(int) );
   void i2c_onRequest( void (*function)(void) );

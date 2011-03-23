@@ -1,6 +1,6 @@
 OBJS=main.o Util.o Asservissement.o LectureSerie.o Manager.o i2c.o serial.o
 CC=avr-g++
-CFLAGS=-Wall -O2 
+CFLAGS=-Wall -O2
 MMCU=atmega328p
 FREQ=20000000
 
@@ -26,7 +26,7 @@ LectureSerie.o: ./lib/LectureSerie.cpp
 
 Util.o: ./lib/Util.c
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) ./lib/Util.c -c
-		
+
 i2c.o: ./lib/i2c.c
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) ./lib/i2c.c -c
 
@@ -44,4 +44,4 @@ upload2: all
 
 upload3: all
 	sudo avrdude -c usbtiny -p m328p -U flash:w:main.hex
- 
+

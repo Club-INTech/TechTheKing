@@ -28,6 +28,7 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <util/delay.h>
 #include "lib/Asservissement.h"
 #include "lib/LectureSerie.h"
 #include "lib/Manager.h"
@@ -37,11 +38,19 @@
 
 int main( void )
 {
-	uart_init();
     manager.init();
+    // Série
+    uart_init();
+    // Interruptions
+    sei();
+    // I2C
+    i2c_beginMaster();
 
-	while( true )
-	{
-		lectureSerie.traitement();
-	}
+    while(1)
+    {
+        angle = getAngle();
+        distance = getDistance();
+        //lectureSerie.traitement();
+    }
+
 }

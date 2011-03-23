@@ -171,7 +171,7 @@ uint8_t i2c_receive(void)
   return value;
 }
 
-void i2c_onReceiveService(uint8_t* inBytes, int16_t numBytes)
+void i2c_onReceiveService(uint8_t* inBytes, int numBytes)
 {
   // pas pour nous
   if(!user_onReceive)

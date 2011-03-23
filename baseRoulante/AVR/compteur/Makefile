@@ -8,8 +8,8 @@ all: main.hex
 main.hex: main.out
 	avr-objcopy -O ihex -R .eeprom main.out main.hex
 
-main.out: main.o compteur.o i2c.o
-	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) main.o compteur.o i2c.o -o main.out
+main.out: main.o compteur.o i2c.o serial.o
+	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) main.o compteur.o serial.o i2c.o -o main.out
 
 main.o: main.c
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) main.c -c
@@ -19,6 +19,9 @@ compteur.o: compteur.c
 
 i2c.o: i2c.c
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) i2c.c -c
+
+serial.o: serial.c
+	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) serial.c -c
 
 clean:
 	rm -rf *.o *.hex *.out

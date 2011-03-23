@@ -1,4 +1,5 @@
 #include "Asservissement.h"
+#include "serial.h"
 
 #define ABS(x) 		((x) < 0 ? - (x) : (x))
 #define MAX(a,b) 	((a) > (b) ? (a) : (b)) 
@@ -37,13 +38,14 @@ Asservissement::Asservissement()
 int16_t Asservissement::calculePwm(int32_t consigne, int32_t positionReelle)
 {
 	int32_t erreur = consigne - positionReelle;
+    
 	if (erreur <= 3)
 		integraleErreur=0;
 	else
 		integraleErreur+=erreur;
 		
 	// la dérivée de l'erreur est égale à -vitesse . On divise par 100 car sinon kd < 1
-	int32_t pwm = kp * erreur - activationKd * kd * vitesse / 100 - ki  * integraleErreur; 
+	int32_t pwm = kp/2 * erreur - activationKd * kd * vitesse / 100 - ki  * integraleErreur;
 
 	if (vitesse > vMax) {
 		// pas besoin de dérivateur ou d'intégrateur ici
