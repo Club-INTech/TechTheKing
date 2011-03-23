@@ -6,6 +6,7 @@
 #include <stdint.h> 
 #include "Asservissement.h"
 #include "Util.h"
+#include "serial.h"
 
 #define ABS(x) 		((x) < 0 ? - (x) : (x))
 
@@ -30,13 +31,12 @@
  * Réglage des pins des PWM
  */
 
-// Roue Gauche
-#define DIRG 11
-#define PWMG 9
-
-// Roue Droite
-#define DIRD 12
-#define PWMD 10
+/*
+ *  Valeurs de comparaison pour le fast PWM
+ *    entre 0 et 255
+ */
+#define MOTEUR2     OCR0A
+#define MOTEUR1     OCR0B
 
 /*
  *  Pins de direction des PH

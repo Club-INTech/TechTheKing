@@ -6,8 +6,6 @@
  * "?" pour demaner quelle carte est-tu (ie 0)
  * "a" avance en
  * "b" tourne jusqu'a
- * "c" active l'envoie de la position
- * "d" désactive l'envoie de la position
  * "e" réinitialise la position
  * "f" f recule en
  * "g" tourne jusqu'a negatif
@@ -31,7 +29,6 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include "lib/Asservissement.h"
-#include "lib/EnvoiPosition.h"
 #include "lib/LectureSerie.h"
 #include "lib/Manager.h"
 #include "lib/Util.h"

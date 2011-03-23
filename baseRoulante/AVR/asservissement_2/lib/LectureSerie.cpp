@@ -41,12 +41,6 @@ LectureSerie::traitement() {
 			// tourne nÃ©gativement i
 			manager.changeIemeConsigneDistance(-i,1);
 		break;
-	case 'c':
-		envoiPosition.active();
-		break;
-	case 'd':
-		envoiPosition.desactive();
-		break;
 	case 'e': // désactive interruptions
 		manager.switchAssDistance();
 		manager.switchAssAngle();

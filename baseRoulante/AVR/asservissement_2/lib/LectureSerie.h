@@ -2,7 +2,6 @@
 #define LectureSerie_h
 
 #include "serial.h"
-#include "EnvoiPosition.h"
 #include "Manager.h"
 #include <stdint.h> 
 

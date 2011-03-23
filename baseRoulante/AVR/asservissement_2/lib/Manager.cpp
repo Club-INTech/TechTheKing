@@ -76,27 +76,27 @@ Manager::assPolaire()
 	if (pwmG > 0) {
 		// Direction gauche = 0
 		// PWM gauche = pwmG
-		PORTB &= ~PINDIR1;
-		OCR1A = pwmG;
+		PORTD &= ~PINDIR1;
+		MOTEUR1 = pwmG;
 	}
 	else {
 		// Direction gauche = 1
 		// PWM gauche = -pwmG
-		PORTB |= PINDIR1;
-		OCR1A = -pwmG;
+		PORTD |= PINDIR1;
+		MOTEUR1 = -pwmG;
 	}
 
 	if (pwmD > 0) {
 		// Direction droite = 0
 		// PWM droite = pwmD
 		PORTB &= ~PINDIR2;
-		OCR1B = pwmD;
+		MOTEUR2 = pwmD;
 	}
 	else {
 		// Direction droite = 1
 		// PWM droite = -pwmD
 		PORTB |= PINDIR2;
-			OCR1B = -pwmD;
+		MOTEUR2 = -pwmD;
 	}
 }
 
@@ -114,61 +114,51 @@ void Manager::init()
 	
 	activationAssDistance = true;
 	activationAssAngle = true;
-	/*
-	* Réglage des pins (codeurs)
-	*/
-	
-	/* TODO
-	pinMode(PORTB2, INPUT);
-	pinMode(PORTB3, INPUT);
-	pinMode(PORTB4, INPUT);
-	pinMode(PORTB5, INPUT);
-	
-	digitalWrite(PORTB2, HIGH);
-	digitalWrite(PORTB3, HIGH);
-	digitalWrite(PORTB4, HIGH);
-	digitalWrite(PORTB5, HIGH);*/
-	
-	
-	// Initialisation de l'interruption
-	PCICR |= (1 << PCIE2);
-	PCMSK2 |= (1 << PCINT18) | (1 << PCINT19) | (1 << PCINT20) | (1 << PCINT21);
-	
-	/*
-	* Réglage des PWM
-	*/
 
-	/*TODO
-	pinMode(DIRG, OUTPUT);
-	pinMode(PWMG, OUTPUT);
-	
-	pinMode(DIRD, OUTPUT);
-	pinMode(PWMD, OUTPUT);
-	
-	digitalWrite(PWMG, 0);
-	digitalWrite(PWMD, 0);
-	
-	digitalWrite(DIRG, 0);
-	digitalWrite(DIRD, 0);*/
-	
-	
-	// Fast PWM
-	TCCR1A = (1 << WGM11) | (1 << WGM10);
-	TCCR1B = (1<<CS10); 			// Divise la fréq du timer par1
-	TCCR1A |= (1 << COM1A1); 		// Timer de base, 2 ports spéciaux pour les créneaux
-	TCCR1A |= (1 << COM1B1);
+    // Initialisation PWM pour le PH sur timer0
+    // Initialisation pin 12
+    DDRD |= ( 1 << PORTD6 );
+    TCCR0A &= ~( 1 << COM0A0);
+    TCCR0A |=  ( 1 << COM0A1 );
+    // Fast PWM
+    TCCR0A |= ( 1 << WGM00 );
+    TCCR0A |= ( 1 << WGM01 );
+    TCCR0B &= ~( 1 << WGM02 );
+    // Pas de prescaler
+    TCCR0B |= ( 1 << CS00 );
+
+    // Initialisation PWM pour le PH sur timer2
+    // Initialisation pin 6
+    DDRD |= ( 1 << PORTD3 );
+    TCCR2A &= ~( 1 << COM2B0 );
+    TCCR2A |= ( 1 << COM2B1 );
+    // Fast PWM
+    TCCR2A |= ( 1 << WGM20 );
+    TCCR2A |= ( 1 << WGM21 );
+    TCCR2B &= ~( 1 << WGM22 );
+    // Pas de prescaler
+    TCCR2B |= ( 1 << CS20 );
+
+    // Pins de direction des PH
+    DDRD |= ( 1 << PORTD4 );
+    DDRB |= ( 1 << PORTB0 );
+
+    // Initialisation ADC
+    // ADCSRA |= (1 << ADEN);
+
+    // Interruptions
+    sei();
+    // S�rie
+    uart_init();
+    // I2C
+    i2c_beginMaster();
 	 
 	/*
-	* Initialisation du timer de l'asservissement @ 78.125 KHz
-	* C'est un timer 8bit donc la fréquence de l'asservissement
-	* est 78.125/256 Khz = 305Hz soit environ un asservissement toutes les 3.279ms
+	* Timer de l'asservissement sur 16 bits � 2O MHz /
+	* 305Hz soit environ un asservissement toutes les 3.279ms
 	*/
-	TCCR2A &= ~(1 << CS22);
-	TCCR2A |= (1 << CS21);
-	TCCR2A &= ~(1 << CS20);
-	TCCR2A &= ~(1 << WGM21) & (1 << WGM20);
-	TIMSK2 |= (1 << TOIE2);
-	TIMSK2 &= ~(1 << OCIE2A);
+	TIMSK1 |= (1 << TOIE2);
+    TCCR1B |= (1 << CS10);
 	
 	tableauConsignes.nbConsignes=0;
 	indiceConsigneActuelle=1;
@@ -338,7 +328,7 @@ void Manager::reset()
 */
 unsigned char stator1 = 1;
 
-ISR(TIMER2_OVF_vect)
+ISR(TIMER1_OVF_vect)
 {
 	manager.assPolaire();
 }

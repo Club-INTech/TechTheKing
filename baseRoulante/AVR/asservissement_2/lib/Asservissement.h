@@ -2,12 +2,12 @@
 #define Asservissement_h
 
 #include <stdint.h> 
-// Puissance max. de l'asservissement comprise entre 0 et 1024
-#define	PUISSANCE	1024
+// Puissance max. de l'asservissement comprise entre 0 et 127
+#define	PUISSANCE	127
 
 // Constante de l'asservissement
 #define KP		30
-#define VMAX		50000
+#define VMAX	50000
 #define ACC		22
 #define KD		35
 

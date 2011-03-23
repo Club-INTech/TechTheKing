@@ -2,55 +2,9 @@
 
 uint8_t buffer[8] = {0};
 
-void init (void)
-{
-    // Initialisation PWM pour le PH sur timer0
-    // Initialisation pin 12
-    DDRD |= ( 1 << PORTD6 );
-    TCCR0A &= ~( 1 << COM0A0);
-    TCCR0A |=  ( 1 << COM0A1 );
-    // Fast PWM
-    TCCR0A |= ( 1 << WGM00 );
-    TCCR0A |= ( 1 << WGM01 );
-    TCCR0B &= ~( 1 << WGM02 );
-    // Prescaler /1024
-    TCCR0B |= ( 1 << CS00 );
-    TCCR0B &= ~( 1 << CS01 );
-    TCCR0B |= ( 1 << CS02 );
-
-    // Initialisation PWM pour le PH sur timer2
-    // Initialisation pin 6
-    DDRD |= ( 1 << PORTD3 );
-    TCCR2A &= ~( 1 << COM2B0 );
-    TCCR2A |= ( 1 << COM2B1 );
-    // Fast PWM
-    TCCR2A |= ( 1 << WGM20 );
-    TCCR2A |= ( 1 << WGM21 );
-    TCCR2B &= ~( 1 << WGM22 );
-    // Prescaler /1024
-    TCCR2B |= ( 1 << CS20 );
-    TCCR2B |= ( 1 << CS21 );
-    TCCR2B |= ( 1 << CS22 );
-
-    // Pins de direction des PH
-    DDRD |= ( 1 << PORTD4 );
-    DDRB |= ( 1 << PORTB0 );
-
-    // Initialisation ADC
-    ADCSRA |= (1 << ADEN);
-
-    // Interruptions
-    sei();
-    // Série
-    uart_init();
-    // I2C
-    i2c_beginMaster();
-    
-}
-
 
 /*
- * Contrôle des moteurs
+ * Controle du courant des moteurs
  */
 
 
