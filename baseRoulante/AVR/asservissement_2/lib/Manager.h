@@ -38,8 +38,11 @@
 #define DIRD 12
 #define PWMD 10
 
-#define PINDIRG (1 << PORTB3)
-#define PINDIRD (1 << PORTB4)
+/*
+ *  Pins de direction des PH
+ */
+#define PINDIR1 (1 << PORTD4)
+#define PINDIR2 (1 << PORTB0)
 
 class Manager {
 	public:

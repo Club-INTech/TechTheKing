@@ -76,26 +76,26 @@ Manager::assPolaire()
 	if (pwmG > 0) {
 		// Direction gauche = 0
 		// PWM gauche = pwmG
-		PORTB &= ~PINDIRG;
+		PORTB &= ~PINDIR1;
 		OCR1A = pwmG;
 	}
 	else {
 		// Direction gauche = 1
 		// PWM gauche = -pwmG
-		PORTB |= PINDIRG; 
+		PORTB |= PINDIR1;
 		OCR1A = -pwmG;
 	}
 
 	if (pwmD > 0) {
 		// Direction droite = 0
 		// PWM droite = pwmD
-		PORTB &= ~PINDIRD;
+		PORTB &= ~PINDIR2;
 		OCR1B = pwmD;
 	}
 	else {
 		// Direction droite = 1
 		// PWM droite = -pwmD
-		PORTB |= PINDIRD;
+		PORTB |= PINDIR2;
 			OCR1B = -pwmD;
 	}
 }
