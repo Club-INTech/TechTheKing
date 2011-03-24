@@ -1,16 +1,18 @@
 #include "Manager.h"
 
-#define PRESCALER 64
-#define TEMPS_ASS PRESCALER 20000000/(2^16*PRESCALER)
 int32_t x;
 int32_t y;
 
-int32_t angle = 0;
-int32_t distance = 0;
-
 void
 Manager::assPolaire()
-{   
+{
+	int32_t angle;
+    int32_t distance;
+       
+	angle = getAngle();
+    distance = getDistance();
+    
+    
 	// Réactualisation des vitesses du robot
 	assRotation.setVitesse((angle-angleBkp)/TEMPS_ASS);
 	assTranslation.setVitesse((distance-distanceBkp)/TEMPS_ASS);
@@ -53,7 +55,10 @@ Manager::assPolaire()
 	int16_t pwmG = pwmTranslation - pwmRotation;
 	int16_t pwmD = pwmTranslation + pwmRotation;
 	
-
+	printlnLong(pwmG);
+	printlnLong(pwmD);
+	
+	
 	/*
 	* Envoi des PWM
 	*/	
@@ -106,9 +111,9 @@ void Manager::init()
 {
 	x=0;
 	y=0;
-
+	
 	activationAssDistance = true;
-	activationAssAngle = true;
+	activationAssAngle = false;
 
     // Initialisation PWM pour le PH sur timer0 (moteur 2)
     // Initialisation pin 12
@@ -318,7 +323,7 @@ unsigned char stator1 = 1;
 
 ISR(TIMER1_OVF_vect)
 {
-	manager.assPolaire();
+	//manager.assPolaire();
 }
 
 Manager manager;

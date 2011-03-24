@@ -13,6 +13,9 @@
 // Puissance maximal de chaque moteur (1023 MAX)
 #define PWM_MAX	255
 #define NB_MAX_CONSIGNES 200
+#define PRESCALER 64
+//#define TEMPS_ASS 20000000/(2^16*PRESCALER)
+#define TEMPS_ASS 5
 
 /*
  *  Valeurs de comparaison pour le fast PWM
@@ -93,8 +96,8 @@ class Manager {
 extern int32_t x;
 extern int32_t y;
 
-extern volatile int32_t angle;
-extern volatile int32_t distance;
+extern int32_t angle;
+extern int32_t distance;
 
 extern Manager  manager;
 
