@@ -2,8 +2,8 @@
 
 void lasers_init() {
 	sbi(DDRD,DDD5);		//définie la sortie B du timer0
-	OCR0A=0x78;		//120//défini la fréquence de 16,67kHz en accord avec le prescaler
-	OCR0B=0x3C;		//60//défini le rapport cyclique de 50%
+	//OCR0A=0x78;		//120//défini la fréquence de 16,67kHz en accord avec le prescaler
+	//OCR0B=0x3C;		//60//défini le rapport cyclique de 50%
 	OCR0A=72;
 	OCR0B=36;
 	/*positionner le mode pwm*/

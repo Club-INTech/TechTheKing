@@ -10,7 +10,7 @@
 
 //pour la mesure des periodes de rotation du moteur
 volatile uint32_t temps[2]={65535,65535};	//contient les périodes de rotation mesurées
-volatile uint8_t indT=0;	//code l'élément de temps[] à remplir
+//volatile uint8_t indT=0;	//code l'élément de temps[] à remplir
 volatile uint32_t milAP=0;	//micros après top
 volatile uint32_t milAV=0;	//micros avant top
 
@@ -20,24 +20,16 @@ volatile uint32_t milAV=0;	//micros avant top
 //static int16_t kP = 1000;	//coefficient de conversion entre la période de consigne et la période de commande (dépend du nombre de pas/tr du moteur et du nombre de commandes par pas).
 
 //pour la commande du moteur
-uint32_t periode = 80000;	//periode de commande du moteur, en microsecondes
-uint16_t incPeriode = 200;	//periode d'incrémentation de periode pour le démarrage, en microseconde
+uint32_t periode = 50000;	//periode de commande du moteur, en microsecondes
+uint16_t incPeriode = 5000;	//periode d'incrémentation de periode pour le démarrage, en microseconde
 uint32_t incTemps = 0;	//stocke le temps écoulé depuis le début pour le démarrage
 uint32_t micTemps = 0;	//stocke le temps écoulé depuis le début pour les commutions du moteur
 uint8_t ind = 0;	//code la position dans le chronogramme de commande du moteur
-uint8_t pas[12][4] = {
-	{1,0,1,0},
-	{0,0,0,0},
-	{1,0,1,0},
-	{0,1,1,0},
-	{0,0,0,0},
-	{0,1,1,0},
-	{0,1,0,1},
-	{0,0,0,0},
-	{0,1,0,1},
-	{1,0,0,1},
-	{0,0,0,0},
-	{1,0,0,1}
+uint8_t pas[4][2] = {
+	{1,0},
+	{1,1},
+	{0,1},
+	{0,0}
 };
 
 /**
@@ -53,16 +45,14 @@ int main() {
 	//on initialise l'alimentation des lasers (par pwm)
 	//lasers_init();
 
-	//on initialise les ports de commande du moteur
-	sbi(DDRB,pinMot11);
-	sbi(DDRB,pinMot12);
-	sbi(DDRB,pinMot21);
-	sbi(DDRB,pinMot22);
-	//sbi(DDRB,pinMot3);
+	//on initialise les ports de commande du moteur en sortie
+	sbi(DDRB,pinMotE);
+	sbi(DDRB,pinMot1);
+	sbi(DDRB,pinMot2);
 	//on initialise les interruptions du top tour sur front descendant
-	sbi(EICRA,ISC01);
-	cbi(EICRA,ISC00);
-	sbi(EIMSK,INT0);//pour activer les interruptions sur INT0
+	sbi(EICRA,ISC11);
+	cbi(EICRA,ISC10);
+	sbi(EIMSK,INT1);//pour activer les interruptions sur INT1
 	//on initialise la pin du sélecteur de sens en input avec pull-up
 	cbi(DDRC,pinSens);//input
 	sbi(portSens,pinSens);//pull-up
@@ -75,59 +65,33 @@ int main() {
 
 	//démarrage : 
 	printlnString("demarrage");
-	//while (periode > 5556) {
-	//while (periode > 5000) {
-	while(42) {
+	while(1) {
 		//calcul de la valeur de periode à utiliser ici (en gros pour le démarrage, on se contente pour l'instant d'une simple rampe) : 
 		if (micros() > incTemps + incPeriode) {
 			incTemps = micros();
-			if (periode > 12000) {
-				periode-=2;
-			}
-			else if (periode > 6000) {
-				periode--;
+			if (periode > 7700) {
+				periode-=4;
 			}
 		}
 		//commutation des bobines du moteur : 
 		if (micros() > micTemps + periode) {
 			//printUShort(rbi(PINC,pinSens));
 			//printString("\t");
-			printUInt(periode);
+			printULong(periode);
 			printString("\t");
-			printUInt(ind);
-			printString("\t");
+			printUShort(ind);
+			//printString("\t");
 			//printUInt(periode);
 			//printString("\t");
-			printlnULong(temps[1]);
+			//printULong(temps[1]);
 			//printString("\t");
 			//printlnInt(1000000/temps[1]);
-			micTemps = micros();
 			// et on commute
-			commuter(pas[ind]);
-			if (ind<11) 		ind++;
-			else 			ind = 0;
-		}
-	}
-	periode=5000;
-	while (1) {
-		//commutation des bobines du moteur : 
-		if (micros() > micTemps + periode) {
-			//printUShort(rbi(PINC,pinSens));
-			//printString("\t");
-			printUInt(periode);
-			printString("\t");
-			printUInt(ind);
-			printString("\t");
-			//printUInt(periode);
-			//printString("\t");
-			printlnULong(temps[1]);
-			//printString("\t");
-			//printlnInt(1000000/temps[1]);
 			micTemps = micros();
-			// et on commute
 			commuter(pas[ind]);
-			if (ind<11) 		ind++;
+			if (ind<3) 		ind++;
 			else 			ind = 0;
+			printlnString("|");
 		}
 	}
 	return 0;
@@ -142,10 +106,6 @@ ISR(INT0_vect) {
 	temps[0]=temps[1];
 	temps[1]=(milAP-milAV);
 	milAV=milAP;
-	if (indT<1) 
-		indT++;
-	else 
-		indT=0;
 	sei();
 }
 
@@ -154,27 +114,15 @@ ISR(INT0_vect) {
  */
 void commuter(uint8_t pas_commuter[4]) {
 	if (pas_commuter[0] == 1) {
-		sbi(portMot11,pinMot11);
+		sbi(portMot1,pinMot1);
 	}
 	else {
-		cbi(portMot11,pinMot11);
+		cbi(portMot1,pinMot1);
 	}
 	if (pas_commuter[1] == 1) {
-		sbi(portMot12,pinMot12);
+		sbi(portMot2,pinMot2);
 	}
 	else {
-		cbi(portMot12,pinMot12);
-	}
-	if (pas_commuter[2] == 1) {
-		sbi(portMot21,pinMot21);
-	}
-	else {
-		cbi(portMot21,pinMot21);
-	}
-	if (pas_commuter[3] == 1) {
-		sbi(portMot22,pinMot22);
-	}
-	else {
-		cbi(portMot22,pinMot22);
+		cbi(portMot2,pinMot2);
 	}
 }
