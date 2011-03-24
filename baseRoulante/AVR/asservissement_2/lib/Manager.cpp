@@ -1,19 +1,19 @@
 #include "Manager.h"
 
-#define PRESCALER 64 
-
+#define PRESCALER 64
+#define TEMPS_ASS PRESCALER 20000000/(2^16*PRESCALER)
 int32_t x;
 int32_t y;
 
-volatile int32_t angle = 0;
-volatile int32_t distance = 0;
+int32_t angle = 0;
+int32_t distance = 0;
 
 void
 Manager::assPolaire()
 {   
 	// Réactualisation des vitesses du robot
-	assRotation.setVitesse((angle-angleBkp)*1000); // 305 = 1000/(3.279ms)  pour avoir la vitesse en tic/s
-	assTranslation.setVitesse((distance-distanceBkp)*1000); // Meme chose
+	assRotation.setVitesse((angle-angleBkp)/TEMPS_ASS);
+	assTranslation.setVitesse((distance-distanceBkp)/TEMPS_ASS);
 	angleBkp = angle;
 	distanceBkp = distance;
 
@@ -147,9 +147,11 @@ void Manager::init()
 	TIMSK1 |= (1 << TOIE1);
     TCCR1B |= (1 << CS11);
 	
+	// initialisation de la liste de point
 	tableauConsignes.nbConsignes=0;
 	indiceConsigneActuelle=1;
 
+	// initialisation des constantes
 	assRotation.changeKp(10);
 	assRotation.changePWM(127);
 	assRotation.changeKd(0);
