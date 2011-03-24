@@ -6,8 +6,6 @@
  * "?" pour demaner quelle carte est-tu (ie 0)
  * "a" avance en
  * "b" tourne jusqu'a
- * "c" active l'envoie de la position
- * "d" désactive l'envoie de la position
  * "e" réinitialise la position
  * "f" f recule en
  * "g" tourne jusqu'a negatif
@@ -30,8 +28,8 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <util/delay.h>
 #include "lib/Asservissement.h"
-#include "lib/EnvoiPosition.h"
 #include "lib/LectureSerie.h"
 #include "lib/Manager.h"
 #include "lib/Util.h"
@@ -40,11 +38,19 @@
 
 int main( void )
 {
-	uart_init();
     manager.init();
+    // Série
+    uart_init();
+    // Interruptions
+    sei();
+    // I2C
+    i2c_beginMaster();
 
-	while( true )
-	{
-		lectureSerie.traitement();
-	}
+    while(1)
+    {
+        angle = getAngle();
+        distance = getDistance();
+        //lectureSerie.traitement();
+    }
+
 }

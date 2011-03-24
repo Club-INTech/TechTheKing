@@ -14,7 +14,7 @@ ISR(USART_RX_vect)
 
 inline void store_char(unsigned char c, struct ring_buffer *rx_buffer)
 {
-	int16_t i = (rx_buffer->head + 1) % RX_BUFFER_SIZE;
+	int i = (rx_buffer->head + 1) % RX_BUFFER_SIZE;
 	
 	if (i != rx_buffer->tail)
 	{
@@ -28,7 +28,7 @@ uint8_t available(void)
 	return (RX_BUFFER_SIZE + rx_buffer.head - rx_buffer.tail) % RX_BUFFER_SIZE;
 }
 
-int16_t read(void)
+int read(void)
 {
 	if (rx_buffer.head == rx_buffer.tail)
 	{
@@ -92,10 +92,10 @@ void uart_init( void )
  * Définition des foncions printnumber
  */
 
-inline void printIntNumber(uint16_t n)
+inline void printIntNumber(unsigned int n)
 {
 	unsigned char buf[8 * sizeof(long)]; // Assumes 8-bit chars. 
-	uint16_t i = 0;
+	unsigned int i = 0;
 
 	if (n == 0)
 	{
@@ -116,7 +116,7 @@ inline void printIntNumber(uint16_t n)
 inline void printShortNumber(unsigned short n)
 {
 	unsigned char buf[8 * sizeof(long)]; // Assumes 8-bit chars. 
-	uint16_t i = 0;
+	unsigned int i = 0;
 
 	if (n == 0)
 	{
@@ -137,7 +137,7 @@ inline void printShortNumber(unsigned short n)
 inline void printLongNumber(unsigned long n )
 {
 	unsigned char buf[8 * sizeof(long)]; // Assumes 8-bit chars. 
-	uint16_t i = 0;
+	unsigned int i = 0;
 
 	if (n == 0)
 	{
@@ -156,7 +156,7 @@ inline void printLongNumber(unsigned long n )
 }
 
 /*
- * Définition des print16_t pour nombre
+ * Définition des print pour nombre
  */
 
 void printString(const char *string )
@@ -186,70 +186,40 @@ void printlnString(const char *string )
 	uart_send_ln();
 }
 
-void printUInt(uint16_t entier )
+void printUInt(unsigned int entier )
 {
 	printIntNumber(entier);
 }
 
-void printUShort(uint8_t entier )
+void printUShort(short unsigned int entier )
 {
 	printShortNumber( entier );
 }
 
-void printULong(uint32_t entier )
+void printULong(long unsigned int entier )
 {
 	printLongNumber(entier);
 }
 
-void printlnUShort(uint8_t entier)
+void printlnUShort(short unsigned int entier)
 {
 	printShortNumber(entier);
 	uart_send_ln();
 }
 
-void printlnUInt(uint16_t entier)
+void printlnUInt(unsigned int entier)
 {
 	printIntNumber(entier);
 	uart_send_ln();
 }
 
-void printlnULong(uint32_t entier)
+void printlnULong(long unsigned int entier)
 {
 	printLongNumber(entier);
 	uart_send_ln();
 }
 
-void printShort(int8_t entier)
-{
-	if (entier < 0)
-	{
-		uart_send_char('-');
-		entier = -entier;
-	}
-	printShortNumber(entier);
-}
-
-void printInt(int16_t entier)
-{
-	if (entier < 0)
-	{
-		uart_send_char('-');
-		entier = -entier;
-	}
-	printIntNumber(entier);
-}
-
-void printLong(int32_t entier)
-{
-	if (entier < 0)
-	{
-		uart_send_char('-');
-		entier = -entier;
-	}
-	printLongNumber(entier);
-}
-
-void printlnShort(int8_t entier )
+void printShort(short int entier)
 {
 	if (entier < 0)
 	{
@@ -257,10 +227,40 @@ void printlnShort(int8_t entier )
 		entier = -entier;
 	}
 	printShortNumber(entier);
+}
+
+void printInt(int entier)
+{
+	if (entier < 0)
+	{
+		uart_send_char('-');
+		entier = -entier;
+	}
+	printIntNumber(entier);
+}
+
+void printLong(long int entier)
+{
+	if (entier < 0)
+	{
+		uart_send_char('-');
+		entier = -entier;
+	}
+	printLongNumber(entier);
+}
+
+void printlnShort(short int entier )
+{
+	if (entier < 0)
+	{
+		uart_send_char('-');
+		entier = -entier;
+	}
+	printShortNumber(entier);
 	uart_send_ln();
 }
 
-void printlnInt(int16_t entier )
+void printlnInt(int entier )
 {
 	if (entier < 0)
 	{
@@ -271,7 +271,7 @@ void printlnInt(int16_t entier )
 	uart_send_ln();
 }
 
-void printlnLong(int32_t entier )
+void printlnLong(long int entier )
 {
 	if (entier < 0)
 	{
@@ -285,7 +285,7 @@ void printlnLong(int32_t entier )
 inline long readLongNumber( void )
 {
 	long monLong = 0; 
-	uint16_t i = 0;
+	unsigned int i = 0;
 	uint8_t flag = 0;
 	
 	while( 1 )
@@ -316,7 +316,7 @@ inline long readLongNumber( void )
 inline uint32_t readULongNumber( void )
 {
 	uint32_t monLong = 0; 
-	uint16_t i = 0;
+	unsigned int i = 0;
 	
 	while( 1 )
 	{

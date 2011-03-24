@@ -1,24 +1,19 @@
 #include "Manager.h"
 
+#define PRESCALER 64
+#define TEMPS_ASS PRESCALER 20000000/(2^16*PRESCALER)
 int32_t x;
 int32_t y;
 
-/*
-* Fonction d'interruption sur les codeurs
-*/
-
-volatile char etatPins = 0;
+int32_t angle = 0;
+int32_t distance = 0;
 
 void
 Manager::assPolaire()
-{
-
-	int32_t angle=getAngle();
-	int32_t distance=getDistance();
-	
+{   
 	// R�actualisation des vitesses du robot
-	assRotation.setVitesse((angle-angleBkp)*1000); // 305 = 1000/(3.279ms)  pour avoir la vitesse en tic/s
-	assTranslation.setVitesse((distance-distanceBkp)*1000); // Meme chose
+	assRotation.setVitesse((angle-angleBkp)/TEMPS_ASS);
+	assTranslation.setVitesse((distance-distanceBkp)/TEMPS_ASS);
 	angleBkp = angle;
 	distanceBkp = distance;
 
@@ -41,7 +36,7 @@ Manager::assPolaire()
 		assRotation.setActivationKd(0);
 		assTranslation.setActivationKd(0);
 	}
-	
+
 	if(ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).distance - distance) < 60
 		&& ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).angle - angle) < 60 ){
 			if( indiceConsigneActuelle < tableauConsignes.nbConsignes ){
@@ -55,48 +50,48 @@ Manager::assPolaire()
 	int16_t pwmRotation = (activationAssAngle?assRotation.calculePwm(((tableauConsignes.listeConsignes)[indiceConsigneActuelle-1]).angle,angle):0);
 	int16_t pwmTranslation = (activationAssDistance?assTranslation.calculePwm(((tableauConsignes.listeConsignes)[indiceConsigneActuelle-1]).distance,distance):0);
 
-	int16_t pwmG = pwmTranslation + pwmRotation;
-	int16_t pwmD = pwmTranslation - pwmRotation;
+	int16_t pwmG = pwmTranslation - pwmRotation;
+	int16_t pwmD = pwmTranslation + pwmRotation;
 	
 
 	/*
 	* Envoi des PWM
 	*/	
 
-	if (pwmG > PWM_MAX) 
+	if (pwmG > PWM_MAX)
 		pwmG = PWM_MAX;
-	else if (pwmG < -PWM_MAX) 
+	else if (pwmG < -PWM_MAX)
 		pwmG = -PWM_MAX;
 
-	if (pwmD > PWM_MAX) 
+	if (pwmD > PWM_MAX)
 		pwmD = PWM_MAX;
-	else if (pwmD < -PWM_MAX) 
+	else if (pwmD < -PWM_MAX)
 		pwmD = -PWM_MAX;
-	
+
 	if (pwmG > 0) {
 		// Direction gauche = 0
 		// PWM gauche = pwmG
-		PORTB &= ~PINDIRG;
-		OCR1A = pwmG;
+		PORTD &= ~PINDIR1;
+		MOTEUR1 = pwmG;
 	}
 	else {
 		// Direction gauche = 1
 		// PWM gauche = -pwmG
-		PORTB |= PINDIRG; 
-		OCR1A = -pwmG;
+		PORTD |= PINDIR1;
+		MOTEUR1 = -pwmG;
 	}
 
 	if (pwmD > 0) {
 		// Direction droite = 0
 		// PWM droite = pwmD
-		PORTB &= ~PINDIRD;
-		OCR1B = pwmD;
+		PORTB &= ~PINDIR2;
+		MOTEUR2 = pwmD;
 	}
 	else {
 		// Direction droite = 1
 		// PWM droite = -pwmD
-		PORTB |= PINDIRD;
-			OCR1B = -pwmD;
+		PORTB |= PINDIR2;
+		MOTEUR2 = -pwmD;
 	}
 }
 
@@ -111,81 +106,65 @@ void Manager::init()
 {
 	x=0;
 	y=0;
-	
+
 	activationAssDistance = true;
 	activationAssAngle = true;
-	/*
-	* Réglage des pins (codeurs)
-	*/
-	
-	/* TODO
-	pinMode(PORTB2, INPUT);
-	pinMode(PORTB3, INPUT);
-	pinMode(PORTB4, INPUT);
-	pinMode(PORTB5, INPUT);
-	
-	digitalWrite(PORTB2, HIGH);
-	digitalWrite(PORTB3, HIGH);
-	digitalWrite(PORTB4, HIGH);
-	digitalWrite(PORTB5, HIGH);*/
-	
-	
-	// Initialisation de l'interruption
-	PCICR |= (1 << PCIE2);
-	PCMSK2 |= (1 << PCINT18) | (1 << PCINT19) | (1 << PCINT20) | (1 << PCINT21);
-	
-	/*
-	* Réglage des PWM
-	*/
 
-	/*TODO
-	pinMode(DIRG, OUTPUT);
-	pinMode(PWMG, OUTPUT);
-	
-	pinMode(DIRD, OUTPUT);
-	pinMode(PWMD, OUTPUT);
-	
-	digitalWrite(PWMG, 0);
-	digitalWrite(PWMD, 0);
-	
-	digitalWrite(DIRG, 0);
-	digitalWrite(DIRD, 0);*/
-	
-	
-	// Fast PWM
-	TCCR1A = (1 << WGM11) | (1 << WGM10);
-	TCCR1B = (1<<CS10); 			// Divise la fréq du timer par1
-	TCCR1A |= (1 << COM1A1); 		// Timer de base, 2 ports spéciaux pour les créneaux
-	TCCR1A |= (1 << COM1B1);
-	 
+    // Initialisation PWM pour le PH sur timer0 (moteur 2)
+    // Initialisation pin 12
+    DDRD |= ( 1 << PORTD6 );
+    TCCR0A &= ~( 1 << COM0A0);
+    TCCR0A |=  ( 1 << COM0A1 );
+    // Fast PWM
+    TCCR0A |= ( 1 << WGM00 );
+    TCCR0A |= ( 1 << WGM01 );
+    TCCR0B &= ~( 1 << WGM02 );
+    // Pas de prescaler
+    TCCR0B |= ( 1 << CS00 );
+
+    // Initialisation PWM pour le PH sur timer2 (moteur 1)
+    // Initialisation pin 6
+    DDRD |= ( 1 << PORTD3 );
+    TCCR2A &= ~( 1 << COM2B0 );
+    TCCR2A |= ( 1 << COM2B1 );
+    // Fast PWM
+    TCCR2A |= ( 1 << WGM20 );
+    TCCR2A |= ( 1 << WGM21 );
+    TCCR2B &= ~( 1 << WGM22 );
+    // Pas de prescaler
+    TCCR2B |= ( 1 << CS20 );
+
+    // Pins de direction des PH
+    DDRD |= ( 1 << PORTD4 );
+    DDRB |= ( 1 << PORTB0 );
+
+    // Initialisation ADC
+    // ADCSRA |= (1 << ADEN);
+
 	/*
-	* Initialisation du timer de l'asservissement @ 78.125 KHz
-	* C'est un timer 8bit donc la fréquence de l'asservissement
-	* est 78.125/256 Khz = 305Hz soit environ un asservissement toutes les 3.279ms
+	* Timer de l'asservissement sur 16 bits � 2O MHz
 	*/
-	TCCR2A &= ~(1 << CS22);
-	TCCR2A |= (1 << CS21);
-	TCCR2A &= ~(1 << CS20);
-	TCCR2A &= ~(1 << WGM21) & (1 << WGM20);
-	TIMSK2 |= (1 << TOIE2);
-	TIMSK2 &= ~(1 << OCIE2A);
+	TIMSK1 |= (1 << TOIE1);
+    TCCR1B |= (1 << CS11);
 	
+	// initialisation de la liste de point
 	tableauConsignes.nbConsignes=0;
 	indiceConsigneActuelle=1;
 
+	// initialisation des constantes
 	assRotation.changeKp(10);
-	assRotation.changePWM(1023);
-	assRotation.changeKd(50);
+	assRotation.changePWM(127);
+	assRotation.changeKd(0);
 	assRotation.changeKi(0);
 	assRotation.changeVmax(0);
 	assRotation.changeKpVitesse(0);
 
-	assTranslation.changeKp(15);
-	assTranslation.changePWM(1023);
-	assTranslation.changeKd(50);
+	assTranslation.changeKp(10);
+	assTranslation.changePWM(127);
+	assTranslation.changeKd(0);
 	assTranslation.changeKi(0);
 	assTranslation.changeVmax(0);
-	assTranslation.changeKpVitesse(0);	
+	assTranslation.changeKpVitesse(0);
 
 	distanceTotale=0;
 	angleTotal=0;
@@ -338,13 +317,9 @@ void Manager::reset()
 */
 unsigned char stator1 = 1;
 
-ISR(TIMER2_OVF_vect)
+ISR(TIMER1_OVF_vect)
 {
 	manager.assPolaire();
 }
-
-
-volatile int32_t encodeurG = 0;
-volatile int32_t encodeurD = 0;
 
 Manager manager;

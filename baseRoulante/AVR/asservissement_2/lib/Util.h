@@ -4,26 +4,7 @@
 #include <stdint.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include <util/delay.h>
-
 #include "i2c.h"
-#include "serial.h"
-
-/*
- *  Valeurs de comparaison pour le fast PWM
- *    entre 0 et 255
- */ 
-#define MOTEUR2     OCR0A
-#define MOTEUR1     OCR0B
-
-/*
- *  Initialisations
- *    pins en sortie
- *    fast pwm
- *    timers
- *    i2c
- */
-void init (void);
 
 /*
  *  Lecture analogique de la sortie sense des PHs

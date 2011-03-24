@@ -1,6 +1,6 @@
-OBJS=main.o Util.o EnvoiPosition.o Asservissement.o LectureSerie.o Manager.o i2c.o serial.o
+OBJS=main.o Util.o Asservissement.o LectureSerie.o Manager.o i2c.o serial.o
 CC=avr-g++
-CFLAGS=-Wall -O2 
+CFLAGS=-Wall -O2
 MMCU=atmega328p
 FREQ=20000000
 
@@ -10,7 +10,7 @@ main.hex: main.out
 	avr-objcopy -O ihex -R .eeprom main.out main.hex
 
 main.out: $(OBJS)
-	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) main.o Util.o EnvoiPosition.o Asservissement.o LectureSerie.o Manager.o i2c.o serial.o -o main.out
+	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) main.o Util.o Asservissement.o LectureSerie.o Manager.o i2c.o serial.o -o main.out
 
 main.o: main.cpp
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) main.cpp -c
@@ -23,13 +23,10 @@ Manager.o: ./lib/Manager.cpp
 
 LectureSerie.o: ./lib/LectureSerie.cpp
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) ./lib/LectureSerie.cpp -c
-	
-EnvoiPosition.o: ./lib/EnvoiPosition.cpp
-	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) ./lib/EnvoiPosition.cpp -c
 
 Util.o: ./lib/Util.c
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) ./lib/Util.c -c
-		
+
 i2c.o: ./lib/i2c.c
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) ./lib/i2c.c -c
 
@@ -47,4 +44,4 @@ upload2: all
 
 upload3: all
 	sudo avrdude -c usbtiny -p m328p -U flash:w:main.hex
- 
+
