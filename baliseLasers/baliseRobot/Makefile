@@ -1,7 +1,8 @@
 CC=avr-g++
 CFLAGS=-Wall -O2
 MMCU=atmega328p
-FREQ=16000000
+#FREQ=16000000
+FREQ=20000000
 
 all: baliseRobot.hex
 
