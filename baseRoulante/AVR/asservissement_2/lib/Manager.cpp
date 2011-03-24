@@ -141,9 +141,8 @@ void Manager::init()
     // Initialisation ADC
     // ADCSRA |= (1 << ADEN);
 
-	/*
-	* Timer de l'asservissement sur 16 bits à 2O MHz
-	*/
+	// Timer de l'asservissement (16bit, 20 MHz)
+	// Penser à changer le #define prescaler en haut du fichier
 	TIMSK1 |= (1 << TOIE1);
     TCCR1B |= (1 << CS11);
 	
@@ -153,14 +152,14 @@ void Manager::init()
 
 	// initialisation des constantes
 	assRotation.changeKp(10);
-	assRotation.changePWM(127);
+	assRotation.changePWM(PWM_MAX);
 	assRotation.changeKd(0);
 	assRotation.changeKi(0);
 	assRotation.changeVmax(0);
 	assRotation.changeKpVitesse(0);
 
 	assTranslation.changeKp(10);
-	assTranslation.changePWM(127);
+	assTranslation.changePWM(PWM_MAX);
 	assTranslation.changeKd(0);
 	assTranslation.changeKi(0);
 	assTranslation.changeVmax(0);
