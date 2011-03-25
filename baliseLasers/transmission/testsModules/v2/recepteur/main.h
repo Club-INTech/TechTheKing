@@ -31,7 +31,7 @@
 //le type Trame
 typedef uint64_t Trame;
 
-//les sbi et cbi, hyper-pratiques, ameliorent la lisibilite.
+//les sbi et cbi, hyper-pratiques, améliorent la lisibilité.
 #ifndef sbi
 #define sbi(port,bit) (port) |= (1 << (bit))
 #endif
@@ -42,4 +42,4 @@ typedef uint64_t Trame;
 
 
 // Declaration des fonctions
-uint8_t checksum(uint32_t data);
+//uint8_t checksum(uint32_t data);

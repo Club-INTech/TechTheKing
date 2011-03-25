@@ -33,4 +33,4 @@ typedef uint64_t Trame;
 
 
 // Declaration des fonctions
-uint8_t checksum(uint32_t data);
+//uint8_t checksum(uint32_t data);

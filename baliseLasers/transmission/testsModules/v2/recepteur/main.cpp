@@ -23,7 +23,7 @@ int main() {
 	while(1) {
 		// On travaille en échantillonage
 		//si changement de bit 
-		//analyse couche 2 - OSI
+		//analyse couche 2 ;)
 		if (transmetteur & 1) {
 			//on prend la main
 			cbi(transmetteur,FLAG_INIT_BIT);
@@ -58,7 +58,7 @@ int main() {
 			cbi(transmetteur,FLAG_INIT_BIT);
 		}
 		//fin de trame
-		//analyse couche 3 - OSI
+		//analyse couche 3 ;)
 		if ((transmetteur >> FLAG_FIN_TRAME) & 1){
 			uint8_t ptn = transmetteur >> FLAG_POINTEUR_MESSAGE;
 			if (ptn>0) {
@@ -92,31 +92,11 @@ ISR(INT0_vect) {
 	temps[0] = micros();
 }
 
+/*
 uint8_t checksum(uint32_t data) {
 	return ((uint8_t)data + (uint8_t)(data << 7) + (uint8_t)(data << 15) + (uint8_t)(data << 23));
 }
-
-/* utilite faible, calcul lourd?, le checksum a été préféré
-   uint8_t crc(uint32_t message) {
-
-#define POLYNOMIAL 0xD8000000  // 11011 followed by 0's 
-uint32_t  remainder;	
-// Initially, the dividend is the remainder.
-remainder = message;
-// For each bit position in the message....
-for (uint8_t bit = 32; bit > 0; --bit)
-{
-// If the uppermost bit is a 1...
-if (remainder & 0x80)
-{
-// XOR the previous remainder with the divisor.
-remainder ^= POLYNOMIAL;
-}
-// Shift the next bit of the message into the remainder.
-remainder = (remainder << 1);
-}
-// Return only the relevant bits of the remainder as CRC.
-return (remainder >> 24);
-
-}*/
+*/
+//et une petite macro pour la route : 
+#define checksum(data) ((uint8_t)data + (uint8_t)(data << 7) + (uint8_t)(data << 15) + (uint8_t)(data << 23))
 
