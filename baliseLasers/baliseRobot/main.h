@@ -45,6 +45,6 @@
 #define pinSens PINC1 //pin 1 analog de l'arduino
 #endif
 
-void commuter(uint8_t pas_commuter[4]);
+void commuter(uint8_t pas_commuter[2]);
 
 #endif

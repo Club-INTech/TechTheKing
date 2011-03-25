@@ -78,14 +78,15 @@ int main() {
 			//printUShort(rbi(PINC,pinSens));
 			//printString("\t");
 			printULong(periode);
-			printString("\t");
-			printUShort(ind);
+			//printString("\t");
+			//printUShort(ind);
 			//printString("\t");
 			//printUInt(periode);
 			//printString("\t");
 			//printULong(temps[1]);
 			//printString("\t");
 			//printlnInt(1000000/temps[1]);
+
 			// et on commute
 			micTemps = micros();
 			commuter(pas[ind]);
@@ -98,6 +99,22 @@ int main() {
 }
 
 /**
+ * fonction de commutation
+ */
+void commuter ( uint8_t pas_commuter[2] ) {
+	if (pas_commuter[0] == 1) 
+		sbi(portMot1,pinMot1);
+	else 
+		cbi(portMot1,pinMot1);
+	if (pas_commuter[1] == 1) 
+		sbi(portMot2,pinMot2);
+	else 
+		cbi(portMot2,pinMot2);
+
+	return;
+}
+
+/**
  * fonction du top-tour
  */
 ISR(INT0_vect) {
@@ -107,22 +124,4 @@ ISR(INT0_vect) {
 	temps[1]=(milAP-milAV);
 	milAV=milAP;
 	sei();
-}
-
-/**
- * fonction de commutation
- */
-void commuter(uint8_t pas_commuter[4]) {
-	if (pas_commuter[0] == 1) {
-		sbi(portMot1,pinMot1);
-	}
-	else {
-		cbi(portMot1,pinMot1);
-	}
-	if (pas_commuter[1] == 1) {
-		sbi(portMot2,pinMot2);
-	}
-	else {
-		cbi(portMot2,pinMot2);
-	}
 }
