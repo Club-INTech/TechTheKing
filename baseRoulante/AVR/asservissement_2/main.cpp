@@ -37,8 +37,7 @@
 #include "lib/serial.h"
 
 int main( void )
-{
-    
+{   
     // Série
     uart_init();
     // I2C
@@ -51,8 +50,8 @@ int main( void )
     while(1)
     {
 		manager.assPolaire();
-        _delay_ms(TEMPS_ASS);
-        //lectureSerie.traitement();
+        //_delay_ms(TEMPS_ASS);
+        lectureSerie.traitement();
     }
 
 }
