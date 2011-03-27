@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#define TWI_BUFFER_SIZE 4
+#define TWI_BUFFER_SIZE 5
 
 // Ordres de transmission
 #define TWI_CMD_MASTER_RESET        0x10

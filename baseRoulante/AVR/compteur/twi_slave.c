@@ -100,7 +100,7 @@ void TWI_Start_Transceiver_With_Data( uint8_t *msg, uint8_t msgSize )
 
     while ( TWI_Transceiver_Busy() ) {}
 
-    TWI_msgSize = msgSize; // Number of data to transmit.
+    TWI_msgSize = msgSize;
 
     for ( temp = 0; temp < msgSize; temp++ ) {
         TWI_buf[ temp ] = msg[ temp ];
