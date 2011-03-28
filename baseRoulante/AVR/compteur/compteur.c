@@ -1,6 +1,6 @@
 #include "compteur.h"
 
-void init (void)
+void compteur_init (void)
 {
     // Initialisation interruptions codeurs
     // Masques
@@ -9,11 +9,6 @@ void init (void)
     // Activer les interruptions
     PCICR |= (1 << PCIE2);
     PCICR |= (1 << PCIE1);
-
-    // Interruptions
-    sei();
-    // I2C
-    i2c_beginSlave(2);
 }
 
 // Interruption codeur 1
@@ -50,26 +45,22 @@ ISR (PCINT1_vect)
     }
 }
 
-void buffer_refresh (void)
+void charger_distance (void)
 {
     int32_t distance = roue1 + roue2;
 
-    buffer[0] = (uint8_t) distance;
-    buffer[1] = (uint8_t) (distance >> 8);
-    buffer[2] = (uint8_t) (distance >> 16);
-    buffer[3] = (uint8_t) (distance >> 24);
-
-    int32_t angle = roue1 - roue2;
-
-    buffer[4] = (uint8_t) angle;
-    buffer[5] = (uint8_t) (angle >> 8);
-    buffer[6] = (uint8_t) (angle >> 16);
-    buffer[7] = (uint8_t) (angle >> 24);
+    messageBuf[0] = (uint8_t) distance;
+    messageBuf[1] = (uint8_t) (distance >> 8);
+    messageBuf[2] = (uint8_t) (distance >> 16);
+    messageBuf[3] = (uint8_t) (distance >> 24);
 }
 
-void buffer_send()
+void charger_angle (void)
 {
-    buffer_refresh();
+    int32_t angle = roue1 - roue2;
 
-    i2c_sendArray((unsigned char*) buffer, 8);
+    messageBuf[0] = (uint8_t) angle;
+    messageBuf[1] = (uint8_t) (angle >> 8);
+    messageBuf[2] = (uint8_t) (angle >> 16);
+    messageBuf[3] = (uint8_t) (angle >> 24);
 }

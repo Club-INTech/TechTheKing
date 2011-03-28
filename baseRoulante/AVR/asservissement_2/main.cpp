@@ -37,20 +37,21 @@
 #include "lib/serial.h"
 
 int main( void )
-{
-    manager.init();
+{   
     // Série
     uart_init();
-    // Interruptions
-    sei();
     // I2C
     i2c_beginMaster();
+    //Manager
+    manager.init();
+    // Interruptions
+    sei();
 
     while(1)
     {
-        angle = getAngle();
-        distance = getDistance();
-        //lectureSerie.traitement();
+		manager.assPolaire();
+        //_delay_ms(TEMPS_ASS);
+        lectureSerie.traitement();
     }
 
 }

@@ -37,7 +37,7 @@ Asservissement::Asservissement()
  */
 int16_t Asservissement::calculePwm(int32_t consigne, int32_t positionReelle)
 {
-	int32_t erreur = consigne - positionReelle;
+	int32_t erreur = positionReelle - consigne;
     
 	if (erreur <= 3)
 		integraleErreur=0;
@@ -45,7 +45,7 @@ int16_t Asservissement::calculePwm(int32_t consigne, int32_t positionReelle)
 		integraleErreur+=erreur;
 		
 	// la dérivée de l'erreur est égale à -vitesse . On divise par 100 car sinon kd < 1
-	int32_t pwm = kp/2 * erreur - activationKd * kd * vitesse / 100 - ki  * integraleErreur;
+	int32_t pwm = kp * erreur/5 - activationKd * kd * vitesse  - ki  * integraleErreur;
 
 	if (vitesse > vMax) {
 		// pas besoin de dérivateur ou d'intégrateur ici

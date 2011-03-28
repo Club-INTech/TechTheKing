@@ -1,6 +1,6 @@
 #include "Util.h"
 
-uint8_t buffer[8] = {0};
+uint8_t buffer[8];
 
 
 /*
@@ -63,9 +63,8 @@ int32_t lireBuffer (uint8_t decalage)
 
 int32_t getAngle (void)
 {
-	uint8_t i;
+	uint8_t i = 0;
     i2c_requestFrom(2, 8);
-    i = 0;
 
     while ( i2c_available() )
     {
@@ -78,9 +77,8 @@ int32_t getAngle (void)
 
 int32_t getDistance (void)
 {
-	uint8_t i;
+	uint8_t i = 0;
     i2c_requestFrom(2, 8);
-    i = 0;
 
     while ( i2c_available() )
     {

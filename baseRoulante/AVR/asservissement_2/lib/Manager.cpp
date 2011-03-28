@@ -1,19 +1,24 @@
 #include "Manager.h"
 
-#define PRESCALER 64
-#define TEMPS_ASS PRESCALER 20000000/(2^16*PRESCALER)
 int32_t x;
 int32_t y;
 
-int32_t angle = 0;
-int32_t distance = 0;
-
 void
 Manager::assPolaire()
-{   
+{
+	int32_t angle=0;
+    int32_t distance=0;
+    
+    printlnLong(1);
+    distance = getDistance();
+	angle = getAngle();
+    
+    printlnLong(angle);
+    printlnLong(distance);
+    
 	// Réactualisation des vitesses du robot
-	assRotation.setVitesse((angle-angleBkp)/TEMPS_ASS);
-	assTranslation.setVitesse((distance-distanceBkp)/TEMPS_ASS);
+	assRotation.setVitesse((angle-angleBkp));
+	assTranslation.setVitesse((distance-distanceBkp));
 	angleBkp = angle;
 	distanceBkp = distance;
 
@@ -53,7 +58,10 @@ Manager::assPolaire()
 	int16_t pwmG = pwmTranslation - pwmRotation;
 	int16_t pwmD = pwmTranslation + pwmRotation;
 	
-
+	//printlnLong(pwmG);
+	//printlnLong(pwmD);
+	
+	
 	/*
 	* Envoi des PWM
 	*/	
@@ -71,26 +79,26 @@ Manager::assPolaire()
 	if (pwmG > 0) {
 		// Direction gauche = 0
 		// PWM gauche = pwmG
-		PORTD &= ~PINDIR1;
+		PORTD |= PINDIR1;
 		MOTEUR1 = pwmG;
 	}
 	else {
 		// Direction gauche = 1
 		// PWM gauche = -pwmG
-		PORTD |= PINDIR1;
+		PORTD &= ~PINDIR1;
 		MOTEUR1 = -pwmG;
 	}
 
 	if (pwmD > 0) {
 		// Direction droite = 0
 		// PWM droite = pwmD
-		PORTB &= ~PINDIR2;
+		PORTB |= PINDIR2;
 		MOTEUR2 = pwmD;
 	}
 	else {
 		// Direction droite = 1
 		// PWM droite = -pwmD
-		PORTB |= PINDIR2;
+		PORTB &= ~PINDIR2;
 		MOTEUR2 = -pwmD;
 	}
 }
@@ -106,7 +114,7 @@ void Manager::init()
 {
 	x=0;
 	y=0;
-
+	
 	activationAssDistance = true;
 	activationAssAngle = true;
 
@@ -141,9 +149,8 @@ void Manager::init()
     // Initialisation ADC
     // ADCSRA |= (1 << ADEN);
 
-	/*
-	* Timer de l'asservissement sur 16 bits à 2O MHz
-	*/
+	// Timer de l'asservissement (16bit, 20 MHz)
+	// Penser à changer le #define prescaler en haut du fichier
 	TIMSK1 |= (1 << TOIE1);
     TCCR1B |= (1 << CS11);
 	
@@ -153,15 +160,15 @@ void Manager::init()
 
 	// initialisation des constantes
 	assRotation.changeKp(10);
-	assRotation.changePWM(127);
-	assRotation.changeKd(0);
+	assRotation.changePWM(PWM_MAX);
+	assRotation.changeKd(10);
 	assRotation.changeKi(0);
 	assRotation.changeVmax(0);
 	assRotation.changeKpVitesse(0);
 
 	assTranslation.changeKp(10);
-	assTranslation.changePWM(127);
-	assTranslation.changeKd(0);
+	assTranslation.changePWM(PWM_MAX);
+	assTranslation.changeKd(10);
 	assTranslation.changeKi(0);
 	assTranslation.changeVmax(0);
 	assTranslation.changeKpVitesse(0);

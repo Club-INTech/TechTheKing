@@ -1,5 +1,5 @@
 CC=avr-gcc
-CFLAGS=-Wall -O2 
+CFLAGS=-Wall -O2
 MMCU=atmega328p
 FREQ=20000000
 
@@ -8,19 +8,19 @@ all: main.hex
 main.hex: main.out
 	avr-objcopy -O ihex -R .eeprom main.out main.hex
 
-main.out: main.o compteur.o i2c.o serial.o
-	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) main.o compteur.o serial.o i2c.o -o main.out
+main.out: main.o twi_slave.o compteur.o serial.o
+	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) main.o twi_slave.o serial.o compteur.o -o main.out
 
 main.o: main.c
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) main.c -c
 
-compteur.o: compteur.c
+twi_slave.o: twi_slave.c twi_slave.h
+	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) twi_slave.c -c
+
+compteur.o: compteur.c compteur.h
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) compteur.c -c
 
-i2c.o: i2c.c
-	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) i2c.c -c
-
-serial.o: serial.c
+serial.o: serial.c serial.h
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) serial.c -c
 
 clean:
@@ -34,4 +34,4 @@ upload2: all
 
 upload3: all
 	sudo avrdude -c usbtiny -p m328p -U flash:w:main.hex
- 
+
