@@ -24,6 +24,9 @@ lasers.o : lib/lasers.cpp
 usart.o: ../../common-AVR/usart.c
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) ../../common-AVR/usart.c -c
 
+#usart.o: lib/usart.c
+#	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) lib/usart.c -c
+
 clean:
 	rm -rf *.o *.hex *.out
 

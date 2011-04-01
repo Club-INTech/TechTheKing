@@ -20,7 +20,8 @@ volatile uint32_t milAV=0;	//micros avant top
 //static int16_t kP = 1000;	//coefficient de conversion entre la période de consigne et la période de commande (dépend du nombre de pas/tr du moteur et du nombre de commandes par pas).
 
 //pour la commande du moteur
-uint32_t periode = 50000;	//periode de commande du moteur, en microsecondes
+//uint32_t periode = 50000;	//periode de commande du moteur, en microsecondes
+uint32_t periode = 25000;	//periode de commande du moteur, en microsecondes
 uint16_t incPeriode = 5000;	//periode d'incrémentation de periode pour le démarrage, en microseconde
 uint32_t incTemps = 0;	//stocke le temps écoulé depuis le début pour le démarrage
 uint32_t micTemps = 0;	//stocke le temps écoulé depuis le début pour les commutions du moteur
@@ -43,10 +44,11 @@ int main() {
 	//on initialise la notion temporelle sur l'AVR
 	temps_init();
 	//on initialise l'alimentation des lasers (par pwm)
-	//lasers_init();
+	lasers_init();
 
 	//on initialise les ports de commande du moteur en sortie
 	sbi(DDRB,pinMotE);
+	sbi(DDRB,PORTB3);
 	sbi(DDRB,pinMot1);
 	sbi(DDRB,pinMot2);
 	//on initialise les interruptions du top tour sur front descendant
@@ -65,12 +67,15 @@ int main() {
 
 	//démarrage : 
 	printlnString("demarrage");
+	sbi(portMotE,pinMotE);//on active le pont en H
+	sbi(portMotE,PORTB3);
+	sbi(DDRB,PORTB3);
 	while(1) {
 		//calcul de la valeur de periode à utiliser ici (en gros pour le démarrage, on se contente pour l'instant d'une simple rampe) : 
 		if (micros() > incTemps + incPeriode) {
 			incTemps = micros();
 			if (periode > 7700) {
-				periode-=4;
+				periode-=7;
 			}
 		}
 		//commutation des bobines du moteur : 
