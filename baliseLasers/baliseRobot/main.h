@@ -30,7 +30,7 @@
 #define portTop PORTD
 #define pinTop PORTD3
 #define portMotE PORTB 
-#define pinMotE PORTB1
+#define pinMotE PORTB3
 #define portMot1 PORTD 
 #define pinMot1 PORTD6
 #define portMot2 PORTD 

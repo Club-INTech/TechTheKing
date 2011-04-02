@@ -21,17 +21,47 @@ volatile uint32_t milAV=0;	//micros avant top
 
 //pour la commande du moteur
 //uint32_t periode = 50000;	//periode de commande du moteur, en microsecondes
-uint32_t periode = 25000;	//periode de commande du moteur, en microsecondes
+uint32_t periode = 12000;	//periode de commande du moteur, en microsecondes
 uint16_t incPeriode = 5000;	//periode d'incrémentation de periode pour le démarrage, en microseconde
 uint32_t incTemps = 0;	//stocke le temps écoulé depuis le début pour le démarrage
 uint32_t micTemps = 0;	//stocke le temps écoulé depuis le début pour les commutions du moteur
 uint8_t ind = 0;	//code la position dans le chronogramme de commande du moteur
+/*
+   uint8_t pas[4][2] = {
+   {1,0},
+   {1,1},
+   {0,1},
+   {0,0}
+   };
+   */
 uint8_t pas[4][2] = {
 	{1,0},
-	{1,1},
 	{0,1},
-	{0,0}
+	{1,0},
+	{0,1}
 };
+
+
+void pwm_init() {
+	sbi(DDRB,PORTB3);	//définie la sortie B du timer0
+	OCR2A=64;
+	/*positionner le mode pwm*/
+	sbi(TCCR2A,WGM20);	//
+	sbi(TCCR2A,WGM21);	//fast-pwm, TOP=0xFF
+	cbi(TCCR2B,WGM22);	//
+	/*paramétrer le comportement sur comparaisons*/
+	sbi(TCCR2A,COM2A1);	//fast-pwm -> OC2A mis à 0 lors d'une comparaison
+	cbi(TCCR2A,COM2A0);	//réussie et mis à 1 à passage par BOTTOM
+	/*sélection de la source du timer*/
+	//sbi(TCCR2B,CS22);	//
+	//cbi(TCCR2B,CS21);	//prescaler à 256, soit 300Hz (clock à 20MHz)
+	//cbi(TCCR2B,CS20);	//
+	cbi(TCCR2B,CS22);	//
+	sbi(TCCR2B,CS21);	//prescaler à 8, soit 10kHz (clock à 20MHz)
+	cbi(TCCR2B,CS20);	//
+	return ;
+}
+
 
 /**
  * et on y va pour la fonction main
@@ -46,8 +76,11 @@ int main() {
 	//on initialise l'alimentation des lasers (par pwm)
 	lasers_init();
 
+	//on initialise le pwm du moteur : 
+	pwm_init();
+
 	//on initialise les ports de commande du moteur en sortie
-	sbi(DDRB,pinMotE);
+	//sbi(DDRB,pinMotE);
 	sbi(DDRB,PORTB3);
 	sbi(DDRB,pinMot1);
 	sbi(DDRB,pinMot2);
@@ -67,8 +100,8 @@ int main() {
 
 	//démarrage : 
 	printlnString("demarrage");
-	sbi(portMotE,pinMotE);//on active le pont en H
-	sbi(portMotE,PORTB3);
+	//sbi(portMotE,pinMotE);//on active le pont en H
+	//sbi(portMotE,PORTB3);
 	sbi(DDRB,PORTB3);
 	while(1) {
 		//calcul de la valeur de periode à utiliser ici (en gros pour le démarrage, on se contente pour l'instant d'une simple rampe) : 
@@ -106,18 +139,18 @@ int main() {
 /**
  * fonction de commutation
  */
-void commuter ( uint8_t pas_commuter[2] ) {
-	if (pas_commuter[0] == 1) 
-		sbi(portMot1,pinMot1);
-	else 
-		cbi(portMot1,pinMot1);
-	if (pas_commuter[1] == 1) 
-		sbi(portMot2,pinMot2);
-	else 
-		cbi(portMot2,pinMot2);
+	void commuter ( uint8_t pas_commuter[2] ) {
+		if (pas_commuter[0] == 1) 
+			sbi(portMot1,pinMot1);
+		else 
+			cbi(portMot1,pinMot1);
+		if (pas_commuter[1] == 1) 
+			sbi(portMot2,pinMot2);
+		else 
+			cbi(portMot2,pinMot2);
 
-	return;
-}
+		return;
+	}
 
 /**
  * fonction du top-tour
