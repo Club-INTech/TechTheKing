@@ -10,8 +10,8 @@ Manager::assPolaire()
     int32_t distance=0;
     
     printlnLong(1);
-    distance = getDistance();
-	angle = getAngle();
+    distance = get_distance();
+	angle = get_angle();
     
     printlnLong(angle);
     printlnLong(distance);

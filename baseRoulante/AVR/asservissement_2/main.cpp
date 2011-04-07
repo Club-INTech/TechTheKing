@@ -33,7 +33,7 @@
 #include "lib/LectureSerie.h"
 #include "lib/Manager.h"
 #include "lib/Util.h"
-#include "lib/i2c.h"
+#include "lib/twi_master.h"
 #include "lib/serial.h"
 
 int main( void )
@@ -41,7 +41,7 @@ int main( void )
     // Série
     uart_init();
     // I2C
-    i2c_beginMaster();
+    TWI_init();
     //Manager
     manager.init();
     // Interruptions
