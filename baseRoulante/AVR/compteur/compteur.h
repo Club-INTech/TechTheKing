@@ -5,7 +5,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
-#include "i2c.h"
+#include "twi_slave.h"
 
 /*
  *  Pins des codeurs
@@ -22,25 +22,16 @@ volatile int32_t roue1;
 volatile int32_t roue2;
 
 /*
- *  Buffer l'i2c
- */
-uint8_t buffer[8];
-
-/*
  *  Initialisations
  *    interruptions codeurs
  */
-void init (void);
+void compteur_init (void);
 
 /*
- *  Fonctions pour mettre l'angle puis la distance dans le buffer
+ *  Fonctions pour mettre l'angle ou la distance dans le buffer
  *    le bit de poids faible est en début de tableau (envoyé en premier sur le bus i2c)
  */
-void buffer_refresh(void);
-
-/*
- * Fonction de réponse aux requêtes du master
- */
-void buffer_send();
+void charger_distance (void);
+void charger_angle (void);
 
 #endif

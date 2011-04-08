@@ -1,23 +1,28 @@
-#include <util/delay.h>
+#include <avr/io.h>
+#include <avr/interrupt.h>
+#include <stdint.h>
 
+#include "twi_slave.h"
 #include "compteur.h"
-#include "serial.h"
 
-int main()
+
+
+int main( void )
 {
-    init();
-    uart_init();
-    
-    roue1 = 0;
-    roue2 = 0;
+    // Interruptions
+    sei();
 
-    i2c_onRequest(buffer_send);
+    // I2C
+    TWI_Init();
+
+    // Compteur
+    compteur_init();
+
     
-    while(1)
-    {
-        _delay_ms(10);
+    while(1) {
+        TWI_Loop();
     }
-    
-    return 0;
-}
 
+    return 0;
+    
+}

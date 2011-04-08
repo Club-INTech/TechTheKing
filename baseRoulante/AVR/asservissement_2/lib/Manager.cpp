@@ -6,21 +6,22 @@ int32_t y;
 void
 Manager::assPolaire()
 {
-	int32_t angle;
-    int32_t distance;
+	int32_t angle=0;
+    int32_t distance=0;
     
-    
-       
-	angle = getAngle();
-    distance = getDistance();
+    printlnLong(1);
+    distance = get_distance();
+	angle = get_angle();
     
     //x+=(distance*getSin(angle*CONVERSION_ANGLE));
     //y+=(distance*getCos(angle*CONVERSION_ANGLE));
     
+    printlnLong(angle);
+    printlnLong(distance);
     
 	// Réactualisation des vitesses du robot
-	assRotation.setVitesse((angle-angleBkp)/TEMPS_ASS);
-	assTranslation.setVitesse((distance-distanceBkp)/TEMPS_ASS);
+	assRotation.setVitesse((angle-angleBkp));
+	assTranslation.setVitesse((distance-distanceBkp));
 	angleBkp = angle;
 	distanceBkp = distance;
 
@@ -60,8 +61,8 @@ Manager::assPolaire()
 	int16_t pwmG = pwmTranslation - pwmRotation;
 	int16_t pwmD = pwmTranslation + pwmRotation;
 	
-	printlnLong(pwmG);
-	printlnLong(pwmD);
+	//printlnLong(pwmG);
+	//printlnLong(pwmD);
 	
 	
 	/*
@@ -81,26 +82,26 @@ Manager::assPolaire()
 	if (pwmG > 0) {
 		// Direction gauche = 0
 		// PWM gauche = pwmG
-		PORTD &= ~PINDIR1;
+		PORTD |= PINDIR1;
 		MOTEUR1 = pwmG;
 	}
 	else {
 		// Direction gauche = 1
 		// PWM gauche = -pwmG
-		PORTD |= PINDIR1;
+		PORTD &= ~PINDIR1;
 		MOTEUR1 = -pwmG;
 	}
 
 	if (pwmD > 0) {
 		// Direction droite = 0
 		// PWM droite = pwmD
-		PORTB &= ~PINDIR2;
+		PORTB |= PINDIR2;
 		MOTEUR2 = pwmD;
 	}
 	else {
 		// Direction droite = 1
 		// PWM droite = -pwmD
-		PORTB |= PINDIR2;
+		PORTB &= ~PINDIR2;
 		MOTEUR2 = -pwmD;
 	}
 }
@@ -118,7 +119,7 @@ void Manager::init()
 	y=0;
 	
 	activationAssDistance = true;
-	activationAssAngle = false;
+	activationAssAngle = true;
 
     // Initialisation PWM pour le PH sur timer0 (moteur 2)
     // Initialisation pin 12
@@ -163,14 +164,14 @@ void Manager::init()
 	// initialisation des constantes
 	assRotation.changeKp(10);
 	assRotation.changePWM(PWM_MAX);
-	assRotation.changeKd(0);
+	assRotation.changeKd(10);
 	assRotation.changeKi(0);
 	assRotation.changeVmax(0);
 	assRotation.changeKpVitesse(0);
 
 	assTranslation.changeKp(10);
 	assTranslation.changePWM(PWM_MAX);
-	assTranslation.changeKd(0);
+	assTranslation.changeKd(10);
 	assTranslation.changeKi(0);
 	assTranslation.changeVmax(0);
 	assTranslation.changeKpVitesse(0);
@@ -328,7 +329,7 @@ unsigned char stator1 = 1;
 
 ISR(TIMER1_OVF_vect)
 {
-	//manager.assPolaire();
+	manager.assPolaire();
 }
 
 Manager manager;

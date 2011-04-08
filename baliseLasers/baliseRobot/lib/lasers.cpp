@@ -1,11 +1,13 @@
 #include "lasers.h"
 
 void lasers_init() {
-	sbi(DDRD,DDD5);		//définie la sortie B du timer0
+	sbi(DDRD,PORTD5);	//définie la sortie B du timer0
 	//OCR0A=0x78;		//120//défini la fréquence de 16,67kHz en accord avec le prescaler
 	//OCR0B=0x3C;		//60//défini le rapport cyclique de 50%
-	OCR0A=72;
-	OCR0B=36;
+	//OCR0A=72;
+	//OCR0B=36;
+	OCR0A=50;
+	OCR0B=25;
 	/*positionner le mode pwm*/
 	sbi(TCCR0A,WGM00);	//
 	sbi(TCCR0A,WGM01);	//fast-pwm, TOP=OCR0A

@@ -1,6 +1,4 @@
-OBJS=main.o Util.o Asservissement.o \
-	LectureSerie.o Manager.o i2c.o \
-	serial.o Cos.o
+OBJS=main.o Util.o Asservissement.o LectureSerie.o Manager.o twi_master.o serial.o Cos.o
 CC=avr-g++
 CFLAGS=-Wall -O2
 MMCU=atmega328p
@@ -13,7 +11,7 @@ main.hex: main.out
 
 main.out: $(OBJS)
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) $(OBJS) -o main.out
-
+	
 main.o: main.cpp
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) main.cpp -c
 
@@ -32,8 +30,8 @@ LectureSerie.o: ./lib/LectureSerie.cpp
 Util.o: ./lib/Util.c
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) ./lib/Util.c -c
 
-i2c.o: ./lib/i2c.c
-	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) ./lib/i2c.c -c
+twi_master.o: ./lib/twi_master.c
+	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) ./lib/twi_master.c -c
 
 serial.o: ./lib/serial.c
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) ./lib/serial.c -c
