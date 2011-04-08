@@ -327,7 +327,7 @@ void Manager::reset()
 */
 unsigned char stator1 = 1;
 
-ISR(TIMER1_OVF_vect)
+ISR(TIMER1_OVF_vect,ISR_NOBLOCK)
 {
 	manager.assPolaire();
 }
