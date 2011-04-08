@@ -18,7 +18,9 @@ LectureSerie::traitement() {
 		asm("nop");
 	}
 	premierCaractere = read();
+#ifdef _DEBUG_
 	uart_send_char(premierCaractere);
+#endif
 	printlnLong(0);
 	premierCaractere = read();
 	int32_t i;
