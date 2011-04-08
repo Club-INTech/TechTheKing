@@ -1,4 +1,5 @@
 #include "Interfaces.h"
+#include "Debug.h"
 
 using namespace std;
 
@@ -75,6 +76,9 @@ void detectionSerieUsb(InterfaceAsservissement* asserv){
 void InterfaceAsservissement::goTo(Point depart,Point arrivee,int nbPoints){
     vector<Point> listePointsTmp=m_pathfinding.getChemin(depart,arrivee);
     vector<Point> listePointsLissee=ListePoints::lissageBezier(listePointsTmp,nbPoints);
+	#ifdef DEBUG_GRAPHIQUE
+	Debug::debugGraphique(listePointsLissee);
+	#endif
     vector<Consigne> listeConsignes=ListePoints::convertirEnConsignes(listePointsLissee); 
     ListeConsignes::transfertSerie(listeConsignes,m_liaisonSerie);
 }

@@ -50,8 +50,8 @@ int main( void )
 
     while(1)
     {
-		manager.assPolaire();
-        _delay_ms(TEMPS_ASS);
+		//manager.assPolaire();
+		printlnLong(1);
         //lectureSerie.traitement();
     }
 

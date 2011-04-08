@@ -1,4 +1,6 @@
-OBJS=main.o Util.o Asservissement.o LectureSerie.o Manager.o i2c.o serial.o
+OBJS=main.o Util.o Asservissement.o \
+	LectureSerie.o Manager.o i2c.o \
+	serial.o Cos.o
 CC=avr-g++
 CFLAGS=-Wall -O2
 MMCU=atmega328p
@@ -10,11 +12,14 @@ main.hex: main.out
 	avr-objcopy -O ihex -R .eeprom main.out main.hex
 
 main.out: $(OBJS)
-	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) main.o Util.o Asservissement.o LectureSerie.o Manager.o i2c.o serial.o -o main.out
+	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) $(OBJS) -o main.out
 
 main.o: main.cpp
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) main.cpp -c
 
+Cos.o: ./lib/Cos.cpp
+	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) ./lib/Cos.cpp -c
+	
 Asservissement.o: ./lib/Asservissement.cpp
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) ./lib/Asservissement.cpp -c
 
@@ -32,6 +37,10 @@ i2c.o: ./lib/i2c.c
 
 serial.o: ./lib/serial.c
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) ./lib/serial.c -c
+	
+	
+tableCos: tableCos.c
+	gcc tableCos.c -lm -o tableCos
 
 clean:
 	rm -rf *.o *.hex *.out

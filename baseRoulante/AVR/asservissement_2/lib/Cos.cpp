@@ -1,6 +1,8 @@
 #include "Cos.h"
+#include "TableCos.h"
+#include <avr/pgmspace.h>
 
-const float COS_TABLE[NOMBRE_COS] PROGMEM = { COS_LIST };
+const float COS_TABLE[NOMBRE_COS] PROGMEM = {COS_LIST};
 
 
 float getCos(float angleRadian){
@@ -15,7 +17,7 @@ float getCos(float angleRadian){
     offsetSigne=-1;
   }
   t = pgm_read_dword(&COS_TABLE[(int)(NOMBRE_COS*angleRadian/PI+0.5)]);
-  result = offsetSigne*(*((float*)&t));
+  result = offsetSigne * (*((float*)(&t)));
   return result; 
 }
 

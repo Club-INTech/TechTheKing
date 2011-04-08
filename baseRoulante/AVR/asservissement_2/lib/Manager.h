@@ -7,8 +7,7 @@
 #include "Asservissement.h"
 #include "Util.h"
 #include "serial.h"
-
-#define ABS(x) 		((x) < 0 ? - (x) : (x))
+#include "Cos.h"
 
 // Puissance maximal de chaque moteur (1023 MAX)
 #define PWM_MAX	255
