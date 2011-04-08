@@ -18,8 +18,8 @@
 /*
  *  Position roues
  */
-volatile int32_t roue1;
-volatile int32_t roue2;
+extern volatile int32_t roue1;
+extern volatile int32_t roue2;
 
 /*
  *  Initialisations

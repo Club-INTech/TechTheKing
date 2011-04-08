@@ -25,6 +25,41 @@ std::string exec(char* cmd);
 class InterfaceAsservissement;
 std::vector<char> getTtyUSB();
 
+namespace ListeObstacles{
+
+/*!
+ * \brief contientCercle
+ *
+ * Existe-t-il dans la liste d'obstacles un obstacle de la couleur donnée contenant le cercle donné?
+ *
+ * \return Si il existe, l'obstacle en question le plus proche du centre du cercle. NULL sinon.
+ */
+Obstacle* contientCercle(int centreX,int centreY,int rayon, Couleur couleur);
+
+/*!
+ * \brief setCouleursAuto
+ *
+ * Parcourt la liste d'obstacles et attribue à chacun la couleur de la case la plus proche.
+ *
+ */
+void setCouleursAuto();
+
+/*!
+ * \brief refreshPositions
+ *
+ * Recharge les coordonnees de la liste d'obstacles depuis le fichier .dat spécifié.
+ *
+ */
+void refreshPositions(const char nomFichier[]);
+
+/*!
+ * \brief
+ * 
+ * Ajout des planches de bois
+ * 
+ */
+void initialisation();
+}
 
 class Point{
 	public:

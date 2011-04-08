@@ -1,10 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "TableCos.h"
 
 int16_t main(int16_t argc, char* argv[]){
-	FILE* f=fopen("TableCos.h","w+");
+	FILE* f=fopen("./lib/TableCos.h","w+");
 	int16_t i;
 	if(argc==1){
 		fprintf(stderr,"usage : %s N\n",argv[0]);
@@ -18,7 +17,7 @@ int16_t main(int16_t argc, char* argv[]){
 	fprintf(f,"#define NOMBRE_COS %d\n",N);
 	fprintf(f,"#define COS_LIST ");
 	for(i=0;i<(N-1);i++){
-		fprintf(f,"%f, ",cos(M_PI*i/(N-1)));
+		fprintf(f,"%f,",cos(M_PI*i/(N-1)));
 	}
 	fprintf(f,"%f",cos(M_PI*i/(N)));
 	fclose(f);

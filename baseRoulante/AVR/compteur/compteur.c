@@ -1,4 +1,8 @@
 #include "compteur.h"
+#include "twi_slave.h"
+
+volatile int32_t roue1;
+volatile int32_t roue2;
 
 void compteur_init (void)
 {

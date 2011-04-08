@@ -7,7 +7,6 @@
 #include "Point.h"
 #include "AStar.h"
 #include <SerialPort.h>
-#include "I2cBus.h"
 #include "Singleton.h"
 #include "Thread.h"
 
@@ -50,7 +49,6 @@ private:
     inline void traiterPresenceObstacle();
     void thread();
 private:
-    I2cBus* m_busI2c;
 };
 
 
@@ -72,7 +70,6 @@ private:
 
 private:
     bool m_modePince;
-    I2cBus* m_busI2c;
 };
 
 #endif

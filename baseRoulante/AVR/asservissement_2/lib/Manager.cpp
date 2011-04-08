@@ -9,12 +9,14 @@ Manager::assPolaire()
 	int32_t angle=0;
     int32_t distance=0;
     
-    printlnLong(1);
     distance = get_distance();
 	angle = get_angle();
     
-    printlnLong(angle);
-    printlnLong(distance);
+    //x+=(distance*getSin(angle*CONVERSION_ANGLE));
+    //y+=(distance*getCos(angle*CONVERSION_ANGLE));
+
+     printlnLong(angle);
+    //printlnLong(distance);
     
 	// Réactualisation des vitesses du robot
 	assRotation.setVitesse((angle-angleBkp));
@@ -57,9 +59,11 @@ Manager::assPolaire()
 
 	int16_t pwmG = pwmTranslation - pwmRotation;
 	int16_t pwmD = pwmTranslation + pwmRotation;
+
+    
 	
-	//printlnLong(pwmG);
-	//printlnLong(pwmD);
+// 	printlnLong(pwmG);
+// 	printlnLong(pwmD);
 	
 	
 	/*
@@ -152,7 +156,7 @@ void Manager::init()
 	// Timer de l'asservissement (16bit, 20 MHz)
 	// Penser à changer le #define prescaler en haut du fichier
 	TIMSK1 |= (1 << TOIE1);
-    TCCR1B |= (1 << CS11);
+    TCCR1B |= (1 << CS11 | 1 << CS10);
 	
 	// initialisation de la liste de point
 	tableauConsignes.nbConsignes=0;
@@ -324,7 +328,7 @@ void Manager::reset()
 */
 unsigned char stator1 = 1;
 
-ISR(TIMER1_OVF_vect)
+ISR(TIMER1_OVF_vect, ISR_NOBLOCK)
 {
 	manager.assPolaire();
 }
