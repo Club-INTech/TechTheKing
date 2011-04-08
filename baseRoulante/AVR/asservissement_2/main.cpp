@@ -50,8 +50,7 @@ int main( void ){
     
     while(1)
     {
-		//manager.assPolaire();
-        //lectureSerie.traitement();
+        lectureSerie.traitement();
     }
 
 }
