@@ -36,7 +36,7 @@
 #include "lib/twi_master.h"
 #include "lib/serial.h"
 
-int main( void ){   
+int main( void ){
     // Série
     uart_init();
     // I2C
@@ -46,10 +46,11 @@ int main( void ){
     // Interruptions
     sei();
 
+    send_reset();
+    
     while(1)
     {
 		//manager.assPolaire();
-		printlnLong(1);
         //lectureSerie.traitement();
     }
 

@@ -1,48 +1,32 @@
-#ifndef TWI_SLAVE_H
-#define TWI_SLAVE_H
+#define TWI_BUFFER_SIZE 5
+                               
+#define MASTER_CMD_RESET    0X10
+#define MASTER_CMD_DISTANCE 0X20
+#define MASTER_CMD_ANGLE    0X30
 
-#include <stdint.h>
+extern unsigned char messageBuf[];
 
-#define TWI_BUFFER_SIZE 4
-
-// Ordres de transmission
-#define TWI_CMD_MASTER_RESET        0x10
-#define TWI_CMD_MASTER_DISTANCE     0x20
-#define TWI_CMD_MASTER_ANGLE        0x30
-
-uint8_t messageBuf[TWI_BUFFER_SIZE];
-uint8_t TWI_slaveAddress;
-
-// Flags pour l'etat de la transmission
-union TWI_statusReg_t
-{
-    uint8_t all;
-    struct
-    {
-        uint8_t lastTransOK:1;
-        uint8_t RxDataInBuf:1;
-        uint8_t genAddressCall:1;
-        uint8_t unusedBits:5;
-    };
-};
-
-extern union TWI_statusReg_t TWI_statusReg;
-
+/****************************************************************************
+  Function definitions
+****************************************************************************/
+void TWI_Loop( void );
+void TWI_Init ( void );
 void TWI_Slave_Initialise( unsigned char );
-uint8_t TWI_Transceiver_Busy( void );
-uint8_t TWI_Get_State_Info( void );
+unsigned char TWI_Transceiver_Busy( void );
+unsigned char TWI_Get_State_Info( void );
 void TWI_Start_Transceiver_With_Data( unsigned char * , unsigned char );
 void TWI_Start_Transceiver( void );
-uint8_t TWI_Get_Data_From_Transceiver( unsigned char *, unsigned char );
+unsigned char TWI_Get_Data_From_Transceiver( unsigned char *, unsigned char );
 
-// A coller dans un while(1)
-uint8_t TWI_Loop ();
-// A coller avant le while(1)
-void TWI_Init ();
+/****************************************************************************
+  Bit and byte definitions
+****************************************************************************/
+#define TWI_READ_BIT  0   // Bit position for R/W bit in "address byte".
+#define TWI_ADR_BITS  1   // Bit position for LSB of the slave address bits in the init byte.
+#define TWI_GEN_BIT   0   // Bit position for LSB of the general call bit in the init byte.
 
-#define TWI_READ_BIT  0
-#define TWI_ADR_BITS  1
-#define TWI_GEN_BIT   0
+#define TRUE          1
+#define FALSE         0
 
 /****************************************************************************
   TWI State codes
@@ -83,7 +67,5 @@ void TWI_Init ();
 #define TWI_SRX_STOP_RESTART       0xA0  // A STOP condition or repeated START condition has been received while still addressed as Slave
 
 // TWI Miscellaneous status codes
-#define TWI_NO_STATE               0xF8  // No relevant state information available
+#define TWI_NO_STATE               0xF8  // No relevant state information available; TWINT = “0”
 #define TWI_BUS_ERROR              0x00  // Bus error due to an illegal START or STOP condition
-
-#endif
