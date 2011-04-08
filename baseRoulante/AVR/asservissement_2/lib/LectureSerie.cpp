@@ -17,8 +17,8 @@ LectureSerie::traitement() {
 	while (available() == 0) {
 		asm("nop");
 	}
-	premierCaractere = read();
 	printlnLong(0);
+	premierCaractere = read();
 	int32_t i;
 	switch (premierCaractere) {
 	case '?':
