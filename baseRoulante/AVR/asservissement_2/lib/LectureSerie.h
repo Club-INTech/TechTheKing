@@ -1,6 +1,8 @@
 #ifndef LectureSerie_h
 #define LectureSerie_h
 
+#define _DEBUG_
+
 #include "serial.h"
 #include "Manager.h"
 #include <stdint.h> 

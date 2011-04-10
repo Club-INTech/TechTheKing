@@ -13,15 +13,19 @@ LectureSerie::LectureSerie()
 void
 LectureSerie::traitement() {
 	unsigned char premierCaractere;
+	printlnLong(1);
 	while (available() == 0) {
 		asm("nop");
 	}
 	premierCaractere = read();
-	
+#ifdef _DEBUG_
+	uart_send_char(premierCaractere);
+#endif
+	printlnLong(0);
 	int32_t i;
 	switch (premierCaractere) {
 	case '?':
-		printChar('0');
+		printlnLong(0);
 		break;
 	case 'a':
 		litEntierLong(&i);

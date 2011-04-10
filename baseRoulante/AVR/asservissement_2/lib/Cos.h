@@ -3,6 +3,6 @@
 #include <stdint.h> 
 #define ABS(x) ( (x)>0?(x):-(x))
 
-extern float getCos(float angleRadian);
+extern long getCos(float angleRadian);
 
 extern float getSin(float angleRadian);

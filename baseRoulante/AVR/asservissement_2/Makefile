@@ -15,8 +15,8 @@ main.out: $(OBJS)
 main.o: main.cpp
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) main.cpp -c
 
-Cos.o: ./lib/Cos.c
-	avr-gcc $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) ./lib/Cos.c -c
+Cos.o: ./lib/Cos.cpp
+	avr-gcc $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) ./lib/Cos.cpp -c
 	
 Asservissement.o: ./lib/Asservissement.cpp
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) ./lib/Asservissement.cpp -c

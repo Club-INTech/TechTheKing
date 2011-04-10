@@ -17,7 +17,7 @@ int16_t main(int16_t argc, char* argv[]){
 	fprintf(f,"#define NOMBRE_COS %d\n",N);
 	fprintf(f,"#define COS_LIST ");
 	for(i=0;i<(N-1);i++){
-		fprintf(f,"%f,",cos(M_PI*i/(N-1)));
+		fprintf(f,"%d,",(int) (cos(M_PI*i/(N-1))*10000) );
 	}
 	fprintf(f,"%f",cos(M_PI*i/(N)));
 	fclose(f);

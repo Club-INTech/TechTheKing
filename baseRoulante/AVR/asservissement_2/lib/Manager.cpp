@@ -14,8 +14,8 @@ Manager::assPolaire()
     
     //x+=(distance*getSin(angle*CONVERSION_ANGLE));
     //y+=(distance*getCos(angle*CONVERSION_ANGLE));
-
-     printlnLong(angle);
+    
+    //printlnLong(angle);
     //printlnLong(distance);
     
 	// Réactualisation des vitesses du robot
@@ -156,7 +156,7 @@ void Manager::init()
 	// Timer de l'asservissement (16bit, 20 MHz)
 	// Penser à changer le #define prescaler en haut du fichier
 	TIMSK1 |= (1 << TOIE1);
-    TCCR1B |= (1 << CS11 | 1 << CS10);
+    TCCR1B |= (1 << CS11);
 	
 	// initialisation de la liste de point
 	tableauConsignes.nbConsignes=0;
@@ -328,7 +328,7 @@ void Manager::reset()
 */
 unsigned char stator1 = 1;
 
-ISR(TIMER1_OVF_vect, ISR_NOBLOCK)
+ISR(TIMER1_OVF_vect,ISR_NOBLOCK)
 {
 	manager.assPolaire();
 }
