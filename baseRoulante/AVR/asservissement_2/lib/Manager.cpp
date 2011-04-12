@@ -1,5 +1,7 @@
 #include "Manager.h"
 
+#define ABS(x) (x > 0 ? x : -x)
+
 volatile long x;
 volatile long y;
 
@@ -10,11 +12,15 @@ Manager::assPolaire()
 	int32_t angle=0;
     int32_t distance=0;
     
-    //distance = get_distance();
-	//angle = get_angle();
+    distance = get_distance();
+	angle = get_angle();
     
-    //x+=distance*getCos(angle);
-
+    
+    x+=(distance - distanceBkp)*fp_cos(angle-angleBkp);
+	y+=(distance - distanceBkp)*fp_sin(angle-angleBkp);
+	
+	distanceBkp = distance;
+	angleBkp = angle;
 	// Réactualisation des vitesses du robot
 	assRotation.setVitesse((angle-angleBkp));
 	assTranslation.setVitesse((distance-distanceBkp));
@@ -115,6 +121,9 @@ void Manager::init()
 {
 	x=0;
 	y=0;
+	
+	distanceBkp=0;
+	angleBkp=0;
 	
 	activationAssDistance = true;
 	activationAssAngle = true;

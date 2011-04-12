@@ -72,6 +72,8 @@ int main( void ){
     
     while(1)
     {
+		printlnLong(x);
+		/*
         unsigned char premierCaractere;
 		while (available() == 0) {
 			asm("nop");
@@ -83,7 +85,7 @@ int main( void ){
 		int32_t i;
 		switch (premierCaractere) {
 		case '?':
-			printlnLong(getCos(get_angle()));
+			printlnLong(get_angle());
 			break;
 		case 'a':
 			litEntierLong(&i);
@@ -225,6 +227,6 @@ int main( void ){
 
 		default:
 			break;
-		}
+		}*/
     }
 }
