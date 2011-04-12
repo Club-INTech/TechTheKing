@@ -9,6 +9,9 @@
 
 int main( void )
 {
+
+	uart_init();
+	
     // Interruptions
     sei();
 
@@ -18,8 +21,11 @@ int main( void )
     // Compteur
     compteur_init();
 
+
     
     while(1) {
+			printlnLong(roue1);
+	printlnLong(roue2);
         TWI_Loop();
     }
 

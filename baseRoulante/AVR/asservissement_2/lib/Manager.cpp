@@ -1,23 +1,20 @@
 #include "Manager.h"
 
-int32_t x;
-int32_t y;
+volatile long x;
+volatile long y;
 
 void
 Manager::assPolaire()
 {
+	
 	int32_t angle=0;
     int32_t distance=0;
     
-    distance = get_distance();
-	angle = get_angle();
+    //distance = get_distance();
+	//angle = get_angle();
     
-    //x+=(distance*getSin(angle*CONVERSION_ANGLE));
-    //y+=(distance*getCos(angle*CONVERSION_ANGLE));
-    
-    //printlnLong(angle);
-    //printlnLong(distance);
-    
+    //x+=distance*getCos(angle);
+
 	// Réactualisation des vitesses du robot
 	assRotation.setVitesse((angle-angleBkp));
 	assTranslation.setVitesse((distance-distanceBkp));
@@ -301,35 +298,11 @@ Manager::switchAssDistance()
 }
 
 void 
-Manager::switchAssAngle()
-{
+Manager::switchAssAngle(){
 	activationAssAngle = !activationAssAngle;
 }
 
-/*
-* reset l'asservissement
-*/
-void Manager::reset()
-{
-	cli();
-	x=0;
-	y=0;
-	distanceBkp = 0;
-	angleBkp = 0;
-	indiceConsigneActuelle=1;
-	tableauConsignes.nbConsignes=0;
-	(tableauConsignes.listeConsignes[0]).distance = 0;
-	(tableauConsignes.listeConsignes[0]).angle = 0;
-	sei();
-}
-
-/*
-* Comprends pas.
-*/
-unsigned char stator1 = 1;
-
-ISR(TIMER1_OVF_vect,ISR_NOBLOCK)
-{
+ISR(TIMER1_OVF_vect,ISR_NOBLOCK){
 	manager.assPolaire();
 }
 

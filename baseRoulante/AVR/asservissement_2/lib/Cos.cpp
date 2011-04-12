@@ -1,13 +1,12 @@
 #include "Cos.h"
 #include "TableCos.h"
 #include <avr/pgmspace.h>
-#include <math.h>
 
-const long PROGMEM COS_TABLE[NOMBRE_COS] = {COS_LIST};
+PROGMEM prog_int16_t COS_TABLE[NOMBRE_COS] = {COS_LIST};
 
-long getCos(float angleRadian){
+int getCos(float angleRadian){
   uint32_t t;
-  long result;
+  int result;
   int16_t offsetSigne=1;
   angleRadian=ABS(angleRadian);
   int16_t quotient = (int) ( angleRadian / PI );

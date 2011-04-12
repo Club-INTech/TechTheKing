@@ -92,11 +92,8 @@ class Manager {
 #define CONVERSION_ANGLE 1000
 #define CONVERSION_DISTANCE 1000
 
-extern int32_t x;
-extern int32_t y;
-
-extern int32_t angle;
-extern int32_t distance;
+extern volatile long x;
+extern volatile long y;
 
 extern Manager  manager;
 

@@ -223,8 +223,7 @@ This function is the Interrupt Service Routine (ISR), and called when the TWI in
 that is whenever a TWI event has occurred. This function should not be called directly from the main
 application.
 ****************************************************************************/
-ISR(TWI_vect)
-{
+ISR(TWI_vect){
   static unsigned char TWI_bufPtr;
   
   switch (TWSR)
