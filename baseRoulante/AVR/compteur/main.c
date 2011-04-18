@@ -4,7 +4,7 @@
 
 #include "twi_slave.h"
 #include "compteur.h"
-
+#include "serial.h"
 
 
 int main( void )
@@ -16,17 +16,16 @@ int main( void )
     sei();
 
     // I2C
-    TWI_Init();
+    //TWI_Init();
 
     // Compteur
-    compteur_init();
+    //compteur_init();
 
 
     
     while(1) {
-			printlnLong(roue1);
-	printlnLong(roue2);
-        TWI_Loop();
+		printlnLong(1);
+        //TWI_Loop();
     }
 
     return 0;

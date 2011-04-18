@@ -1,5 +1,5 @@
 /**
- * \file MainAsservissement.cpp
+ * \file MainAsservissement.cppt
  * \brief Permet de controler l'asservissement
  *
  * exécute les ordres qui lui sont passées, voici la liste des ordres :
@@ -72,10 +72,10 @@ int main( void ){
     
     while(1)
     {
-		printlnLong(x);
-		/*
+		
         unsigned char premierCaractere;
 		while (available() == 0) {
+			printlnLong(1);
 			asm("nop");
 		}
 		premierCaractere = read();
@@ -85,7 +85,7 @@ int main( void ){
 		int32_t i;
 		switch (premierCaractere) {
 		case '?':
-			printlnLong(get_angle());
+			printlnLong(x);
 			break;
 		case 'a':
 			litEntierLong(&i);
@@ -227,6 +227,6 @@ int main( void ){
 
 		default:
 			break;
-		}*/
+		}
     }
 }

@@ -128,7 +128,6 @@ std::list<Point> trouverCentresMotifs(Image image){
 					std::list<Point> contour = trouverContour(image, i, j);
 					barycentreCourant = trouverBarycentre(contour);
 					annulerEllipse(image,barycentreCourant);
-					cout<<i<<"  "<<j<<endl;
 					if(contour.size()>100){
 						listeCentres.push_back(barycentreCourant);
 					}
@@ -158,9 +157,7 @@ void afficherMatrice(CvMat* m){
 
 std::list<Point> detectionEllipse(IplImage *img)
 {
-	// Exporte l'image vers une matrice
-	// A améliorer
-	Image image = {0};
+	Image image;
 	for(int i=0;i<NX;i++){
 		for(int j=0;j<NY;j++){
 			CvScalar pixel = cvGet2D(img,i,j);
