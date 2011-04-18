@@ -16,16 +16,15 @@ int main( void )
     sei();
 
     // I2C
-    //TWI_Init();
+    TWI_Init();
 
     // Compteur
-    //compteur_init();
+    compteur_init();
 
 
     
     while(1) {
-		printlnLong(1);
-        //TWI_Loop();
+        TWI_Loop();
     }
 
     return 0;
