@@ -1,6 +1,6 @@
-OBJS=main.o Util.o Asservissement.o Manager.o serial.o Cos.o twi_master.o
+OBJS=main.o Util.o Asservissement.o Manager.o serial.o twi_master.o Cos.o
 CC=avr-g++
-CFLAGS=-Wall -O2
+CFLAGS=-Wall -O
 MMCU=atmega328p
 FREQ=20000000
 

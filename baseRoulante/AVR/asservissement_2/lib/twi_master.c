@@ -47,6 +47,47 @@ void send_reset ( void )
     _delay_us(1);
 }
 
+void get_all ( int32_t infos[2]){
+	while ( TWI_Transceiver_Busy() && !TWI_statusReg.lastTransOK );
+
+    buffer_t[0] = (TWI_targetSlaveAddress<<TWI_ADR_BITS);
+    buffer_t[1] = MASTER_CMD_ALL;
+    TWI_Start_Transceiver_With_Data( buffer_t, 2 );
+
+    while ( TWI_Transceiver_Busy() && !TWI_statusReg.lastTransOK );
+
+    _delay_us(1);
+
+    buffer_r[0] = (TWI_targetSlaveAddress<<TWI_ADR_BITS) | (TRUE<<TWI_READ_BIT);
+    TWI_Start_Transceiver_With_Data( buffer_r, 9 );
+
+    while ( TWI_Transceiver_Busy() && !TWI_statusReg.lastTransOK );
+
+    TWI_Get_Data_From_Transceiver( buffer_r, 9 );
+
+    int32_t angle;
+    int32_t distance;
+    int32_t temp;
+
+    angle = buffer_r[1];
+    temp = buffer_r[2];
+    angle += (temp << 8);
+    temp = buffer_r[3];
+    angle += (temp << 16);
+    temp = buffer_r[4];
+    angle += (temp << 24);
+    infos[0] = angle;
+    
+    distance = buffer_r[5];
+    temp = buffer_r[6];
+    distance += (temp << 8);
+    temp = buffer_r[7];
+    distance += (temp << 16);
+    temp = buffer_r[8];
+    distance += (temp << 24);
+    infos[1]=distance;
+}
+
 int32_t get_angle ( void )
 {
     while ( TWI_Transceiver_Busy() && !TWI_statusReg.lastTransOK );

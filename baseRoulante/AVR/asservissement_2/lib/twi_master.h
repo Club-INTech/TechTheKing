@@ -1,4 +1,4 @@
-#define TWI_BUFFER_SIZE 5
+#define TWI_BUFFER_SIZE 9
 
 #define TWI_TWBR                0x0C
 
@@ -7,6 +7,7 @@
 #define MASTER_CMD_RESET        0X10
 #define MASTER_CMD_DISTANCE     0X20
 #define MASTER_CMD_ANGLE        0X30
+#define MASTER_CMD_ALL			0X40
 
 #define SEND_DATA               0x01
 #define REQUEST_DATA            0x02
@@ -17,6 +18,7 @@
   Function definitions
 ****************************************************************************/
 void TWI_init( void );
+void get_all ( int32_t infos[2]);
 int32_t get_angle ( void );
 int32_t get_distance ( void );
 void send_reset ( void );
