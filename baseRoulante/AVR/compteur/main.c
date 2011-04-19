@@ -5,12 +5,8 @@
 #include "twi_slave.h"
 #include "compteur.h"
 
-
-
 int main( void )
 {
-
-	uart_init();
 	
     // Interruptions
     sei();
