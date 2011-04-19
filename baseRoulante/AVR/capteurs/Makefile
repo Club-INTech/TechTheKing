@@ -1,18 +1,21 @@
 CC=avr-gcc
 CFLAGS=-Wall -O2
 MMCU=atmega328p
-FREQ=20000000
+FREQ=16000000
 
 all: main.hex
 
 main.hex: main.out
 	avr-objcopy -O ihex -R .eeprom main.out main.hex
 
-main.out: main.o serial.o
-	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) main.o serial.o -o main.out
+main.out: main.o serial.o ultrasons.o
+	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) main.o serial.o ultrasons.o -o main.out
 
 main.o: main.c
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) main.c -c
+
+ultrasons.o: ultrasons.c
+	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) ultrasons.c -c
 
 serial.o: serial.c
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) serial.c -c
