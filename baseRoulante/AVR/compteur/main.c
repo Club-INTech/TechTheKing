@@ -24,8 +24,6 @@ int main( void )
 
     
     while(1) {
-			printlnLong(roue1);
-	printlnLong(roue2);
         TWI_Loop();
     }
 

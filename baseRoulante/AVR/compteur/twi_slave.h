@@ -1,8 +1,7 @@
-#define TWI_BUFFER_SIZE 5
+#define TWI_BUFFER_SIZE 8
                                
 #define MASTER_CMD_RESET    0X10
-#define MASTER_CMD_DISTANCE 0X20
-#define MASTER_CMD_ANGLE    0X30
+#define MASTER_CMD_DATA     0X20
 
 extern unsigned char messageBuf[];
 

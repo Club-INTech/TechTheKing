@@ -23,15 +23,8 @@ extern volatile int32_t roue2;
 
 /*
  *  Initialisations
- *    interruptions codeurs
+ *    interruptions codeurs roues
  */
 void compteur_init (void);
-
-/*
- *  Fonctions pour mettre l'angle ou la distance dans le buffer
- *    le bit de poids faible est en début de tableau (envoyé en premier sur le bus i2c)
- */
-void charger_distance (void);
-void charger_angle (void);
 
 #endif
