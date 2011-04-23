@@ -1,12 +1,15 @@
-#ifndef TWI_SLAVE_H
-#define TWI_SLAVE_H
-
-#define TWI_BUFFER_SIZE 9
+#define TWI_BUFFER_SIZE 5
                                
-#define MASTER_CMD_RESET    0X10
-#define MASTER_CMD_DISTANCE 0X20
-#define MASTER_CMD_ANGLE    0X30
-#define MASTER_CMD_ALL    0X40
+#define MASTER_CMD_AX1_GOTO     0X11
+#define MASTER_CMD_AX2_GOTO     0X12
+#define MASTER_CMD_SERVO1_UP    0X21
+#define MASTER_CMD_SERVO2_UP    0X22
+#define MASTER_CMD_SERVO1_DOWN  0X31
+#define MASTER_CMD_SERVO2_DOWN  0X32
+#define MASTER_CMD_ASC1_GOTO    0X41
+#define MASTER_CMD_ASC2_GOTO    0X42
+#define MASTER_CMD_ASCB_GOTO    0X4B
+#define MASTER_CMD_STOP         0XA0
 
 extern unsigned char messageBuf[];
 
@@ -73,5 +76,3 @@ unsigned char TWI_Get_Data_From_Transceiver( unsigned char *, unsigned char );
 // TWI Miscellaneous status codes
 #define TWI_NO_STATE               0xF8  // No relevant state information available; TWINT = “0”
 #define TWI_BUS_ERROR              0x00  // Bus error due to an illegal START or STOP condition
-
-#endif

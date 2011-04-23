@@ -76,6 +76,7 @@ int main( void ){
     {
         unsigned char premierCaractere;
 		while (available() == 0) {
+			printlnLong(1);
 			asm("nop");
 		}
 		premierCaractere = read();

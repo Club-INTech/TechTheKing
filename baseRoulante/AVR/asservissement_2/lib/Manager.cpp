@@ -76,7 +76,7 @@ Manager::assPolaire(){
 		pwmD = PWM_MAX;
 	else if (pwmD < -PWM_MAX)
 		pwmD = -PWM_MAX;
-	
+		
 	printlnLong(pwmG);
 	
 	if (pwmG > 0) {

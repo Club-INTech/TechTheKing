@@ -1,7 +1,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include "twi_slave.h"
-#include "compteur.h"
+#include "actionneurs.h"
 
 union TWI_statusReg_t
 {
@@ -17,16 +17,12 @@ union TWI_statusReg_t
 
 extern union TWI_statusReg_t TWI_statusReg;
  
-static unsigned char TWI_buf[TWI_BUFFER_SIZE];     // Transceiver buffer. Set the size in the header file
-static unsigned char TWI_msgSize  = 0;             // Number of bytes to be transmitted.
-static unsigned char TWI_state    = TWI_NO_STATE;  // State byte. Default set to TWI_NO_STATE.
-
-// This is true when the TWI is in the middle of a transfer
-// and set to false when all bytes have been transmitted/received
-// Also used to determine how deep we can sleep.
+static unsigned char TWI_buf[TWI_BUFFER_SIZE];
+static unsigned char TWI_msgSize  = 0;
+static unsigned char TWI_state    = TWI_NO_STATE;
 static unsigned char TWI_busy = 0;
 
-union TWI_statusReg_t TWI_statusReg = {0};           // TWI_statusReg is defined in TWI_Slave.h
+union TWI_statusReg_t TWI_statusReg = {0};
 
 unsigned char order = 0;
 unsigned char messageBuf[TWI_BUFFER_SIZE];
@@ -49,48 +45,84 @@ void TWI_Loop( void )
         if ( TWI_statusReg.RxDataInBuf ) {
             TWI_Get_Data_From_Transceiver(messageBuf, 1);
             order = messageBuf[0];
-        }
 
-        if ( order == MASTER_CMD_RESET )
-        {
-            roue1 = 0;
-            roue2 = 0;
-        }
+            // Ordre pour l'AX12 1
+            if ( order == MASTER_CMD_AX1_GOTO ) {
+                // Lecture de la consigne
+                int16_t cons;
+                int16_t temp;
+                cons = messageBuf[1];
+                temp = messageBuf[2];
+                cons += (temp << 8);
+                // Envoi de l'ordre au servo
+                AX12GoTo (ID_AX1, cons);
+            }
 
-		if ( order == MASTER_CMD_ALL ) {
-            int32_t angle = roue1 - roue2;
-            int32_t distance = roue1 + roue2;
-            
-            messageBuf[0] = (uint8_t) angle;
-            messageBuf[1] = (uint8_t) (angle >> 8);
-            messageBuf[2] = (uint8_t) (angle >> 16);
-            messageBuf[3] = (uint8_t) (angle >> 24);
-            
-            messageBuf[4] = (uint8_t) distance;
-            messageBuf[5] = (uint8_t) (distance >> 8);
-            messageBuf[6] = (uint8_t) (distance >> 16);
-            messageBuf[7] = (uint8_t) (distance >> 24);
-        }
-        
-        if ( order == MASTER_CMD_ANGLE ) {
-            int32_t angle = roue1 - roue2;
+            // Ordre pour l'AX12 2
+            if ( order == MASTER_CMD_AX2_GOTO ) {
+                // Lecture de la consigne
+                int16_t cons;
+                int16_t temp;
+                cons = messageBuf[1];
+                temp = messageBuf[2];
+                cons += (temp << 8);
+                // Envoi de l'ordre au servo
+                AX12GoTo (ID_AX2, cons);
+            }
 
-            messageBuf[0] = (uint8_t) angle;
-            messageBuf[1] = (uint8_t) (angle >> 8);
-            messageBuf[2] = (uint8_t) (angle >> 16);
-            messageBuf[3] = (uint8_t) (angle >> 24);
-            
-        }
+            if ( order == MASTER_CMD_SERVO1_UP ) {
+                SERVO1 = PWM_UP;
+            }
 
-        if ( order == MASTER_CMD_DISTANCE ) {
-            int32_t distance = roue1 + roue2;
-            messageBuf[0] = (uint8_t) distance;
-            messageBuf[1] = (uint8_t) (distance >> 8);
-            messageBuf[2] = (uint8_t) (distance >> 16);
-            messageBuf[3] = (uint8_t) (distance >> 24);
+            if ( order == MASTER_CMD_SERVO2_UP ) {
+                SERVO2 = PWM_UP;
+            }
+
+            if ( order == MASTER_CMD_SERVO1_DOWN ) {
+                SERVO1 = PWM_DOWN;
+            }
+
+            if ( order == MASTER_CMD_SERVO2_DOWN ) {
+                SERVO2 = PWM_DOWN;
+            }
+
+            if ( order == MASTER_CMD_ASC1_GOTO ) {
+                // Lecture de la consigne
+                int16_t cons;
+                int16_t temp;
+                cons = messageBuf[1];
+                temp = messageBuf[2];
+                cons += (temp << 8);
+                // Modification du PWM
+                consigne1 = cons;
+            }
+
+            if ( order == MASTER_CMD_ASC2_GOTO ) {
+                // Lecture de la consigne
+                int16_t cons;
+                int16_t temp;
+                cons = messageBuf[1];
+                temp = messageBuf[2];
+                cons += (temp << 8);
+                // Modification du PWM
+                consigne2 = cons;
+            }
+
+            if ( order == MASTER_CMD_ASCB_GOTO) {
+                int16_t cons;
+                int16_t temp;
+                cons = messageBuf[1];
+                temp = messageBuf[2];
+                cons += (temp << 8);
+            }
+
+            if ( order == MASTER_CMD_STOP) {
+                consigne1 = ascenseur1;
+                consigne2 = ascenseur2;
+                SERVO1 = PWM_DOWN;
+                SERVO2 = PWM_DOWN;
+            }
         }
-        
-        TWI_Start_Transceiver_With_Data(messageBuf, 8);
     }
 }
 

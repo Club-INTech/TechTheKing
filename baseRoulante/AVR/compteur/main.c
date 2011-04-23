@@ -5,8 +5,7 @@
 #include "twi_slave.h"
 #include "compteur.h"
 
-int main( void )
-{	
+int main( void ){
 	
     // Interruptions
     sei();
@@ -16,7 +15,6 @@ int main( void )
 
     // Compteur
     compteur_init();
-
     
     while(1) {
         TWI_Loop();
