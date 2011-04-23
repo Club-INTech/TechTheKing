@@ -186,7 +186,8 @@ bool LectureSerie::litEntierLong(int32_t *i)
 		}
 		aux += (c - 48) * k;
 		k /= 10;
-	} 
+	}
+	printlnLong(aux);
 	*i = aux;
 	return true;
 }

@@ -36,26 +36,26 @@
 #include "lib/twi_master.h"
 #include "lib/serial.h"
 
-bool litEntierLong(int32_t *i)
+int32_t litEntierLong()
 {
 	int32_t aux = 0;
-	unsigned char j;
+	unsigned char j=0;
 	int32_t k = 10000000;
-	unsigned char c = 0;
+	unsigned char c;
 	for (j = 0; j < 8; j++) {
 		while (available()==0) { 
 			asm("nop");
 		}
 		c = read();
-		if (c < 48 || c > 57) {
+		printlnLong(c);
+		/*if (c < 48 || c > 57) {
 			aux = -1;
 			break;
-		}
+		}*/
 		aux += (c - 48) * k;
 		k /= 10;
-	} 
-	*i = aux;
-	return true;
+	}
+	return aux;
 }
 
 int main( void ){
@@ -70,25 +70,24 @@ int main( void ){
 
     send_reset();
     
+    int32_t i=0;
+    
     while(1)
     {
-		
         unsigned char premierCaractere;
 		while (available() == 0) {
-			printlnLong(1);
 			asm("nop");
 		}
 		premierCaractere = read();
-		#ifdef _DEBUG_
-		uart_send_char(premierCaractere);
-		#endif
-		int32_t i;
+		
 		switch (premierCaractere) {
 		case '?':
-			printlnLong(x);
+			printlnLong(0);
 			break;
 		case 'a':
-			litEntierLong(&i);
+			printlnLong(i);
+			i=litEntierLong();
+			printlnLong(i);
 			if (i >= 10000000)
 				//  avance
 				manager.changeIemeConsigneAngle(i-10000000,1);
@@ -97,7 +96,7 @@ int main( void ){
 				manager.changeIemeConsigneAngle(-i,1);
 			break;
 		case 'b':
-			litEntierLong(&i);
+			i=litEntierLong();
 			if (i >= 10000000)
 				//  tourne positivement de i
 				manager.changeIemeConsigneDistance(i-10000000,1);
@@ -114,7 +113,7 @@ int main( void ){
 			manager.setNbConsignes(00000000);
 			break;
 		case 'g': // push consigne etape 1
-			litEntierLong(&i);
+			i=litEntierLong();
 			if (i >= 10000000)
 			//  avance
 				manager.pushConsigneDistance(i-10000000);
@@ -135,13 +134,13 @@ int main( void ){
 			manager.test();
 			break;
 		case 'l':
-			litEntierLong(&i);
+			i=litEntierLong();
 			if (i >= 0) {
 				manager.assRotation.changeVmax(i);
 			}
 			break;
 		case 'm':
-			litEntierLong(&i);
+			i=litEntierLong();
 			if (i >= 0) {
 				manager.assRotation.changeKp(i);
 			}
@@ -155,13 +154,13 @@ int main( void ){
 			send_reset();
 			break;
 		case 'p':
-			litEntierLong(&i);
+			i=litEntierLong();
 			if (i >= 0) {
 				manager.assRotation.changePWM(i);
 			}
 			break;
 		case 'q': // push consigne (étape 2)
-			litEntierLong(&i);
+			i=litEntierLong();
 			if (i >= 10000000)
 			//  avance
 				manager.pushConsigneAngle(i-10000000);
@@ -170,57 +169,57 @@ int main( void ){
 				manager.pushConsigneAngle(-i);
 			break;
 		case 'r':
-			litEntierLong(&i);
+			i=litEntierLong();
 			if (i >= 0) {
 				manager.assTranslation.changeVmax(i);
 			}
 			break;
 		case 's':
-			litEntierLong(&i);
+			i=litEntierLong();
 			if (i >= 0) {
 				manager.assTranslation.changeKp(i);
 			}
 			break;
 		case 't':
-			litEntierLong(&i);
+			i=litEntierLong();
 			if (i >= 0) {
 				manager.assTranslation.changePWM(i);
 			}
 			break;
 		case 'u':
-			litEntierLong(&i);
+			i=litEntierLong();
 			if (i >= 0) {
 				manager.assRotation.changeKd(i);
 			}
 			break;
 		case 'v':
-			litEntierLong(&i);
+			i=litEntierLong();
 			if (i >= 0) {
 				manager.assTranslation.changeKd(i);
 			}
 			break;
 		case 'w':
-			litEntierLong(&i);
+			i=litEntierLong();
 			if (i >= 0) {
 				manager.assTranslation.changeKi(i);
 			}
 			break;
 		
 		case 'x':
-			litEntierLong(&i);
+			i=litEntierLong();
 			if (i >= 0) {
 				manager.assRotation.changeKi(i);
 			}
 			break;
 	
 		case 'y':
-			litEntierLong(&i);
+			i=litEntierLong();
 			if (i >= 0) {
 				manager.assTranslation.changeVmax(i);
 			}
 	
 		case 'z':
-			litEntierLong(&i);
+			i=litEntierLong();
 			if (i >= 0) {
 				manager.assRotation.changeVmax(i);
 			}

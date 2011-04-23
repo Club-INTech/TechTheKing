@@ -1,16 +1,20 @@
 
 void binarisation_nvg(IplImage *img, IplImage* &imgBin, int seuil)
 {
-	imgBin=cvCloneImage(img);
-	for(int i=0;i<NX;i++){
-		for(int j=0;j<NY;j++){
-			CvScalar pixel = cvGet2D(img,i,j);
-			pixel.val[0] = (pixel.val[1] < seuil) ? 0 : 255;
-			pixel.val[1]=pixel.val[0];
-			pixel.val[2]=pixel.val[0];
-			cvSet2D(imgBin,i,j,pixel) ;
-		}
+	// Transformation en niveau de gris
+	IplImage *imgGris ;
+	imgGris = cvCreateImage(cvGetSize(img), img->depth, 1);
+	
+	int flip=0;
+	if(img->origin!=IPL_ORIGIN_TL){
+		flip=CV_CVTIMG_FLIP;
 	}
+	cvCvtColor(img,imgGris,CV_BGR2GRAY);
+	
+	// Binarisation
+	imgBin = cvCloneImage(imgGris);
+	
+	cvThreshold(imgGris, imgBin, seuil, 255, CV_THRESH_BINARY);
 }
 
 

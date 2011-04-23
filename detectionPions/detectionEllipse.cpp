@@ -167,3 +167,12 @@ std::list<Point> detectionEllipse(IplImage *img)
 	
 	return trouverCentresMotifs(image);
 }
+
+std::string listeToString(const std::list<Point>& liste){
+	std::ostringstream oss;
+	std::list<Point>::const_iterator lit;
+	for(lit=liste.begin();lit!=liste.end();++lit){
+		oss << "x" << lit->x << "y" << lit->y;
+	}
+	return oss.str();
+}

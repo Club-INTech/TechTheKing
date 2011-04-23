@@ -4,13 +4,9 @@
 
 #include "twi_slave.h"
 #include "compteur.h"
-#include "serial.h"
-
 
 int main( void )
-{
-
-	uart_init();
+{	
 	
     // Interruptions
     sei();
@@ -20,7 +16,6 @@ int main( void )
 
     // Compteur
     compteur_init();
-
 
     
     while(1) {

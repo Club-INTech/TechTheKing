@@ -57,7 +57,7 @@
  * @fn RX_BUFFER_SIZE
  * @def RX_BUFFER_SIZE
  */
-#define RX_BUFFER_SIZE 128
+#define RX_BUFFER_SIZE 32
 
 /**
  * Cette structure correspond au buffer circulaire de réception des DATA en série. Lors d'une réception (par interruption), les données reçues sont stockées dans ce buffer.

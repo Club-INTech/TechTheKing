@@ -7,10 +7,10 @@ volatile long y;
 
 void
 Manager::assPolaire(){
-	int32_t infos[2];
+	int32_t infos[2] = {0};
 	get_all(infos);
-    int32_t angle = infos[0];
-    int32_t distance = infos[1];
+    int32_t angle = -infos[0];
+    int32_t distance = -infos[1];
     
     x+=(distance - distanceBkp)*fp_cos(angle-angleBkp);
 	y+=(distance - distanceBkp)*fp_sin(angle-angleBkp);
@@ -67,7 +67,6 @@ Manager::assPolaire(){
 	/*
 	* Envoi des PWM
 	*/	
-
 	if (pwmG > PWM_MAX)
 		pwmG = PWM_MAX;
 	else if (pwmG < -PWM_MAX)
@@ -77,7 +76,9 @@ Manager::assPolaire(){
 		pwmD = PWM_MAX;
 	else if (pwmD < -PWM_MAX)
 		pwmD = -PWM_MAX;
-		
+	
+	printlnLong(pwmG);
+	
 	if (pwmG > 0) {
 		// Direction gauche = 0
 		// PWM gauche = pwmG
@@ -246,7 +247,7 @@ void	Manager::test(){
 }
 
 void
-Manager::changeIemeConsigne(int32_t distanceDonnee, int32_t angleDonne,int16_t i)
+Manager::changeIemeConsigne(int32_t angleDonne, int32_t distanceDonnee,int16_t i)
 {
 	(tableauConsignes.listeConsignes[i-1]).distance=distanceDonnee;
 	(tableauConsignes.listeConsignes[i-1]).angle=angleDonne;
@@ -263,8 +264,7 @@ Manager::setNbConsignes(int16_t nbConsignesDonne)
 }
 
 void 
-Manager::changeIemeConsigneDistance(int32_t distanceDonnee, int16_t i)
-{
+Manager::changeIemeConsigneDistance(int32_t distanceDonnee, int16_t i){
 	(tableauConsignes.listeConsignes[i-1]).distance=distanceDonnee;
 }
 
