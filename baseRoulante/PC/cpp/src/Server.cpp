@@ -147,7 +147,7 @@ std::list<Obstacle*> Socket::analyserListeObstacle(){
          i++;
       }
       i++;
-      while(m_buffer[i]!='\n'){
+      while(m_buffer[i]!='x'){
          if(m_buffer[i]<48 || m_buffer[i]>57){
                cerr<<"Trame invalide"<<endl;
                return res;
