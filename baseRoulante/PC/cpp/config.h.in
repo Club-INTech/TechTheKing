@@ -30,6 +30,9 @@
 /* Define to 1 if you have the <netinet/in.h> header file. */
 #undef HAVE_NETINET_IN_H
 
+/* Define to 1 if you have the <ruby.h> header file. */
+#undef HAVE_RUBY_H
+
 /* Define to 1 if you have the <SerialStream.h> header file. */
 #undef HAVE_SERIALSTREAM_H
 

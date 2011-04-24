@@ -1,4 +1,4 @@
 SUBDIRS=src
 
-ruby :
+install :
 	cp src/.libs/libChessUp.so ../ruby/
