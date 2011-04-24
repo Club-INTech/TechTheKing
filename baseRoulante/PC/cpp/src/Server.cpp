@@ -1,5 +1,7 @@
 #include "Server.h"
 #include "config.h"
+#include <list>
+
 
 Socket* Socket::m_instance=NULL;
 
@@ -25,14 +27,32 @@ void Socket::thread(){
                cout<<"Fermeture du thread"<<endl;
                #endif
                break;
-            case 'x':
+            case 'd':
+               #ifdef DEBUG
+               cout<<"Réception d'une liste d'obstacle"<<endl;
+               #endif
                m_mutex.lock();
-               listeObstacles.push_back(trouverObstacle());
+               std::list<Obstacle*> listeRecue = analyserListeObstacle();
+               if(listeRecue.empty()){
+                   #ifdef DEBUG
+                  cout<<"Echec."<<endl;
+                  #endif
+                  break;
+               }
+               #ifdef DEBUG
+               cout<<"Ajout des obstacles reçus à la liste : "<<endl;
+               #endif
+               for(std::list<Obstacle*>::iterator it=listeRecue.begin();it!=listeRecue.end();it++){
+                  #ifdef DEBUG
+                  cout<< "( x : " << (*it)->x << " y : " << (*it)->y << " ) ; " ;
+                  #endif
+                  listeObstacles.push_back(*it);
+               }
+               #ifdef DEBUG
+               cout<< endl;
+               #endif
                m_mutex.unlock();
                break;
-            case 'y':
-               cerr<<"La trame ne peut pas commencer par l'ordonnée"<<endl;
-            break;
         }
     }
     onClose();
@@ -111,28 +131,33 @@ void Socket::onClose(){
     close(m_newsockfd);
 }
 
-Obstacle* Socket::trouverObstacle(){
+std::list<Obstacle*> Socket::analyserListeObstacle(){
+    std::list<Obstacle*> res;
     int i=1;
     std::string x,y;
-    while(m_buffer[i]!='y'){
-        if(m_buffer[i]<48 || m_buffer[i]>57){
-             return NULL;
-        }
-        else{
-             x.push_back(m_buffer[i]);
-        }
-        i++;
+    while(m_buffer[i]!='e'){
+      while(m_buffer[i]!='y'){
+         if(m_buffer[i]<48 || m_buffer[i]>57){
+               cerr<<"Trame invalide"<<endl;
+               return res;
+         }
+         else{
+               x.push_back(m_buffer[i]);
+         }
+         i++;
+      }
+      i++;
+      while(m_buffer[i]!='\n'){
+         if(m_buffer[i]<48 || m_buffer[i]>57){
+               cerr<<"Trame invalide"<<endl;
+               return res;
+         }
+         else{
+               y.push_back(m_buffer[i]);
+               i++;
+         }
+      }
+      res.push_back(new CercleObstacle(atoi(x.c_str()),atoi(y.c_str())));
     }
-    i++;
-    while(m_buffer[i]!='\n'){
-        if(m_buffer[i]<48 || m_buffer[i]>57){
-            cerr<<"Trame invalide"<<endl;
-            return NULL;
-        }
-        else{
-            y.push_back(m_buffer[i]);
-            i++;
-        }
-    }
-    return (new CercleObstacle(atoi(x.c_str()),atoi(y.c_str())));
+    return res;
 }

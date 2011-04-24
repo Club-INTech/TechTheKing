@@ -12,6 +12,7 @@
 #include "Obstacles.h"
 #include "Thread.h"
 #include <boost/thread/mutex.hpp>
+#include <list>
 #define TAILLE_BUFFER 256
     
 class Socket : public Thread{
@@ -20,7 +21,7 @@ class Socket : public Thread{
         ~Socket();
     private:
         void thread();
-        Obstacle* trouverObstacle();
+        std::list<Obstacle*> analyserListeObstacle();
         Socket(int port);
         bool onOpen();
         void onWrite(string msg);
