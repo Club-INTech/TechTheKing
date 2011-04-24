@@ -3,6 +3,9 @@
 /* Utilise Magick++ pour la trajectoire du robot */
 #undef DEBUG_GRAPHIQUE
 
+/* Define to 1 if you have the <boost/thread.hpp> header file. */
+#undef HAVE_BOOST_THREAD_HPP
+
 /* Define to 1 if you have the `bzero' function. */
 #undef HAVE_BZERO
 
@@ -26,6 +29,9 @@
 
 /* Define to 1 if you have the <netinet/in.h> header file. */
 #undef HAVE_NETINET_IN_H
+
+/* Define to 1 if you have the <SerialStream.h> header file. */
+#undef HAVE_SERIALSTREAM_H
 
 /* Define to 1 if you have the `socket' function. */
 #undef HAVE_SOCKET

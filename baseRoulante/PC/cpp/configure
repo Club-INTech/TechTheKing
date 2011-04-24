@@ -15131,44 +15131,35 @@ ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
-echo -n "checking for lib boost_thread... "
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include <boost/thread.hpp>
-int
-main ()
-{
-boost::thread dummy
-  ;
-  return 0;
-}
+
+for ac_header in boost/thread.hpp
+do :
+  ac_fn_cxx_check_header_mongrel "$LINENO" "boost/thread.hpp" "ac_cv_header_boost_thread_hpp" "$ac_includes_default"
+if test "x$ac_cv_header_boost_thread_hpp" = x""yes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_BOOST_THREAD_HPP 1
 _ACEOF
-if ac_fn_cxx_try_link "$LINENO"; then :
-  echo yes
+
 else
-  as_fn_error $? "libboost_thread is not installed !!" "$LINENO" 5
+  as_fn_error $? "You need the Boost-Thead libraries." "$LINENO" 5
 fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-echo -n "checking for lib serial... "
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include <SerialStream.h>
-int
-main ()
-{
-LibSerial::SerialStream dummy
-  ;
-  return 0;
-}
+
+done
+
+for ac_header in SerialStream.h
+do :
+  ac_fn_cxx_check_header_mongrel "$LINENO" "SerialStream.h" "ac_cv_header_SerialStream_h" "$ac_includes_default"
+if test "x$ac_cv_header_SerialStream_h" = x""yes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_SERIALSTREAM_H 1
 _ACEOF
-if ac_fn_cxx_try_link "$LINENO"; then :
-  echo yes
+
 else
-  as_fn_error $? "libserial is not installed !!" "$LINENO" 5
+  as_fn_error $? "You need the libserial libraries." "$LINENO" 5
 fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
+
+done
+
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for sqrt in -lm" >&5
 $as_echo_n "checking for sqrt in -lm... " >&6; }
 if test "${ac_cv_lib_m_sqrt+set}" = set; then :
@@ -15261,7 +15252,6 @@ fi
 
 
 # Checks for header files.
-
 for ac_header in netinet/in.h stdlib.h string.h sys/socket.h unistd.h
 do :
   as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`

@@ -38,16 +38,10 @@ saved_ldflags="${LDFLAGS}"
 
 LDFLAGS="${LDFLAGS} -lboost_thread -lserial -lm"
 AC_LANG(C++)
-echo -n "checking for lib boost_thread... "
-AC_LINK_IFELSE(
-[AC_LANG_PROGRAM([#include <boost/thread.hpp>],
-[boost::thread dummy])],[echo yes],
-[AC_MSG_ERROR([libboost_thread is not installed !!])])
-echo -n "checking for lib serial... "
-AC_LINK_IFELSE(
-[AC_LANG_PROGRAM([#include <SerialStream.h>],
-[LibSerial::SerialStream dummy])],[echo yes],
-[AC_MSG_ERROR([libserial is not installed !!])])
+AC_CHECK_HEADERS([boost/thread.hpp], [],
+    [AC_MSG_ERROR(You need the Boost-Thead libraries.)])
+AC_CHECK_HEADERS([SerialStream.h], [],
+    [AC_MSG_ERROR(You need the libserial libraries.)])
 AC_CHECK_LIB([m], [sqrt])
 AC_CHECK_LIB([pthread], [pthread_create])
 
