@@ -8,10 +8,15 @@ InterfaceAsservissement* InterfaceAsservissement::m_instance=NULL;
 
 InterfaceAsservissement* InterfaceAsservissement::Instance(int precisionAStar){
     if(m_instance==NULL){
-        m_instance= new InterfaceAsservissement(precisionAStar);
+       #ifdef DEBUG
+         cout<<"Création de l'interface d'asservissement"<<endl;
+       #endif
+       m_instance= new InterfaceAsservissement(precisionAStar);
     }
     else{
-        cerr<<"Instance déjà créée"<<endl;
+      #ifdef DEBUG
+         cout<<"Interface d'asservissement déjà crée " <<endl;
+      #endif
     }
     return m_instance;
 }
@@ -74,11 +79,14 @@ void detectionSerieUsb(InterfaceAsservissement* asserv){
 
 
 void InterfaceAsservissement::goTo(Point depart,Point arrivee,int nbPoints){
-    vector<Point> listePointsTmp=m_pathfinding.getChemin(depart,arrivee);
-    vector<Point> listePointsLissee=ListePoints::lissageBezier(listePointsTmp,nbPoints);
-	#ifdef DEBUG_GRAPHIQUE
-	Debug::debugGraphique(listePointsLissee);
-	#endif
+   #ifdef DEBUG
+      cout<<"Tentative de déplacement du robot en : (x = " << arrivee.getX() << ", y = " << arrivee.getY() << ")" << endl;
+   #endif
+   vector<Point> listePointsTmp=m_pathfinding.getChemin(depart,arrivee);
+   vector<Point> listePointsLissee=ListePoints::lissageBezier(listePointsTmp,nbPoints);
+   #ifdef DEBUG_GRAPHIQUE
+   Debug::debugGraphique(listePointsLissee);
+   #endif
     vector<Consigne> listeConsignes=ListePoints::convertirEnConsignes(listePointsLissee); 
     ListeConsignes::transfertSerie(listeConsignes,m_liaisonSerie);
 }
