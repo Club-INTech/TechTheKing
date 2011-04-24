@@ -18,18 +18,25 @@ AC_PROG_CC
 AC_CHECK_PROG([SWIG], [swig], [:])
 
 AC_ARG_ENABLE(magick,
-            [  --enable-magick          Enable graphical debugging information (require Magick++)],
+            [  --enable-magick          Informations graphiques de debug (Magick++) ],
             USE_MAGICK="$enableval", USE_MAGICK="no")
 
+AC_ARG_ENABLE(debug,
+            [  --enable-debug          Informations de debug sur la sortie standart],
+            USE_DEBUG="$enableval", USE_DEBUG="no")
 
 if test $USE_MAGICK = yes ; then
-    AC_DEFINE([DEBUG_GRAPHIQUE],[],[Utilise Magick++ pour la trajectoire du robot])
+    AC_DEFINE([DEBUG_GRAPHIQUE],[],[Informations graphiques de debug (Magick++)])
     SAVED_LDFLAGS="${LDFLAGS}"
     MAGICK_LDFLAGS=$(echo `Magick++-config --ldflags --libs`)
     LDFLAGS="${LDFLAGS} ${MAGICK_LDFLAGS}"
     SAVED_CPPFLAGS="${CPPFLAGS}"
     MAGICK_CPPFLAGS=$(echo `Magick++-config --cxxflags --cppflags`)
     CPPFLAGS="${CPPFLAGS} ${MAGICK_CPPFLAGS}"
+fi
+
+if test $USE_DEBUG = yes ; then
+    AC_DEFINE([DEBUG],[],[Informations de debug sur la sortie standart])
 fi
 
 CPPFLAGS="${CPPFLAGS} -I/usr/lib/ruby/1.8/$(arch)-linux/"

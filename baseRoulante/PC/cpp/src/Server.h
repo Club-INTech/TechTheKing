@@ -22,7 +22,7 @@ class Socket : public Thread{
         void thread();
         Obstacle* trouverObstacle();
         Socket(int port);
-        void onOpen();
+        bool onOpen();
         void onWrite(string msg);
         void onRead();
         void onClose();

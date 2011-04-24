@@ -1,8 +1,10 @@
 #include "Server.h"
+#include "config.h"
 
 Socket* Socket::m_instance=NULL;
 
 Socket::Socket(int port):Thread(), m_port(port){
+   bzero(m_buffer,sizeof(m_buffer));
 }
 
 Socket::~Socket(){
@@ -10,20 +12,26 @@ Socket::~Socket(){
 }
 
 void Socket::thread(){
-    onOpen();
-    while(m_buffer[0]!='e'){
+   if(!onOpen())
+      return;
+   #ifdef DEBUG
+      cout<<"Socket actif" << endl;
+   #endif
+   while(m_buffer[0]!='e'){
         onRead();
         switch(m_buffer[0]){
             case 'e':
-            cout<<"Fermeture du thread"<<endl;
-            break;
+               #ifdef DEBUG
+               cout<<"Fermeture du thread"<<endl;
+               #endif
+               break;
             case 'x':
-            m_mutex.lock();
-            listeObstacles.push_back(trouverObstacle());
-            m_mutex.unlock();
-            break;
+               m_mutex.lock();
+               listeObstacles.push_back(trouverObstacle());
+               m_mutex.unlock();
+               break;
             case 'y':
-            cerr<<"La trame ne peut pas commencer par l'ordonnée"<<endl;
+               cerr<<"La trame ne peut pas commencer par l'ordonnée"<<endl;
             break;
         }
     }
@@ -33,43 +41,69 @@ void Socket::thread(){
 
 Socket* Socket::Instance(int port){
     if(m_instance==NULL){
-        m_instance= new Socket(port);
+         #ifdef DEBUG
+         cout<<"Création du socket"<<endl;
+         #endif
+         m_instance= new Socket(port);
     }
     else{
-        cerr<<"Instance déjà créée"<<endl;
+         #ifdef DEBUG
+         cout<<"Socket déjà crée : récupération de l'instance existante."<<endl;
+         #endif
     }
-    std::cout<<m_instance->m_port<<std::endl;
     return m_instance;
 }
 
-void Socket::onOpen(){
+bool Socket::onOpen(){
+    #ifdef DEBUG
+    cout<<"Ouverture du Socket sur le port " << m_instance->m_port << endl;
+    #endif
     if( (m_sockfd = socket(AF_INET, SOCK_STREAM, 0)) <0){
         std::cerr<<"Erreur lors de l'ouverture du Socket"<<std::endl;
+        return false;
     }
     bzero((char*)&m_servAddr,sizeof(m_servAddr));
     m_servAddr.sin_family=AF_INET;
     m_servAddr.sin_addr.s_addr=INADDR_ANY;
     m_servAddr.sin_port=htons(m_port);
-    if(bind(m_sockfd,(struct sockaddr*)&m_servAddr,sizeof(m_servAddr))<0)
-        std::cerr<<"Erreur lors du binding du socket"<<std::endl;
-    listen(m_sockfd,5);
-    m_cliLen = sizeof(m_cliAddr);
+    #ifdef DEBUG
+    cout<<"Binding du Socket"<<endl;
+    #endif
+    if(bind(m_sockfd,(struct sockaddr*)&m_servAddr,sizeof(m_servAddr))<0){
+      std::cerr<<"Erreur lors du binding du socket"<<std::endl;
+      return false;
+   }
+   listen(m_sockfd,5);
+   m_cliLen = sizeof(m_cliAddr);
+   return true;
 }
 
 void Socket::onRead(){
+   #ifdef DEBUG
+    cout<<"Début de l'écoute"<<endl;
+    #endif
     bzero(m_buffer,sizeof(m_buffer));
     if((m_newsockfd=accept(m_sockfd,(struct sockaddr*)&m_cliAddr,&m_cliLen))<0)
         std::cerr<<"Erreur lors de l'acceptation du socket"<<std::endl;
-    cout<<"début lecture : " << m_buffer[0]<<endl;
     if(read(m_newsockfd,m_buffer,sizeof(m_buffer)-1)<0)
         std::cerr<<"Erreur lors de la lecture du socket"<<std::endl;
-    cout<<"fin lecture : " << m_buffer[0]<<endl;
+    #ifdef DEBUG
+    cout<<"Fin de l'écoute. Message lu : " << m_buffer << endl;
+    #endif
 }
 
 void Socket::onWrite(std::string msg){
-    const char* msgTmp = msg.c_str();
-    if(write(m_newsockfd,msgTmp,sizeof(msgTmp))<0)
-        std::cerr<<"Erreur lors de l'écriture du message"<<std::endl;
+   #ifdef DEBUG
+   cout<<"Début de l'écriture du message : " << msg << endl;
+   #endif
+   const char* msgTmp = msg.c_str();
+   if(write(m_newsockfd,msgTmp,sizeof(msgTmp))<0)
+      std::cerr<<"Erreur lors de l'écriture du message"<<std::endl;
+   else{
+      #ifdef DEBUG
+      cout<<"Message écrit." << endl;
+      #endif
+   }
 }
 
 void Socket::onClose(){

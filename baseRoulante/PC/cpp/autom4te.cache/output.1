@@ -869,6 +869,7 @@ enable_dependency_tracking
 with_gnu_ld
 enable_libtool_lock
 enable_magick
+enable_debug
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1508,7 +1509,8 @@ Optional Features:
   --disable-dependency-tracking  speeds up one-time build
   --enable-dependency-tracking   do not reject slow dependency extractors
   --disable-libtool-lock  avoid locking (might break parallel builds)
-  --enable-magick          Enable graphical debugging information (require Magick++)
+  --enable-magick          Informations graphiques de debug (Magick++) 
+  --enable-debug          Informations de debug sur la sortie standart
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -15144,6 +15146,13 @@ else
 fi
 
 
+@%:@ Check whether --enable-debug was given.
+if test "${enable_debug+set}" = set; then :
+  enableval=$enable_debug; USE_DEBUG="$enableval"
+else
+  USE_DEBUG="no"
+fi
+
 
 if test $USE_MAGICK = yes ; then
     
@@ -15155,6 +15164,12 @@ $as_echo "@%:@define DEBUG_GRAPHIQUE /**/" >>confdefs.h
     SAVED_CPPFLAGS="${CPPFLAGS}"
     MAGICK_CPPFLAGS=$(echo `Magick++-config --cxxflags --cppflags`)
     CPPFLAGS="${CPPFLAGS} ${MAGICK_CPPFLAGS}"
+fi
+
+if test $USE_DEBUG = yes ; then
+    
+$as_echo "@%:@define DEBUG /**/" >>confdefs.h
+
 fi
 
 CPPFLAGS="${CPPFLAGS} -I/usr/lib/ruby/1.8/$(arch)-linux/"
