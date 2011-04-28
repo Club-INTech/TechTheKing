@@ -1,6 +1,6 @@
-OBJS=main.o Util.o Asservissement.o LectureSerie.o Manager.o twi_master.o serial.o Cos.o
+OBJS=main.o Util.o Asservissement.o Manager.o serial.o twi_master.o Cos.o
 CC=avr-g++
-CFLAGS=-Wall -O2
+CFLAGS=-Wall -O
 MMCU=atmega328p
 FREQ=20000000
 
@@ -16,7 +16,7 @@ main.o: main.cpp
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) main.cpp -c
 
 Cos.o: ./lib/Cos.cpp
-	avr-gcc $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) ./lib/Cos.cpp -c
+	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) ./lib/Cos.cpp -c
 	
 Asservissement.o: ./lib/Asservissement.cpp
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) ./lib/Asservissement.cpp -c

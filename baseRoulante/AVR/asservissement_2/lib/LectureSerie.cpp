@@ -13,7 +13,6 @@ LectureSerie::LectureSerie()
 void
 LectureSerie::traitement() {
 	unsigned char premierCaractere;
-	printlnLong(1);
 	while (available() == 0) {
 		asm("nop");
 	}
@@ -21,7 +20,7 @@ LectureSerie::traitement() {
 #ifdef _DEBUG_
 	uart_send_char(premierCaractere);
 #endif
-	printlnLong(0);
+	premierCaractere = read();
 	int32_t i;
 	switch (premierCaractere) {
 	case '?':
@@ -68,10 +67,10 @@ LectureSerie::traitement() {
 		manager.switchAssAngle();
 		break;
 	case 'j':
-		manager.reset();
+		send_reset();
 		break;
 	case 'k':
-		manager.test();
+		send_reset();
 		break;
 	case 'l':
 		litEntierLong(&i);
@@ -91,7 +90,7 @@ LectureSerie::traitement() {
 		break;
 	case 'o':
 		cli();
-		manager.reset();
+		send_reset();
 		break;
 	case 'p':
 		litEntierLong(&i);
@@ -187,7 +186,8 @@ bool LectureSerie::litEntierLong(int32_t *i)
 		}
 		aux += (c - 48) * k;
 		k /= 10;
-	} 
+	}
+	printlnLong(aux);
 	*i = aux;
 	return true;
 }

@@ -9,10 +9,11 @@ void binarisation_nvg(IplImage *img, IplImage* &imgBin, int seuil)
 	if(img->origin!=IPL_ORIGIN_TL){
 		flip=CV_CVTIMG_FLIP;
 	}
-	cvConvertImage(img, imgGris, flip);
+	cvCvtColor(img,imgGris,CV_BGR2GRAY);
 	
 	// Binarisation
 	imgBin = cvCloneImage(imgGris);
+	
 	cvThreshold(imgGris, imgBin, seuil, 255, CV_THRESH_BINARY);
 }
 

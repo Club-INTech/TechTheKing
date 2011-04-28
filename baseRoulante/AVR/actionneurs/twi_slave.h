@@ -1,28 +1,24 @@
-#define TWI_BUFFER_SIZE 9
+#define TWI_BUFFER_SIZE 5
+                               
+#define MASTER_CMD_AX1_GOTO     0X11
+#define MASTER_CMD_AX2_GOTO     0X12
+#define MASTER_CMD_SERVO1_UP    0X21
+#define MASTER_CMD_SERVO2_UP    0X22
+#define MASTER_CMD_SERVO1_DOWN  0X31
+#define MASTER_CMD_SERVO2_DOWN  0X32
+#define MASTER_CMD_ASC1_GOTO    0X41
+#define MASTER_CMD_ASC2_GOTO    0X42
+#define MASTER_CMD_ASCB_GOTO    0X4B
+#define MASTER_CMD_STOP         0XA0
 
-#define TWI_TWBR                0x0C
-
-#define TWI_GEN_CALL            0x00
-
-#define MASTER_CMD_RESET        0X10
-#define MASTER_CMD_DISTANCE     0X20
-#define MASTER_CMD_ANGLE        0X30
-#define MASTER_CMD_ALL			0X40
-
-#define SEND_DATA               0x01
-#define REQUEST_DATA            0x02
-#define READ_DATA_FROM_BUFFER   0x03
-
+extern unsigned char messageBuf[];
 
 /****************************************************************************
   Function definitions
 ****************************************************************************/
-void TWI_init( void );
-void get_all ( int32_t infos[2]);
-int32_t get_angle ( void );
-int32_t get_distance ( void );
-void send_reset ( void );
-void TWI_Master_Initialise( void );
+void TWI_Loop( void );
+void TWI_Init ( void );
+void TWI_Slave_Initialise( unsigned char );
 unsigned char TWI_Transceiver_Busy( void );
 unsigned char TWI_Get_State_Info( void );
 void TWI_Start_Transceiver_With_Data( unsigned char * , unsigned char );
@@ -32,8 +28,9 @@ unsigned char TWI_Get_Data_From_Transceiver( unsigned char *, unsigned char );
 /****************************************************************************
   Bit and byte definitions
 ****************************************************************************/
-#define TWI_READ_BIT  0       // Bit position for R/W bit in "address byte".
-#define TWI_ADR_BITS  1       // Bit position for LSB of the slave address bits in the init byte.
+#define TWI_READ_BIT  0   // Bit position for R/W bit in "address byte".
+#define TWI_ADR_BITS  1   // Bit position for LSB of the slave address bits in the init byte.
+#define TWI_GEN_BIT   0   // Bit position for LSB of the general call bit in the init byte.
 
 #define TRUE          1
 #define FALSE         0
@@ -79,4 +76,3 @@ unsigned char TWI_Get_Data_From_Transceiver( unsigned char *, unsigned char );
 // TWI Miscellaneous status codes
 #define TWI_NO_STATE               0xF8  // No relevant state information available; TWINT = “0”
 #define TWI_BUS_ERROR              0x00  // Bus error due to an illegal START or STOP condition
-

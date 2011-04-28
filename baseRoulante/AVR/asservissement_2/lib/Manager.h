@@ -10,8 +10,8 @@
 #include "Cos.h"
 
 // Puissance maximal de chaque moteur (1023 MAX)
-#define PWM_MAX	255
-#define NB_MAX_CONSIGNES 200
+#define PWM_MAX	50
+#define NB_MAX_CONSIGNES 100
 #define PRESCALER 64
 //#define TEMPS_ASS 20000000/(2^16*PRESCALER)
 #define TEMPS_ASS 5
@@ -92,11 +92,8 @@ class Manager {
 #define CONVERSION_ANGLE 1000
 #define CONVERSION_DISTANCE 1000
 
-extern int32_t x;
-extern int32_t y;
-
-extern int32_t angle;
-extern int32_t distance;
+extern volatile long x;
+extern volatile long y;
 
 extern Manager  manager;
 

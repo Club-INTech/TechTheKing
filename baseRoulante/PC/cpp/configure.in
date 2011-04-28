@@ -15,13 +15,18 @@ AC_LANG(C++)
 AC_PROG_CXX
 AC_PROG_CC
 
+AC_CHECK_PROG([SWIG], [swig], [:])
+
 AC_ARG_ENABLE(magick,
-            [  --enable-magick          Enable graphical debugging information (require Magick++)],
+            [  --enable-magick          Informations graphiques de debug (Magick++) ],
             USE_MAGICK="$enableval", USE_MAGICK="no")
 
+AC_ARG_ENABLE(debug,
+            [  --enable-debug          Informations de debug sur la sortie standart],
+            USE_DEBUG="$enableval", USE_DEBUG="no")
 
 if test $USE_MAGICK = yes ; then
-    AC_DEFINE([DEBUG_GRAPHIQUE],[],[Utilise Magick++ pour la trajectoire du robot])
+    AC_DEFINE([DEBUG_GRAPHIQUE],[],[Informations graphiques de debug (Magick++)])
     SAVED_LDFLAGS="${LDFLAGS}"
     MAGICK_LDFLAGS=$(echo `Magick++-config --ldflags --libs`)
     LDFLAGS="${LDFLAGS} ${MAGICK_LDFLAGS}"
@@ -30,24 +35,26 @@ if test $USE_MAGICK = yes ; then
     CPPFLAGS="${CPPFLAGS} ${MAGICK_CPPFLAGS}"
 fi
 
+if test $USE_DEBUG = yes ; then
+    AC_DEFINE([DEBUG],[],[Informations de debug sur la sortie standart])
+fi
+
 CPPFLAGS="${CPPFLAGS} -I/usr/lib/ruby/1.8/$(arch)-linux/"
 
 # Checks for libraries.
 
 saved_ldflags="${LDFLAGS}"
 
-LDFLAGS="${LDFLAGS} -lboost_thread -lserial -lm"
+LDFLAGS="${LDFLAGS} -lboost_thread -lserial -lusb -lm"
 AC_LANG(C++)
-echo -n "checking for lib boost_thread... "
-AC_LINK_IFELSE(
-[AC_LANG_PROGRAM([#include <boost/thread.hpp>],
-[boost::thread dummy])],[echo yes],
-[AC_MSG_ERROR([libboost_thread is not installed !!])])
-echo -n "checking for lib serial... "
-AC_LINK_IFELSE(
-[AC_LANG_PROGRAM([#include <SerialStream.h>],
-[LibSerial::SerialStream dummy])],[echo yes],
-[AC_MSG_ERROR([libserial is not installed !!])])
+AC_CHECK_HEADERS([boost/thread.hpp], [],
+    [AC_MSG_ERROR(You need the Boost-Thead libraries.)])
+AC_CHECK_HEADERS([SerialStream.h], [],
+    [AC_MSG_ERROR(You need the libserial libraries.)])
+AC_CHECK_HEADERS([usb.h], [],
+    [AC_MSG_ERROR(You need the libusb libraries.)])
+AC_CHECK_HEADERS([ruby.h], [],
+    [AC_MSG_ERROR(You need the ruby-dev libraries.)])
 AC_CHECK_LIB([m], [sqrt])
 AC_CHECK_LIB([pthread], [pthread_create])
 

@@ -12,7 +12,7 @@ ISR(USART_RX_vect)
 	store_char(c, &rx_buffer);
 }
 
-  void store_char(unsigned char c, struct ring_buffer *rx_buffer)
+inline void store_char(unsigned char c, struct ring_buffer *rx_buffer)
 {
 	int i = (rx_buffer->head + 1) % RX_BUFFER_SIZE;
 	
@@ -54,19 +54,19 @@ unsigned char uart_recv_char(void)
 	return UDR0;
 }
 
-  void uart_send_ln(void )
+inline void uart_send_ln(void )
 {
 	uart_send_char('\r');
 	uart_send_char('\n');
 }
 
-  void uart_send_char(unsigned char byte)
+inline void uart_send_char(unsigned char byte)
 {
 	while ( !( UCSR0A & (1<<UDRE0)) );
 	UDR0 = byte;
 }
 
-  void uart_send_string(const char *string)
+inline void uart_send_string(const char *string)
 {
 	unsigned char i;
 	for (i = 0 ; string[i] != '\0' ; i++)
@@ -92,7 +92,7 @@ void uart_init( void )
  * Définition des foncions printnumber
  */
 
-  void printIntNumber(unsigned int n)
+inline void printIntNumber(unsigned int n)
 {
 	unsigned char buf[8 * sizeof(long)]; // Assumes 8-bit chars. 
 	unsigned int i = 0;
@@ -113,7 +113,7 @@ void uart_init( void )
 		uart_send_char((char) (buf[i - 1] < 10 ? '0' + buf[i - 1] : 'A' + buf[i - 1] - 10));
 }
 
-  void printShortNumber(unsigned short n)
+inline void printShortNumber(unsigned short n)
 {
 	unsigned char buf[8 * sizeof(long)]; // Assumes 8-bit chars. 
 	unsigned int i = 0;
@@ -134,7 +134,7 @@ void uart_init( void )
 		uart_send_char((char) (buf[i - 1] < 10 ? '0' + buf[i - 1] : 'A' + buf[i - 1] - 10));
 }
 
-  void printLongNumber(unsigned long n )
+inline void printLongNumber(unsigned long n )
 {
 	unsigned char buf[8 * sizeof(long)]; // Assumes 8-bit chars. 
 	unsigned int i = 0;
@@ -282,7 +282,7 @@ void printlnLong(long int entier )
 	uart_send_ln();
 }
 
-  long readLongNumber( void )
+inline long readLongNumber( void )
 {
 	long monLong = 0; 
 	unsigned int i = 0;
@@ -313,7 +313,7 @@ void printlnLong(long int entier )
 	}
 }
 
-  uint32_t readULongNumber( void )
+inline uint32_t readULongNumber( void )
 {
 	uint32_t monLong = 0; 
 	unsigned int i = 0;

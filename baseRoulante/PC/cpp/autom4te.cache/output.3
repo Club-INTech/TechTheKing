@@ -745,6 +745,7 @@ ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
 LIB@&t@OBJS
+SWIG
 CXXCPP
 am__fastdepCXX_FALSE
 am__fastdepCXX_TRUE
@@ -868,6 +869,7 @@ enable_dependency_tracking
 with_gnu_ld
 enable_libtool_lock
 enable_magick
+enable_debug
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1507,7 +1509,8 @@ Optional Features:
   --disable-dependency-tracking  speeds up one-time build
   --enable-dependency-tracking   do not reject slow dependency extractors
   --disable-libtool-lock  avoid locking (might break parallel builds)
-  --enable-magick          Enable graphical debugging information (require Magick++)
+  --enable-magick          Informations graphiques de debug (Magick++) 
+  --enable-debug          Informations de debug sur la sortie standart
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -15097,6 +15100,44 @@ fi
 
 
 
+# Extract the first word of "swig", so it can be a program name with args.
+set dummy swig; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if test "${ac_cv_prog_SWIG+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  if test -n "$SWIG"; then
+  ac_cv_prog_SWIG="$SWIG" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_prog_SWIG=":"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+fi
+fi
+SWIG=$ac_cv_prog_SWIG
+if test -n "$SWIG"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $SWIG" >&5
+$as_echo "$SWIG" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+
 @%:@ Check whether --enable-magick was given.
 if test "${enable_magick+set}" = set; then :
   enableval=$enable_magick; USE_MAGICK="$enableval"
@@ -15104,6 +15145,13 @@ else
   USE_MAGICK="no"
 fi
 
+
+@%:@ Check whether --enable-debug was given.
+if test "${enable_debug+set}" = set; then :
+  enableval=$enable_debug; USE_DEBUG="$enableval"
+else
+  USE_DEBUG="no"
+fi
 
 
 if test $USE_MAGICK = yes ; then
@@ -15118,57 +15166,82 @@ $as_echo "@%:@define DEBUG_GRAPHIQUE /**/" >>confdefs.h
     CPPFLAGS="${CPPFLAGS} ${MAGICK_CPPFLAGS}"
 fi
 
+if test $USE_DEBUG = yes ; then
+    
+$as_echo "@%:@define DEBUG /**/" >>confdefs.h
+
+fi
+
 CPPFLAGS="${CPPFLAGS} -I/usr/lib/ruby/1.8/$(arch)-linux/"
 
 # Checks for libraries.
 
 saved_ldflags="${LDFLAGS}"
 
-LDFLAGS="${LDFLAGS} -lboost_thread -lserial -lm"
+LDFLAGS="${LDFLAGS} -lboost_thread -lserial -lusb -lm"
 ac_ext=cpp
 ac_cpp='$CXXCPP $CPPFLAGS'
 ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
-echo -n "checking for lib boost_thread... "
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include <boost/thread.hpp>
-int
-main ()
-{
-boost::thread dummy
-  ;
-  return 0;
-}
+
+for ac_header in boost/thread.hpp
+do :
+  ac_fn_cxx_check_header_mongrel "$LINENO" "boost/thread.hpp" "ac_cv_header_boost_thread_hpp" "$ac_includes_default"
+if test "x$ac_cv_header_boost_thread_hpp" = x""yes; then :
+  cat >>confdefs.h <<_ACEOF
+@%:@define HAVE_BOOST_THREAD_HPP 1
 _ACEOF
-if ac_fn_cxx_try_link "$LINENO"; then :
-  echo yes
+ 
 else
-  as_fn_error $? "libboost_thread is not installed !!" "$LINENO" 5 
+  as_fn_error $? "You need the Boost-Thead libraries." "$LINENO" 5 
 fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-echo -n "checking for lib serial... "
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include <SerialStream.h>
-int
-main ()
-{
-LibSerial::SerialStream dummy
-  ;
-  return 0;
-}
+
+done
+
+for ac_header in SerialStream.h
+do :
+  ac_fn_cxx_check_header_mongrel "$LINENO" "SerialStream.h" "ac_cv_header_SerialStream_h" "$ac_includes_default"
+if test "x$ac_cv_header_SerialStream_h" = x""yes; then :
+  cat >>confdefs.h <<_ACEOF
+@%:@define HAVE_SERIALSTREAM_H 1
 _ACEOF
-if ac_fn_cxx_try_link "$LINENO"; then :
-  echo yes
+ 
 else
-  as_fn_error $? "libserial is not installed !!" "$LINENO" 5 
+  as_fn_error $? "You need the libserial libraries." "$LINENO" 5 
 fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
+
+done
+
+for ac_header in usb.h
+do :
+  ac_fn_cxx_check_header_mongrel "$LINENO" "usb.h" "ac_cv_header_usb_h" "$ac_includes_default"
+if test "x$ac_cv_header_usb_h" = x""yes; then :
+  cat >>confdefs.h <<_ACEOF
+@%:@define HAVE_USB_H 1
+_ACEOF
+ 
+else
+  as_fn_error $? "You need the libusb libraries." "$LINENO" 5 
+fi
+
+done
+
+for ac_header in ruby.h
+do :
+  ac_fn_cxx_check_header_mongrel "$LINENO" "ruby.h" "ac_cv_header_ruby_h" "$ac_includes_default"
+if test "x$ac_cv_header_ruby_h" = x""yes; then :
+  cat >>confdefs.h <<_ACEOF
+@%:@define HAVE_RUBY_H 1
+_ACEOF
+ 
+else
+  as_fn_error $? "You need the ruby-dev libraries." "$LINENO" 5 
+fi
+
+done
+
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for sqrt in -lm" >&5
 $as_echo_n "checking for sqrt in -lm... " >&6; }
 if test "${ac_cv_lib_m_sqrt+set}" = set; then :
@@ -15261,7 +15334,6 @@ fi
 
 
 # Checks for header files.
-
 for ac_header in netinet/in.h stdlib.h string.h sys/socket.h unistd.h
 do :
   as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`

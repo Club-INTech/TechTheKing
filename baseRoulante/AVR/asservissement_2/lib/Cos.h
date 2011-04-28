@@ -1,8 +1,15 @@
-#include "TableCos.h"
-#include <avr/pgmspace.h>
-#include <stdint.h> 
-#define ABS(x) ( (x)>0?(x):-(x))
 
-extern long getCos(float angleRadian);
+#ifndef _FP_MATH_H_
+#define _FP_MATH_H_
 
-extern float getSin(float angleRadian);
+#define FP_PI 205887
+
+#include <stdint.h>
+
+int32_t fp_cos(int32_t theta);
+int32_t fp_sin(int32_t theta);
+
+int32_t fp_mult(int32_t a, int32_t b);
+int32_t fp_div(int32_t a, int32_t b);
+
+#endif
