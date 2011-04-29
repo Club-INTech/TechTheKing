@@ -49,7 +49,6 @@ Manager::assPolaire(){
 		&& ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).angle - angle) < 60 ){
 			if( indiceConsigneActuelle < tableauConsignes.nbConsignes ){
 				indiceConsigneActuelle++;
-				printlnLong(indiceConsigneActuelle);
 		}
 	}
 
@@ -76,9 +75,8 @@ Manager::assPolaire(){
 		pwmD = PWM_MAX;
 	else if (pwmD < -PWM_MAX)
 		pwmD = -PWM_MAX;
-		
-	printlnLong(pwmG);
 	
+	printlnLong(pwmG);
 	if (pwmG > 0) {
 		// Direction gauche = 0
 		// PWM gauche = pwmG

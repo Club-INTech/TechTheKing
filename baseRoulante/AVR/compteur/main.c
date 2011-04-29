@@ -4,6 +4,7 @@
 
 #include "twi_slave.h"
 #include "compteur.h"
+#include "serial.h"
 
 int main( void ){
 	

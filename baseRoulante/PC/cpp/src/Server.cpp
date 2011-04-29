@@ -44,7 +44,7 @@ void Socket::thread(){
                #endif
                for(std::list<Obstacle*>::iterator it=listeRecue.begin();it!=listeRecue.end();it++){
                   #ifdef DEBUG
-                  cout<< "( x : " << (*it)->x << " y : " << (*it)->y << " ) ; " ;
+                  cout<< "( x : " << (*it)->getX() << " y : " << (*it)->getY() << " ) ; " ;
                   #endif
                   listeObstacles.push_back(*it);
                }
@@ -132,32 +132,37 @@ void Socket::onClose(){
 }
 
 std::list<Obstacle*> Socket::analyserListeObstacle(){
-    std::list<Obstacle*> res;
-    int i=1;
-    std::string x,y;
-    while(m_buffer[i]!='e'){
-      while(m_buffer[i]!='y'){
-         if(m_buffer[i]<48 || m_buffer[i]>57){
-               cerr<<"Trame (liste des obstacles) invalide"<<endl;
-               return res;
-         }
-         else{
-               x.push_back(m_buffer[i]);
-         }
-         i++;
-      }
-      i++;
-      while(m_buffer[i]!='x'){
-         if(m_buffer[i]<48 || m_buffer[i]>57){
-               cerr<<"Trame (liste des obstacles) invalide"<<endl;
-               return res;
-         }
-         else{
-               y.push_back(m_buffer[i]);
-               i++;
-         }
-      }
-      res.push_back(new CercleObstacle(atoi(x.c_str()),atoi(y.c_str())));
-    }
+	std::list<Obstacle*> res;
+	std::string x,y;
+	int i=1;
+    char courant = m_buffer[i];
+    char coordCourante='x';
+    while(courant!='f'){
+		courant=m_buffer[++i];
+		if(courant=='x' || courant=='f'){
+			Obstacle* obstacleCourant = new CercleObstacle(atoi(x.c_str()),atoi(y.c_str()));
+			res.push_back(obstacleCourant);
+			coordCourante='x';
+		}
+		else if(courant=='y'){
+			coordCourante='y';
+		}
+		else if(courant<48 || courant>57){
+			cerr<<"Trame (liste des obstacles) invalide"<<endl;
+			return res;
+		}
+		else{
+			switch(coordCourante){
+				case 'x':
+					cout<<x<<endl;
+					x.push_back(courant);
+					break;
+				case 'y':
+					y.push_back(courant);
+					break;
+			}
+			cout<<coordCourante<<endl;
+		}
+	}
     return res;
 }
