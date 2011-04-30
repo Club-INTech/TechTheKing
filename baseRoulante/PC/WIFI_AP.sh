@@ -3,7 +3,7 @@
 # Configuration du point d'accès
 
 #Infos générales
-INTERFACE="wlan0"
+INTERFACE="wlan3"
 SSID="Test"
 CHANNEL="1"
 HW_MODE="g"
