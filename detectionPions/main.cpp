@@ -18,6 +18,7 @@ int cfg_morph_rows = 5 ;
 int cfg_morph_cols = 5 ;
 
 
+
 void detection()
 {		
 	// Binarisation
@@ -39,7 +40,7 @@ void detection()
 	std::list<Point> listeCentresTable = homogListe(listeCentres, homogMatrix) ;
 	
 	// Affichage des centres sur l'image d'origine
-	IplImage *imgCentre = cvCloneImage(img);
+	IplImage *imgCentre = cvCloneImage(imgBinOp);
 	imgCentre->origin = img->origin;
 	afficherListeCentre(imgCentre,listeCentres);
 	//cvZero(imgCentre);
@@ -51,6 +52,8 @@ void detection()
 	
 	// Affichage des pions sur la table
 	afficherPions(imgTable, listeCentresTable) ;
+	cout<<listeToString(listeCentres)<<endl;
+	cout<<listeToString(listeCentresTable)<<endl;
 	
 	// Lancement de la fenêtre de résultat
 	cvShowImage( "Resultat", imgTable);
@@ -82,7 +85,6 @@ int main(int argc, char** argv)
 	
 	// Lancement de la détection avec affichage
 	detection() ;
-
 	//cvReleaseMat(&homogMatrix);
 	
 	// Création des trackbar pour chaque paramètre

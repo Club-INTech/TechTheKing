@@ -15,9 +15,9 @@
 #include <avr/interrupt.h>
 
 /**
- * @defgroup  
+ * @defgroup inline
  * @brief Fonction private
- * Tout les fonctions commençant par   sont des fonctions "interne" à la librairie.
+ * Tout les fonctions commençant par inline sont des fonctions "interne" à la librairie.
  * Bien évidement, elle peuvent être appelée, mais il vaut mieux utiliser les fonctions faites pour ça
  * @warning NE PAS UTILISER
  */
@@ -86,55 +86,55 @@ void uart_init(void);
 unsigned char uart_recv_char(void);
 
 /**
- * @ingroup  
- * @fn   void uart_send_char( unsigned char )
+ * @ingroup inline
+ * @fn inline void uart_send_char( unsigned char )
  * @brief Permet d'envoyer un char par la liaison série
  * Cette fonction est plus une fonction utilisée pour la librairie elle-même (genre de private)
  * @param byte Correspond à l'octet à envoyer.
  */
-  void uart_send_char(unsigned char);
+inline void uart_send_char(unsigned char);
 
 /**
- * @ingroup  
- * @fn   void uart_send_ln( void )
+ * @ingroup inline
+ * @fn inline void uart_send_ln( void )
  * @brief Permet d'envoyer un retour chariot
  */
-  void uart_send_ln( void );
+inline void uart_send_ln( void );
 
 /**
- * @ingroup  
- * @fn   void uart_send_string( const char *)
+ * @ingroup inline
+ * @fn inline void uart_send_string( const char *)
  * @brief Permet d'envoyer toute une chaine de caractère
  * @param string Le pointeur vers la chaine de caractère à envoyer
  */
-  void uart_send_string(const char *);
+inline void uart_send_string(const char *);
 
 //Fonction suplémentaire
 
 /**
- * @ingroup  
- * @fn   void printShortNumber( unsigned short )
+ * @ingroup inline
+ * @fn inline void printShortNumber( unsigned short )
  * @brief Permet d'envoyer un nombre sur 1 octet et non signé
  * @param n C'est le short à envoyer
  * Cette fonction permet d'envoyer un unsigned short. Elle sert pour les fonctions de plus haut niveau.
  */
-  void printShortNumber( unsigned short );
+inline void printShortNumber( unsigned short );
 
 /**
- * @ingroup  
- * @fn   void printIntNumber( unsigned int)
+ * @ingroup inline
+ * @fn inline void printIntNumber( unsigned int)
  * @brief Permet l'envoi d'un nombre sur 2 octet et non signé
  * @param n C'est l'int à envoyer
  */
-  void printIntNumber( unsigned int );
+inline void printIntNumber( unsigned int );
 
 /**
- * @ingroup  
- * @fn   void printLongNumber( unsigned long)
+ * @ingroup inline
+ * @fn inline void printLongNumber( unsigned long)
  * @brief Permet d'envoyer un nombre sur 4 octets et non signé
  * @param n C'est le long à envoyer
  */
-  void printLongNumber( unsigned long );
+inline void printLongNumber( unsigned long );
 
 //Définition des prints
 
@@ -302,13 +302,13 @@ uint8_t available(void);
 
 /**
  * @ingroup reception
- * @ingroup  
- * @fn   void store_char( unsigned char, struct ring_buffer *)
+ * @ingroup inline
+ * @fn inline void store_char( unsigned char, struct ring_buffer *)
  * @brief Permet de stocker une DATA reçue dans le ring buffer
  * @param c la DATE reçue (1 octet)
  * @param *rx_buffer un pointeur vers le ring buffer
  */
-  void store_char(unsigned char, struct ring_buffer *);
+inline void store_char(unsigned char, struct ring_buffer *);
 
 /**
  * @ingroup reception
@@ -317,26 +317,5 @@ uint8_t available(void);
  * @return La DATA stockée dans le buffer circulaire
  */
 int read(void);
-
-/**
- * @ingroup reception
- * @ingroup  
- * @fn long readLongNumber( void )
- * @brief Permet de lire un nombre quelconque signé (de -2147483646 à 2147483647)
- * @warning Cette fonction est bloquante, sauf si le long est déjà reçu
- * @return Le nombre reçu
- */
-  long readLongNumber( void );
-
-/**
- * @ingroup reception
- * @ingroup  
- * @fn   unsigned long readULongNumber( void )
- * @brief Permet de lire un nombre quelconque non signé (de 0 à 2^32)
- * @warning Cette fonction est bloquante, sauf si le long est déjà reçu
- * @return Le nombre reçu
- */
-  uint32_t readULongNumber( void );
-
 
 #endif

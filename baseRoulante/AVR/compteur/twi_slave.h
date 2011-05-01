@@ -1,8 +1,12 @@
-#define TWI_BUFFER_SIZE 5
+#ifndef TWI_SLAVE_H
+#define TWI_SLAVE_H
+
+#define TWI_BUFFER_SIZE 9
                                
 #define MASTER_CMD_RESET    0X10
 #define MASTER_CMD_DISTANCE 0X20
 #define MASTER_CMD_ANGLE    0X30
+#define MASTER_CMD_ALL    0X40
 
 extern unsigned char messageBuf[];
 
@@ -69,3 +73,5 @@ unsigned char TWI_Get_Data_From_Transceiver( unsigned char *, unsigned char );
 // TWI Miscellaneous status codes
 #define TWI_NO_STATE               0xF8  // No relevant state information available; TWINT = “0”
 #define TWI_BUS_ERROR              0x00  // Bus error due to an illegal START or STOP condition
+
+#endif

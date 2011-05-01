@@ -6,21 +6,19 @@ volatile long x;
 volatile long y;
 
 void
-Manager::assPolaire()
-{
-	
-	int32_t angle=0;
-    int32_t distance=0;
-    
-    distance = get_distance();
-	angle = get_angle();
-    
+Manager::assPolaire(){
+	int32_t infos[2] = {0};
+	get_all(infos);
+    int32_t angle = -infos[0];
+    int32_t distance = -infos[1];
     
     x+=(distance - distanceBkp)*fp_cos(angle-angleBkp);
 	y+=(distance - distanceBkp)*fp_sin(angle-angleBkp);
 	
 	distanceBkp = distance;
 	angleBkp = angle;
+	
+	
 	// Réactualisation des vitesses du robot
 	assRotation.setVitesse((angle-angleBkp));
 	assTranslation.setVitesse((distance-distanceBkp));
@@ -50,7 +48,7 @@ Manager::assPolaire()
 	if(ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).distance - distance) < 60
 		&& ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).angle - angle) < 60 ){
 			if( indiceConsigneActuelle < tableauConsignes.nbConsignes ){
-			indiceConsigneActuelle++;
+				indiceConsigneActuelle++;
 		}
 	}
 
@@ -62,17 +60,12 @@ Manager::assPolaire()
 
 	int16_t pwmG = pwmTranslation - pwmRotation;
 	int16_t pwmD = pwmTranslation + pwmRotation;
+	
 
-    
-	
-// 	printlnLong(pwmG);
-// 	printlnLong(pwmD);
-	
 	
 	/*
 	* Envoi des PWM
 	*/	
-
 	if (pwmG > PWM_MAX)
 		pwmG = PWM_MAX;
 	else if (pwmG < -PWM_MAX)
@@ -82,7 +75,8 @@ Manager::assPolaire()
 		pwmD = PWM_MAX;
 	else if (pwmD < -PWM_MAX)
 		pwmD = -PWM_MAX;
-
+	
+	printlnLong(pwmG);
 	if (pwmG > 0) {
 		// Direction gauche = 0
 		// PWM gauche = pwmG
@@ -95,7 +89,6 @@ Manager::assPolaire()
 		PORTD &= ~PINDIR1;
 		MOTEUR1 = -pwmG;
 	}
-
 	if (pwmD > 0) {
 		// Direction droite = 0
 		// PWM droite = pwmD
@@ -169,16 +162,16 @@ void Manager::init()
 	indiceConsigneActuelle=1;
 
 	// initialisation des constantes
-	assRotation.changeKp(10);
+	assRotation.changeKp(40);
 	assRotation.changePWM(PWM_MAX);
-	assRotation.changeKd(10);
+	assRotation.changeKd(100);
 	assRotation.changeKi(0);
 	assRotation.changeVmax(0);
 	assRotation.changeKpVitesse(0);
 
-	assTranslation.changeKp(10);
+	assTranslation.changeKp(40);
 	assTranslation.changePWM(PWM_MAX);
-	assTranslation.changeKd(10);
+	assTranslation.changeKd(100);
 	assTranslation.changeKi(0);
 	assTranslation.changeVmax(0);
 	assTranslation.changeKpVitesse(0);
@@ -252,7 +245,7 @@ void	Manager::test(){
 }
 
 void
-Manager::changeIemeConsigne(int32_t distanceDonnee, int32_t angleDonne,int16_t i)
+Manager::changeIemeConsigne(int32_t angleDonne, int32_t distanceDonnee,int16_t i)
 {
 	(tableauConsignes.listeConsignes[i-1]).distance=distanceDonnee;
 	(tableauConsignes.listeConsignes[i-1]).angle=angleDonne;
@@ -269,8 +262,7 @@ Manager::setNbConsignes(int16_t nbConsignesDonne)
 }
 
 void 
-Manager::changeIemeConsigneDistance(int32_t distanceDonnee, int16_t i)
-{
+Manager::changeIemeConsigneDistance(int32_t distanceDonnee, int16_t i){
 	(tableauConsignes.listeConsignes[i-1]).distance=distanceDonnee;
 }
 
@@ -311,7 +303,7 @@ Manager::switchAssAngle(){
 	activationAssAngle = !activationAssAngle;
 }
 
-ISR(TIMER1_OVF_vect,ISR_NOBLOCK){
+ISR(TIMER1_OVF_vect, ISR_NOBLOCK){
 	manager.assPolaire();
 }
 

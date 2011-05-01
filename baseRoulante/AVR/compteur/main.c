@@ -4,13 +4,9 @@
 
 #include "twi_slave.h"
 #include "compteur.h"
+#include "serial.h"
 
-
-
-int main( void )
-{
-
-	uart_init();
+int main( void ){
 	
     // Interruptions
     sei();
@@ -20,12 +16,8 @@ int main( void )
 
     // Compteur
     compteur_init();
-
-
     
     while(1) {
-			printlnLong(roue1);
-	printlnLong(roue2);
         TWI_Loop();
     }
 

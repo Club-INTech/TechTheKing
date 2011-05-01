@@ -163,6 +163,7 @@ SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
+SWIG = @SWIG@
 VERSION = @VERSION@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
@@ -598,7 +599,6 @@ check: check-recursive
 all-am: Makefile config.h
 installdirs: installdirs-recursive
 installdirs-am:
-install: install-recursive
 install-exec: install-exec-recursive
 install-data: install-data-recursive
 uninstall: uninstall-recursive
@@ -713,7 +713,7 @@ uninstall-am:
 	ps ps-am tags tags-recursive uninstall uninstall-am
 
 
-ruby :
+install :
 	cp src/.libs/libChessUp.so ../ruby/
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

@@ -68,3 +68,4 @@ void charger_angle (void)
     messageBuf[2] = (uint8_t) (angle >> 16);
     messageBuf[3] = (uint8_t) (angle >> 24);
 }
+
