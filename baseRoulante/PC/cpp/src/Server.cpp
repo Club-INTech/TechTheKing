@@ -10,7 +10,8 @@ Socket::Socket(int port):Thread(), m_port(port){
 }
 
 Socket::~Socket(){
-    
+    if(m_instance)
+      delete(m_instance);
 }
 
 void Socket::thread(){
@@ -22,6 +23,9 @@ void Socket::thread(){
    while(m_buffer[0]!='e'){
         onRead();
         switch(m_buffer[0]){
+            case 't':
+               onWrite("o");
+               break;
             case 'e':
                #ifdef DEBUG
                cout<<"Fermeture du thread"<<endl;
@@ -44,7 +48,7 @@ void Socket::thread(){
                #endif
                for(std::list<Obstacle*>::iterator it=listeRecue.begin();it!=listeRecue.end();it++){
                   #ifdef DEBUG
-                  cout<< "( x : " << (*it)->x << " y : " << (*it)->y << " ) ; " ;
+                  cout<< "( x : " << (*it)->getX() << " y : " << (*it)-> getY() << " ) ; " ;
                   #endif
                   listeObstacles.push_back(*it);
                }
@@ -108,21 +112,21 @@ void Socket::onRead(){
     if(read(m_newsockfd,m_buffer,sizeof(m_buffer)-1)<0)
         std::cerr<<"Erreur lors de la lecture du socket"<<std::endl;
     #ifdef DEBUG
-    cout<<"Fin de l'écoute. Message lu : " << m_buffer << endl;
+    cout<<"Fin de l'écoute. Message lu :" << m_buffer << endl;
     #endif
 }
 
 void Socket::onWrite(std::string msg){
-   #ifdef DEBUG
-   cout<<"Début de l'écriture du message : " << msg << endl;
-   #endif
    const char* msgTmp = msg.c_str();
+   #ifdef DEBUG
+   cout<<"Début de l'écriture du message :" << msgTmp << endl;
+   #endif
    if(write(m_newsockfd,msgTmp,sizeof(msgTmp))<0)
       std::cerr<<"Erreur lors de l'écriture du message"<<std::endl;
    else{
-      #ifdef DEBUG
-      cout<<"Message écrit." << endl;
-      #endif
+   #ifdef DEBUG
+   cout<<"Message écrit." << endl;
+   #endif
    }
 }
 
