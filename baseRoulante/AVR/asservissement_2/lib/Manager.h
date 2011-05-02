@@ -9,8 +9,7 @@
 #include "serial.h"
 #include "Cos.h"
 
-// Puissance maximal de chaque moteur (1023 MAX)
-#define PWM_MAX	50
+#define PWM_MAX	100
 #define NB_MAX_CONSIGNES 100
 #define PRESCALER 64
 //#define TEMPS_ASS 20000000/(2^16*PRESCALER)

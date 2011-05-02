@@ -47,11 +47,10 @@ int32_t litEntierLong()
 			asm("nop");
 		}
 		c = read();
-		printlnLong(c);
-		/*if (c < 48 || c > 57) {
+		if (c < 48 || c > 57) {
 			aux = -1;
 			break;
-		}*/
+		}
 		aux += (c - 48) * k;
 		k /= 10;
 	}
@@ -72,18 +71,19 @@ int main( void ){
     
     int32_t i=0;
     
+    
     while(1)
     {
         unsigned char premierCaractere;
 		while (available() == 0) {
-			printlnLong(1);
 			asm("nop");
 		}
+		
 		premierCaractere = read();
 		
 		switch (premierCaractere) {
 		case '?':
-			printlnLong(0);
+			printlnLong(get_angle());
 			break;
 		case 'a':
 			printlnLong(i);
