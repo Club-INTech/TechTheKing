@@ -62,23 +62,23 @@ void initialisation();
 }
 
 class Point{
-	public:
-		Point(double x=0,double y=0);
-		void print();
-		void round();
-		double rayon(Point Point2);
-		double angle(Point Point2);
-		void setX(double x);
-		void setY(double y);
-		double getX();
-		double getY();
-		Point operator*(float k);
-		template<typename T> Point operator/(T k);
-		Point operator+(Point Point2);
-		Point operator-(Point Point2);
-		bool operator==(Point Point2);
-		bool operator!=(Point Point2);
-		friend ostream &operator<<(ostream &out, Point point);
+   public:
+      Point(double x=0,double y=0);
+      void print();
+      void round();
+      double rayon(Point Point2);
+      double angle(Point Point2);
+      void setX(double x);
+      void setY(double y);
+      double getX();
+      double getY();
+      Point operator*(float k);
+      template<typename T> Point operator/(T k);
+      Point operator+(Point Point2);
+      Point operator-(Point Point2);
+      bool operator==(Point Point2);
+      bool operator!=(Point Point2);
+      friend ostream &operator<<(ostream &out, Point point);
 };
 
 class Thread{
@@ -100,12 +100,14 @@ class Socket : public Thread{
     public:
         static Socket* Instance(int port);
         ~Socket();
+        void onOpen();
+        void onClose();
 };
 
 
 class InterfaceAsservissement {
 public:
-	static InterfaceAsservissement* Instance(int precisionAStar=50);
+   static InterfaceAsservissement* Instance(int precisionAStar=50);
     friend void detectionSerieUsb(InterfaceAsservissement* asserv); // ne devrait pas servir si on garde l'i2c
     void goTo(Point depart, Point arrivee,int nbPoints);
     void avancer(unsigned int distance, SensDeplacement sens);
@@ -114,10 +116,10 @@ public:
 private:
     InterfaceAsservissement& operator=(const InterfaceAsservissement&);
     InterfaceAsservissement(const InterfaceAsservissement&){};
-	InterfaceAsservissement(int precisionAStar);
+   InterfaceAsservissement(int precisionAStar);
     void recupPosition();
 private:
-	static InterfaceAsservissement* m_instance;
+   static InterfaceAsservissement* m_instance;
     AStar m_pathfinding;
     unsigned int vitesseMax;
     SerialStream m_liaisonSerie;

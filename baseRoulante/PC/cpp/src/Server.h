@@ -19,14 +19,15 @@ class Socket : public Thread{
     public:
         static Socket* Instance(int port);
         ~Socket();
+        void onOpen();
+        void onClose();
     private:
         void thread();
         std::list<Obstacle*> analyserListeObstacle();
         Socket(int port);
-        bool onOpen();
         void onWrite(string msg);
+        void onWrite(char msg);
         void onRead();
-        void onClose();
         Socket& operator=(const Socket&);
         Socket(const Socket&){};
     private:
@@ -38,6 +39,7 @@ class Socket : public Thread{
         bool m_isOpened;
         bool m_isReading;
         bool m_isWriting;
+        bool m_isAccepted;
         socklen_t m_cliLen;
         struct sockaddr_in m_servAddr;
         struct sockaddr_in m_cliAddr;
