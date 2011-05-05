@@ -4,6 +4,8 @@
 volatile int32_t roue1;
 volatile int32_t roue2;
 
+volatile uint8_t etat_codeurs;
+
 void compteur_init (void)
 {
     // Initialisation interruptions codeurs
@@ -13,39 +15,129 @@ void compteur_init (void)
     // Activer les interruptions
     PCICR |= (1 << PCIE2);
     PCICR |= (1 << PCIE1);
+
+    // Initialisation de l'etat des codeurs
+    etat_codeurs = (PIND & CODEUR11) | (PIND & CODEUR12) | (PINB & CODEUR21) | (PINB & CODEUR22);
 }
+
+/*
+ * Gestion des interruptions sur les pins des codeurs
+ * On regarde l'evolution des etats et on deduit le sens de rotation
+ * Un schema des signaux aide beaucoup pour comprendre le code
+ */
+
 
 // Interruption codeur 1
 ISR (PCINT2_vect)
 {
-    // Front montant codeur 1
-    if ( PIND & CODEUR11 )
-    {
-        if ( PIND & CODEUR12 )
-            roue1--;
-    }
-    // Front descendant codeur 1
-    else
-    {
-        if ( PIND & CODEUR12 )
-            roue1++;
+    switch ( etat_codeurs & CODEUR11 & CODEUR12 ) {
+        
+        case CODEUR11 | CODEUR12 :
+            switch ( PIND & CODEUR11 & CODEUR12 ) {
+                case CODEUR12 :
+                    roue1++;
+                    break;
+                case CODEUR11 :
+                    roue1--;
+                    break;
+                default :
+                    break;
+            }
+            break;
+            
+        case CODEUR11 :
+            switch ( PIND & CODEUR11 & CODEUR12 ) {
+                case CODEUR11 | CODEUR12 :
+                    roue1++;
+                    break;
+                case 0 :
+                    roue1--;
+                    break;
+                default :
+                    break;
+            }
+            
+        case CODEUR12 :
+            switch ( PIND & CODEUR11 & CODEUR12 ) {
+                case CODEUR11 | CODEUR12 :
+                    roue1--;
+                    break;
+                case 0 :
+                    roue1++;
+                    break;
+                default :
+                    break;
+            }
+            
+        case 0 :
+            switch ( PIND & CODEUR11 & CODEUR12 ) {
+                case CODEUR11 :
+                    roue1++;
+                    break;
+                case CODEUR12 :
+                    roue1--;
+                    break;
+                default :
+                    break;
+            }
     }
 }
 
 // Interruption codeur 2
 ISR (PCINT1_vect)
 {
-    // Front montant codeur 2
-    if ( PINC & CODEUR21 )
-    {
-        if ( PINC & CODEUR22 )
-            roue2--;
-    }
-    // Front descendant codeur 2
-    else
-    {
-        if ( PINC & CODEUR22 )
-            roue2++;
+    switch ( etat_codeurs & CODEUR21 & CODEUR22 ) {
+        
+        case CODEUR21 | CODEUR22 :
+            switch ( PINB & CODEUR21 & CODEUR22 ) {
+                case CODEUR22 :
+                    roue2++;
+                    break;
+                case CODEUR21 :
+                    roue2--;
+                    break;
+                default :
+                    break;
+            }
+            break;
+            
+        case CODEUR21 :
+            switch ( PINB & CODEUR21 & CODEUR22 ) {
+                case CODEUR21 | CODEUR22 :
+                    roue2++;
+                    break;
+                case 0 :
+                    roue2--;
+                    break;
+                default :
+                    break;
+            }
+            
+        case CODEUR22 :
+            switch ( PINB & CODEUR21 & CODEUR22 ) {
+                case CODEUR21 | CODEUR22 :
+                    roue2--;
+                    break;
+                case 0 :
+                    roue2++;
+                    break;
+                default :
+                    break;
+            }
+            
+        case 0 :
+            switch ( PINB & CODEUR21 & CODEUR22 ) {
+                case CODEUR21 :
+                    roue2++;
+                    break;
+                case CODEUR22 :
+                    roue2--;
+                    break;
+                default :
+                    break;
+            }
+        default :
+            break;
     }
 }
 
