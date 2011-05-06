@@ -102,6 +102,7 @@ class Socket : public Thread{
         ~Socket();
         void onOpen();
         void onClose();
+        void request();
 };
 
 

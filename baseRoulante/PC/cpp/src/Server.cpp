@@ -1,67 +1,97 @@
 #include "Server.h"
 #include "config.h"
+#include <time.h>
 #include <list>
 
 
 Socket* Socket::m_instance=NULL;
 
-Socket::Socket(int port):Thread(), m_port(port),m_isOpened(false),m_isAccepted(false){
+Socket::Socket(int port):Thread(), m_port(port),m_isOpened(false),m_isAccepted(false),m_isRequesting(false){
    bzero(m_buffer,sizeof(m_buffer));
 }
 
 Socket::~Socket(){
     if(m_instance)
       delete(m_instance);
+    onClose();
 }
 
+void Socket::request(){
+    
+    cout<<m_isRequesting<<endl;
+    m_mutex.lock();
+    m_isRequesting = true;
+    m_mutex.unlock();
+    cout<<m_isRequesting<<endl;
+}
 void Socket::thread(){
-      if(!m_isOpened){
-         #ifdef DEBUG
-         cout<<"Impossible d'executer la routuine : Socket non ouverte" << endl;
-         #endif
-         return;
-      }
-      onWrite('p');
-      onRead();
-      switch(m_buffer[0]){
-      case 't':
-         onWrite('o');
-         break;
-      case 'e':
-         #ifdef DEBUG
-         cout<<"Fermeture du thread"<<endl;
-         #endif
-         break;
-      case 'd':
-         #ifdef DEBUG
-         cout<<"Réception d'une liste d'obstacle"<<endl;
-         #endif
-         m_mutex.lock();
-         std::list<Obstacle*> listeRecue = analyserListeObstacle();
-         if(listeRecue.empty()){
-             #ifdef DEBUG
-            cout<<"Echec."<<endl;
-            #endif
-            break;
-         }
-         #ifdef DEBUG
-         cout<<"Ajout des obstacles reçus à la liste : "<<endl;
-         #endif
-         for(std::list<Obstacle*>::iterator it=listeRecue.begin();it!=listeRecue.end();it++){
+    
+   
+     while(1){
+
+        if((m_newsockfd=accept(m_sockfd,(struct sockaddr*)&m_cliAddr,&m_cliLen))<0){
+            std::cerr<<"Erreur lors de l'acceptation du socket"<<std::endl;
+            m_isOpened=false;
+            return;
+        }
+        else{
             #ifdef DEBUG
-            cout<< "( x : " << (*it)->getX() << " y : " << (*it)-> getY() << " ) ; " ;
-            #endif
-            listeObstacles.push_back(*it);
-         }
-         #ifdef DEBUG
-         cout<< endl;
-         #endif
-         m_mutex.unlock();
-         break;
-      }
+             cout<<"Socket acceptée"<<endl;
+             #endif
+        }   
+            cout<<"ccccccccccccccccccccccccc"<<endl;
+        while(!m_isRequesting){
+            usleep(100000);
+        }
+            onWrite('p');
+            bzero(m_buffer,sizeof(m_buffer));
+            onRead();
+            traitementReception();
+            m_mutex.lock();
+            m_isRequesting=false;
+            m_mutex.unlock();
+    }
+      
 }
 
-
+void Socket::traitementReception(){
+    switch(m_buffer[0]){
+          case 't':
+             onWrite('o');
+             break;
+          case 'e':
+             #ifdef DEBUG
+             cout<<"Fermeture du thread"<<endl;
+             #endif
+             break;
+          case 'd':
+             #ifdef DEBUG
+             cout<<"Réception d'une liste d'obstacle"<<endl;
+             #endif
+             m_mutex.lock();
+             std::list<Obstacle*> listeRecue = analyserListeObstacle();
+             if(listeRecue.empty()){
+                 #ifdef DEBUG
+                cout<<"Echec."<<endl;
+                #endif
+                break;
+             }
+             #ifdef DEBUG
+             cout<<"Ajout des obstacles reçus à la liste : "<<endl;
+             #endif
+             for(std::list<Obstacle*>::iterator it=listeRecue.begin();it!=listeRecue.end();it++){
+                #ifdef DEBUG
+                cout<< "( x : " << (*it)->getX() << " y : " << (*it)-> getY() << " ) ; " ;
+                #endif
+                listeObstacles.push_back(*it);
+             }
+             #ifdef DEBUG
+             cout<< endl;
+             #endif
+             m_mutex.unlock();
+             break;
+      }
+}
 Socket* Socket::Instance(int port){
     if(m_instance==NULL){
          #ifdef DEBUG
@@ -102,25 +132,20 @@ void Socket::onOpen(){
    listen(m_sockfd,5);
    m_cliLen = sizeof(m_cliAddr);
    m_isOpened=true;
+   
 }
 
 void Socket::onRead(){
    #ifdef DEBUG
-    cout<<"Début de l'écoute"<<endl;
+    cout<<"Début de l'écoute ; "<< m_buffer <<endl;
     #endif
-    if((m_newsockfd=accept(m_sockfd,(struct sockaddr*)&m_cliAddr,&m_cliLen))<0){
-         std::cerr<<"Erreur lors de l'acceptation du socket"<<std::endl;
-         m_isOpened=false;
-         return;
-      }
-    if(recv(m_newsockfd,m_buffer,sizeof(m_buffer)-1,MSG_PEEK)<0){
+    if(read(m_newsockfd,m_buffer,sizeof(m_buffer)-1)<0){
       std::cerr<<"Erreur lors de la lecture du socket"<<std::endl;
       return;
     }
     #ifdef DEBUG
     cout<<"Fin de l'écoute. Message lu :" << m_buffer << endl;
     #endif
-    bzero(m_buffer,sizeof(m_buffer));
 }
 
 void Socket::onWrite(std::string msg){
@@ -152,8 +177,10 @@ void Socket::onWrite(char msg){
 }
 
 void Socket::onClose(){
-    close(m_sockfd);
-    m_isOpened=false;
+    if(m_isOpened){
+        close(m_sockfd);
+        m_isOpened=false;
+    }
 }
 
 std::list<Obstacle*> Socket::analyserListeObstacle(){

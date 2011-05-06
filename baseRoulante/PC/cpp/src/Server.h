@@ -21,7 +21,9 @@ class Socket : public Thread{
         ~Socket();
         void onOpen();
         void onClose();
+        void request();
     private:
+        void traitementReception();
         void thread();
         std::list<Obstacle*> analyserListeObstacle();
         Socket(int port);
@@ -36,6 +38,7 @@ class Socket : public Thread{
         int m_sockfd;
         int m_newsockfd;
         int m_port;
+        bool m_isRequesting;
         bool m_isOpened;
         bool m_isReading;
         bool m_isWriting;
