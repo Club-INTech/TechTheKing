@@ -58,8 +58,8 @@ Manager::assPolaire(){
 	int16_t pwmRotation = (activationAssAngle?assRotation.calculePwm(((tableauConsignes.listeConsignes)[indiceConsigneActuelle-1]).angle,angle):0);
 	int16_t pwmTranslation = (activationAssDistance?assTranslation.calculePwm(((tableauConsignes.listeConsignes)[indiceConsigneActuelle-1]).distance,distance):0);
 
-	int16_t pwmG = pwmTranslation - pwmRotation;
-	int16_t pwmD = pwmTranslation + pwmRotation;
+	int16_t pwmG = pwmTranslation + pwmRotation;
+	int16_t pwmD = pwmTranslation - pwmRotation;
 	
 
 	
@@ -76,29 +76,31 @@ Manager::assPolaire(){
 	else if (pwmD < -PWM_MAX)
 		pwmD = -PWM_MAX;
 	
-	printlnLong(pwmG);
 	if (pwmG > 0) {
 		// Direction gauche = 0
 		// PWM gauche = pwmG
-		PORTD |= PINDIR1;
+		PORTD &= ~PINDIR1;
 		MOTEUR1 = pwmG;
 	}
 	else {
 		// Direction gauche = 1
 		// PWM gauche = -pwmG
-		PORTD &= ~PINDIR1;
+		PORTD |= PINDIR1;
 		MOTEUR1 = -pwmG;
 	}
+	
+	printlnLong(pwmTranslation);
+	
 	if (pwmD > 0) {
 		// Direction droite = 0
 		// PWM droite = pwmD
-		PORTB |= PINDIR2;
+		PORTB &= ~PINDIR2;
 		MOTEUR2 = pwmD;
 	}
 	else {
 		// Direction droite = 1
 		// PWM droite = -pwmD
-		PORTB &= ~PINDIR2;
+		PORTB |= PINDIR2;
 		MOTEUR2 = -pwmD;
 	}
 }
@@ -162,16 +164,16 @@ void Manager::init()
 	indiceConsigneActuelle=1;
 
 	// initialisation des constantes
-	assRotation.changeKp(40);
+	assRotation.changeKp(20);
 	assRotation.changePWM(PWM_MAX);
-	assRotation.changeKd(100);
+	assRotation.changeKd(2000);
 	assRotation.changeKi(0);
 	assRotation.changeVmax(0);
 	assRotation.changeKpVitesse(0);
 
-	assTranslation.changeKp(40);
+	assTranslation.changeKp(20);
 	assTranslation.changePWM(PWM_MAX);
-	assTranslation.changeKd(100);
+	assTranslation.changeKd(2000);
 	assTranslation.changeKi(0);
 	assTranslation.changeVmax(0);
 	assTranslation.changeKpVitesse(0);
