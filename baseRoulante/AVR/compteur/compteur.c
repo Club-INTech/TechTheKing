@@ -93,7 +93,7 @@ ISR (PCINT2_vect)
     
     etat_codeurs = (PIND & CODEUR11) | (PIND & CODEUR12) | (PINC & CODEUR21) | (PINC & CODEUR22);
     
-    printlnLong(roue1);
+    //printlnLong(roue1);
 }
 
 // Interruption codeur 2
@@ -157,7 +157,7 @@ ISR (PCINT1_vect)
             break;
     }
     
-    printlnLong(roue2);
+    //printlnLong(roue2);
     etat_codeurs = (PIND & CODEUR11) | (PIND & CODEUR12) | (PINC & CODEUR21) | (PINC & CODEUR22);
 }
 

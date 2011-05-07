@@ -9,7 +9,7 @@
 #include "serial.h"
 #include "Cos.h"
 
-#define PWM_MAX	50
+#define PWM_MAX	255
 #define NB_MAX_CONSIGNES 100
 #define PRESCALER 64
 //#define TEMPS_ASS 20000000/(2^16*PRESCALER)
@@ -65,9 +65,9 @@ class Manager {
 		int32_t distanceTotale;
 		int32_t angleTotal;
 
-		int32_t	angleBkp;
+		volatile int32_t	angleBkp;
 
-		int32_t	distanceBkp;
+		volatile int32_t	distanceBkp;
 
 		typedef struct {
 			int32_t distance;

@@ -7,21 +7,22 @@ volatile long y;
 
 void
 Manager::assPolaire(){
-	int32_t infos[2] = {0};
+	int32_t infos[2];
 	get_all(infos);
-    int32_t angle = -infos[0];
-    int32_t distance = -infos[1];
+    int32_t distance = infos[0];
+    int32_t angle = infos[1];
+    
+    
     
     x+=(distance - distanceBkp)*fp_cos(angle-angleBkp);
 	y+=(distance - distanceBkp)*fp_sin(angle-angleBkp);
-	
-	distanceBkp = distance;
-	angleBkp = angle;
 	
 	
 	// Réactualisation des vitesses du robot
 	assRotation.setVitesse((angle-angleBkp));
 	assTranslation.setVitesse((distance-distanceBkp));
+	
+	
 	angleBkp = angle;
 	distanceBkp = distance;
 
@@ -36,6 +37,8 @@ Manager::assPolaire(){
 	/*
 	* factorisation de la dÃ©sactivation de Kd
 	*/
+	
+	
 	if( indiceConsigneActuelle ==0 || indiceConsigneActuelle ==tableauConsignes.nbConsignes ) {
 		assRotation.setActivationKd(1);
 		assTranslation.setActivationKd(1);
@@ -58,8 +61,8 @@ Manager::assPolaire(){
 	int16_t pwmRotation = (activationAssAngle?assRotation.calculePwm(((tableauConsignes.listeConsignes)[indiceConsigneActuelle-1]).angle,angle):0);
 	int16_t pwmTranslation = (activationAssDistance?assTranslation.calculePwm(((tableauConsignes.listeConsignes)[indiceConsigneActuelle-1]).distance,distance):0);
 
-	int16_t pwmG = pwmTranslation + pwmRotation;
-	int16_t pwmD = pwmTranslation - pwmRotation;
+	int16_t pwmG = pwmTranslation - pwmRotation;
+	int16_t pwmD = pwmTranslation + pwmRotation;
 	
 
 	
@@ -79,28 +82,29 @@ Manager::assPolaire(){
 	if (pwmG > 0) {
 		// Direction gauche = 0
 		// PWM gauche = pwmG
-		PORTD &= ~PINDIR1;
+		PORTD |= PINDIR1;
 		MOTEUR1 = pwmG;
 	}
 	else {
 		// Direction gauche = 1
 		// PWM gauche = -pwmG
-		PORTD |= PINDIR1;
+		PORTD &= ~PINDIR1;
 		MOTEUR1 = -pwmG;
 	}
 	
 	printlnLong(pwmTranslation);
+
 	
 	if (pwmD > 0) {
 		// Direction droite = 0
 		// PWM droite = pwmD
-		PORTB &= ~PINDIR2;
+		PORTB |= PINDIR2;
 		MOTEUR2 = pwmD;
 	}
 	else {
 		// Direction droite = 1
 		// PWM droite = -pwmD
-		PORTB |= PINDIR2;
+		PORTB &= ~PINDIR2;
 		MOTEUR2 = -pwmD;
 	}
 }
@@ -157,23 +161,26 @@ void Manager::init()
 	// Timer de l'asservissement (16bit, 20 MHz)
 	// Penser à changer le #define prescaler en haut du fichier
 	TIMSK1 |= (1 << TOIE1);
+	//prescaler 8
     TCCR1B |= (1 << CS11);
+   //prescaler 64
+   //TCCR1B |= (1 << CS11) | (1 << CS10 );
 	
 	// initialisation de la liste de point
-	tableauConsignes.nbConsignes=0;
+	tableauConsignes.nbConsignes=1;
 	indiceConsigneActuelle=1;
 
 	// initialisation des constantes
-	assRotation.changeKp(20);
+	assRotation.changeKp(15);
 	assRotation.changePWM(PWM_MAX);
-	assRotation.changeKd(2000);
+	assRotation.changeKd(400);
 	assRotation.changeKi(0);
 	assRotation.changeVmax(0);
 	assRotation.changeKpVitesse(0);
 
-	assTranslation.changeKp(20);
+	assTranslation.changeKp(15);
 	assTranslation.changePWM(PWM_MAX);
-	assTranslation.changeKd(2000);
+	assTranslation.changeKd(400);
 	assTranslation.changeKi(0);
 	assTranslation.changeVmax(0);
 	assTranslation.changeKpVitesse(0);
