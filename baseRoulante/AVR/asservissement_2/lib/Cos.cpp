@@ -10,8 +10,6 @@
 #define TABLE_LENGTH 64
 #define TABLE_STEP 1621//.160757
 
-static inline int32_t trig_lookup(int32_t theta, int32_t* table);
-
 static int32_t linspace[TABLE_LENGTH] PROGMEM = { 
 	0, 1621, 3242, 4863, 6485, 8106, 9727, 11348, 
 	12969, 14590, 16212, 17833, 19454, 21075, 22696, 24317, 
@@ -47,7 +45,7 @@ int32_t fp_sin(int32_t theta) {
 int32_t fp_cos(int32_t theta) { 
 	uint8_t n;	
 	int8_t negative;
-	int32_t x_n, x_np1, x_np2;
+	int32_t x_n=0, x_np1=0, x_np2=0;
 	int32_t y_n, y_np1, y_np2;
 	int32_t dd_n, dd_np1, second_dd, result;
 	

@@ -13,9 +13,8 @@ Manager::assPolaire(){
     int32_t angle = infos[1];
     
     
-    
-    x+=(distance - distanceBkp)*fp_cos(angle-angleBkp);
-	y+=(distance - distanceBkp)*fp_sin(angle-angleBkp);
+    //x += ( (distance - distanceBkp) * fp_cos( (2*Pi * 65536)*N'/t' * angle ) ) * N / (65536*t);
+    //y += ( (distance - distanceBkp) * fp_sin( (2*Pi * 65536)*N'/t' * angle ) ) * N / (65536*t);
 	
 	
 	// R�actualisation des vitesses du robot
@@ -92,8 +91,6 @@ Manager::assPolaire(){
 		MOTEUR1 = -pwmG;
 	}
 	
-	printlnLong(pwmTranslation);
-
 	
 	if (pwmD > 0) {
 		// Direction droite = 0
@@ -281,6 +278,13 @@ Manager::changeIemeConsigneAngle(int32_t angleDonne, int16_t i)
 	(tableauConsignes.listeConsignes[i-1]).angle=angleDonne;
 }
 
+void
+Manager::reset()
+{
+	tableauConsignes.nbConsignes=1;
+	indiceConsigneActuelle=1;
+	send_reset();
+}
 /*
 * A voir, si on peut envoyer via un int32_t à la fois la distance et l'angle.
 * Diviserait par environ deux le temp de chargement de la liste de points en série.
