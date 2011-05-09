@@ -62,7 +62,9 @@ int32_t fp_cos(int32_t theta) {
 
     //Find the nearest table values. FIXME
     n = theta / TABLE_STEP;
-    while( n < TABLE_LENGTH - 1 && pgm_read_dword(&linspace[n++])<theta);
+    while( n < TABLE_LENGTH - 1 && pgm_read_dword(&linspace[n])<theta){
+        n++;
+    }
     
     //theta is between x_{n} and x_{n+1}
     
