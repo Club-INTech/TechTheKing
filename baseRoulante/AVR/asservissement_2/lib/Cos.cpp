@@ -85,6 +85,7 @@ int32_t fp_cos(int32_t theta) {
     //Address the general case. Quadratic interpolation.
     //Load in the necessary values.
     x_n = pgm_read_dword(&linspace[n]);
+    x_np1 = pgm_read_dword(&linspace[n+1]);
     x_np2  = pgm_read_dword(&linspace[n + 2]);
     
     y_n = pgm_read_dword(&fp_cos_table[n]);
