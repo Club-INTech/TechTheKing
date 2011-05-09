@@ -1,5 +1,7 @@
 #include "Manager.h"
 
+#define CONVERSION_TIC_ANGLE 48.4440979 //(2 * Pi * 65 536) / 8500
+#define CONVERSION_TIC_DISTANCE 0.0000158239294 // 3375/(3500 * 65536)
 #define ABS(x) (x > 0 ? x : -x)
 
 volatile long x;
@@ -13,10 +15,10 @@ Manager::assPolaire(){
     int32_t angle = infos[1];
     
     
-    //x += ( (distance - distanceBkp) * fp_cos( (2*Pi * 65536)*N'/t' * angle ) ) * N / (65536*t);
-    //y += ( (distance - distanceBkp) * fp_sin( (2*Pi * 65536)*N'/t' * angle ) ) * N / (65536*t);
+    x += ( (distance - distanceBkp) * fp_cos( 48.4440979 * angle ) );
+    y += ( (distance - distanceBkp) * fp_sin( 48.4440979 * angle ) );
 	
-	
+	printlnLong(x)
 	// Réactualisation des vitesses du robot
 	assRotation.setVitesse((angle-angleBkp));
 	assTranslation.setVitesse((distance-distanceBkp));
