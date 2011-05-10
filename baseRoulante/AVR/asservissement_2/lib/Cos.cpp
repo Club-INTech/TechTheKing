@@ -44,7 +44,7 @@ int32_t fp_sin(int32_t theta) {
 //Quadratic interpolation.
 int32_t fp_cos(int32_t theta) { 
     uint8_t n;  
-    int8_t negative;
+    int8_t negative=0;
     int32_t x_n=0, x_np1=0, x_np2=0;
     int32_t y_n, y_np1, y_np2;
     int32_t dd_n, dd_np1, second_dd, result;
