@@ -17,7 +17,7 @@ Manager::assPolaire(){
     
     x += ( (distance - distanceBkp) * fp_cos( CONVERSION_TIC_ANGLE * angle ) );
     y += ( (distance - distanceBkp) * fp_sin( CONVERSION_TIC_ANGLE * angle ) );
-	
+	myi
 	printlnLong(x*CONVERSION_TIC_DISTANCE);
 	printlnLong(y*CONVERSION_TIC_DISTANCE);
 

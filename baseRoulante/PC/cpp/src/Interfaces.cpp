@@ -99,6 +99,11 @@ InterfaceAsservissement::InterfaceAsservissement(int precision) : m_pathfinding(
     m_liaisonSerie.Open("/dev/ttyUSB0");
 }
 
+InterfaceAsservissement::~InterfaceAsservissement()
+{
+	m_liaisonSerie.Close();
+}
+
 int InterfaceAsservissement::getXRobot()
 {
 	int result;
