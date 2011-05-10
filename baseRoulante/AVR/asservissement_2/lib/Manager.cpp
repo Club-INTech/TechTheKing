@@ -160,7 +160,6 @@ void Manager::init()
     // ADCSRA |= (1 << ADEN);
 
 	// Timer de l'asservissement (16bit, 20 MHz)
-	// Penser à changer le #define prescaler en haut du fichier
 	TIMSK1 |= (1 << TOIE1);
 	//prescaler 8
     TCCR1B |= (1 << CS11);

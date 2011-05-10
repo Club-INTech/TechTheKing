@@ -111,7 +111,7 @@ int main( void ){
 			manager.switchAssAngle();
 			break;
 		case 'f': // A faire avant de charger une liste de points
-			manager.setNbConsignes(00000000);
+			manager.setNbConsignes(0);
 			break;
 		case 'g': // push consigne etape 1
 			i=litEntierLong();
@@ -151,14 +151,10 @@ int main( void ){
 			manager.assTranslation.stop();
 			break;
 		case 'o':
-			cli();
-			send_reset();
+			TIMSK1 &= ~(1 << TOIE1);
 			break;
 		case 'p':
-			i=litEntierLong();
-			if (i >= 0) {
-				manager.assRotation.changePWM(i);
-			}
+			TIMSK1 |= (1 << TOIE1);
 			break;
 		case 'q': // push consigne (étape 2)
 			i=litEntierLong();
