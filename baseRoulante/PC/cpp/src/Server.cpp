@@ -39,7 +39,6 @@ void Socket::thread(){
              cout<<"Socket acceptée"<<endl;
              #endif
         }   
-            cout<<"ccccccccccccccccccccccccc"<<endl;
         while(!m_isRequesting){
             usleep(100000);
         }
