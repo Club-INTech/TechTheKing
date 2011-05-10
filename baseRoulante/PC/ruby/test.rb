@@ -1,6 +1,5 @@
 require 'libChessUp'
 
-Socket = LibChessUp::Socket.Instance(42000);
-Socket.ouvrirThread();
+InterfaceAsservissement = LibChessUp::InterfaceAsservissement.Instance();
 while(true);
 end
