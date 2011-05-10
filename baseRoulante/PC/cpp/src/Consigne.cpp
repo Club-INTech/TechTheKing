@@ -21,25 +21,25 @@ Consigne::Consigne(int rayon,int angle){
 }
 
 void Consigne::transfertSerie(SerialStream& interfaceDeTransfert){
-	if(m_angle>=0)
-		interfaceDeTransfert << "g1" + formaterInt(m_angle) << endl;
-	else
-		interfaceDeTransfert << "g0" + formaterInt(-m_angle) << endl;
 	if(m_rayon>=0)
-		interfaceDeTransfert << "q1" + formaterInt(m_rayon) << endl;
+		interfaceDeTransfert << "g1" + formaterInt(m_rayon) << endl;
 	else
-		interfaceDeTransfert << "q0" + formaterInt(-m_rayon) << endl;
+		interfaceDeTransfert << "g0" + formaterInt(-rayon) << endl;
+	if(m_angle>=0)
+		interfaceDeTransfert << "q1" + formaterInt(m_angle) << endl;
+	else
+		interfaceDeTransfert << "q0" + formaterInt(-m_angle) << endl;
 }
 
 void Consigne::print()const{
-	if(m_angle>=0)
-		cout << "g1" + formaterInt(m_angle) << endl;
-	else
-		cout << "g0" + formaterInt(-m_angle) << endl;
 	if(m_rayon>=0)
-		cout << "q1" + formaterInt(m_rayon) << endl;
+		cout << "g1" + formaterInt(m_rayon) << endl;
 	else
-		cout << "q0" + formaterInt(-m_rayon) << endl;
+		cout << "g0" + formaterInt(-m_rayon) << endl;
+	if(m_angle>=0)
+		cout << "q1" + formaterInt(m_angle) << endl;
+	else
+		cout << "q0" + formaterInt(-m_angle) << endl;
 }
 
 /*
@@ -77,7 +77,9 @@ ostream &operator<<(ostream &out, vector<Consigne> listeConsignes){
 }
 
 void ListeConsignes::transfertSerie(vector<Consigne>& listeConsignes, SerialStream& liaisonSerie){
+	liaisonSerie << "o" << endl;
 	for(vector<Consigne>::iterator it=listeConsignes.begin();it!=listeConsignes.end();it++)
 		it->transfertSerie(liaisonSerie);
 	liaisonSerie << "e" << endl;
+	liaisonSerie << "p" << endl;
 }
