@@ -172,14 +172,14 @@ void Manager::init()
 	indiceConsigneActuelle=1;
 
 	// initialisation des constantes
-	assRotation.changeKp(10);
+	assRotation.changeKp(8);
 	assRotation.changePWM(PWM_MAX);
 	assRotation.changeKd(300);
 	assRotation.changeKi(0);
 	assRotation.changeVmax(0);
 	assRotation.changeKpVitesse(0);
 
-	assTranslation.changeKp(10);
+	assTranslation.changeKp(8);
 	assTranslation.changePWM(PWM_MAX);
 	assTranslation.changeKd(300);
 	assTranslation.changeKi(0);
