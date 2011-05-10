@@ -1,7 +1,7 @@
 #include "Manager.h"
 
-#define CONVERSION_TIC_ANGLE 48.330379 //(2 * Pi * 65 536) / 8500
-#define CONVERSION_TIC_DISTANCE 0.00000158239294 // 3375/(3500 * 65536)
+#define CONVERSION_TIC_ANGLE 48.444097 //(2 * Pi * 65 536) / 8520
+#define CONVERSION_TIC_DISTANCE 0.0000158239294 // 3375/(3500 * 65536)
 #define ABS(x) (x > 0 ? x : -x)
 
 volatile long x;
