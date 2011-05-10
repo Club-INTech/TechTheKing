@@ -82,14 +82,14 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
    #ifdef DEBUG
       cout<<"Tentative de déplacement du robot en : (x = " << arrivee.getX() << ", y = " << arrivee.getY() << ")" << endl;
    #endif
-   Point depart(2,0);
+   Point depart(getXRobot(),getYRobot());
    vector<Point> listePointsTmp=m_pathfinding.getChemin(depart,arrivee);
    vector<Point> listePointsLissee=ListePoints::lissageBezier(listePointsTmp,nbPoints);
    #ifdef DEBUG_GRAPHIQUE
    Debug::debugGraphique(listePointsLissee);
    #endif
     vector<Consigne> listeConsignes=ListePoints::convertirEnConsignes(listePointsLissee); 
-    ListeConsignes::transfertSerie(listeConsignes,m_liaisonSerie);
+    //ListeConsignes::transfertSerie(listeConsignes,m_liaisonSerie);
 }
 
 InterfaceAsservissement::InterfaceAsservissement(int precision) : m_pathfinding(precision){

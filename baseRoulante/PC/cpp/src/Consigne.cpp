@@ -79,4 +79,5 @@ ostream &operator<<(ostream &out, vector<Consigne> listeConsignes){
 void ListeConsignes::transfertSerie(vector<Consigne>& listeConsignes, SerialStream& liaisonSerie){
 	for(vector<Consigne>::iterator it=listeConsignes.begin();it!=listeConsignes.end();it++)
 		it->transfertSerie(liaisonSerie);
+	liaisonSerie << "e" << endl;
 }
