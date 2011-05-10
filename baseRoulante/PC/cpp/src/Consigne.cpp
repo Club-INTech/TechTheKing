@@ -24,7 +24,7 @@ void Consigne::transfertSerie(SerialStream& interfaceDeTransfert){
 	if(m_rayon>=0)
 		interfaceDeTransfert << "g1" + formaterInt(m_rayon) << endl;
 	else
-		interfaceDeTransfert << "g0" + formaterInt(-rayon) << endl;
+		interfaceDeTransfert << "g0" + formaterInt(-m_rayon) << endl;
 	if(m_angle>=0)
 		interfaceDeTransfert << "q1" + formaterInt(m_angle) << endl;
 	else

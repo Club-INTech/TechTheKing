@@ -89,7 +89,7 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
    Debug::debugGraphique(listePointsLissee);
    #endif
     vector<Consigne> listeConsignes=ListePoints::convertirEnConsignes(listePointsLissee); 
-    //ListeConsignes::transfertSerie(listeConsignes,m_liaisonSerie);
+    ListeConsignes::transfertSerie(listeConsignes,m_liaisonSerie);
 }
 
 InterfaceAsservissement::InterfaceAsservissement(int precision) : m_pathfinding(precision){
@@ -97,6 +97,9 @@ InterfaceAsservissement::InterfaceAsservissement(int precision) : m_pathfinding(
     m_liaisonSerie.SetCharSize( SerialStreamBuf::CHAR_SIZE_8);
     m_liaisonSerie.SetNumOfStopBits(1);
     m_liaisonSerie.Open("/dev/ttyUSB0");
+    #ifdef DEBUG
+      cout<<"Interface crée"<<endl;
+   #endif
 }
 
 InterfaceAsservissement::~InterfaceAsservissement()
