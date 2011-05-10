@@ -1,6 +1,6 @@
 #include "Manager.h"
 
-#define CONVERSION_TIC_ANGLE 48.4440979 //(2 * Pi * 65 536) / 8500
+#define CONVERSION_TIC_ANGLE 48.444097 //(2 * Pi * 65 536) / 8520
 #define CONVERSION_TIC_DISTANCE 0.0000158239294 // 3375/(3500 * 65536)
 #define ABS(x) (x > 0 ? x : -x)
 
@@ -15,10 +15,12 @@ Manager::assPolaire(){
     int32_t angle = infos[1];
     
     
-    x += ( (distance - distanceBkp) * fp_cos( 48.4440979 * angle ) );
-    y += ( (distance - distanceBkp) * fp_sin( 48.4440979 * angle ) );
+    x += ( (distance - distanceBkp) * fp_cos( CONVERSION_TIC_ANGLE * angle ) );
+    y += ( (distance - distanceBkp) * fp_sin( CONVERSION_TIC_ANGLE * angle ) );
 	
-	
+	printlnLong(x*CONVERSION_TIC_DISTANCE);
+	printlnLong(y*CONVERSION_TIC_DISTANCE);
+
 	// Réactualisation des vitesses du robot
 	assRotation.setVitesse((angle-angleBkp));
 	assTranslation.setVitesse((distance-distanceBkp));
@@ -170,16 +172,16 @@ void Manager::init()
 	indiceConsigneActuelle=1;
 
 	// initialisation des constantes
-	assRotation.changeKp(15);
+	assRotation.changeKp(10);
 	assRotation.changePWM(PWM_MAX);
-	assRotation.changeKd(400);
+	assRotation.changeKd(300);
 	assRotation.changeKi(0);
 	assRotation.changeVmax(0);
 	assRotation.changeKpVitesse(0);
 
-	assTranslation.changeKp(15);
+	assTranslation.changeKp(10);
 	assTranslation.changePWM(PWM_MAX);
-	assTranslation.changeKd(400);
+	assTranslation.changeKd(300);
 	assTranslation.changeKi(0);
 	assTranslation.changeVmax(0);
 	assTranslation.changeKpVitesse(0);

@@ -8,7 +8,7 @@ volatile int16_t ascenseur2;
 // Consignes des ascenseurs
 int16_t consigne1 = 0;
 int16_t consigne2 = 0;
-uint8_t synchro = 0;
+int16_t consigneb = 0;
 
 void init (void)
 {
@@ -25,8 +25,8 @@ void init (void)
     TCCR0A |= (1 << WGM00);
     TCCR0A |= (1 << WGM01);
     TCCR0B &= ~(1 << WGM02);
-    // Prescaler /1
-    TCCR0B |= (1 << CS00);
+    // Prescaler /1024
+    TCCR0B |= (1 << CS00) | (1 << CS12);
     
     // Initialisation PWM pour les PH sur timer2
     // Initialisation pin 17
@@ -68,12 +68,38 @@ void init (void)
 
 void asservissement (void)
 {
+    // Calcul des PWM
+    int32_t pwm1 = (consigne1 - ascenseur1)*KP;
+    int32_t pwm2 = (consigne2 - ascenseur2)*KP;
     
+    // Gestion du signe
+    if (pwm1 < 0 ) {
+        pwm1 = -pwm1;
+        PORTD |= DIR1;
+    }
+    else
+        PORTD &= ~DIR1;
+    
+    if (pwm2 < 0 ) {
+        pwm2 = -pwm2;
+        PORTD |= DIR2;
+    }
+    else
+        PORTD &= ~DIR2;
+    
+    // Ecrétage et application des PWM
+    MOTEUR1 = (pwm1 <= PWM_MAX)?pwm1:PWM_MAX;
+    MOTEUR2 = (pwm2 <= PWM_MAX)?pwm2:PWM_MAX;
+}
+
+void asservissement_synchro (void)
+{
+    // L'un des moteurs est asservi sur la position de l'autre
     
     // Calcul des PWM
-    int8_t pwm1 = (consigne1 - ascenseur1)*KP;
-    int8_t pwm2 = (consigne2 - ascenseur2)*KP;
-
+    int8_t pwm1 = (consigneb - ascenseur1)*KP;
+    int8_t pwm2 = (ascenseur1 - ascenseur2)*KP;
+    
     // Gestion du signe
     if (pwm1 < 0 ) {
         pwm1 = -pwm1;
@@ -148,9 +174,9 @@ ISR (PCINT0_vect)
 {
    if (PINB & CODEUR21){
       if (PINB & CODEUR22)
-          ascenseur2++;
-      else
           ascenseur2--;
+      else
+          ascenseur2++;
     }
 }
 
@@ -159,8 +185,8 @@ ISR (PCINT1_vect)
 {
    if (PINC & CODEUR11){
       if (PINC & CODEUR12)
-          ascenseur1++;
-      else
           ascenseur1--;
+      else
+          ascenseur1++;
     }
 }
