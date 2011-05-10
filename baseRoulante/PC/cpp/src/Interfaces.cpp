@@ -96,6 +96,7 @@ InterfaceAsservissement::InterfaceAsservissement(int precision) : m_pathfinding(
     m_liaisonSerie.SetBaudRate(SerialStreamBuf::BAUD_57600);
     m_liaisonSerie.SetCharSize( SerialStreamBuf::CHAR_SIZE_8);
     m_liaisonSerie.SetNumOfStopBits(1);
+    m_liaisonSerie.Open("/dev/ttyUSB0");
 }
 
 int InterfaceAsservissement::getXRobot()
@@ -103,6 +104,7 @@ int InterfaceAsservissement::getXRobot()
 	int result;
 	m_liaisonSerie << "x" << endl ;
 	m_liaisonSerie >> result;
+	cout<<result<<endl;
 	return result;
 }
 
@@ -111,6 +113,7 @@ int InterfaceAsservissement::getYRobot()
 	int result;
 	m_liaisonSerie << "y" << endl ;
 	m_liaisonSerie >> result;
+	cout<<result<<endl;
 	return result;
 }
 
