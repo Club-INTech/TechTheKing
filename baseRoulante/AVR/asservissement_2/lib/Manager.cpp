@@ -18,7 +18,7 @@ Manager::assPolaire(){
     x += ( (distance - distanceBkp) * fp_cos( 48.4440979 * angle ) );
     y += ( (distance - distanceBkp) * fp_sin( 48.4440979 * angle ) );
 	
-	printlnLong(x)
+	
 	// Réactualisation des vitesses du robot
 	assRotation.setVitesse((angle-angleBkp));
 	assTranslation.setVitesse((distance-distanceBkp));

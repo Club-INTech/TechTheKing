@@ -207,17 +207,12 @@ int main( void ){
 			break;
 		
 		case 'x':
-			i=litEntierLong();
-			if (i >= 0) {
-				manager.assRotation.changeKi(i);
-			}
+			printlnLong(x);
 			break;
 	
 		case 'y':
-			i=litEntierLong();
-			if (i >= 0) {
-				manager.assTranslation.changeVmax(i);
-			}
+			printlnLong(y);
+			break;
 	
 		case 'z':
 			i=litEntierLong();

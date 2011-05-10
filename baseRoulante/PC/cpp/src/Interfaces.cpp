@@ -78,10 +78,11 @@ void detectionSerieUsb(InterfaceAsservissement* asserv){
 }
 
 
-void InterfaceAsservissement::goTo(Point depart,Point arrivee,int nbPoints){
+void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
    #ifdef DEBUG
       cout<<"Tentative de déplacement du robot en : (x = " << arrivee.getX() << ", y = " << arrivee.getY() << ")" << endl;
    #endif
+   Point depart(getXRobot(),getYRobot());
    vector<Point> listePointsTmp=m_pathfinding.getChemin(depart,arrivee);
    vector<Point> listePointsLissee=ListePoints::lissageBezier(listePointsTmp,nbPoints);
    #ifdef DEBUG_GRAPHIQUE
@@ -95,6 +96,22 @@ InterfaceAsservissement::InterfaceAsservissement(int precision) : m_pathfinding(
     m_liaisonSerie.SetBaudRate(SerialStreamBuf::BAUD_57600);
     m_liaisonSerie.SetCharSize( SerialStreamBuf::CHAR_SIZE_8);
     m_liaisonSerie.SetNumOfStopBits(1);
+}
+
+int InterfaceAsservissement::getXRobot()
+{
+	int result;
+	m_liaisonSerie << "x" << endl ;
+	m_liaisonSerie >> result;
+	return result;
+}
+
+int InterfaceAsservissement::getYRobot()
+{
+	int result;
+	m_liaisonSerie << "y" << endl ;
+	m_liaisonSerie >> result;
+	return result;
 }
 
 unsigned char InterfaceActionneurs::pourcentageHauteurConversion(unsigned char pourcentage){

@@ -24,7 +24,7 @@ class InterfaceAsservissement {
 public:
 	static InterfaceAsservissement* Instance(int precisionAStar=50);
     friend void detectionSerieUsb(InterfaceAsservissement* asserv); // ne devrait pas servir si on garde l'i2c
-    void goTo(Point depart, Point arrivee,int nbPoints);
+    void goTo(Point arrivee,int nbPoints);
     void avancer(unsigned int distance, SensDeplacement sens);
     void tourner(unsigned int angle, SensDeplacement sens);
     
@@ -34,6 +34,8 @@ private:
 	InterfaceAsservissement(int precisionAStar);
     void recupPosition();
 private:
+	int getXRobot();
+	int getYRobot();
 	static InterfaceAsservissement* m_instance;
     AStar m_pathfinding;
     unsigned int vitesseMax;
