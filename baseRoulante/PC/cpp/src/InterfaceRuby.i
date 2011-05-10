@@ -84,6 +84,7 @@ public:
     void goTo(Point arrivee,int nbPoints);
     void avancer(unsigned int distance, SensDeplacement sens);
     void tourner(unsigned int angle, SensDeplacement sens);
+    ~InterfaceAsservissement();
     
 private:
     InterfaceAsservissement& operator=(const InterfaceAsservissement&);

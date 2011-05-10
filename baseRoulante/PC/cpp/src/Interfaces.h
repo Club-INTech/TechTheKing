@@ -23,6 +23,7 @@ std::vector<char> getTtyUSB();
 class InterfaceAsservissement {
 public:
 	static InterfaceAsservissement* Instance(int precisionAStar=50);
+	~InterfaceAsservissement();
     friend void detectionSerieUsb(InterfaceAsservissement* asserv); // ne devrait pas servir si on garde l'i2c
     void goTo(Point arrivee,int nbPoints);
     void avancer(unsigned int distance, SensDeplacement sens);

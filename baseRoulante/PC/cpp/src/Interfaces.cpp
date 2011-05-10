@@ -82,7 +82,7 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
    #ifdef DEBUG
       cout<<"Tentative de déplacement du robot en : (x = " << arrivee.getX() << ", y = " << arrivee.getY() << ")" << endl;
    #endif
-   Point depart(getXRobot(),getYRobot());
+   Point depart(getXRobot(),10);
    vector<Point> listePointsTmp=m_pathfinding.getChemin(depart,arrivee);
    vector<Point> listePointsLissee=ListePoints::lissageBezier(listePointsTmp,nbPoints);
    #ifdef DEBUG_GRAPHIQUE
@@ -97,6 +97,11 @@ InterfaceAsservissement::InterfaceAsservissement(int precision) : m_pathfinding(
     m_liaisonSerie.SetCharSize( SerialStreamBuf::CHAR_SIZE_8);
     m_liaisonSerie.SetNumOfStopBits(1);
     m_liaisonSerie.Open("/dev/ttyUSB0");
+}
+
+InterfaceAsservissement::~InterfaceAsservissement()
+{
+	m_liaisonSerie.Close();
 }
 
 int InterfaceAsservissement::getXRobot()
