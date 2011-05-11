@@ -1,13 +1,16 @@
 #include "Manager.h"
 
-#define CONVERSION_RADIAN_TIC 1356.00012
-#define CONVERSION_TIC_RADIAN 0.000737463064 // 2 * Pi / 8520
-#define CONVERSION_TIC_ANGLE 48.444097 // 2 * Pi * 65 536 / 8520
-#define CONVERSION_TIC_DISTANCE 0.0000158239294 // 3375/(3500 * 65536)
+#define CONVERSION_RADIAN_TIC 1356.00012 // (1/CONVERSION_TIC_RADIAN)
+#define CONVERSION_TIC_RADIAN 0.000737463064 // 2Pi/8520
+#define CONVERSION_RADIAN_ANGLE 65536.1858 // 102944/(Pi/2)
+#define CONVERSION_TIC_ANGLE 48.3305164 // CONVERSION_TIC_RADIAN*CONVERSION_RADIAN_ANGLE
+#define CONVERSION_TIC_MM 0.964285714 // 3375/3500
+#define CONVERSION_TIC_DISTANCE 0.00000147138323 // CONVERSION_TIC_MM/65536
+#define CONVERSION_COURBURE_TIC_MM  0.0199519583 // CONVERSION_TIC_MM/(CONVERSION_TIC_RADIAN*65536)
 #define ABS(x) (x > 0 ? x : -x)
 
-volatile long x;
-volatile long y;
+volatile double x;
+volatile double y;
 
 void
 Manager::assPolaire(){
@@ -24,19 +27,19 @@ Manager::assPolaire(){
     
     if(delta_angle==0)
     {
-		x += ( delta_distance * fp_sin( CONVERSION_TIC_ANGLE * angleBkp ) );
-		y += ( delta_distance * fp_cos( CONVERSION_TIC_ANGLE * angleBkp ) );
+		x += ( delta_distance * CONVERSION_TIC_DISTANCE * fp_sin( CONVERSION_TIC_ANGLE * angleBkp ) );
+		y += ( delta_distance * CONVERSION_TIC_DISTANCE * fp_cos( CONVERSION_TIC_ANGLE * angleBkp ) );
 	}
 	else
 	{
-		r = CONVERSION_RADIAN_TIC*(double)delta_distance/delta_angle;
+		r = CONVERSION_COURBURE_TIC_MM * (double)delta_distance/(double)delta_angle;
 		x+= r * (fp_sin(CONVERSION_TIC_ANGLE * angle) - fp_sin(CONVERSION_TIC_ANGLE * angleBkp));
 		y+= r * (fp_cos(CONVERSION_TIC_ANGLE * angle) + fp_cos(CONVERSION_TIC_ANGLE * angleBkp));
 	}
 	
 	//printlnLong(angle*CONVERSION_TIC_ANGLE/65.536);
-	printlnLong(x*CONVERSION_TIC_DISTANCE);
-	printlnLong(y*CONVERSION_TIC_DISTANCE);
+	printlnLong(x);
+	printlnLong(y);
 
 	// Réactualisation des vitesses du robot
 	assRotation.setVitesse((angle-angleBkp));
