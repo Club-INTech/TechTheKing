@@ -35,11 +35,11 @@ Manager::assPolaire(){
 	{
 		r = CONVERSION_COURBURE_TIC_MM * (double)delta_distance/(double)delta_angle;
 		x+= r * (-fp_sin(CONVERSION_TIC_ANGLE * angle) + fp_sin(CONVERSION_TIC_ANGLE * angleBkp));
-		y+= r * (fp_cos(CONVERSION_TIC_ANGLE * angle) + fp_cos(CONVERSION_TIC_ANGLE * angleBkp));
+		y+= r * (fp_cos(CONVERSION_TIC_ANGLE * angle) - fp_cos(CONVERSION_TIC_ANGLE * angleBkp));
 		//printlnLong(r*(-fp_sin(CONVERSION_TIC_ANGLE * angle) + fp_sin(CONVERSION_TIC_ANGLE * angleBkp)));
 	}
 	printlnLong(x);
-	//printlnLong(y);
+	printlnLong(y);
 
 	// Réactualisation des vitesses du robot
 	assRotation.setVitesse((angle-angleBkp));
