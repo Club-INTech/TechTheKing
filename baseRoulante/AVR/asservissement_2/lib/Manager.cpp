@@ -22,6 +22,7 @@ Manager::assPolaire(){
     delta_angle = angle - angleBkp;
     delta_distance = distance - distanceBkp;
     
+<<<<<<< HEAD
     if(delta_angle==0)
     {
 		x += ( delta_distance * fp_sin( CONVERSION_TIC_ANGLE * angleBkp ) );
@@ -34,6 +35,10 @@ Manager::assPolaire(){
 		y+= r * (fp_cos(CONVERSION_TIC_ANGLE * angle) + fp_cos(CONVERSION_TIC_ANGLE * angleBkp));
 	}
 	
+=======
+    x += ( (distance - distanceBkp) * fp_cos( CONVERSION_TIC_ANGLE * angle ) );
+    y += ( (distance - distanceBkp) * fp_sin( CONVERSION_TIC_ANGLE * angle ) );
+>>>>>>> e5b0e5d7b7636f6f4f7942aa498bfc6ca3fd51c8
 	
 	printlnLong(x*CONVERSION_TIC_DISTANCE);
 	printlnLong(y*CONVERSION_TIC_DISTANCE);
