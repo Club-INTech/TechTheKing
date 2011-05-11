@@ -1,6 +1,8 @@
 #include "Manager.h"
 
-#define CONVERSION_TIC_ANGLE 48.444097 //(2 * Pi * 65 536) / 8520
+#define CONVERSION_RADIAN_TIC 1356.00012
+#define CONVERSION_TIC_RADIAN 0.000737463064 // 2 * Pi / 8520
+#define CONVERSION_TIC_ANGLE 48.444097 // 2 * Pi * 65 536 / 8520
 #define CONVERSION_TIC_DISTANCE 0.0000158239294 // 3375/(3500 * 65536)
 #define ABS(x) (x > 0 ? x : -x)
 
@@ -10,14 +12,29 @@ volatile long y;
 void
 Manager::assPolaire(){
 	int32_t infos[2];
+	int32_t distance,angle;
+	int16_t delta_angle, delta_distance;
+	double r;
 	get_all(infos);
-    int32_t distance = infos[0];
-    int32_t angle = infos[1];
+    distance = infos[0];
+    angle = infos[1];
     
+    delta_angle = angle - angleBkp;
+    delta_distance = distance - distanceBkp;
     
-    x += ( (distance - distanceBkp) * fp_cos( CONVERSION_TIC_ANGLE * angle ) );
-    y += ( (distance - distanceBkp) * fp_sin( CONVERSION_TIC_ANGLE * angle ) );
-	myi
+    if(delta_angle==0)
+    {
+		x += ( delta_distance * fp_sin( CONVERSION_TIC_ANGLE * angleBkp ) );
+		y += ( delta_distance * fp_cos( CONVERSION_TIC_ANGLE * angleBkp ) );
+	}
+	else
+	{
+		r = CONVERSION_RADIAN_TIC*delta_distance/delta_angle;
+		x+= r * (fp_sin(CONVERSION_TIC_ANGLE * angle) - fp_sin(CONVERSION_TIC_ANGLE * angleBkp));
+		y+= r * (fp_cos(CONVERSION_TIC_ANGLE * angle) + fp_cos(CONVERSION_TIC_ANGLE * angleBkp));
+	}
+	
+	
 	printlnLong(x*CONVERSION_TIC_DISTANCE);
 	printlnLong(y*CONVERSION_TIC_DISTANCE);
 
