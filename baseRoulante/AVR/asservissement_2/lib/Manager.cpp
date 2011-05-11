@@ -29,7 +29,7 @@ Manager::assPolaire(){
 	}
 	else
 	{
-		r = CONVERSION_RADIAN_TIC*delta_distance/delta_angle;
+		r = CONVERSION_RADIAN_TIC*(double)delta_distance/delta_angle;
 		x+= r * (fp_sin(CONVERSION_TIC_ANGLE * angle) - fp_sin(CONVERSION_TIC_ANGLE * angleBkp));
 		y+= r * (fp_cos(CONVERSION_TIC_ANGLE * angle) + fp_cos(CONVERSION_TIC_ANGLE * angleBkp));
 	}
