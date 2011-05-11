@@ -1,7 +1,7 @@
 #include "Manager.h"
 
-#define CONVERSION_TIC_ANGLE 48.444097 //(2 * Pi * 65 536) / 8520
-#define CONVERSION_TIC_DISTANCE 0.0000158239294 // 3375/(3500 * 65536)
+#define CONVERSION_TIC_ANGLE 48.3303794 //(2 * Pi * 65 536) / 8520
+#define CONVERSION_TIC_DISTANCE 0.00000158239294 // 3375/(3500 * 65536)
 #define ABS(x) (x > 0 ? x : -x)
 
 volatile long x;
@@ -15,9 +15,10 @@ Manager::assPolaire(){
     int32_t angle = infos[1];
     
     
-    x += ( (distance - distanceBkp) * fp_cos( CONVERSION_TIC_ANGLE * angle ) );
-    y += ( (distance - distanceBkp) * fp_sin( CONVERSION_TIC_ANGLE * angle ) );
+    x += ( (distance - distanceBkp) * fp_cos( CONVERSION_TIC_ANGLE * angleBkp ) );
+    y += ( (distance - distanceBkp) * fp_sin( CONVERSION_TIC_ANGLE * angleBkp ) );
 	
+	//printlnLong(angle*CONVERSION_TIC_ANGLE/65.536);
 	printlnLong(x*CONVERSION_TIC_DISTANCE);
 	printlnLong(y*CONVERSION_TIC_DISTANCE);
 
