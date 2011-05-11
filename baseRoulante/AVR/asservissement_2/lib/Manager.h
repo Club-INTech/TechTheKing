@@ -88,11 +88,9 @@ class Manager {
  * Coordonnees du robot
  */ 
  
-#define CONVERSION_ANGLE 1000
-#define CONVERSION_DISTANCE 1000
 
-extern volatile long x;
-extern volatile long y;
+extern volatile double x;
+extern volatile double y;
 
 extern Manager  manager;
 
