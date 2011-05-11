@@ -139,8 +139,8 @@ Manager::Manager(){
 
 void Manager::init()
 {
-	x=0;
-	y=0;
+	x=2928;
+	y=150;
 	
 	distanceBkp=0;
 	angleBkp=0;
