@@ -9,7 +9,7 @@
 #include "serial.h"
 #include "Cos.h"
 
-#define PWM_MAX	100
+#define PWM_MAX	255
 #define NB_MAX_CONSIGNES 100
 #define PRESCALER 64
 //#define TEMPS_ASS 20000000/(2^16*PRESCALER)
@@ -65,9 +65,9 @@ class Manager {
 		int32_t distanceTotale;
 		int32_t angleTotal;
 
-		int32_t	angleBkp;
+		volatile int32_t	angleBkp;
 
-		int32_t	distanceBkp;
+		volatile int32_t	distanceBkp;
 
 		typedef struct {
 			int32_t distance;
@@ -88,11 +88,9 @@ class Manager {
  * Coordonnees du robot
  */ 
  
-#define CONVERSION_ANGLE 1000
-#define CONVERSION_DISTANCE 1000
 
-extern volatile long x;
-extern volatile long y;
+extern volatile double x;
+extern volatile double y;
 
 extern Manager  manager;
 

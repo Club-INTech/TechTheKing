@@ -17,8 +17,8 @@
 /*
  * Pins de direction des PH
  */
-#define DIR1    (1 << PORTD4)
-#define DIR2    (1 << PORTD2)
+#define DIR2    (1 << PORTD4)
+#define DIR1    (1 << PORTD2)
 
 /*
  *  Constantes
@@ -27,11 +27,11 @@
  *    ID des AX12
  *    PWM pour les servos
  */
-#define PWM_MAX     126
+#define PWM_MAX     200
 #define KP          1
 #define ID_AX1      0X10
 #define ID_AX2      0X20
-#define PWM_UP      0
+#define PWM_UP      64
 #define PWM_DOWN    0
 
 /*
@@ -55,9 +55,10 @@ extern volatile int16_t ascenseur2;
 extern uint8_t synchro;
 
 /*
- *  Fonction d'asservissement
+ *  Fonctions d'asservissement
  */
 void asservissement (void);
+void asservissement_synchro (void);
 
 /*
  *  Initialisations

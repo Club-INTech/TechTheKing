@@ -6,11 +6,10 @@
 int main()
 {
     init();
-    uart_init();
+    
     while(1)
     {
-        printlnLong(ascenseur2);
-        //asservissement();
+        asservissement();
     }
     
     return 0;

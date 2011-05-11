@@ -3,7 +3,12 @@
 # Configuration du point d'accès
 
 #Infos générales
-INTERFACE="wlan3"
+if [ $? != 0 ]
+then
+INTERFACE=$1
+else
+INTERFACE=wlan0
+fi
 SSID="Test"
 CHANNEL="1"
 HW_MODE="g"
@@ -88,6 +93,6 @@ echo -e $OPTIONS > /tmp/AP.hostapd
 echo -e $BLUE "Démarrage du démon hostapd" $NC
 sudo hostapd -B /tmp/AP.hostapd
 
-echo -e $BLUE "Démarrage de dhcpd" $NC
-   sudo /etc/init.d/isc-dhcp-server start
+echo -e $BLUE "Redémarrage de dhcpd" $NC
+   sudo /etc/init.d/isc-dhcp-server restart
 sleep 1

@@ -67,7 +67,7 @@ LectureSerie::traitement() {
 		manager.switchAssAngle();
 		break;
 	case 'j':
-		send_reset();
+		manager.reset();
 		break;
 	case 'k':
 		send_reset();

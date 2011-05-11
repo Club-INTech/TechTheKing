@@ -1,27 +1,51 @@
+
 #include "Manager.h"
 
+#define CONVERSION_RADIAN_TIC 1356.00012 // (1/CONVERSION_TIC_RADIAN)
+#define CONVERSION_TIC_RADIAN 0.000737463064 // 2Pi/8520
+#define CONVERSION_RADIAN_ANGLE 65536.1858 // 102944/(Pi/2)
+#define CONVERSION_TIC_ANGLE 48.3305164 // CONVERSION_TIC_RADIAN*CONVERSION_RADIAN_ANGLE
+#define CONVERSION_TIC_MM 1.04195690364
+#define CONVERSION_TIC_DISTANCE 0.00000158990006049 // CONVERSION_TIC_MM/65536
+#define CONVERSION_COURBURE_TIC_MM  0.00215590466574 // CONVERSION_TIC_MM/(CONVERSION_TIC_RADIAN*65536)
 #define ABS(x) (x > 0 ? x : -x)
 
-volatile long x;
-volatile long y;
+volatile double x;
+volatile double y;
 
 void
 Manager::assPolaire(){
-	int32_t infos[2] = {0};
+	int32_t infos[2];
+	int32_t distance,angle;
+	int16_t delta_angle, delta_distance;
+	double r;
 	get_all(infos);
-    int32_t angle = -infos[0];
-    int32_t distance = -infos[1];
+    distance = infos[0];
+    angle = infos[1];
     
-    x+=(distance - distanceBkp)*fp_cos(angle-angleBkp);
-	y+=(distance - distanceBkp)*fp_sin(angle-angleBkp);
-	
-	distanceBkp = distance;
-	angleBkp = angle;
-	
-	
+    delta_angle = angle - angleBkp;
+    delta_distance = distance - distanceBkp;
+    
+    if(delta_angle==0)
+    {
+		x -= ( delta_distance * CONVERSION_TIC_DISTANCE * fp_cos( CONVERSION_TIC_ANGLE * angleBkp ) );
+		y += ( delta_distance * CONVERSION_TIC_DISTANCE * fp_sin( CONVERSION_TIC_ANGLE * angleBkp ) );
+	}
+	else
+	{
+		r = CONVERSION_COURBURE_TIC_MM * (double)delta_distance/(double)delta_angle;
+		x-= r * (-fp_sin(CONVERSION_TIC_ANGLE * angle) + fp_sin(CONVERSION_TIC_ANGLE * angleBkp));
+		y+= r * (fp_cos(CONVERSION_TIC_ANGLE * angle) - fp_cos(CONVERSION_TIC_ANGLE * angleBkp));
+		//printlnLong(r*(-fp_sin(CONVERSION_TIC_ANGLE * angle) + fp_sin(CONVERSION_TIC_ANGLE * angleBkp)));
+	}
+	printlnLong(x);
+	printlnLong(y);
+
 	// RÈactualisation des vitesses du robot
 	assRotation.setVitesse((angle-angleBkp));
 	assTranslation.setVitesse((distance-distanceBkp));
+	
+	
 	angleBkp = angle;
 	distanceBkp = distance;
 
@@ -36,6 +60,8 @@ Manager::assPolaire(){
 	/*
 	* factorisation de la d√©sactivation de Kd
 	*/
+	
+	
 	if( indiceConsigneActuelle ==0 || indiceConsigneActuelle ==tableauConsignes.nbConsignes ) {
 		assRotation.setActivationKd(1);
 		assTranslation.setActivationKd(1);
@@ -76,7 +102,6 @@ Manager::assPolaire(){
 	else if (pwmD < -PWM_MAX)
 		pwmD = -PWM_MAX;
 	
-	printlnLong(pwmG);
 	if (pwmG > 0) {
 		// Direction gauche = 0
 		// PWM gauche = pwmG
@@ -89,6 +114,8 @@ Manager::assPolaire(){
 		PORTD &= ~PINDIR1;
 		MOTEUR1 = -pwmG;
 	}
+	
+	
 	if (pwmD > 0) {
 		// Direction droite = 0
 		// PWM droite = pwmD
@@ -112,8 +139,8 @@ Manager::Manager(){
 
 void Manager::init()
 {
-	x=0;
-	y=0;
+	x=2928;
+	y=150;
 	
 	distanceBkp=0;
 	angleBkp=0;
@@ -153,25 +180,27 @@ void Manager::init()
     // ADCSRA |= (1 << ADEN);
 
 	// Timer de l'asservissement (16bit, 20 MHz)
-	// Penser ‡ changer le #define prescaler en haut du fichier
 	TIMSK1 |= (1 << TOIE1);
+	//prescaler 8
     TCCR1B |= (1 << CS11);
+   //prescaler 64
+   //TCCR1B |= (1 << CS11) | (1 << CS10 );
 	
 	// initialisation de la liste de point
-	tableauConsignes.nbConsignes=0;
+	tableauConsignes.nbConsignes=1;
 	indiceConsigneActuelle=1;
 
 	// initialisation des constantes
-	assRotation.changeKp(40);
+	assRotation.changeKp(8);
 	assRotation.changePWM(PWM_MAX);
-	assRotation.changeKd(100);
+	assRotation.changeKd(300);
 	assRotation.changeKi(0);
 	assRotation.changeVmax(0);
 	assRotation.changeKpVitesse(0);
 
-	assTranslation.changeKp(40);
+	assTranslation.changeKp(8);
 	assTranslation.changePWM(PWM_MAX);
-	assTranslation.changeKd(100);
+	assTranslation.changeKd(300);
 	assTranslation.changeKi(0);
 	assTranslation.changeVmax(0);
 	assTranslation.changeKpVitesse(0);
@@ -272,6 +301,13 @@ Manager::changeIemeConsigneAngle(int32_t angleDonne, int16_t i)
 	(tableauConsignes.listeConsignes[i-1]).angle=angleDonne;
 }
 
+void
+Manager::reset()
+{
+	tableauConsignes.nbConsignes=1;
+	indiceConsigneActuelle=1;
+	send_reset();
+}
 /*
 * A voir, si on peut envoyer via un int32_t √† la fois la distance et l'angle.
 * Diviserait par environ deux le temp de chargement de la liste de points en s√©rie.
