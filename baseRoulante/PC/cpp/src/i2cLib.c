@@ -77,6 +77,7 @@ int i2c_open(Adaptator** ad){
                             IDENT_PRODUCT_NUM, IDENT_PRODUCT_STRING,
                             1);  // NOTE: '0' means "not using report IDs"
 }
+
 void i2c_close(Adaptator* ad){
 	 usbhidCloseDevice(ad);
 }
@@ -91,12 +92,12 @@ int i2c_init(Adaptator* ad){
 int i2c_write(Adaptator* ad, unsigned char slaveAddr, unsigned char msg[]){
 	printf("addr %d: sending :%s\n",slaveAddr,msg);
 	unsigned char write_buffer[200];
+    unsigned char * write_bufferp = write_buffer;
 	int err;
 	write_buffer[0]=slaveAddr;
-	if(sizeof(msg)<sizeof(write_buffer)-1)
-		memcpy(write_buffer+1,msg,sizeof(msg));
-	else
-		fprintf(stderr,"Taille du message supérieure à celle du buffer");
+    while(*(msg)!='\0') {
+        *(++write_bufferp) = *(msg++);
+    }
 	err = linkm_command(ad, LINKM_CMD_I2CTRANS, sizeof(msg)+1,0, write_buffer, NULL );
 	if(err){
 		return err;
@@ -134,7 +135,7 @@ char* linkm_error_msg(int errCode)
 
 int main(){
 	Adaptator* ad = NULL;
-	unsigned char msg[] = {53};
+	unsigned char msg[] = {'p', '\0'};
 	int err;
 	if( (err = i2c_open( &ad )) != 0 ) {
         fprintf(stderr, "Error opening the adapter: %s\n", linkm_error_msg(err));
