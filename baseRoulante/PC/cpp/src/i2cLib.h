@@ -62,8 +62,8 @@ typedef struct usbDevice Adaptator;
 
 int i2c_open(Adaptator** ad);
 void i2c_close(Adaptator* ad);
-int i2c_write(Adaptator* ad,unsigned char slaveAddr,unsigned char msg[]);
-void i2c_read(Adaptator* ad,char* read_buffer);
+int i2c_write(Adaptator* ad,unsigned char slaveAddr,unsigned char msg[], unsigned int size);
+int i2c_read(Adaptator* ad, unsigned char slaveAddr, char* read_buffer, unsigned int size);
 char* linkm_error_msg(int errCode);
 void hexdump(const char* intro, uint8_t *buffer, int len);
 
