@@ -1,4 +1,6 @@
 require 'libChessUp'
 
 InterfaceAsservissement = LibChessUp::InterfaceAsservissement.Instance();
-InterfaceAsservissement.goTo(LibChessUp::Point.new(100,100),90);
+LibChessUp::initialisation();
+InterfaceAsservissement.goTo(LibChessUp::Point.new(200,200),90);
+InterfaceAsservissement.debugGraphique();

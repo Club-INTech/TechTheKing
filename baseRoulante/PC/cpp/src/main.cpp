@@ -27,9 +27,9 @@ int main(){
     listePoints=ListePoints::lissageBezier(test.getChemin(point1,point2),200);
     vector<Consigne> listeConsignes = ListePoints::convertirEnConsignes(listePoints);
 		
-#ifdef DEBUG_GRAPHIQUE
-    Debug::debugGraphique(listePoints);
-#endif
+//#ifdef DEBUG_GRAPHIQUE
+//    Debug::debugGraphique(listePoints);
+//#endif
 		
 //  Debug::debugConsignes(listeConsignes);
     
