@@ -70,7 +70,7 @@ void InterfaceAsservissement::debugGraphique(){
 	
 	/* Affiche la courbe */
 	image.strokeColor(Color(MaxRGB,MaxRGB,MaxRGB,MaxRGB/2));
-	image.strokeWidth(2*TAILLE_ROBOT); //??!! Ca marche donc c'est cool :)
+	image.strokeWidth(2*TAILLE_ROBOT);
 	for(unsigned int i=0;i<m_lastTrajectory.size()-1;i++)
 		image.draw(DrawableLine(m_lastTrajectory[i].getX(),2100-m_lastTrajectory[i].getY(),m_lastTrajectory[i+1].getX(),2100-m_lastTrajectory[i+1].getY()));
 	Geometry echelle(1000,700);
@@ -158,7 +158,9 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
    #ifdef DEBUG
       cout<<"Tentative de déplacement du robot en : (x = " << arrivee.getX() << ", y = " << arrivee.getY() << ")" << endl;
    #endif
+   m_liaisonSerie << "o" << endl ;
    Point depart(getXRobot(),getYRobot());
+   m_liaisonSerie << "p" <<endl;
    vector<Point> listePointsTmp=m_pathfinding.getChemin(depart,arrivee);
    m_lastTrajectory=ListePoints::lissageBezier(listePointsTmp,nbPoints);
    m_lastListeConsignes=ListePoints::convertirEnConsignes(m_lastTrajectory); 
@@ -186,7 +188,7 @@ int InterfaceAsservissement::getXRobot()
 	int result;
 	m_liaisonSerie << "x" << endl ;
 	m_liaisonSerie >> result;
-	cout<<result<<endl;
+	cout<< "x : " << result<<endl;
 	return result;
 }
 
@@ -195,7 +197,7 @@ int InterfaceAsservissement::getYRobot()
 	int result;
 	m_liaisonSerie << "y" << endl ;
 	m_liaisonSerie >> result;
-	cout<<result<<endl;
+	cout<< "y : " << result<<endl;
 	return result;
 }
 
