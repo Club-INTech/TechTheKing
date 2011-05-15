@@ -107,12 +107,15 @@ int main( void ){
 				manager.changeIemeConsigneDistance(-i,1);
 			break;
 		case 'f': // A faire avant de charger une liste de points
-			manager.setNbConsignes(0);
+			manager.setNbConsignes(1);
 			break;
 		case 'g': // push consigne etape 1
 			i=litEntierLong();
 			if (i >= 10000000)
-			//  avance
+			//  avance// désactive interruptions
+			manager.switchAssDistance();
+			manager.switchAssAngle();
+			break;
 				manager.pushConsigneDistance(i-10000000);
 			else if(i>=0)
 			// recule

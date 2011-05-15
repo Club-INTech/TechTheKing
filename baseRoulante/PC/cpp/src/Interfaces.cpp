@@ -158,9 +158,9 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
    #ifdef DEBUG
       cout<<"Tentative de déplacement du robot en : (x = " << arrivee.getX() << ", y = " << arrivee.getY() << ")" << endl;
    #endif
-   m_liaisonSerie << "o" << endl ;
+   m_liaisonSerie << "o";
    Point depart(getXRobot(),getYRobot());
-   m_liaisonSerie << "p" <<endl;
+   m_liaisonSerie << "p";
    vector<Point> listePointsTmp=m_pathfinding.getChemin(depart,arrivee);
    m_lastTrajectory=ListePoints::lissageBezier(listePointsTmp,nbPoints);
    m_lastListeConsignes=ListePoints::convertirEnConsignes(m_lastTrajectory); 
@@ -174,7 +174,7 @@ InterfaceAsservissement::InterfaceAsservissement(int precision) : m_pathfinding(
     m_liaisonSerie.Open("/dev/ttyUSB0");
     #ifdef DEBUG
       cout<<"Interface crée"<<endl;
-   #endif
+    #endif
 }
 
 InterfaceAsservissement::~InterfaceAsservissement()
