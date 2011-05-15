@@ -30,7 +30,6 @@
 #include <avr/interrupt.h>
 #include "lib/Asservissement.h"
 #include "util/delay.h"
-#include "lib/LectureSerie.h"
 #include "lib/Manager.h"
 #include "lib/Util.h"
 #include "lib/twi_master.h"
@@ -101,8 +100,7 @@ int main( void ){
 			if (i >= 10000000)
 				//  tourne positivement de i
 				manager.changeIemeConsigneDistance(i-10000000,1);
-			else
-			if (i >= 0)
+			else if (i >= 0)
 				// tourne nÃ©gativement i
 				manager.changeIemeConsigneDistance(-i,1);
 			break;
@@ -112,13 +110,8 @@ int main( void ){
 		case 'g': // push consigne etape 1
 			i=litEntierLong();
 			if (i >= 10000000)
-			//  avance// désactive interruptions
-			manager.switchAssDistance();
-			manager.switchAssAngle();
-			break;
 				manager.pushConsigneDistance(i-10000000);
 			else if(i>=0)
-			// recule
 				manager.pushConsigneDistance(-i);
 			break;	
 		case 'h':
@@ -158,10 +151,8 @@ int main( void ){
 		case 'q': // push consigne (étape 2)
 			i=litEntierLong();
 			if (i >= 10000000)
-			//  avance
 				manager.pushConsigneAngle(i-10000000);
 			else if(i>=0)
-			// recule
 				manager.pushConsigneAngle(-i);
 			break;
 		case 'r':
@@ -202,11 +193,15 @@ int main( void ){
 			break;
 		
 		case 'x':
+			TIMSK1 &= ~(1 << TOIE1);
 			printlnLong(x);
+			TIMSK1 |= (1 << TOIE1);
 			break;
 	
 		case 'y':
+			TIMSK1 &= ~(1 << TOIE1);
 			printlnLong(y);
+			TIMSK1 |= (1 << TOIE1);
 			break;
 	
 		case 'z':

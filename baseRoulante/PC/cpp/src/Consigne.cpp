@@ -27,9 +27,9 @@ void Consigne::transfertSerie(SerialStream& interfaceDeTransfert){
 	else
 		interfaceDeTransfert.write(("g0" + formaterInt(-m_rayon)).c_str(),9);
 	if(m_angle>=0)
-		interfaceDeTransfert.write(("q1" + formaterInt(m_angle)).c_str(),9);
+		interfaceDeTransfert.write(("q0" + formaterInt(m_angle)).c_str(),9);
 	else
-		interfaceDeTransfert.write(("q0" + formaterInt(-m_angle)).c_str(),9);
+		interfaceDeTransfert.write(("q1" + formaterInt(-m_angle)).c_str(),9);
 }
 
 void Consigne::print()const{
@@ -78,10 +78,8 @@ ostream &operator<<(ostream &out, vector<Consigne> listeConsignes){
 }
 
 void ListeConsignes::transfertSerie(vector<Consigne>& listeConsignes, SerialStream& liaisonSerie){
-	liaisonSerie.write("o",1);
 	for(vector<Consigne>::iterator it=listeConsignes.begin();it!=listeConsignes.end();it++)
 	{
 		it->transfertSerie(liaisonSerie);	
 	}
-	liaisonSerie.write("p",1);
 }

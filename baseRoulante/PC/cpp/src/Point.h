@@ -15,10 +15,7 @@
  * \version 1.0
  */
 
-/*!coefficients de conversion */
 
-#define CONVERSION_ANGLE_TICKS 1356.00012
-#define CONVERSION_DISTANCE_TICKS 9.59732592
 
 /*!define des endroits remarquables */
 

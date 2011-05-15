@@ -1,5 +1,10 @@
 #include "Point.h"
 
+/*!coefficients de conversion */
+
+#define CONVERSION_ANGLE_TICKS 1356.00012
+#define CONVERSION_DISTANCE_TICKS 9.59732592
+
 /*
  * constructeur
  */
@@ -103,7 +108,7 @@ double Point::angle(Point Point2){
 	REQUIRE(Point2.m_y>=0, "Ordonnée du point avec lequel on détermine l'angle est positive");
 	double dx=(Point2.m_x-m_x);
 	double dy=(Point2.m_y-m_y);
-	return atan2(dx,dy);
+	return (atan2(dx,dy)+M_PI_2);
 }
 
 

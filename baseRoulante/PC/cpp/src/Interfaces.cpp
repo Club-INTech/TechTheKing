@@ -135,7 +135,6 @@ void detectionSerieUsb(InterfaceAsservissement* asserv){
             stringTmp="/dev/ttyUSB";
             stringTmp.push_back( listePorts[i] );
             streamTmp.Open( stringTmp );
-            sleep(2);
             streamTmp << "?" << endl;
             streamTmp >> charTmp ;
             cout<<charTmp<<endl;
@@ -158,21 +157,20 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
    #ifdef DEBUG
       cout<<"Tentative de déplacement du robot en : (x = " << arrivee.getX() << ", y = " << arrivee.getY() << ")" << endl;
    #endif
-   m_liaisonSerie << "o";
    Point depart(getXRobot(),getYRobot());
-   m_liaisonSerie << "p";
    vector<Point> listePointsTmp=m_pathfinding.getChemin(depart,arrivee);
    m_lastTrajectory=ListePoints::lissageBezier(listePointsTmp,nbPoints);
    m_lastListeConsignes=ListePoints::convertirEnConsignes(m_lastTrajectory); 
    ListeConsignes::transfertSerie(m_lastListeConsignes,m_liaisonSerie);
+	getXRobot();
+	getYRobot();
 }
 
 InterfaceAsservissement::InterfaceAsservissement(int precision) : m_pathfinding(precision){
-    m_liaisonSerie.SetBaudRate(SerialStreamBuf::BAUD_57600);
-    m_liaisonSerie.SetCharSize( SerialStreamBuf::CHAR_SIZE_8);
-    m_liaisonSerie.SetFlowControl( SerialStreamBuf::FLOW_CONTROL_HARD );
-    m_liaisonSerie.SetNumOfStopBits(1);
     m_liaisonSerie.Open("/dev/ttyUSB0");
+    m_liaisonSerie.SetBaudRate(SerialStreamBuf::BAUD_57600);
+    m_liaisonSerie.SetNumOfStopBits(1);
+    m_liaisonSerie.SetParity( SerialStreamBuf::PARITY_ODD ) ;
     #ifdef DEBUG
       cout<<"Interface crée"<<endl;
     #endif
