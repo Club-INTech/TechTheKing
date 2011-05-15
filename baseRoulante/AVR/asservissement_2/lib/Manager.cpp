@@ -38,8 +38,6 @@ Manager::assPolaire(){
 		y+= r * (fp_cos(CONVERSION_TIC_ANGLE * angle) - fp_cos(CONVERSION_TIC_ANGLE * angleBkp));
 		//printlnLong(r*(-fp_sin(CONVERSION_TIC_ANGLE * angle) + fp_sin(CONVERSION_TIC_ANGLE * angleBkp)));
 	}
-	printlnLong(x);
-	printlnLong(y);
 
 	// Réactualisation des vitesses du robot
 	assRotation.setVitesse((angle-angleBkp));
@@ -62,7 +60,7 @@ Manager::assPolaire(){
 	*/
 	
 	
-	if( indiceConsigneActuelle ==0 || indiceConsigneActuelle ==tableauConsignes.nbConsignes ) {
+	if( indiceConsigneActuelle ==1 || indiceConsigneActuelle ==tableauConsignes.nbConsignes ) {
 		assRotation.setActivationKd(1);
 		assTranslation.setActivationKd(1);
 	}
@@ -71,6 +69,8 @@ Manager::assPolaire(){
 		assTranslation.setActivationKd(0);
 	}
 
+	printlnLong(indiceConsigneActuelle);
+	
 	if(ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).distance - distance) < 60
 		&& ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).angle - angle) < 60 ){
 			if( indiceConsigneActuelle < tableauConsignes.nbConsignes ){

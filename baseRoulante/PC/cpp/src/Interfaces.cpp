@@ -1,10 +1,86 @@
 #include "Interfaces.h"
+#include "config.h"
 #include "Debug.h"
+#ifdef DEBUG_GRAPHIQUE
+#include <Magick++.h>
+#endif
 
 using namespace std;
 
 InterfaceAsservissement* InterfaceAsservissement::m_instance=NULL;
 
+void InterfaceAsservissement::debugConsignes(){
+	cout << m_lastListeConsignes << endl;
+}
+#ifdef DEBUG_GRAPHIQUE
+using namespace Magick;
+void InterfaceAsservissement::debugGraphique(){
+	cout<<"Conversion du chemin emprunté par le robot en graphique..."<<endl;
+	Image image( Geometry(3000,2100), Color("white") );
+	image.fillColor("red");
+	image.draw( DrawableRectangle(0,0, 400,400) );
+	bool caseBleue=true;
+	for(unsigned j=0;j<=1750;j+=350){
+		for(unsigned i=450;i<=2200;i+=350){
+			if(caseBleue==true){
+				image.fillColor("blue");
+				caseBleue=false;
+			}
+			else{
+				image.fillColor("red");
+				caseBleue=true;
+			}
+			image.draw( DrawableRectangle(i,j, i+350,j+350) );
+		}
+		if(caseBleue==true){
+			image.fillColor("blue");
+			caseBleue=false;
+		}
+		else{
+			image.fillColor("red");
+			caseBleue=true;
+		}
+	}
+	image.fillColor("blue");
+	image.draw( DrawableRectangle(2600,0, 3000,400) );
+	
+	/* Les lignes noires */
+	image.fillColor("black");
+	image.draw( DrawableRectangle(400,0, 450,2100) );
+	image.draw( DrawableRectangle(2550,0, 2600,2100) );
+	
+	/* Les parties vertes */
+	image.fillColor("green");
+	image.draw( DrawableRectangle(0,400, 400,2100) );
+	image.draw( DrawableRectangle(2600,400, 30000,2100) );
+	
+	/* Les cases speciales */
+	image.fillColor("black");
+	image.draw(DrawableEllipse(975,525, 50, 50, 0, 360));
+	image.draw(DrawableEllipse(2025,525, 50, 50, 0, 360));
+	image.draw(DrawableEllipse(975,1225, 50, 50, 0, 360));
+	image.draw(DrawableEllipse(2025,1225, 50, 50, 0, 360));
+	image.draw(DrawableEllipse(1325,1925, 50, 50, 0, 360));
+	image.draw(DrawableEllipse(1675,1925, 50, 50, 0, 360));
+	
+	/* Affiche les obstacles */
+	for(unsigned int i=0;i<listeObstacles.size();i++){
+		listeObstacles[i]->draw(&image);
+	}
+	
+	/* Affiche la courbe */
+	image.strokeColor(Color(MaxRGB,MaxRGB,MaxRGB,MaxRGB/2));
+	image.strokeWidth(2*TAILLE_ROBOT);
+	for(unsigned int i=0;i<m_lastTrajectory.size()-1;i++)
+		image.draw(DrawableLine(m_lastTrajectory[i].getX(),2100-m_lastTrajectory[i].getY(),m_lastTrajectory[i+1].getX(),2100-m_lastTrajectory[i+1].getY()));
+	Geometry echelle(1000,700);
+	image.resize(echelle);
+	image.display();
+	image.magick("png");
+	image.write("cheminRobot70");
+	cout<<"chemin emprunté dans le robot écrit dans cheminRobot.png"<<endl;
+}
+#endif
 
 InterfaceAsservissement* InterfaceAsservissement::Instance(int precisionAStar){
     if(m_instance==NULL){
@@ -82,19 +158,19 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
    #ifdef DEBUG
       cout<<"Tentative de déplacement du robot en : (x = " << arrivee.getX() << ", y = " << arrivee.getY() << ")" << endl;
    #endif
+   m_liaisonSerie << "o" << endl ;
    Point depart(getXRobot(),getYRobot());
+   m_liaisonSerie << "p" <<endl;
    vector<Point> listePointsTmp=m_pathfinding.getChemin(depart,arrivee);
-   vector<Point> listePointsLissee=ListePoints::lissageBezier(listePointsTmp,nbPoints);
-   #ifdef DEBUG_GRAPHIQUE
-   Debug::debugGraphique(listePointsLissee);
-   #endif
-    vector<Consigne> listeConsignes=ListePoints::convertirEnConsignes(listePointsLissee); 
-    ListeConsignes::transfertSerie(listeConsignes,m_liaisonSerie);
+   m_lastTrajectory=ListePoints::lissageBezier(listePointsTmp,nbPoints);
+   m_lastListeConsignes=ListePoints::convertirEnConsignes(m_lastTrajectory); 
+   ListeConsignes::transfertSerie(m_lastListeConsignes,m_liaisonSerie);
 }
 
 InterfaceAsservissement::InterfaceAsservissement(int precision) : m_pathfinding(precision){
     m_liaisonSerie.SetBaudRate(SerialStreamBuf::BAUD_57600);
     m_liaisonSerie.SetCharSize( SerialStreamBuf::CHAR_SIZE_8);
+    m_liaisonSerie.SetFlowControl( SerialStreamBuf::FLOW_CONTROL_HARD );
     m_liaisonSerie.SetNumOfStopBits(1);
     m_liaisonSerie.Open("/dev/ttyUSB0");
     #ifdef DEBUG
@@ -112,7 +188,7 @@ int InterfaceAsservissement::getXRobot()
 	int result;
 	m_liaisonSerie << "x" << endl ;
 	m_liaisonSerie >> result;
-	cout<<result<<endl;
+	cout<< "x : " << result<<endl;
 	return result;
 }
 
@@ -121,7 +197,7 @@ int InterfaceAsservissement::getYRobot()
 	int result;
 	m_liaisonSerie << "y" << endl ;
 	m_liaisonSerie >> result;
-	cout<<result<<endl;
+	cout<< "y : " << result<<endl;
 	return result;
 }
 

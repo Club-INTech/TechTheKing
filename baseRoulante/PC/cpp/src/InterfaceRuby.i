@@ -6,6 +6,7 @@
     #include "Thread.h"
     #include "Singleton.h"
     #include "Server.h"
+    #include "config.h"
 %}
 
 %inline %{
@@ -31,6 +32,9 @@ namespace ListeObstacles{
 	void refreshPositions(const char nomFichier[]);
 	void initialisation();
 }
+
+
+
 
 class Point{
    public:
@@ -84,6 +88,8 @@ public:
     void goTo(Point arrivee,int nbPoints);
     void avancer(unsigned int distance, SensDeplacement sens);
     void tourner(unsigned int angle, SensDeplacement sens);
+	void debugGraphique();
+    void debugConsignes();
     ~InterfaceAsservissement();
     
 private:

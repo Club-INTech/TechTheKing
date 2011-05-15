@@ -9,7 +9,7 @@
 #include <SerialPort.h>
 #include "Singleton.h"
 #include "Thread.h"
-
+#include "config.h"
 
 typedef enum{positif,negatif}SensDeplacement;
 typedef enum{pince,independants}ModeBras;
@@ -28,15 +28,21 @@ public:
     void goTo(Point arrivee,int nbPoints);
     void avancer(unsigned int distance, SensDeplacement sens);
     void tourner(unsigned int angle, SensDeplacement sens);
-    
+	#ifdef DEBUG_GRAPHIQUE
+	void debugGraphique();
+	#endif
+    void debugConsignes();
+
 private:
     InterfaceAsservissement& operator=(const InterfaceAsservissement&);
     InterfaceAsservissement(const InterfaceAsservissement&){};
 	InterfaceAsservissement(int precisionAStar);
     void recupPosition();
-private:
-	int getXRobot();
+    int getXRobot();
 	int getYRobot();
+private:
+	vector<Point> m_lastTrajectory;
+	vector<Consigne> m_lastListeConsignes;
 	static InterfaceAsservissement* m_instance;
     AStar m_pathfinding;
     unsigned int vitesseMax;

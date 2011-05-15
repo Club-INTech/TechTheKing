@@ -106,10 +106,6 @@ int main( void ){
 				// tourne nÃ©gativement i
 				manager.changeIemeConsigneDistance(-i,1);
 			break;
-		case 'e': // désactive interruptions
-			manager.switchAssDistance();
-			manager.switchAssAngle();
-			break;
 		case 'f': // A faire avant de charger une liste de points
 			manager.setNbConsignes(0);
 			break;
