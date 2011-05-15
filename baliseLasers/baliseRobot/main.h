@@ -29,12 +29,14 @@
 #ifndef PINMOT
 #define portTop PORTD
 #define pinTop PORTD3
-#define portMotE PORTB 
-#define pinMotE PORTB3
 #define portMot1 PORTD 
-#define pinMot1 PORTD6
-#define portMot2 PORTD 
-#define pinMot2 PORTD7 
+#define pinMot1 PORTD7
+#define portMot2 PORTB 
+#define pinMot2 PORTD0 
+#define portMot3 PORTB 
+#define pinMot3 PORTB1
+#define portMot4 PORTB 
+#define pinMot4 PORTB2
 #endif
 
 /**
@@ -46,5 +48,6 @@
 #endif
 
 void commuter(uint8_t pas_commuter[2]);
+void pwm_init();
 
 #endif

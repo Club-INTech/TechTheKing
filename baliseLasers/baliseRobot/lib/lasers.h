@@ -24,3 +24,5 @@
  * définition des fonctions qu'on va utiliser
  */
 void lasers_init();
+void lasers_start();
+void lasers_stop();
