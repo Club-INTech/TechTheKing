@@ -170,6 +170,7 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
 InterfaceAsservissement::InterfaceAsservissement(int precision) : m_pathfinding(precision){
     m_liaisonSerie.SetBaudRate(SerialStreamBuf::BAUD_57600);
     m_liaisonSerie.SetCharSize( SerialStreamBuf::CHAR_SIZE_8);
+    m_liaisonSerie.SetFlowControl( SerialStreamBuf::FLOW_CONTROL_HARD );
     m_liaisonSerie.SetNumOfStopBits(1);
     m_liaisonSerie.Open("/dev/ttyUSB0");
     #ifdef DEBUG
