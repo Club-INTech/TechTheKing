@@ -26,14 +26,6 @@ using namespace std ;
  */
 class Consigne{
 	
-	private:
-
-		/*!
-		 * \brief formaterInt
-		 *
-		 * Converti un entier en chaine de caractère compréhensibles par les microcontroleurs.
-		 */
-		string formaterInt(int entierDonne)const;
 		
 	public:
 
@@ -84,6 +76,13 @@ class Consigne{
  * Se sert de la fonction print qui affiche le résultat sur la sortie standart
  */
 ostream &operator<<(ostream &out, vector<Consigne> listeConsignes);
+
+/*!
+ * \brief formaterInt
+ *
+ * Converti un entier en chaine de caractère compréhensibles par les microcontroleurs.
+ */
+string formaterInt(int entierDonne);
 
 namespace ListeConsignes{
 void transfertSerie(vector<Consigne>& listeConsignes,SerialStream& interfaceDeTransfert);

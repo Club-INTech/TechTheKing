@@ -156,7 +156,7 @@ class RectangleObstacle : public Obstacle{
 
         bool contientCercle(int centreX, int centreY, int rayon);
         
-        Couleur couleurPlusProche(){return NOIR;};
+        Couleur couleurPlusProche();
         
     private:
         

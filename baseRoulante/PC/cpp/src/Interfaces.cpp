@@ -1,9 +1,11 @@
 #include "Interfaces.h"
 #include "config.h"
 #include "Debug.h"
+#include "Constantes.h"
 #ifdef DEBUG_GRAPHIQUE
 #include <Magick++.h>
 #endif
+
 
 using namespace std;
 
@@ -70,7 +72,7 @@ void InterfaceAsservissement::debugGraphique(){
 	
 	/* Affiche la courbe */
 	image.strokeColor(Color(MaxRGB,MaxRGB,MaxRGB,MaxRGB/2));
-	image.strokeWidth(2*TAILLE_ROBOT);
+	//image.strokeWidth(2*TAILLE_ROBOT);
 	for(unsigned int i=0;i<m_lastTrajectory.size()-1;i++)
 		image.draw(DrawableLine(m_lastTrajectory[i].getX(),2100-m_lastTrajectory[i].getY(),m_lastTrajectory[i+1].getX(),2100-m_lastTrajectory[i+1].getY()));
 	Geometry echelle(1000,700);
@@ -135,7 +137,6 @@ void detectionSerieUsb(InterfaceAsservissement* asserv){
             stringTmp="/dev/ttyUSB";
             stringTmp.push_back( listePorts[i] );
             streamTmp.Open( stringTmp );
-            sleep(2);
             streamTmp << "?" << endl;
             streamTmp >> charTmp ;
             cout<<charTmp<<endl;
@@ -155,32 +156,53 @@ void detectionSerieUsb(InterfaceAsservissement* asserv){
 
 
 void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
-   #ifdef DEBUG
+   #ifdef DEBUG			
 	cout<<"Tentative de déplacement du robot en : (x = " << arrivee.getX() << ", y = " << arrivee.getY() << ")" << endl;
    #endif
-   m_liaisonSerie << "o" << endl ;
-   Point depart(getXRobot(),getYRobot());
-   m_liaisonSerie << "p" << endl;
+   Point depart(75,1950);
    vector<Point> listePointsTmp=m_pathfinding.getChemin(depart,arrivee);
    m_lastTrajectory=ListePoints::lissageBezier(listePointsTmp,nbPoints);
-   m_lastListeConsignes=ListePoints::convertirEnConsignes(m_lastTrajectory); 
+   m_lastListeConsignes=ListePoints::convertirEnConsignes(m_lastTrajectory,getAngleRobot()); 
    ListeConsignes::transfertSerie(m_lastListeConsignes,m_liaisonSerie);
 }
 
+void InterfaceAsservissement::avancer(unsigned int distanceMm){
+	m_liaisonSerie<<"b1"+formaterInt(distanceMm*CONVERSION_MM_TIC)<<endl;
+}
+
+void InterfaceAsservissement::reculer(unsigned int distanceMm){
+	m_liaisonSerie<<"b0"+formaterInt(distanceMm*CONVERSION_MM_TIC)<<endl;
+}
+
+void InterfaceAsservissement::tourner(int angleRadian){
+	if(angleRadian>0)
+		m_liaisonSerie<<"b0"+formaterInt(angleRadian*CONVERSION_RADIAN_TIC)<<endl;
+	else
+		m_liaisonSerie<<"b1"+formaterInt(angleRadian*CONVERSION_RADIAN_TIC)<<endl;
+}
+
 InterfaceAsservissement::InterfaceAsservissement(int precision) : m_pathfinding(precision){
-    m_liaisonSerie.SetBaudRate(SerialStreamBuf::BAUD_57600);
-    m_liaisonSerie.SetCharSize( SerialStreamBuf::CHAR_SIZE_8);
-    m_liaisonSerie.SetFlowControl( SerialStreamBuf::FLOW_CONTROL_HARD );
-    m_liaisonSerie.SetNumOfStopBits(1);
     m_liaisonSerie.Open("/dev/ttyUSB0");
+    m_liaisonSerie.SetBaudRate(SerialStreamBuf::BAUD_57600);
+    m_liaisonSerie.SetNumOfStopBits(1);
+    m_liaisonSerie.SetParity( SerialStreamBuf::PARITY_ODD ) ;
     #ifdef DEBUG
       cout<<"Interface crée"<<endl;
-   #endif
+    #endif
 }
 
 InterfaceAsservissement::~InterfaceAsservissement()
 {
 	m_liaisonSerie.Close();
+}
+
+int InterfaceAsservissement::getAngleRobot()
+{
+	int result;
+	m_liaisonSerie << "t" << endl ;
+	m_liaisonSerie >> result;
+	cout<< "théta : " << result<<endl;
+	return result*CONVERSION_TIC_RADIAN;
 }
 
 int InterfaceAsservissement::getXRobot()

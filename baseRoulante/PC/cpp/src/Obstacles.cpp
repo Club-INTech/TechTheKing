@@ -32,6 +32,10 @@ bool CercleObstacle::contientCercle(int centreX, int centreY, int rayonDonne){
     return false;
 }
 
+Couleur RectangleObstacle::couleurPlusProche(){
+	return NOIR;
+}
+
 /* Determination automatique de la couleur d'un pion : si il est à nous, à l'adversaire ou à personne */
 Couleur CercleObstacle::couleurPlusProche() {
     Couleur couleurCase=ROUGE;
@@ -81,7 +85,7 @@ void RectangleObstacle::draw(Magick::Image* image){
 bool RectangleObstacle::contientCercle(int centreX, int centreY, int rayonDonne) { //cercle non penché.
     double dx=(centreX-m_x);
     double dy=(centreY-m_y);
-        return ( dx*dx+dy*dy < (m_demiCoteX + rayonDonne)*(m_demiCoteX + rayonDonne) && dx*dx+dy*dy < (m_demiCoteY + rayonDonne)*(m_demiCoteY + rayonDonne) );
+        return ( sqrt(dx*dx+dy*dy) < sqrt(m_demiCoteX*m_demiCoteX + m_demiCoteY*m_demiCoteY) + rayonDonne);
 }
 
 Obstacle* ListeObstacles::contientCercle(int centreX, int centreY, int rayon,Couleur couleur){

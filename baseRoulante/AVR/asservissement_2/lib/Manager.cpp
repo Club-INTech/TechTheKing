@@ -68,11 +68,9 @@ Manager::assPolaire(){
 		assRotation.setActivationKd(0);
 		assTranslation.setActivationKd(0);
 	}
-
-	printlnLong(indiceConsigneActuelle);
 	
 	if(ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).distance - distance) < 60
-		&& ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).angle - angle) < 60 ){
+		|| ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).angle - angle) < 60 ){
 			if( indiceConsigneActuelle < tableauConsignes.nbConsignes ){
 				indiceConsigneActuelle++;
 		}

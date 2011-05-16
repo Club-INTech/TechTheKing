@@ -15,10 +15,7 @@
  * \version 1.0
  */
 
-/*!coefficients de conversion */
 
-#define CONVERSION_ANGLE_TICKS 1523.9085
-#define CONVERSION_DISTANCE_TICKS 9.870
 
 /*!define des endroits remarquables */
 
@@ -181,7 +178,7 @@ vector<Point> lissageBezier(const vector<Point>& pointsDeControle,int nbPointsBe
  * permet de convertir une liste de points en liste de consignes
  *\return la liste de consignes.
  */
-vector<Consigne> convertirEnConsignes(vector<Point>& listePoints) ;
+vector<Consigne> convertirEnConsignes(vector<Point>& listePoints,int dephasageAngle);
 
 /*!
  * \brief Est dans liste ?

@@ -1,4 +1,5 @@
 #include "Point.h"
+#include "Constantes.h"
 
 /*
  * constructeur
@@ -103,7 +104,7 @@ double Point::angle(Point Point2){
 	REQUIRE(Point2.m_y>=0, "Ordonnée du point avec lequel on détermine l'angle est positive");
 	double dx=(Point2.m_x-m_x);
 	double dy=(Point2.m_y-m_y);
-	return atan2(dx,dy);
+	return (atan2(dx,dy)+M_PI_2);
 }
 
 
@@ -148,7 +149,7 @@ vector<Point> ListePoints::lissageBezier(const vector<Point>& pointsDeControle,i
 	return resultat;
 }
 
-vector<Consigne> ListePoints::convertirEnConsignes(vector<Point>& listePoints){
+vector<Consigne> ListePoints::convertirEnConsignes(vector<Point>& listePoints,int dephasageAngle){
 	vector<Consigne> resultat;
 	int longueur=listePoints.size();
 	double rayon=0;
@@ -166,15 +167,15 @@ vector<Consigne> ListePoints::convertirEnConsignes(vector<Point>& listePoints){
 			/*
 			* mise à jour des paramètres de la consigne
 			*/
-			angle=listePoints[i].angle(listePoints[i+1]);
+			angle=listePoints[i].angle(listePoints[i+1]) - dephasageAngle;
 			sensDeRotation = (angle>angleBkp)?1:-1; // 1 : sens horraire, -1 : sens antihorraire.
 			if((angle-angleBkp)>M_PI)
 				angle+=sensDeRotation*2*M_PI;
 			angleBkp=angle;
-			angle*=CONVERSION_ANGLE_TICKS;
-			rayon+=listePoints[i].rayon(listePoints[i+1])*CONVERSION_DISTANCE_TICKS; //conversion en ticks...
-			nouvelleConsigne.setRayon(floor(rayon+0.5)); //on ne caste que maintenant pour ne pas cumuler d'erreur sur un cast implicite précédent.
-			nouvelleConsigne.setAngle(floor(angle+0.5)); //angle /(Oy)
+			angle*=CONVERSION_RADIAN_TIC;
+			rayon+=listePoints[i].rayon(listePoints[i+1])*CONVERSION_MM_TIC; //conversion en ticks...
+			nouvelleConsigne.setRayon(floor(rayon+0.5));
+			nouvelleConsigne.setAngle(floor(angle+0.5));
 			resultat.push_back(nouvelleConsigne);
 		}
 	//}

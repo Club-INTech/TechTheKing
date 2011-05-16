@@ -25,9 +25,11 @@ public:
 	static InterfaceAsservissement* Instance(int precisionAStar=50);
 	~InterfaceAsservissement();
     friend void detectionSerieUsb(InterfaceAsservissement* asserv); // ne devrait pas servir si on garde l'i2c
+    int getAngleRobot();
     void goTo(Point arrivee,int nbPoints);
-    void avancer(unsigned int distance, SensDeplacement sens);
-    void tourner(unsigned int angle, SensDeplacement sens);
+    void avancer(unsigned int distanceMm);
+    void reculer(unsigned int distanceMm);
+    void tourner(int angleRadian);
 	#ifdef DEBUG_GRAPHIQUE
 	void debugGraphique();
 	#endif
