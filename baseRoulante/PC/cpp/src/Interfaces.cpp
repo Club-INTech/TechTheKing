@@ -73,6 +73,7 @@ void InterfaceAsservissement::debugGraphique(){
 	/* Affiche la courbe */
 	image.strokeColor(Color(MaxRGB,MaxRGB,MaxRGB,MaxRGB/2));
 	//image.strokeWidth(2*TAILLE_ROBOT);
+	image.strokeWidth(15);
 	for(unsigned int i=0;i<m_lastTrajectory.size()-1;i++)
 		image.draw(DrawableLine(m_lastTrajectory[i].getX(),2100-m_lastTrajectory[i].getY(),m_lastTrajectory[i+1].getX(),2100-m_lastTrajectory[i+1].getY()));
 	Geometry echelle(1000,700);
@@ -159,7 +160,7 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
    #ifdef DEBUG			
 	cout<<"Tentative de déplacement du robot en : (x = " << arrivee.getX() << ", y = " << arrivee.getY() << ")" << endl;
    #endif
-   Point depart(getXRobot(),getYRobot());
+   Point depart(200,200);
    vector<Point> listePointsTmp=m_pathfinding.getChemin(depart,arrivee);
    m_lastTrajectory=ListePoints::lissageBezier(listePointsTmp,nbPoints);
    m_lastListeConsignes=ListePoints::convertirEnConsignes(m_lastTrajectory,getAngleRobot()); 
@@ -202,7 +203,8 @@ int InterfaceAsservissement::getAngleRobot()
 	m_liaisonSerie << "t" << endl ;
 	m_liaisonSerie >> result;
 	cout<< "théta : " << result<<endl;
-	return result*CONVERSION_TIC_RADIAN;
+	return 0;
+	//return result*CONVERSION_TIC_RADIAN;
 }
 
 int InterfaceAsservissement::getXRobot()

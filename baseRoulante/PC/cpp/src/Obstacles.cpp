@@ -1,5 +1,5 @@
 #include "Obstacles.h"
-
+#include "Constantes.h"
 
 Obstacle::Obstacle(double x,double y,Couleur couleur){
     m_x=x;
@@ -82,10 +82,11 @@ void RectangleObstacle::draw(Magick::Image* image){
 }
 #endif
 
-bool RectangleObstacle::contientCercle(int centreX, int centreY, int rayonDonne) { //cercle non penché.
-    double dx=(centreX-m_x);
-    double dy=(centreY-m_y);
-        return ( sqrt(dx*dx+dy*dy) < sqrt(m_demiCoteX*m_demiCoteX + m_demiCoteY*m_demiCoteY) + rayonDonne);
+bool RectangleObstacle::contientCercle(int centreX, int centreY, int rayonDonne) {
+    return (m_x - m_demiCoteX - rayonDonne) < centreX
+			&& centreX < (m_x + m_demiCoteX + rayonDonne)
+			&& (m_y - m_demiCoteY - rayonDonne) < centreY 
+			&& centreY < (m_y + m_demiCoteY + rayonDonne);
 }
 
 Obstacle* ListeObstacles::contientCercle(int centreX, int centreY, int rayon,Couleur couleur){
@@ -119,14 +120,14 @@ void ListeObstacles::setCouleursAuto(){
 }
 
 void ListeObstacles::initialisation(){
-    listeObstacles.push_back(new RectangleObstacle(200,1689,200,11));
-    listeObstacles.push_back(new RectangleObstacle(2800,1689,200,11));
+    listeObstacles.push_back(new RectangleObstacle(200,1689,200+TAILLE_ROBOT,11));
+    listeObstacles.push_back(new RectangleObstacle(2800,1689,200+TAILLE_ROBOT,11));
     listeObstacles.push_back(new RectangleObstacle(800,60,350,60));
-    listeObstacles.push_back(new RectangleObstacle(461,185,11,65));
-    listeObstacles.push_back(new RectangleObstacle(1139,185,11,65));
+    listeObstacles.push_back(new RectangleObstacle(461,185,11,65+TAILLE_ROBOT));
+    listeObstacles.push_back(new RectangleObstacle(1139,185,11,65+TAILLE_ROBOT));
     listeObstacles.push_back(new RectangleObstacle(2200,60,350,60));
-    listeObstacles.push_back(new RectangleObstacle(1861,185,11,65));
-    listeObstacles.push_back(new RectangleObstacle(2539,185,11,65));
+    listeObstacles.push_back(new RectangleObstacle(1861,185,11,65+TAILLE_ROBOT));
+    listeObstacles.push_back(new RectangleObstacle(2539,185,11,65+TAILLE_ROBOT));
 }
     
 void ListeObstacles::refreshPositions(const char nomFichier[]){

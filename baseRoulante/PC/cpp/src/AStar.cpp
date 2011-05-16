@@ -1,4 +1,5 @@
 #include "AStar.h"
+#include "Constantes.h"
 
 /*!
  *\def RAYON_DE_DETECTION
@@ -127,11 +128,8 @@ void AStar::ajouterCasesAdjacentes(Noeud* noeud){
 				continue;
 			if(estDansListe(m_listeFermee,i,j)==m_listeFermee.end()){ //si le a déjà été étudié, on ne fait rien, sinon...
 						 // si le point est dans un obstacle de la couleur du robot ou sur une planche de bois, on ignore pour ne pas le déplacer ou se bloquer
-				if(ListeObstacles::contientCercle(i,j,TAILLE_ROBOT,NOIR)!=NULL){
-					continue;
-				}
 				Noeud* tmp = new Noeud(i,j);
-				if(ListeObstacles::contientCercle(i,j,TAILLE_ROBOT+m_precision+MARGE_SECURITE_PION,COULEUR_ROBOT)!=NULL){
+				if(ListeObstacles::contientCercle(i,j,TAILLE_ROBOT,NOIR)!=NULL || ListeObstacles::contientCercle(i,j,TAILLE_ROBOT+m_precision+MARGE_SECURITE_PION,COULEUR_ROBOT)!=NULL){
 					tmp->setCollision(true);
 				}
 				Obstacle* estSurPionAdverse=ListeObstacles::contientCercle(i,j,RAYON_DE_DETECTION,COULEUR_ADVERSE);
