@@ -117,10 +117,10 @@ void AStar::ajouterCasesAdjacentes(Noeud* noeud){
 	int noeudY=noeud->getY();
 	Noeud noeudObj = *noeud;
 	for(int i=noeudX-m_precision;i<=noeudX+m_precision;i+=m_precision){
-		if(i>3000 || i < 0 )
+		if(i>3000-TAILLE_ROBOT || i < TAILLE_ROBOT )
 			continue;
 		for (int j=noeudY-m_precision;j<=noeudY+m_precision;j+=m_precision){
-			if(j>2100 || j < 0 )
+			if(j>2100 - TAILLE_ROBOT || j < TAILLE_ROBOT )
 				continue;
 			 //on est à l'étape actuelle, on ignore...
 			if(i==noeudX && j==noeudY)

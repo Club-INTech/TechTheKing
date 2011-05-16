@@ -159,7 +159,7 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
    #ifdef DEBUG			
 	cout<<"Tentative de déplacement du robot en : (x = " << arrivee.getX() << ", y = " << arrivee.getY() << ")" << endl;
    #endif
-   Point depart(75,1950);
+   Point depart(getXRobot(),getYRobot());
    vector<Point> listePointsTmp=m_pathfinding.getChemin(depart,arrivee);
    m_lastTrajectory=ListePoints::lissageBezier(listePointsTmp,nbPoints);
    m_lastListeConsignes=ListePoints::convertirEnConsignes(m_lastTrajectory,getAngleRobot()); 

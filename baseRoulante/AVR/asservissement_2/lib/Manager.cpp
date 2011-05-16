@@ -137,8 +137,8 @@ Manager::Manager(){
 
 void Manager::init()
 {
-	x=2928;
-	y=150;
+	x=2550;
+	y=500;
 	
 	distanceBkp=0;
 	angleBkp=0;
@@ -189,16 +189,16 @@ void Manager::init()
 	indiceConsigneActuelle=1;
 
 	// initialisation des constantes
-	assRotation.changeKp(8);
+	assRotation.changeKp(5);
 	assRotation.changePWM(PWM_MAX);
-	assRotation.changeKd(300);
+	assRotation.changeKd(400);
 	assRotation.changeKi(0);
 	assRotation.changeVmax(0);
 	assRotation.changeKpVitesse(0);
 
-	assTranslation.changeKp(8);
+	assTranslation.changeKp(2);
 	assTranslation.changePWM(PWM_MAX);
-	assTranslation.changeKd(300);
+	assTranslation.changeKd(400);
 	assTranslation.changeKi(0);
 	assTranslation.changeVmax(0);
 	assTranslation.changeKpVitesse(0);
