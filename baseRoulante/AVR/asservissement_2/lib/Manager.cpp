@@ -70,12 +70,19 @@ Manager::assPolaire(){
 	}
 	
 	if(ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).distance - distance) < 60
-		|| ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).angle - angle) < 60 ){
+		|| ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).angle - angle) < 10 ){
 			if( indiceConsigneActuelle < tableauConsignes.nbConsignes ){
 				indiceConsigneActuelle++;
 		}
 	}
 
+	if(distance==tableauConsignes.listeConsignes[tableauConsignes.nbConsignes-1].distance
+		&& angle==tableauConsignes.listeConsignes[tableauConsignes.nbConsignes-1].angle)
+	{
+		tableauConsignes.listeConsignes[tableauConsignes.nbConsignes-1] = tableauConsignes.listeConsignes[0];
+		tableauConsignes.nbConsignes = 1;
+		indiceConsigneActuelle = 1;
+	}
 	/*
 	*Calcul des PWM
 	*/

@@ -104,9 +104,6 @@ int main( void ){
 				// tourne nÃ©gativement i
 				manager.changeIemeConsigneDistance(-i,1);
 			break;
-		case 'f': // A faire avant de charger une liste de points
-			manager.setNbConsignes(1);
-			break;
 		case 'g': // push consigne etape 1
 			i=litEntierLong();
 			if (i >= 10000000)
