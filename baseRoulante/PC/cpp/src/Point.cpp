@@ -149,10 +149,10 @@ vector<Point> ListePoints::lissageBezier(const vector<Point>& pointsDeControle,i
 	return resultat;
 }
 
-vector<Consigne> ListePoints::convertirEnConsignes(vector<Point>& listePoints,int dephasageAngle){
+vector<Consigne> ListePoints::convertirEnConsignes(vector<Point>& listePoints,int dephasageRayon){
 	vector<Consigne> resultat;
 	int longueur=listePoints.size();
-	double rayon=0;
+	double rayon=dephasageRayon;
 	double angle=0;
 	double angleBkp=0; //nécéssaire pour les modulos
 
@@ -167,7 +167,7 @@ vector<Consigne> ListePoints::convertirEnConsignes(vector<Point>& listePoints,in
 			/*
 			* mise à jour des paramètres de la consigne
 			*/
-			angle=listePoints[i].angle(listePoints[i+1]) - dephasageAngle;
+			angle=listePoints[i].angle(listePoints[i+1]);
 			sensDeRotation = (angle>angleBkp)?1:-1; // 1 : sens horraire, -1 : sens antihorraire.
 			if((angle-angleBkp)>M_PI)
 				angle+=sensDeRotation*2*M_PI;

@@ -82,7 +82,7 @@ int main( void ){
 		
 		switch (premierCaractere) {
 		case '?':
-			printlnLong(get_angle());
+			printlnLong(0);
 			break;
 		case 'a':
 			printlnLong(i);
@@ -166,7 +166,7 @@ int main( void ){
 			break;
 		case 't':
 			TIMSK1 &= ~(1 << TOIE1);
-			printlnLong(get_angle());
+			printlnLong(manager.distanceBkp);
 			TIMSK1 |= (1 << TOIE1);
 			break;
 		case 'u':

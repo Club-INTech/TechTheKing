@@ -129,7 +129,11 @@ void AStar::ajouterCasesAdjacentes(Noeud* noeud){
 			if(estDansListe(m_listeFermee,i,j)==m_listeFermee.end()){ //si le a déjà été étudié, on ne fait rien, sinon...
 						 // si le point est dans un obstacle de la couleur du robot ou sur une planche de bois, on ignore pour ne pas le déplacer ou se bloquer
 				Noeud* tmp = new Noeud(i,j);
-				if(ListeObstacles::contientCercle(i,j,TAILLE_ROBOT,NOIR)!=NULL || ListeObstacles::contientCercle(i,j,TAILLE_ROBOT+m_precision+MARGE_SECURITE_PION,COULEUR_ROBOT)!=NULL){
+				if(ListeObstacles::contientCercle(i,j,TAILLE_ROBOT,NOIR)!=NULL)
+				{
+					continue;
+				}
+				if(ListeObstacles::contientCercle(i,j,TAILLE_ROBOT+m_precision+MARGE_SECURITE_PION,COULEUR_ROBOT)!=NULL){
 					tmp->setCollision(true);
 				}
 				Obstacle* estSurPionAdverse=ListeObstacles::contientCercle(i,j,RAYON_DE_DETECTION,COULEUR_ADVERSE);

@@ -160,11 +160,15 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
    #ifdef DEBUG			
 	cout<<"Tentative de déplacement du robot en : (x = " << arrivee.getX() << ", y = " << arrivee.getY() << ")" << endl;
    #endif
-   Point depart(200,200);
+   Point depart(getXRobot(),getYRobot());
    vector<Point> listePointsTmp=m_pathfinding.getChemin(depart,arrivee);
    m_lastTrajectory=ListePoints::lissageBezier(listePointsTmp,nbPoints);
-   m_lastListeConsignes=ListePoints::convertirEnConsignes(m_lastTrajectory,getAngleRobot()); 
+   m_lastListeConsignes=ListePoints::convertirEnConsignes(m_lastTrajectory,getDistanceRobot()); 
    ListeConsignes::transfertSerie(m_lastListeConsignes,m_liaisonSerie);
+   unsigned char result;
+   while(result != 'f'){
+		m_liaisonSerie >> result;
+   }
 }
 
 void InterfaceAsservissement::avancer(unsigned int distanceMm){
@@ -189,6 +193,7 @@ InterfaceAsservissement::InterfaceAsservissement(int precision) : m_pathfinding(
     m_liaisonSerie.SetParity( SerialStreamBuf::PARITY_ODD ) ;
     #ifdef DEBUG
       cout<<"Interface crée"<<endl;
+      
     #endif
 }
 
@@ -197,14 +202,13 @@ InterfaceAsservissement::~InterfaceAsservissement()
 	m_liaisonSerie.Close();
 }
 
-int InterfaceAsservissement::getAngleRobot()
+int InterfaceAsservissement::getDistanceRobot()
 {
 	int result;
 	m_liaisonSerie << "t" << endl ;
 	m_liaisonSerie >> result;
-	cout<< "théta : " << result<<endl;
-	return 0;
-	//return result*CONVERSION_TIC_RADIAN;
+	cout<< "ticks : " << result<<endl;
+	return result;
 }
 
 int InterfaceAsservissement::getXRobot()
