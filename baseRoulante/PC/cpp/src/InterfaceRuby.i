@@ -89,9 +89,12 @@ public:
     void avancer(unsigned int distanceMm);
     void reculer(unsigned int distanceMm);
     void tourner(int angleRadian);
-	void debugGraphique();
     void debugConsignes();
     ~InterfaceAsservissement();
+    #ifdef DEBUG_GRAPHIQUE
+	void debugGraphique();
+	#endif
+
     
 private:
     InterfaceAsservissement& operator=(const InterfaceAsservissement&);
