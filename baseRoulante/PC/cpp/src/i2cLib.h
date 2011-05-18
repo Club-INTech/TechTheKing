@@ -64,9 +64,9 @@ void hexdump(const char* intro, uint8_t *buffer, int len);
 #define ANGLE_GAUCHE            0X11
 #define ANGLE_DROITE            0X12
 #define AIMANT_GAUCHE_HAUT      0X21
-#define AIMANT_DROIT_HAUT       0X22
+#define AIMANT_DROITE_HAUT       0X22
 #define AIMANT_GAUCHE_BAS       0X31
-#define AIMANT_DROIT_BAS        0X32
+#define AIMANT_DROITE_BAS        0X32
 
 int i2c_open(Adaptator** ad);
 void i2c_close(Adaptator* ad);

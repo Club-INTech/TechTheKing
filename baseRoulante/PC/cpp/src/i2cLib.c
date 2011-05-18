@@ -115,7 +115,7 @@ int i2c_order(Adaptator* ad, unsigned char slave_addr, unsigned char msg_array[]
         
     memcpy(write_buffer+1, msg_array, msg_size*sizeof(char));
     
-    err = linkm_command(ad, LINKM_CMD_I2CWRITE, (size+1)*sizeof(char),0, write_buffer, NULL );
+    err = linkm_command(ad, LINKM_CMD_I2CWRITE, (msg_size+1)*sizeof(char),0, write_buffer, NULL );
     
     if (err)
         return err;
@@ -131,16 +131,16 @@ int i2c_request(Adaptator* ad, unsigned char slave_address, unsigned char reques
         printf("I2C/USB - requesting %d bytes from address 0%x\n", read_size, slave_address);
     #endif
     
-    if (msg_size > 15) {
+    if (read_size > 15) {
         printf("I2C/USB - request aborted, attempting to read too many bytes\n");
         return 1;
     }
         
-    unsigned char write_buffer[] = {slaveAddr};
+    unsigned char write_buffer[] = {slave_address};
         
     int err;
     
-    err = linkm_command(ad, LINKM_CMD_I2CTRANS, (size+1)*sizeof(char), (size)*sizeof(char), write_buffer, read_buffer );
+    err = linkm_command(ad, LINKM_CMD_I2CTRANS, (read_size+1)*sizeof(char), (read_size)*sizeof(char), write_buffer, read_buffer );
     
     if(err)
         return err;

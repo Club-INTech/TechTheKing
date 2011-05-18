@@ -19,7 +19,6 @@
 %rename(print) operator<<;
 
 typedef enum {positif,negatif} SensDeplacement;
-typedef enum{pince,independants} ModeBras;
 typedef enum{bas,haut} ModeAimant;
 
 std::string exec(char* cmd);
@@ -107,13 +106,15 @@ template <class T>
 class InterfaceActionneurs {
 public:
     InterfaceActionneurs();
+    ~InterfaceActionneurs();
     void hauteurBrasGauche(unsigned char pourcentageHauteur);
     void hauteurBrasDroit(unsigned char pourcentageHauteur);
+    void hauteurDeuxBras(unsigned char pourcentageHauteur);
     void angleBrasGauche(unsigned char pourcentageAngle);
     void angleBrasDroit(unsigned char pourcentageAngle);
     void positionAimantGauche(ModeAimant mode);
     void positionAimantDroit(ModeAimant mode);
-    void setMode(ModeBras mode);
+
 };
 
 

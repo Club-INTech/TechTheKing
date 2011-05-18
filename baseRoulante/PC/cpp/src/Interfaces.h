@@ -76,7 +76,6 @@ class InterfaceActionneurs {
         void angleBrasDroit(unsigned char pourcentageAngle);
         void positionAimantGauche(ModeAimant mode);
         void positionAimantDroit(ModeAimant mode);
-        void setMode(ModeBras mode);
         
     private:
         // D'un pourcentage à une valeur entre 0 et ?
@@ -84,6 +83,7 @@ class InterfaceActionneurs {
         // D'un pourcentage à une valeur entre 0 et 1023 à envoyer via i2c
         inline unsigned int pourcentageAngleConversion(unsigned char pourcentage); 
         template <class T>  std::stack<unsigned char> decToBin(T dec);
+        
 };
 
 #endif
