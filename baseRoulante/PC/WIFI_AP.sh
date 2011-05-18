@@ -18,7 +18,7 @@ BEACON_INT="100"
 
 #Infos du WPA
 WPA_PASSPHRASE="passphrase"
-WPA="2"
+WPA="1"
 WPA_KEY_MGMT="WPA-PSK"
 
 # IP & mask du sous-réseau créé sur l'interface wlan
@@ -84,6 +84,7 @@ channel=$CHANNEL\n\
 hw_mode=$HW_MODE\n\
 driver=$DRIVER\n\
 beacon_int=$BEACON_INT\n\
+wpa=$WPA\n\
 wpa_passphrase=$WPA_PASSPHRASE\n\
 wpa_key_mgmt=$WPA_KEY_MGMT"
 
