@@ -4,7 +4,10 @@
 #include <string.h>
 #include <stdlib.h>
 
-void hexdump(const char* intro, uint8_t *buffer, int len){
+/*********************************************************/
+
+void hexdump(const char* intro, uint8_t *buffer, int len)
+{
     int     i;
     FILE    *fp = stdout;
     if( intro!=NULL ) fprintf(fp, intro,NULL);
@@ -15,15 +18,16 @@ void hexdump(const char* intro, uint8_t *buffer, int len){
     fprintf(fp, "\n");
 }
 
-int linkm_command(Adaptator* ad, int cmd, 
-                  int num_send, int num_recv,
-                  uint8_t* buf_send, uint8_t* buf_recv){
-    uint8_t buf[10]; // FIXME: correct size?  // FIXME: was static
+/*********************************************************/
+
+int linkm_command(Adaptator* ad, int cmd, int num_send, int num_recv, uint8_t* buf_send, uint8_t* buf_recv)
+{
+    uint8_t buf[16];
     int len,err;
     if( ad==NULL ) {
         return LINKM_ERR_NOTOPEN;
     }
-    memset( buf, 0, 10);  // debug: zero everything (while testing)
+    memset( buf, 0, 16);  // debug: zero everything (while testing)
     buf[0] = 1;            // byte 0 : report id, required by usb functions
     buf[1] = START_BYTE;   // byte 1 : start byte
     buf[2] = cmd;          // byte 2 : command
@@ -42,8 +46,8 @@ int linkm_command(Adaptator* ad, int cmd,
     if( num_recv !=0 ) {
         // FIXME: maybe put delay in here?
         //usleep(1000); // sleep millisecs waiting for response
-        memset(buf, 0, 10);  // clear out so to more easily see data
-        len = 10;
+        memset(buf, 0, 16);  // clear out so to more easily see data
+        len = 16;
         if((err = usbhidGetReport(ad, 1, (char*)buf, &len)) != 0) {
             fprintf(stderr, "error reading data: %s\n", linkm_error_msg(err));
             return err;
@@ -62,7 +66,10 @@ int linkm_command(Adaptator* ad, int cmd,
     return 0;
 }
 
-int i2c_open(Adaptator** ad){
+/*********************************************************/
+
+int i2c_open(Adaptator** ad) 
+{
     if( *ad != NULL ) {
        //linkm_close(*ad);
     }
@@ -72,41 +79,76 @@ int i2c_open(Adaptator** ad){
                             1);  // NOTE: '0' means "not using report IDs"
 }
 
-void i2c_close(Adaptator* ad){
-	 usbhidCloseDevice(ad);
+/*********************************************************/
+
+void i2c_close(Adaptator* ad) 
+{
+    usbhidCloseDevice(ad);
 }
 
-int i2c_init(Adaptator* ad){
-	int err = linkm_command(ad, LINKM_CMD_I2CINIT, 0,0,  NULL,NULL);
+/*********************************************************/
+
+int i2c_init(Adaptator* ad) 
+{
+    int err = linkm_command(ad, LINKM_CMD_I2CINIT, 0,0,  NULL,NULL);
     if( err ) {
-		return err;
-    }
-}
-
-int i2c_write(Adaptator* ad, unsigned char slaveAddr, unsigned char msg[], unsigned int size){
-	printf("addr %d: sending :%s\n",slaveAddr,msg);
-	unsigned char write_buffer[5];
-	int err;
-	write_buffer[0]=slaveAddr;
-    memcpy(write_buffer+1, msg, size*sizeof(char));
-	err = linkm_command(ad, LINKM_CMD_I2CWRITE, (size+1)*sizeof(char),0, write_buffer, NULL );
-	if(err){
-		return err;
-	}
-	return 0;
-}
-
-int i2c_read(Adaptator* ad, unsigned char slaveAddr, char* read_buffer, unsigned int size){
-    printf("addr %d: reading %d bytes: ",slaveAddr,size);
-    int err;
-    char write_buffer[] = {slaveAddr};
-    err = linkm_command(ad, LINKM_CMD_I2CTRANS, (size+1)*sizeof(char), (size)*sizeof(char), write_buffer, read_buffer );
-    if(err){
         return err;
     }
-    printf("%s",read_buffer);
+}
+
+/*********************************************************/
+
+int i2c_order(Adaptator* ad, unsigned char slave_addr, unsigned char msg_array[], unsigned int msg_size)
+{
+    #ifdef DEBUG
+        printf("I2C/USB - ending order %s to address 0%x\n", msg_array, slave_addr);
+    #endif
+    
+    if (msg_size > 4) {
+        printf("I2C/USB - sending aborted, message is too long\n");
+        return 1;
+    }
+    
+    unsigned char write_buffer[6] = {slave_addr};
+    
+    int err;
+        
+    memcpy(write_buffer+1, msg_array, msg_size*sizeof(char));
+    
+    err = linkm_command(ad, LINKM_CMD_I2CWRITE, (size+1)*sizeof(char),0, write_buffer, NULL );
+    
+    if (err)
+        return err;
+    
     return 0;
 }
+
+/*********************************************************/
+
+int i2c_request(Adaptator* ad, unsigned char slave_address, unsigned char request, char* read_buffer, unsigned int read_size)
+{
+    #ifdef DEBUG
+        printf("I2C/USB - requesting %d bytes from address 0%x\n", read_size, slave_address);
+    #endif
+    
+    if (msg_size > 15) {
+        printf("I2C/USB - request aborted, attempting to read too many bytes\n");
+        return 1;
+    }
+        
+    unsigned char write_buffer[] = {slaveAddr};
+        
+    int err;
+    
+    err = linkm_command(ad, LINKM_CMD_I2CTRANS, (size+1)*sizeof(char), (size)*sizeof(char), write_buffer, read_buffer );
+    
+    if(err)
+        return err;
+    
+    return 0;
+}
+
+/*********************************************************/
 
 char* linkm_error_msg(int errCode)
 {
@@ -128,26 +170,28 @@ char* linkm_error_msg(int errCode)
     return NULL;    // not reached 
 }
 
-int main(){
-	Adaptator* ad = NULL;
-	unsigned char msg[] = "KDE";
-    unsigned char rec[10];
-	int err;
-	if( (err = i2c_open( &ad )) != 0 ){
-        fprintf(stderr, "Error opening the adapter: %s\n", linkm_error_msg(err));
-        exit(1);
-    }
-    if( (err = i2c_init( ad )) != 0 ){
-        fprintf(stderr, "Error initializing i2c: %s\n", linkm_error_msg(err));
-        exit(1);
-    }
-//  if( (err= i2c_write(ad,4,msg,3)) != 0){
+/*********************************************************/
+
+// int main(){
+// 	Adaptator* ad = NULL;
+// 	unsigned char msg[] = "KDE";
+//     unsigned char rec[10];
+// 	int err;
+// 	if( (err = i2c_open( &ad )) != 0 ){
+//         fprintf(stderr, "Error opening the adapter: %s\n", linkm_error_msg(err));
+//         exit(1);
+//     }
+//     if( (err = i2c_init( ad )) != 0 ){
+//         fprintf(stderr, "Error initializing i2c: %s\n", linkm_error_msg(err));
+//         exit(1);
+//     }
+//     if( (err= i2c_write(ad,4,msg,3)) != 0){
 //      fprintf(stderr, "Error writing to the adapter: %s\n", linkm_error_msg(err));
 //      exit(1);
-//  }
-	if( (err= i2c_read(ad,4,rec,4)) != 0){
-        fprintf(stderr, "Error reading from the adapter: %s\n", linkm_error_msg(err));
-        exit(1);
-    }
-	return 0;
-}
+//     }
+// 	if( (err= i2c_read(ad,4,rec,4)) != 0){
+//         fprintf(stderr, "Error reading from the adapter: %s\n", linkm_error_msg(err));
+//         exit(1);
+//     }
+// 	return 0;
+// }

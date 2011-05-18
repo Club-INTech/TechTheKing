@@ -1,6 +1,7 @@
 #include "Interfaces.h"
 #include "config.h"
 #include "Debug.h"
+#include "i2cLib.h"
 #ifdef DEBUG_GRAPHIQUE
 #include <Magick++.h>
 #endif
@@ -200,12 +201,104 @@ int InterfaceAsservissement::getYRobot()
 	return result;
 }
 
-unsigned char InterfaceActionneurs::pourcentageHauteurConversion(unsigned char pourcentage){
+
+/*********************************************************/
+/*   Etranger, ici commence la terre des actionneurs...  */
+/*           Fait attention ou tu marches                */
+/*********************************************************/
+
+
+InterfaceActionneurs::InterfaceActionneurs() 
+{
+}
+
+
+InterfaceActionneurs::~InterfaceActionneurs() 
+{
+}
+
+
+void InterfaceActionneurs::hauteurBrasGauche(unsigned char pourcentageHauteur)
+{
+    unsigned int tics = pourcentageHauteurConversion(pourcentageHauteur);
+    unsigned char message[] = {HAUTEUR_GAUCHE, (unsigned char) tics, (unsigned char) (tics >> 8), '\0'};
+    
+    int i2c_order(adaptateur_i2c, ADRESSE_ACTIONNEURS, message, 4);
+}
+
+
+void InterfaceActionneurs::hauteurBrasDroit(unsigned char pourcentageHauteur)
+{
+    unsigned int tics = pourcentageHauteurConversion(pourcentageHauteur);
+    unsigned char message[] = {HAUTEUR_DROITE, (unsigned char) tics, (unsigned char) (tics >> 8), '\0'};
+    
+    int i2c_order(adaptateur_i2c, ADRESSE_ACTIONNEURS, message, 4);
+}
+
+
+void InterfaceActionneurs::hauteurDeuxBras(unsigned char pourcentageHauteur)
+{
+    unsigned int tics = pourcentageHauteurConversion(pourcentageHauteur);
+    unsigned char message[] = {HAUTEUR_DEUX, (unsigned char) tics, (unsigned char) (tics >> 8), '\0'};
+    
+    int i2c_order(adaptateur_i2c, ADRESSE_ACTIONNEURS, message, 4);
+}
+
+
+void InterfaceActionneurs::angleBrasGauche(unsigned char pourcentageAngle)
+{
+    unsigned int angle = pourcentageAngleConverions(pourcentageAngle);
+    unsigned char message[] = {ANGLE_GAUCHE, (unsigned char) angle, (unsigned char) (angle >> 8), '\0'};
+    
+    int i2c_order(adaptateur_i2c, ADRESSE_ACTIONNEURS, message, 4);
+}
+
+
+void InterfaceActionneurs::angleBrasDroit(unsigned char pourcentageAngle)
+{
+    unsigned int angle = pourcentageAngleConverions(pourcentageAngle);
+    unsigned char message[] = {ANGLE_DROIT, (unsigned char) angle, (unsigned char) (angle >> 8), '\0'};
+    
+    int i2c_order(adaptateur_i2c, ADRESSE_ACTIONNEURS, message, 4);
+}
+
+
+void InterfaceActionneurs::positionAimantGauche(ModeAimant mode)
+{
+    if (mode == haut)
+        unsigned char message[] = {AIMANT_GAUCHE_HAUT, '\0'};
+    else
+        unsigned char message[] = {AIMANT_GAUCHE_BAS, '\0'};
+    
+    int i2c_order(adaptateur_i2c, ADRESSE_ACTIONNEURS, message, 2);
+}
+
+
+void InterfaceActionneurs::positionAimantDroit(ModeAimant mode)
+{
+    if (mode == haut)
+        unsigned char message[] = {AIMANT_DROIT_HAUT, '\0'};
+    else
+        unsigned char message[] = {AIMANT_DROIT_BAS, '\0'};
+    
+    int i2c_order(adaptateur_i2c, ADRESSE_ACTIONNEURS, message, 2);
+}
+
+
+unsigned int InterfaceActionneurs::pourcentageHauteurConversion(unsigned char pourcentage)
+{
     return (pourcentage*2.55);
 }
 
 
-template <typename T>  stack<unsigned char> InterfaceActionneurs::decToBin(T dec){
+unsigned int InterfaceActionneurs::pourcentageAngleConversion(unsigned char pourcentage)
+{
+    return(pourcentage*10.24);
+}
+
+
+template <typename T>  stack<unsigned char> InterfaceActionneurs::decToBin(T dec)
+{
     stack<unsigned char> res;
     for(int i=0;i<sizeof(T);i++){
     bitset<8> charTmp;
@@ -219,12 +312,12 @@ template <typename T>  stack<unsigned char> InterfaceActionneurs::decToBin(T dec
     return res;
 }
 
-InterfaceActionneurs::InterfaceActionneurs(){
-}
 
-unsigned int InterfaceActionneurs::pourcentageAngleConversion(unsigned char pourcentage){
-    return(pourcentage*10.24);
-}
+/*********************************************************/
+/*    Voyageur, ici s'arrete la terre des actionneurs    */
+/*         Que les vents te soient favorables            */
+/*********************************************************/
+
 
 void InterfaceCapteurs::thread(){
     while(1){
