@@ -6,8 +6,10 @@
     #include "Thread.h"
     #include "Singleton.h"
     #include "Server.h"
-    #include "config.h"
+    
 %}
+
+%include "../config.h"
 
 %inline %{
     std::vector <Obstacle*> listeObstacles ;
@@ -19,7 +21,6 @@
 %rename(print) operator<<;
 
 typedef enum {positif,negatif} SensDeplacement;
-typedef enum{pince,independants} ModeBras;
 typedef enum{bas,haut} ModeAimant;
 
 std::string exec(char* cmd);
@@ -89,11 +90,11 @@ public:
     void avancer(unsigned int distanceMm);
     void reculer(unsigned int distanceMm);
     void tourner(int angleRadian);
-    void debugConsignes();
-    ~InterfaceAsservissement();
-    #ifdef DEBUG_GRAPHIQUE
+	#ifdef DEBUG_GRAPHIQUE
 	void debugGraphique();
 	#endif
+    void debugConsignes();
+    ~InterfaceAsservissement();
 
     
 private:
@@ -110,13 +111,15 @@ template <class T>
 class InterfaceActionneurs {
 public:
     InterfaceActionneurs();
+    ~InterfaceActionneurs();
     void hauteurBrasGauche(unsigned char pourcentageHauteur);
     void hauteurBrasDroit(unsigned char pourcentageHauteur);
+    void hauteurDeuxBras(unsigned char pourcentageHauteur);
     void angleBrasGauche(unsigned char pourcentageAngle);
     void angleBrasDroit(unsigned char pourcentageAngle);
     void positionAimantGauche(ModeAimant mode);
     void positionAimantDroit(ModeAimant mode);
-    void setMode(ModeBras mode);
+
 };
 
 

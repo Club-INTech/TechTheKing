@@ -1,14 +1,20 @@
 #include "serial.h"
 #include "ultrasons.h"
+#include <util/delay.h>
 
 int main()
 {
-    uart_init();
+//    uart_init();
+    
+//    printlnChar('F');
     
     while(1)
-    {
-        printlnLong(ping(PIN_ULTRASON_1));
-        _delay_ms(250);
+    {   
+//         printlnChar('u');
+//         printlnLong(ping(PIN_ULTRASON_1));
+//         printChar('G');
+//         printlnLong(ping(PIN_ULTRASON_2));
+//         _delay_ms(250);
     }
 
     return 0;

@@ -6,6 +6,7 @@
 int main()
 {
     init();
+    TWI_Init();
     
     while(1)
     {

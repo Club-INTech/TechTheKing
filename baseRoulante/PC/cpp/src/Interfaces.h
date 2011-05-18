@@ -12,7 +12,6 @@
 #include "config.h"
 
 typedef enum{positif,negatif}SensDeplacement;
-typedef enum{pince,independants}ModeBras;
 typedef enum{bas,haut}ModeAimant;
 
 std::string exec(char* cmd);
@@ -65,23 +64,27 @@ private:
 
 
 
-class InterfaceActionneurs {
-public:
-    InterfaceActionneurs();
-    void hauteurBrasGauche(unsigned char pourcentageHauteur);
-    void hauteurBrasDroit(unsigned char pourcentageHauteur);
-    void angleBrasGauche(unsigned char pourcentageAngle);
-    void angleBrasDroit(unsigned char pourcentageAngle);
-    void positionAimantGauche(ModeAimant mode);
-    void positionAimantDroit(ModeAimant mode);
-    void setMode(ModeBras mode);
-private:
-    unsigned char pourcentageHauteurConversion(unsigned char pourcentage); // D'un pourcentage à une valeur entre 0 et 255
-    unsigned int pourcentageAngleConversion(unsigned char pourcentage); // D'un pourcentage à une valeur entre 0 et 1023 à envoyer via i2c
-    template <class T>  std::stack<unsigned char> decToBin(T dec);
 
-private:
-    bool m_modePince;
+class InterfaceActionneurs {
+    
+    public:
+        InterfaceActionneurs();
+        ~InterfaceActionneurs();
+        void hauteurBrasGauche(unsigned char pourcentageHauteur);
+        void hauteurBrasDroit(unsigned char pourcentageHauteur);
+        void hauteurDeuxBras(unsigned char pourcentageHauteur);
+        void angleBrasGauche(unsigned char pourcentageAngle);
+        void angleBrasDroit(unsigned char pourcentageAngle);
+        void positionAimantGauche(ModeAimant mode);
+        void positionAimantDroit(ModeAimant mode);
+        
+    private:
+        // D'un pourcentage à une valeur entre 0 et ?
+        inline unsigned int pourcentageHauteurConversion(unsigned char pourcentage); 
+        // D'un pourcentage à une valeur entre 0 et 1023 à envoyer via i2c
+        inline unsigned int pourcentageAngleConversion(unsigned char pourcentage); 
+        template <class T>  std::stack<unsigned char> decToBin(T dec);
+        
 };
 
 #endif

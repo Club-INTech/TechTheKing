@@ -8,3 +8,4 @@ LibChessUp::initialisation();
 InterfaceAsservissement.goTo(LibChessUp::Point.new(1500,500),50);
 #InterfaceAsservissement.debugConsignes();
 InterfaceAsservissement.debugGraphique();
+InterfaceAsservissement.debugGraphique();
