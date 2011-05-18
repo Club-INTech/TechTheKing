@@ -1,6 +1,7 @@
 #include <avr/io.h>
-#include <util/delay.h>
+//#include <util/delay.h>
 #include <avr/interrupt.h>
+#include "../../../../../common-AVR/usart.h"
 
 //set output pin : 
 #define OUT_DDR DDRD

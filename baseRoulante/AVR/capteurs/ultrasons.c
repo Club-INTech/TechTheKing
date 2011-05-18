@@ -1,17 +1,18 @@
 #include "ultrasons.h"
+#include <util/delay.h>
 
 uint16_t ping(uint8_t pin)
 {
     // Envoi d'une impulsion dans le capteur
-    DDRB |= pin;
-    PORTB &= ~pin;
+    DDRD |= pin;
+    PORTD &= ~pin;
     _delay_us(2);
-    PORTB |= pin;
+    PORTD |= pin;
     _delay_us(5);
-    PORTB &= ~pin;
+    PORTD &= ~pin;
 
     // Reception de la duree
-    DDRB &= ~pin;
+    DDRD &= ~pin;
 
     uint8_t masque = pin;
 
@@ -19,17 +20,17 @@ uint16_t ping(uint8_t pin)
     uint16_t duree_max = TIMEOUT;
 
     // Attente de la fin de l'impulsion precedente
-    while ((PINB & pin) == masque)
+    while ((PIND & pin) == masque)
         if (duree++ == duree_max)
             return 0;
 
     // Attente du demarrage de l'impulsion
-    while ((PINB & pin) != masque)
+    while ((PIND & pin) != masque)
         if (duree++ == duree_max)
             return 0;
 
     // Attente de la fin de l'impulsion
-    while ((PINB & pin) == masque)
+    while ((PIND & pin) == masque)
             duree++;
 
     return duree;

@@ -1,5 +1,25 @@
 #include "AStar.h"
+#include "Constantes.h"
 
+/*!
+ *\def RAYON_DE_DETECTION
+ *
+ * le périmetre dans lequel le robot se déplacera pour aller bouger un pion à l'adversaire...
+ */
+#define RAYON_DE_DETECTION 350
+
+/*!
+ * \def EMPIETEMENT
+ * l'empietement du robot sur le pion adverse, lorsque celui ci n'est pas sur le chemin le plus court
+ */
+#define EMPIETEMENT 100
+
+/*!
+ * \class Noeud
+ *
+ * La classe Noeud, indispensable pour tout algorithme de pathfinding.
+ */
+ 
 /*ce qui concerne les noeuds*/
 
 
@@ -98,10 +118,10 @@ void AStar::ajouterCasesAdjacentes(Noeud* noeud){
 	int noeudY=noeud->getY();
 	Noeud noeudObj = *noeud;
 	for(int i=noeudX-m_precision;i<=noeudX+m_precision;i+=m_precision){
-		if(i>3000 || i < 0 )
+		if(i>3000-TAILLE_ROBOT || i < TAILLE_ROBOT )
 			continue;
 		for (int j=noeudY-m_precision;j<=noeudY+m_precision;j+=m_precision){
-			if(j>2100 || j < 0 )
+			if(j>2100 - TAILLE_ROBOT || j < TAILLE_ROBOT )
 				continue;
 			 //on est à l'étape actuelle, on ignore...
 			if(i==noeudX && j==noeudY)
@@ -109,9 +129,11 @@ void AStar::ajouterCasesAdjacentes(Noeud* noeud){
 			if(estDansListe(m_listeFermee,i,j)==m_listeFermee.end()){ //si le a déjà été étudié, on ne fait rien, sinon...
 						 // si le point est dans un obstacle de la couleur du robot ou sur une planche de bois, on ignore pour ne pas le déplacer ou se bloquer
 				Noeud* tmp = new Noeud(i,j);
-				if(ListeObstacles::contientCercle(i,j,TAILLE_ROBOT+m_precision+MARGE_SECURITE_PION,COULEUR_ROBOT)!=NULL
-				|| ListeObstacles::contientCercle(i,j,TAILLE_ROBOT,NOIR)!=NULL
-				){
+				if(ListeObstacles::contientCercle(i,j,TAILLE_ROBOT,NOIR)!=NULL)
+				{
+					continue;
+				}
+				if(ListeObstacles::contientCercle(i,j,TAILLE_ROBOT+m_precision+MARGE_SECURITE_PION,COULEUR_ROBOT)!=NULL){
 					tmp->setCollision(true);
 				}
 				Obstacle* estSurPionAdverse=ListeObstacles::contientCercle(i,j,RAYON_DE_DETECTION,COULEUR_ADVERSE);

@@ -30,7 +30,6 @@
 #include <avr/interrupt.h>
 #include "lib/Asservissement.h"
 #include "util/delay.h"
-#include "lib/LectureSerie.h"
 #include "lib/Manager.h"
 #include "lib/Util.h"
 #include "lib/twi_master.h"
@@ -83,7 +82,7 @@ int main( void ){
 		
 		switch (premierCaractere) {
 		case '?':
-			printlnLong(get_angle());
+			printlnLong(0);
 			break;
 		case 'a':
 			printlnLong(i);
@@ -101,21 +100,15 @@ int main( void ){
 			if (i >= 10000000)
 				//  tourne positivement de i
 				manager.changeIemeConsigneDistance(i-10000000,1);
-			else
-			if (i >= 0)
+			else if (i >= 0)
 				// tourne nÃ©gativement i
 				manager.changeIemeConsigneDistance(-i,1);
-			break;
-		case 'f': // A faire avant de charger une liste de points
-			manager.setNbConsignes(0);
 			break;
 		case 'g': // push consigne etape 1
 			i=litEntierLong();
 			if (i >= 10000000)
-			//  avance
 				manager.pushConsigneDistance(i-10000000);
 			else if(i>=0)
-			// recule
 				manager.pushConsigneDistance(-i);
 			break;	
 		case 'h':
@@ -155,10 +148,8 @@ int main( void ){
 		case 'q': // push consigne (étape 2)
 			i=litEntierLong();
 			if (i >= 10000000)
-			//  avance
 				manager.pushConsigneAngle(i-10000000);
 			else if(i>=0)
-			// recule
 				manager.pushConsigneAngle(-i);
 			break;
 		case 'r':
@@ -174,10 +165,9 @@ int main( void ){
 			}
 			break;
 		case 't':
-			i=litEntierLong();
-			if (i >= 0) {
-				manager.assTranslation.changePWM(i);
-			}
+			TIMSK1 &= ~(1 << TOIE1);
+			printlnLong(manager.distanceBkp);
+			TIMSK1 |= (1 << TOIE1);
 			break;
 		case 'u':
 			i=litEntierLong();
@@ -199,11 +189,15 @@ int main( void ){
 			break;
 		
 		case 'x':
+			TIMSK1 &= ~(1 << TOIE1);
 			printlnLong(x);
+			TIMSK1 |= (1 << TOIE1);
 			break;
 	
 		case 'y':
+			TIMSK1 &= ~(1 << TOIE1);
 			printlnLong(y);
+			TIMSK1 |= (1 << TOIE1);
 			break;
 	
 		case 'z':

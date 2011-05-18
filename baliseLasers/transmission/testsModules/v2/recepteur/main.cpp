@@ -1,3 +1,7 @@
+/*
+ * recepteur.cpp
+ */
+
 #include "main.h"
 
 volatile uint8_t transmetteur = 0b11111000;//bit 0 : flag bit reçu, bit 1 : flag init trame, bit 2 : flag fin trame, bits 3-7 : pointeur
@@ -9,12 +13,20 @@ uint32_t mesures=0;
 uint32_t nb_bit=0;
 uint8_t ind_mesures=0;
 
+/*
+uint8_t checksum(uint32_t data) {
+	return ((uint8_t)data + (uint8_t)(data << 7) + (uint8_t)(data << 15) + (uint8_t)(data << 23));
+}
+*/
+//et une petite macro pour la route : 
+#define checksum(data) ((uint8_t)data + (uint8_t)(data << 7) + (uint8_t)(data << 15) + (uint8_t)(data << 23))
+
 int main() {
 	//on initialise la transmission série (pour le debug)
 	uart_init();
 
 	//On active la sortie sur le bon bit/port
-	sbi(OUT_DDR,OUT_BIT);
+	cbi(OUT_DDR,OUT_BIT);
 	//Activation des interruptions d'entree on CHANGE
 	cbi(EICRA,ISC01);
 	sbi(EICRA,ISC00);
@@ -72,7 +84,7 @@ int main() {
 				printString(" ");
 				printUShort(message & 0xFF);
 				printString(" ");
-				uint8_t tmp = checksum((message >> 8) & 0xFFFFFFFF);
+				uint8_t tmp = checksum(((message >> 8) & 0xFFFFFFFF));
 				printUShort(tmp);
 				printString(" ");
 				printlnUShort(tmp == (message & 0xFF));
@@ -91,12 +103,4 @@ ISR(INT0_vect) {
 	temps[1] = temps[0];
 	temps[0] = micros();
 }
-
-/*
-uint8_t checksum(uint32_t data) {
-	return ((uint8_t)data + (uint8_t)(data << 7) + (uint8_t)(data << 15) + (uint8_t)(data << 23));
-}
-*/
-//et une petite macro pour la route : 
-#define checksum(data) ((uint8_t)data + (uint8_t)(data << 7) + (uint8_t)(data << 15) + (uint8_t)(data << 23))
 

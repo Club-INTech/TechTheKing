@@ -79,7 +79,7 @@ class Manager {
 			Consigne listeConsignes[NB_MAX_CONSIGNES] ;
 		}TableauConsignes;
 
-		uint16_t indiceConsigneActuelle;
+		uint16_t consigneActuelle;
 		TableauConsignes tableauConsignes;
 
 };

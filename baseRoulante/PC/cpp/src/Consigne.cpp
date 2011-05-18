@@ -1,7 +1,7 @@
 #include "Consigne.h"
 #include <time.h>
 
-string Consigne::formaterInt(int entierDonne)const{
+string formaterInt(int entierDonne) {
 	ostringstream fluxDeSortie;
 	fluxDeSortie << entierDonne;
 	string resultat=fluxDeSortie.str(); //l'entier est converti en string.
@@ -23,13 +23,13 @@ Consigne::Consigne(int rayon,int angle){
 
 void Consigne::transfertSerie(SerialStream& interfaceDeTransfert){
 	if(m_rayon>=0)
-		interfaceDeTransfert << "g1" + formaterInt(m_rayon);
+		interfaceDeTransfert.write(("g1" + formaterInt(m_rayon)).c_str(),9);
 	else
-		interfaceDeTransfert << "g0" + formaterInt(-m_rayon);
+		interfaceDeTransfert.write(("g0" + formaterInt(-m_rayon)).c_str(),9);
 	if(m_angle>=0)
-		interfaceDeTransfert << "q1" + formaterInt(m_angle);
+		interfaceDeTransfert.write(("q0" + formaterInt(m_angle)).c_str(),9);
 	else
-		interfaceDeTransfert << "q0" + formaterInt(-m_angle);
+		interfaceDeTransfert.write(("q1" + formaterInt(-m_angle)).c_str(),9);
 }
 
 void Consigne::print()const{
@@ -78,9 +78,8 @@ ostream &operator<<(ostream &out, vector<Consigne> listeConsignes){
 }
 
 void ListeConsignes::transfertSerie(vector<Consigne>& listeConsignes, SerialStream& liaisonSerie){
-	liaisonSerie << "o" << endl;
 	for(vector<Consigne>::iterator it=listeConsignes.begin();it!=listeConsignes.end();it++)
-		it->transfertSerie(liaisonSerie);
-	liaisonSerie << "p" << endl;
-
+	{
+		it->transfertSerie(liaisonSerie);	
+	}
 }

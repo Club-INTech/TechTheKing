@@ -54,35 +54,39 @@ Manager::assPolaire(){
 	* Ceci ne s'applique pas à la dernière consigne
 	*/
 
-
-	/*
-	* factorisation de la désactivation de Kd
-	*/
+	if(consigneActuelle>1 && consigneActuelle==tableauConsignes.nbConsignes)
+	{
+		tableauConsignes.listeConsignes[0].angle = tableauConsignes.listeConsignes[tableauConsignes.nbConsignes-1].angle;
+		tableauConsignes.listeConsignes[0].distance = tableauConsignes.listeConsignes[tableauConsignes.nbConsignes-1].distance;
+		tableauConsignes.nbConsignes = 1;
+		consigneActuelle = 1;
+		printlnChar('f');
+	}
 	
-	
-	if( indiceConsigneActuelle ==1 || indiceConsigneActuelle ==tableauConsignes.nbConsignes ) {
+	if( consigneActuelle ==1 || consigneActuelle ==tableauConsignes.nbConsignes ) {
 		assRotation.setActivationKd(1);
 		assTranslation.setActivationKd(1);
 	}
-	else{
+	else
+	{
 		assRotation.setActivationKd(0);
 		assTranslation.setActivationKd(0);
 	}
-
-	printlnLong(indiceConsigneActuelle);
 	
-	if(ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).distance - distance) < 60
-		&& ABS((tableauConsignes.listeConsignes[indiceConsigneActuelle-1]).angle - angle) < 60 ){
-			if( indiceConsigneActuelle < tableauConsignes.nbConsignes ){
-				indiceConsigneActuelle++;
-		}
+	
+	if(ABS((tableauConsignes.listeConsignes[consigneActuelle-1]).distance - distance) < 60
+		|| ABS((tableauConsignes.listeConsignes[consigneActuelle-1]).angle - angle) < 60 ){
+			if( consigneActuelle < tableauConsignes.nbConsignes){
+				if( (consigneActuelle==1 && angle==angleBkp) || consigneActuelle > 1){
+					consigneActuelle++;
+				}
+			}
 	}
-
 	/*
 	*Calcul des PWM
 	*/
-	int16_t pwmRotation = (activationAssAngle?assRotation.calculePwm(((tableauConsignes.listeConsignes)[indiceConsigneActuelle-1]).angle,angle):0);
-	int16_t pwmTranslation = (activationAssDistance?assTranslation.calculePwm(((tableauConsignes.listeConsignes)[indiceConsigneActuelle-1]).distance,distance):0);
+	int16_t pwmRotation = (activationAssAngle?assRotation.calculePwm(((tableauConsignes.listeConsignes)[consigneActuelle-1]).angle,angle):0);
+	int16_t pwmTranslation = (activationAssDistance?assTranslation.calculePwm(((tableauConsignes.listeConsignes)[consigneActuelle-1]).distance,distance):0);
 
 	int16_t pwmG = pwmTranslation - pwmRotation;
 	int16_t pwmD = pwmTranslation + pwmRotation;
@@ -139,12 +143,15 @@ Manager::Manager(){
 
 void Manager::init()
 {
-	x=2928;
-	y=150;
+	x=2550;
+	y=500;
 	
 	distanceBkp=0;
 	angleBkp=0;
 	
+	assRotation.setActivationKd(1);
+	assTranslation.setActivationKd(1);
+
 	activationAssDistance = true;
 	activationAssAngle = true;
 
@@ -188,19 +195,19 @@ void Manager::init()
 	
 	// initialisation de la liste de point
 	tableauConsignes.nbConsignes=1;
-	indiceConsigneActuelle=1;
+	consigneActuelle=1;
 
 	// initialisation des constantes
-	assRotation.changeKp(8);
+	assRotation.changeKp(5);
 	assRotation.changePWM(PWM_MAX);
-	assRotation.changeKd(300);
+	assRotation.changeKd(400);
 	assRotation.changeKi(0);
 	assRotation.changeVmax(0);
 	assRotation.changeKpVitesse(0);
 
-	assTranslation.changeKp(8);
+	assTranslation.changeKp(2);
 	assTranslation.changePWM(PWM_MAX);
-	assTranslation.changeKd(300);
+	assTranslation.changeKd(400);
 	assTranslation.changeKi(0);
 	assTranslation.changeVmax(0);
 	assTranslation.changeKpVitesse(0);
@@ -305,7 +312,7 @@ void
 Manager::reset()
 {
 	tableauConsignes.nbConsignes=1;
-	indiceConsigneActuelle=1;
+	consigneActuelle=1;
 	send_reset();
 }
 /*
@@ -315,7 +322,7 @@ Manager::reset()
 void 
 Manager::pushConsigneDistance(int32_t distanceDonnee) // on transfert d'abord la distance (pas d'incr�mentation de nbConsignes)
 {
-	tableauConsignes.nbConsignes+=1; //ajout d'une case dans le tableau.
+	tableauConsignes.nbConsignes++;
 	changeIemeConsigneDistance(distanceDonnee, (tableauConsignes.nbConsignes));
 }
 

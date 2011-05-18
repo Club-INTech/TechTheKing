@@ -51,8 +51,7 @@ void TWI_Loop( void )
             order = messageBuf[0];
         }
 
-        if ( order == MASTER_CMD_RESET )
-        {
+        if ( order == MASTER_CMD_RESET ) {
             roue1 = 0;
             roue2 = 0;
         }
