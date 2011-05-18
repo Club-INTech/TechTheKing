@@ -67,19 +67,21 @@ Manager::assPolaire(){
 		assRotation.setActivationKd(1);
 		assTranslation.setActivationKd(1);
 	}
-	else{
+	else
+	{
 		assRotation.setActivationKd(0);
 		assTranslation.setActivationKd(0);
 	}
 	
 	
-	if(ABS((tableauConsignes.listeConsignes[consigneActuelle-1]).distance - distance) < 80
-		|| ABS((tableauConsignes.listeConsignes[consigneActuelle-1]).angle - angle) < 80 ){
-			if( consigneActuelle < tableauConsignes.nbConsignes ){
-				consigneActuelle++;
-		}
+	if(ABS((tableauConsignes.listeConsignes[consigneActuelle-1]).distance - distance) < 60
+		|| ABS((tableauConsignes.listeConsignes[consigneActuelle-1]).angle - angle) < 60 ){
+			if( consigneActuelle < tableauConsignes.nbConsignes){
+				if( (consigneActuelle==1 && angle==angleBkp) || consigneActuelle > 1){
+					consigneActuelle++;
+				}
+			}
 	}
-
 	/*
 	*Calcul des PWM
 	*/
