@@ -1,5 +1,0 @@
-Compilation (avec OpenCV):
-	g++ -lcv -lhighgui main.cpp -o detection
-
-Lancement:
-	./detection 5 img/b5.jpg

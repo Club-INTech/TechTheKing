@@ -5,7 +5,7 @@
     #include "Interfaces.h"
     #include "Thread.h"
     #include "Singleton.h"
-    #include "Server.h"
+    #include "Socket.h"
     
 %}
 
@@ -72,13 +72,25 @@ class Thread{
 
 #define TAILLE_BUFFER 256
     
-class Socket : public Thread{
+class Socket{
     public:
         static Socket* Instance(int port);
         ~Socket();
         void onOpen();
+        void getPions(const char* address);
+    private:
+        Obstacle* trouverObstacle();
+        Socket(int port);
+        void onWrite(string msg);
+        void onRead();
         void onClose();
-        void request();
+        Socket& operator=(const Socket&);
+        Socket(const Socket&){};
+    private:
+        char m_buffer[TAILLE_BUFFER];
+        static Socket* m_instance;
+        int m_sockfd;
+        int m_port;
 };
 
 
