@@ -6,11 +6,10 @@
 int main()
 {
     init();
-    TWI_Init();
+    uart_init();
     
     while(1)
     {
-        asservissement();
     }
     
     return 0;

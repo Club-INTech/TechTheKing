@@ -21,11 +21,13 @@
 typedef enum {positif,negatif} SensDeplacement;
 typedef enum{bas,haut} ModeAimant;
 
+typedef struct usbDevice Adaptator;
+
 std::string exec(char* cmd);
 class InterfaceAsservissement;
 std::vector<char> getTtyUSB();
 
-namespace ListeObstacles{
+namespace ListeObstacles {
 	Obstacle* contientCercle(int centreX,int centreY,int rayon, Couleur couleur);
 	void setCouleursAuto();
 	void refreshPositions(const char nomFichier[]);
@@ -97,14 +99,14 @@ public:
 private:
     InterfaceAsservissement& operator=(const InterfaceAsservissement&);
     InterfaceAsservissement(const InterfaceAsservissement&){};
-   InterfaceAsservissement(int precisionAStar);
+    InterfaceAsservissement(int precisionAStar);
     void recupPosition();
 };
 class InterfaceCapteurs : public Thread{
 public:
     InterfaceCapteurs();
 };
-template <class T> 
+
 class InterfaceActionneurs {
 public:
     InterfaceActionneurs();
@@ -119,4 +121,4 @@ public:
 
 };
 
-
+void ouvrir_adaptateur_i2c ();

@@ -26,7 +26,7 @@ void init (void)
     TCCR0A |= (1 << WGM01);
     TCCR0B &= ~(1 << WGM02);
     // Prescaler /1024
-    TCCR0B |= (1 << CS00) | (1 << CS12);
+    TCCR0B |= (1 << CS00) | (1 << CS02);
     
     // Initialisation PWM pour les PH sur timer2
     // Initialisation pin 17

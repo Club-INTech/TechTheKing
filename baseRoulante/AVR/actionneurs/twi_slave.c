@@ -45,6 +45,8 @@ void TWI_Loop( void )
         if ( TWI_statusReg.RxDataInBuf ) {
             TWI_Get_Data_From_Transceiver(messageBuf, 1);
             order = messageBuf[0];
+            
+            printlnLong(order);
 
             // Ordre pour l'AX12 1
             if ( order == MASTER_CMD_AX1_GOTO ) {

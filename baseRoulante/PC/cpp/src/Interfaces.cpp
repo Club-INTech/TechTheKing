@@ -330,29 +330,13 @@ void InterfaceActionneurs::positionAimantDroit(ModeAimant mode)
 
 unsigned int InterfaceActionneurs::pourcentageHauteurConversion(unsigned char pourcentage)
 {
-    return (pourcentage*2.55);
+    return (pourcentage*150);
 }
 
 
 unsigned int InterfaceActionneurs::pourcentageAngleConversion(unsigned char pourcentage)
 {
-    return(pourcentage*10.24);
-}
-
-
-template <typename T>  stack<unsigned char> InterfaceActionneurs::decToBin(T dec)
-{
-    stack<unsigned char> res;
-    for(int i=0;i<sizeof(T);i++){
-    bitset<8> charTmp;
-        for(int j=0;j<8;j++){
-            charTmp.set(j,dec%2);
-            dec=dec>>1;
-        }
-        unsigned char resTmp = (charTmp.to_ulong() << 8 * i);
-        if(resTmp) res.push(resTmp);
-    }
-    return res;
+    return(pourcentage*10.23);
 }
 
 
@@ -368,4 +352,14 @@ void InterfaceCapteurs::thread(){
             //traiterAbsenceObstacle()
         //traiterPresenceObstacle()
     }   
+}
+
+
+void ouvrir_adaptateur_i2c ()
+{
+    int err;
+    
+     if (err = i2c_open( &adaptateur_i2c ) != 0 ) {
+                fprintf(stderr, "Adaptateur pas branché : %s\n", linkm_error_msg(err));
+     }
 }

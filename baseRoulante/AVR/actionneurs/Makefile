@@ -8,7 +8,7 @@ all: main.hex
 main.hex: main.out
 	avr-objcopy -O ihex -R .eeprom main.out main.hex
 
-main.out: main.o actionneurs.o serial.o
+main.out: main.o actionneurs.o serial.o ax12.o
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) main.o actionneurs.o serial.o -o main.out
 
 main.o: main.c

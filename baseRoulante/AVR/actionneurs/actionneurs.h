@@ -27,12 +27,12 @@
  *    ID des AX12
  *    PWM pour les servos
  */
-#define PWM_MAX     200
+#define PWM_MAX     128
 #define KP          1
-#define ID_AX1      0X10
-#define ID_AX2      0X20
-#define PWM_UP      64
-#define PWM_DOWN    0
+#define ID_AX1      2
+#define ID_AX2      1
+#define PWM_UP      26
+#define PWM_DOWN    13
 
 /*
  *  Pins des codeurs
