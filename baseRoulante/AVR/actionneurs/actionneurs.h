@@ -26,6 +26,7 @@
  *    facteur proportionnel
  *    ID des AX12
  *    PWM pour les servos
+ *    Type d'asservissement
  */
 #define PWM_MAX     128
 #define KP          1
@@ -33,6 +34,9 @@
 #define ID_AX2      1
 #define PWM_UP      26
 #define PWM_DOWN    13
+#define ASSERV_INDEP    0
+#define ASSERV_SYNCHRO  1
+#define ASSERV_STOP     -1
 
 /*
  *  Pins des codeurs
@@ -52,7 +56,7 @@ extern int16_t consigne1;
 extern int16_t consigne2;
 extern volatile int16_t ascenseur1;
 extern volatile int16_t ascenseur2;
-extern uint8_t synchro;
+extern int8_t etat_asservissement;
 
 /*
  *  Fonctions d'asservissement
