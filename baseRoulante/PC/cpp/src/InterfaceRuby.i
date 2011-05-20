@@ -76,26 +76,13 @@ class Thread{
 #define TAILLE_BUFFER 256
     
 class Socket{
+        Socket(int port);
     public:
         static Socket* Instance(int port);
         ~Socket();
         void onOpen();
-        void getPions(const char* address);
-    private:
-        Obstacle* trouverObstacle();
-        Socket(int port);
-        void onWrite(string msg);
-        void onRead();
-        void onClose();
-        Socket& operator=(const Socket&);
-        Socket(const Socket&){};
-    private:
-        char m_buffer[TAILLE_BUFFER];
-        static Socket* m_instance;
-        int m_sockfd;
-        int m_port;
+        void getPions();
 };
-
 
 class InterfaceAsservissement {
 public:
