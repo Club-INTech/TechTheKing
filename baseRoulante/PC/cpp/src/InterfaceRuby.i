@@ -6,7 +6,8 @@
     #include "Thread.h"
     #include "Singleton.h"
     #include "Socket.h"
-    
+    #include "i2cLib.h"
+    #include "hiddata.h"
 %}
 
 %include "../config.h"
@@ -119,7 +120,7 @@ class InterfaceCapteurs : public Thread{
 public:
     InterfaceCapteurs();
 };
-template <class T> 
+
 class InterfaceActionneurs {
 public:
     InterfaceActionneurs();

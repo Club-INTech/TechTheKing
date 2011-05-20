@@ -1,3 +1,7 @@
+#ifdef __cplusplus
+ extern "C" {
+ #endif
+
 #ifndef I2C_H
 #define I2C_H
 
@@ -77,3 +81,7 @@ int i2c_request(Adaptator* ad, unsigned char slave_address, unsigned char reques
 
 
 #endif
+
+#ifdef __cplusplus
+ }
+ #endif

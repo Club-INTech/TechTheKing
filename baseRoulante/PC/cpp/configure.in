@@ -7,11 +7,8 @@ AM_INIT_AUTOMAKE(libChessUp,0.5)
 AC_CONFIG_SRCDIR([src])
 AM_PROG_LIBTOOL
 
-
-AC_LANG(C++)
-
+AC_LANG(C)
 # Checks for programs.
-
 AC_PROG_CXX
 AC_PROG_CC
 
