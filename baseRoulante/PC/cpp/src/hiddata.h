@@ -1,3 +1,7 @@
+#ifdef __cplusplus
+ extern "C" {
+ #endif
+
 /* Name: hiddata.h
  * Author: Christian Starkjohann
  * Creation Date: 2008-04-11
@@ -69,3 +73,7 @@ int usbhidGetReport(usbDevice_t *device, int reportID, char *buffer, int *len);
 /* ------------------------------------------------------------------------ */
 
 #endif /* __HIDDATA_H_INCLUDED__ */
+
+#ifdef __cplusplus
+ }
+#endif

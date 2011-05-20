@@ -120,9 +120,6 @@ int main( void ){
 		case 'j':
 			send_reset();
 			break;
-		case 'k':
-			manager.test();
-			break;
 		case 'l':
 			i=litEntierLong();
 			if (i >= 0) {

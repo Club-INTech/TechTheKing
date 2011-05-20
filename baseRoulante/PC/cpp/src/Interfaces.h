@@ -42,6 +42,7 @@ private:
     int getXRobot();
 	int getYRobot();
 private:
+	int m_compteurImages;
 	vector<Point> m_lastTrajectory;
 	vector<Consigne> m_lastListeConsignes;
 	static InterfaceAsservissement* m_instance;

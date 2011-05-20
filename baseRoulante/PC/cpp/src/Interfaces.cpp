@@ -6,7 +6,7 @@
 #ifdef DEBUG_GRAPHIQUE
 #include <Magick++.h>
 #endif
-
+#include "Util.hpp"
 
 using namespace std;
 Adaptator* adaptateur_i2c;
@@ -15,58 +15,14 @@ Adaptator* adaptateur_i2c;
 InterfaceAsservissement* InterfaceAsservissement::m_instance=NULL;
 
 void InterfaceAsservissement::debugConsignes(){
-	cout << m_lastListeConsignes << endl;
+	cout<<m_lastListeConsignes<<endl;
 }
+
 #ifdef DEBUG_GRAPHIQUE
 using namespace Magick;
 void InterfaceAsservissement::debugGraphique(){
 	cout<<"Conversion du chemin emprunté par le robot en graphique..."<<endl;
-	Image image( Geometry(3000,2100), Color("white") );
-	image.fillColor("red");
-	image.draw( DrawableRectangle(0,0, 400,400) );
-	bool caseBleue=true;
-	for(unsigned j=0;j<=1750;j+=350){
-		for(unsigned i=450;i<=2200;i+=350){
-			if(caseBleue==true){
-				image.fillColor("blue");
-				caseBleue=false;
-			}
-			else{
-				image.fillColor("red");
-				caseBleue=true;
-			}
-			image.draw( DrawableRectangle(i,j, i+350,j+350) );
-		}
-		if(caseBleue==true){
-			image.fillColor("blue");
-			caseBleue=false;
-		}
-		else{
-			image.fillColor("red");
-			caseBleue=true;
-		}
-	}
-	image.fillColor("blue");
-	image.draw( DrawableRectangle(2600,0, 3000,400) );
-	
-	/* Les lignes noires */
-	image.fillColor("black");
-	image.draw( DrawableRectangle(400,0, 450,2100) );
-	image.draw( DrawableRectangle(2550,0, 2600,2100) );
-	
-	/* Les parties vertes */
-	image.fillColor("green");
-	image.draw( DrawableRectangle(0,400, 400,2100) );
-	image.draw( DrawableRectangle(2600,400, 30000,2100) );
-	
-	/* Les cases speciales */
-	image.fillColor("black");
-	image.draw(DrawableEllipse(975,525, 50, 50, 0, 360));
-	image.draw(DrawableEllipse(2025,525, 50, 50, 0, 360));
-	image.draw(DrawableEllipse(975,1225, 50, 50, 0, 360));
-	image.draw(DrawableEllipse(2025,1225, 50, 50, 0, 360));
-	image.draw(DrawableEllipse(1325,1925, 50, 50, 0, 360));
-	image.draw(DrawableEllipse(1675,1925, 50, 50, 0, 360));
+	Image image( "img/table.png" );
 	
 	/* Affiche les obstacles */
 	for(unsigned int i=0;i<listeObstacles.size();i++){
@@ -78,12 +34,13 @@ void InterfaceAsservissement::debugGraphique(){
 	//image.strokeWidth(2*TAILLE_ROBOT);
 	image.strokeWidth(15);
 	for(unsigned int i=0;i<m_lastTrajectory.size()-1;i++)
-		image.draw(DrawableLine(m_lastTrajectory[i].getX(),2100-m_lastTrajectory[i].getY(),m_lastTrajectory[i+1].getX(),2100-m_lastTrajectory[i+1].getY()));
-	Geometry echelle(1000,700);
-	image.resize(echelle);
-	image.display();
+		image.draw(DrawableLine((m_lastTrajectory[i].getX())*900/3000,
+		630-m_lastTrajectory[i].getY()*630/2100,
+		m_lastTrajectory[i+1].getX()*900/3000,
+		630-m_lastTrajectory[i+1].getY()*630/2100));
 	image.magick("png");
-	image.write("cheminRobot70");
+	std::string tmp("cheminRobot");
+	image.write(tmp + numToString(m_compteurImages++));
 	cout<<"chemin emprunté dans le robot écrit dans cheminRobot.png"<<endl;
 }
 #endif
@@ -163,15 +120,16 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
    #ifdef DEBUG			
 	cout<<"Tentative de déplacement du robot en : (x = " << arrivee.getX() << ", y = " << arrivee.getY() << ")" << endl;
    #endif
-   Point depart(getXRobot(),getYRobot());
+   Point depart(1000,1000);
    vector<Point> listePointsTmp=m_pathfinding.getChemin(depart,arrivee);
    m_lastTrajectory=ListePoints::lissageBezier(listePointsTmp,nbPoints);
    m_lastListeConsignes=ListePoints::convertirEnConsignes(m_lastTrajectory,getDistanceRobot()); 
    ListeConsignes::transfertSerie(m_lastListeConsignes,m_liaisonSerie);
    unsigned char result;
+   /*
    while(result != 'f'){
 		m_liaisonSerie >> result;
-   }
+   }*/
 }
 
 void InterfaceAsservissement::avancer(unsigned int distanceMm){
@@ -189,8 +147,8 @@ void InterfaceAsservissement::tourner(int angleRadian){
 		m_liaisonSerie<<"b1"+formaterInt(angleRadian*CONVERSION_RADIAN_TIC)<<endl;
 }
 
-InterfaceAsservissement::InterfaceAsservissement(int precision) : m_pathfinding(precision){
-    m_liaisonSerie.Open("/dev/ttyUSB0");
+InterfaceAsservissement::InterfaceAsservissement(int precision) : m_compteurImages(0), m_pathfinding(precision){
+    detectionSerieUsb(this);
     m_liaisonSerie.SetBaudRate(SerialStreamBuf::BAUD_57600);
     m_liaisonSerie.SetNumOfStopBits(1);
     m_liaisonSerie.SetParity( SerialStreamBuf::PARITY_ODD ) ;

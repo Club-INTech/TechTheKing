@@ -5,9 +5,12 @@
     #include "Interfaces.h"
     #include "Thread.h"
     #include "Singleton.h"
-    #include "Server.h"
-    #include "config.h"
+    #include "Socket.h"
+    #include "i2cLib.h"
+    #include "hiddata.h"
 %}
+
+%include "../config.h"
 
 %inline %{
     std::vector <Obstacle*> listeObstacles ;
@@ -72,13 +75,25 @@ class Thread{
 
 #define TAILLE_BUFFER 256
     
-class Socket : public Thread{
+class Socket{
     public:
         static Socket* Instance(int port);
         ~Socket();
         void onOpen();
+        void getPions(const char* address);
+    private:
+        Obstacle* trouverObstacle();
+        Socket(int port);
+        void onWrite(string msg);
+        void onRead();
         void onClose();
-        void request();
+        Socket& operator=(const Socket&);
+        Socket(const Socket&){};
+    private:
+        char m_buffer[TAILLE_BUFFER];
+        static Socket* m_instance;
+        int m_sockfd;
+        int m_port;
 };
 
 
@@ -90,11 +105,12 @@ public:
     void avancer(unsigned int distanceMm);
     void reculer(unsigned int distanceMm);
     void tourner(int angleRadian);
-#ifdef DEBUG_GRAPHIQUE
+	#ifdef DEBUG_GRAPHIQUE
 	void debugGraphique();
-#endif
+	#endif
     void debugConsignes();
     ~InterfaceAsservissement();
+
     
 private:
     InterfaceAsservissement& operator=(const InterfaceAsservissement&);

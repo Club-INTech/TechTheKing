@@ -20,7 +20,7 @@ CercleObstacle::CercleObstacle(double x,double y,Couleur couleur) : Obstacle(x,y
 #ifdef DEBUG_GRAPHIQUE
 void CercleObstacle::draw(Magick::Image* image){
     image->fillColor("yellow");
-    image->draw(Magick::DrawableEllipse(m_x,2100-m_y, m_rayon, m_rayon, 0, 360));
+    image->draw(Magick::DrawableEllipse(m_x*900/3000,630-m_y*630/2100, m_rayon, m_rayon, 0, 360));
 }
 #endif
 
@@ -78,7 +78,10 @@ RectangleObstacle::RectangleObstacle(double x,double y,int demiCoteX,int demiCot
 #ifdef DEBUG_GRAPHIQUE
 void RectangleObstacle::draw(Magick::Image* image){
     image->fillColor("Dark Orange");
-    image->draw(Magick::DrawableRectangle(m_x-m_demiCoteX,2100-(m_y-m_demiCoteY),m_x+m_demiCoteX,2100-(m_y+m_demiCoteY)));
+    image->draw(Magick::DrawableRectangle((m_x-m_demiCoteX)*900/3000,
+		630-(m_y-m_demiCoteY)*630/2100,
+		(m_x+m_demiCoteX)*900/3000,
+		630-(m_y+m_demiCoteY)*630/2100));
 }
 #endif
 
