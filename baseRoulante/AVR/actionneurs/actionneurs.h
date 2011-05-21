@@ -32,8 +32,8 @@
 #define KP          1
 #define ID_AX1      2
 #define ID_AX2      1
-#define PWM_UP      26
-#define PWM_DOWN    13
+#define PWM_UP      18
+#define PWM_DOWN    26
 #define ASSERV_INDEP    0
 #define ASSERV_SYNCHRO  1
 #define ASSERV_STOP     -1
@@ -54,6 +54,7 @@
  */
 extern int16_t consigne1;
 extern int16_t consigne2;
+extern int16_t consigneb;
 extern volatile int16_t ascenseur1;
 extern volatile int16_t ascenseur2;
 extern int8_t etat_asservissement;
@@ -88,7 +89,7 @@ int adc_sense2 (void); // PH 2
  *    angle : consigne en angle
  *    vitesse : vitesse de rotation
  */
-// void AX12Init (uint8_t ID, uint16_t angleCW, uint16_t angleCCW, uint16_t vitesse);
-// void AX12GoTo (uint8_t ID, uint16_t angle);
+void AX12Init (uint8_t ID, uint16_t angleCW, uint16_t angleCCW, uint16_t vitesse);
+void AX12GoTo (uint8_t ID, uint16_t angle);
 
 #endif

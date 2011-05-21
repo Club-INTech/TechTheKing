@@ -210,45 +210,45 @@ InterfaceActionneurs::~InterfaceActionneurs()
 void InterfaceActionneurs::hauteurBrasGauche(unsigned char pourcentageHauteur)
 {
     unsigned int tics = pourcentageHauteurConversion(pourcentageHauteur);
-    unsigned char message[] = {HAUTEUR_GAUCHE, (unsigned char) tics, (unsigned char) (tics >> 8), '\0'};
+    unsigned char message[] = {0X41, (unsigned char) tics, (unsigned char) (tics >> 8), '\0'};
     
-    i2c_order(adaptateur_i2c, ADRESSE_ACTIONNEURS, message, 4);
+    i2c_write(adaptateur_i2c, 0X10, message, 4);
 }
 
 
 void InterfaceActionneurs::hauteurBrasDroit(unsigned char pourcentageHauteur)
 {
     unsigned int tics = pourcentageHauteurConversion(pourcentageHauteur);
-    unsigned char message[] = {HAUTEUR_DROITE, (unsigned char) tics, (unsigned char) (tics >> 8), '\0'};
+    unsigned char message[] = {0X42, (unsigned char) tics, (unsigned char) (tics >> 8), '\0'};
     
-    i2c_order(adaptateur_i2c, ADRESSE_ACTIONNEURS, message, 4);
+    i2c_write(adaptateur_i2c, 0X10, message, 4);
 }
 
 
 void InterfaceActionneurs::hauteurDeuxBras(unsigned char pourcentageHauteur)
 {
     unsigned int tics = pourcentageHauteurConversion(pourcentageHauteur);
-    unsigned char message[] = {HAUTEUR_DEUX, (unsigned char) tics, (unsigned char) (tics >> 8), '\0'};
+    unsigned char message[] = {0X4B, (unsigned char) tics, (unsigned char) (tics >> 8), '\0'};
     
-    i2c_order(adaptateur_i2c, ADRESSE_ACTIONNEURS, message, 4);
+    i2c_write(adaptateur_i2c, 0X10, message, 4);
 }
 
 
 void InterfaceActionneurs::angleBrasGauche(unsigned char pourcentageAngle)
 {
     unsigned int angle = pourcentageAngleConversion(pourcentageAngle);
-    unsigned char message[] = {ANGLE_GAUCHE, (unsigned char) angle, (unsigned char) (angle >> 8), '\0'};
+    unsigned char message[] = {0X11, (unsigned char) angle, (unsigned char) (angle >> 8), '\0'};
     
-    i2c_order(adaptateur_i2c, ADRESSE_ACTIONNEURS, message, 4);
+    i2c_write(adaptateur_i2c, 0X10, message, 4);
 }
 
 
 void InterfaceActionneurs::angleBrasDroit(unsigned char pourcentageAngle)
 {
     unsigned int angle = pourcentageAngleConversion(pourcentageAngle);
-    unsigned char message[] = {ANGLE_DROITE, (unsigned char) angle, (unsigned char) (angle >> 8), '\0'};
+    unsigned char message[] = {0X12, (unsigned char) angle, (unsigned char) (angle >> 8), '\0'};
     
-    i2c_order(adaptateur_i2c, ADRESSE_ACTIONNEURS, message, 4);
+    i2c_write(adaptateur_i2c, 0X10, message, 4);
 }
 
 
@@ -256,16 +256,16 @@ void InterfaceActionneurs::positionAimantGauche(ModeAimant mode)
 {
     unsigned char message[2];
     
-    if (mode == haut) {
-        message[0] = AIMANT_GAUCHE_HAUT;
+    if (mode == HAUT) {
+        message[0] = 0X21;
         message[1] = '\0';
     }
     else {
-        message[0] = AIMANT_GAUCHE_BAS; 
+        message[0] = 0X31; 
         message[1] = '\0';
     }
     
-    i2c_order(adaptateur_i2c, ADRESSE_ACTIONNEURS, message, 2);
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
 }
 
 
@@ -273,16 +273,16 @@ void InterfaceActionneurs::positionAimantDroit(ModeAimant mode)
 {
     unsigned char message[2];
     
-    if (mode == haut) {
-        message[0] = AIMANT_DROITE_HAUT;
+    if (mode == HAUT) {
+        message[0] = 0X22;
         message[1] = '\0';
     }
     else {
-        message[0] = AIMANT_DROITE_BAS; 
+        message[0] = 0X32; 
         message[1] = '\0';
     }
     
-    i2c_order(adaptateur_i2c, ADRESSE_ACTIONNEURS, message, 2);
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
 }
 
 
@@ -317,7 +317,8 @@ void ouvrir_adaptateur_i2c ()
 {
     int err;
     
-     if (err = i2c_open( &adaptateur_i2c ) != 0 ) {
-                fprintf(stderr, "Adaptateur pas branché : %s\n", linkm_error_msg(err));
-     }
+    if (err = i2c_open( &adaptateur_i2c ) != 0 ) {
+               fprintf(stderr, "Adaptateur pas branché : %s\n", linkm_error_msg(err));
+    }
+     
 }

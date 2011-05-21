@@ -21,8 +21,8 @@
 %rename(__sub__) Point::operator-;
 %rename(print) operator<<;
 
-typedef enum {positif,negatif} SensDeplacement;
-typedef enum{bas,haut} ModeAimant;
+enum SensDeplacement {POSITIF, NEGATIF};
+enum ModeAimant {BAS, HAUT};
 
 typedef struct usbDevice Adaptator;
 
