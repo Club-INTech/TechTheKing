@@ -2,6 +2,7 @@
 #include <avr/interrupt.h>
 #include "twi_slave.h"
 #include "actionneurs.h"
+#include "ax12.h"
 
 union TWI_statusReg_t
 {
@@ -29,7 +30,7 @@ unsigned char messageBuf[TWI_BUFFER_SIZE];
 
 void TWI_Init ( void )
 {
-    unsigned char TWI_slaveAddress = 0x10;
+    unsigned char TWI_slaveAddress = 0X10;
 
     TWI_Slave_Initialise( (unsigned char)((TWI_slaveAddress<<TWI_ADR_BITS) | (TRUE<<TWI_GEN_BIT) ));
 
@@ -41,15 +42,14 @@ void TWI_Init ( void )
 void TWI_Loop( void )
 {
     if ( ! TWI_Transceiver_Busy() ) {
-
+        
         if ( TWI_statusReg.RxDataInBuf ) {
-            TWI_Get_Data_From_Transceiver(messageBuf, 1);
+            TWI_Get_Data_From_Transceiver(messageBuf, 4);
             order = messageBuf[0];
             
-            printlnLong(order);
-
             // Ordre pour l'AX12 1
             if ( order == MASTER_CMD_AX1_GOTO ) {
+                
                 // Lecture de la consigne
                 int16_t cons;
                 int16_t temp;
@@ -69,6 +69,7 @@ void TWI_Loop( void )
 
             // Ordre pour l'AX12 2
             if ( order == MASTER_CMD_AX2_GOTO ) {
+                
                 // Lecture de la consigne
                 int16_t cons;
                 int16_t temp;
@@ -103,6 +104,7 @@ void TWI_Loop( void )
             }
 
             if ( order == MASTER_CMD_ASC1_GOTO ) {
+                
                 // Lecture de la consigne
                 int16_t cons;
                 int16_t temp;
@@ -124,6 +126,7 @@ void TWI_Loop( void )
             }
 
             if ( order == MASTER_CMD_ASC2_GOTO ) {
+                
                 // Lecture de la consigne
                 int16_t cons;
                 int16_t temp;
@@ -145,6 +148,7 @@ void TWI_Loop( void )
             }
 
             if ( order == MASTER_CMD_ASCB_GOTO) {
+                
                 // Lecture de la consigne
                 int16_t cons;
                 int16_t temp;
@@ -170,6 +174,9 @@ void TWI_Loop( void )
                 etat_asservissement = ASSERV_STOP;
             }
         }
+        
+        // Retour pour le debug
+        TWI_Start_Transceiver_With_Data(messageBuf, 3);
     }
 }
 

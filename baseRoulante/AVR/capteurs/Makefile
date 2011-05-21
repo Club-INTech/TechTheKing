@@ -8,16 +8,19 @@ all: main.hex
 main.hex: main.out
 	avr-objcopy -O ihex -R .eeprom main.out main.hex
 
-main.out: main.o serial.o ultrasons.o
-	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) main.o serial.o ultrasons.o -o main.out
+main.out: main.o serial.o ultrasons.o twi_slave.o
+	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) main.o serial.o ultrasons.o twi_slave.o -o main.out
 
 main.o: main.c
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) main.c -c
 
-ultrasons.o: ultrasons.c
+ultrasons.o: ultrasons.c ultrasons.h
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) ultrasons.c -c
 
-serial.o: serial.c
+serial.o: serial.c serial.h
+	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) serial.c -c
+
+twi_slave.o: twi_slave.c twi_slave.h
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) serial.c -c
 
 clean:
