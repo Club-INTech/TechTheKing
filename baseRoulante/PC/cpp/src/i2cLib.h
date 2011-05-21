@@ -1,6 +1,6 @@
 #ifdef __cplusplus
- extern "C" {
- #endif
+extern "C" {
+#endif
 
 #ifndef I2C_H
 #define I2C_H

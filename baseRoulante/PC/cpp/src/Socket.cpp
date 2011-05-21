@@ -2,6 +2,7 @@
 #include <netdb.h> 
 #include <sys/socket.h>
 #include <boost/thread.hpp>
+#include <Magick++.h>
 Socket* Socket::m_instance=NULL;
 
 Socket::Socket(int port){
@@ -51,9 +52,14 @@ void Socket::getPions(const char* address){
         std::cerr << "Could not connect\n" << std::endl;
     }
     onWrite(sockfd,"pions");
-    trouverObstacles(onRead(sockfd));
+    std::vector<Obstacle*> ranranru = trouverObstacles(onRead(sockfd));
     
-    close(m_sockfds_map[address]);
+    Magick::Image image( "img/table.png" );
+	for(std::vector<Obstacle *>::iterator it=ranranru.begin();it!=ranranru.end();it++){
+		(*it)->draw(&image);
+	}
+	image.display();
+    close(sockfd);
 }
 
 
@@ -114,7 +120,6 @@ std::vector<Obstacle*> Socket::trouverObstacles(std::string trame){
 		char currentCoord = 'x';
 		while(trame[i]!='f'){
 			switch(trame[++i]){
-				
 				case 'f':
 				case 'x':
 					if(currentCoord=='y'){
