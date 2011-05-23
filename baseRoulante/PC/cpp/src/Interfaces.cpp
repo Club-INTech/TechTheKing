@@ -117,10 +117,13 @@ void detectionSerieUsb(InterfaceAsservissement* asserv){
 
 
 void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
+	int xDepart = getXRobot();
+	int yDepart = getYRobot();
    #ifdef DEBUG			
-	cout<<"Tentative de déplacement du robot en : (x = " << arrivee.getX() << ", y = " << arrivee.getY() << ")" << endl;
+	cout<<"Tentative de déplacement du robot de" << "( " << xDepart << ", " << yDepart << ")"
+	 << "en : " << "(" << arrivee.getX() << ", " << arrivee.getY() << ")" << endl;
    #endif
-   Point depart(1000,1000);
+   Point depart(getXRobot(),getYRobot());
    vector<Point> listePointsTmp=m_pathfinding.getChemin(depart,arrivee);
    m_lastTrajectory=ListePoints::lissageBezier(listePointsTmp,nbPoints);
    m_lastListeConsignes=ListePoints::convertirEnConsignes(m_lastTrajectory,getDistanceRobot()); 
