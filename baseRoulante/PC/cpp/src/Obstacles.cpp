@@ -1,6 +1,9 @@
 #include "Obstacles.h"
 #include "Constantes.h"
 
+Couleur COULEUR_ROBOT=BLEU;
+Couleur COULEUR_ADVERSE=ROUGE;
+
 Obstacle::Obstacle(double x,double y,Couleur couleur){
     m_x=x;
     m_y=y;

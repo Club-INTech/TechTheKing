@@ -21,9 +21,27 @@
 %rename(__sub__) Point::operator-;
 %rename(print) operator<<;
 
+enum Couleur {ROUGE, BLEU, NEUTRE, NOIR};
+
+%inline %{
+extern int RAYON_DE_DETECTION;
+extern int EMPIETEMENT;
+extern Couleur COULEUR_ROBOT;
+extern Couleur COULEUR_ADVERSE;
+extern double CONVERSION_RADIAN_TIC;
+extern double CONVERSION_TIC_RADIAN;
+extern double CONVERSION_RADIAN_ANGLE;
+extern double CONVERSION_TIC_MM;
+extern double CONVERSION_MM_TIC;
+extern double TAILLE_ROBOT;
+extern double MARGE_SECURITE_PION;
+extern double TAILLE_PION;
+extern double TOLERANCE_X;
+extern double TOLERANCE_Y;
+%}
+
 enum SensDeplacement {POSITIF, NEGATIF};
 enum ModeAimant {BAS, HAUT};
-
 typedef struct usbDevice Adaptator;
 
 std::string exec(char* cmd);
@@ -36,9 +54,6 @@ namespace ListeObstacles {
 	void refreshPositions(const char nomFichier[]);
 	void initialisation();
 }
-
-
-
 
 class Point{
    public:
