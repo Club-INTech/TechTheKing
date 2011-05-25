@@ -106,10 +106,6 @@ void detectionSerieUsb(InterfaceAsservissement* asserv){
                     asserv->m_liaisonSerie.Open(stringTmp);
                     cout<<"Asservissement : ok"<<endl;
                     break;
-                case '1':
-                    asserv->m_liaisonSerie.Open(stringTmp);
-                    cout<<"Actionneurs : ok"<<endl;
-                    break;
             }
         }
     }
@@ -124,26 +120,31 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
 	 << "en : " << "(" << arrivee.getX() << ", " << arrivee.getY() << ")" << endl;
    #endif
    Point depart(xDepart,yDepart);
-   vector<Point> listePointsTmp=m_pathfinding.getChemin(depart,arrivee);
-   m_lastTrajectory=ListePoints::lissageBezier(listePointsTmp,nbPoints);
-   m_lastListeConsignes=ListePoints::convertirEnConsignes(m_lastTrajectory,getDistanceRobot()); 
-   ListeConsignes::transfertSerie(m_lastListeConsignes,m_liaisonSerie);
-   unsigned char result;
-   /*
-   while(result != 'f'){
-		m_liaisonSerie >> result;
-   }*/
+   vector<Point> listePointsTmp;
+   if(listePointsTmp=m_pathfinding.getChemin(depart,arrivee)){
+		m_lastTrajectory=ListePoints::lissageBezier(listePointsTmp,nbPoints);
+		m_lastListeConsignes=ListePoints::convertirEnConsignes(m_lastTrajectory,getDistanceRobot()); 
+		ListeConsignes::transfertSerie(m_lastListeConsignes,m_liaisonSerie);
+		unsigned char result;
+		while(result != 'f'){
+			m_liaisonSerie >> result;
+		}
+   }
+   else{
+		
+   }
+   
 }
 
 void InterfaceAsservissement::avancer(unsigned int distanceMm){
-	m_liaisonSerie<<"b1"+formaterInt(distanceMm*CONVERSION_MM_TIC)<<endl;
+	m_liaisonSerie<<"b1"+formaterInt(getDistanceRobot()+distanceMm*CONVERSION_MM_TIC)<<endl;
 }
 
 void InterfaceAsservissement::reculer(unsigned int distanceMm){
-	m_liaisonSerie<<"b0"+formaterInt(distanceMm*CONVERSION_MM_TIC)<<endl;
+	m_liaisonSerie<<"b0"+formaterInt(getDistanceRobot()+distanceMm*CONVERSION_MM_TIC)<<endl;
 }
 
-void InterfaceAsservissement::tourner(int angleRadian){
+void InterfaceAsservissement::tourner(double angleRadian){
 	if(angleRadian>0)
 		m_liaisonSerie<<"a0"+formaterInt(angleRadian*CONVERSION_RADIAN_TIC)<<endl;
 	else

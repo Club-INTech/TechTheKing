@@ -28,6 +28,10 @@
 #define PINDIR1 (1 << PORTD4)
 #define PINDIR2 (1 << PORTB0)
 
+enum Couleur{ROUGE,BLEU};
+
+extern Couleur CouleurRobot;
+
 class Manager {
 	public:
 		Manager();
@@ -82,6 +86,7 @@ class Manager {
 		uint16_t consigneActuelle;
 		TableauConsignes tableauConsignes;
 
+		void resetListeConsignes();
 };
 
 /*

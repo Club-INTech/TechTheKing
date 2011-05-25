@@ -207,7 +207,6 @@ void AStar::remonterChemin(){
 	 * on remonte le chemin dans les noeuds
 	 */
 	
-	
 	vector <Point> listePointsTmp; //liste de points temporaire (avec des points trop proches entre eux)
 	
 	Noeud noeudCourant=m_arrivee;
@@ -219,9 +218,6 @@ void AStar::remonterChemin(){
 	/*
 	 * On garde pas tous les noeuds pour alléger le futur calcul de la trajectoire de bézier, et pour réduire la courbure de la courbe . (le robot n'aime pas trop les grosses courbures)
 	 */
-	
-
-	
 	
 	unsigned int espacement = 3; //on garde un point sur trois
 	
@@ -238,7 +234,7 @@ void AStar::remonterChemin(){
  * C'est la boucle principale de recherche de AStar
  */
 
-void AStar::trouverChemin(){
+bool AStar::trouverChemin(){
 		m_chemin.clear();
 		Noeud* courant = new Noeud(m_depart.getX(),m_depart.getY(),0,m_depart.rayon(m_arrivee)); //initialisation du noeud courant..
 		m_listeOuverte.push_back(courant);
@@ -266,9 +262,14 @@ void AStar::trouverChemin(){
 				delete *it;
 			}
 				
+		}
+		if(m_chemin.empty())
+		{
+			return false;
 		}                                                                                
 		m_listeOuverte.clear();
 		m_listeFermee.clear();
+		return true;
 }
 
 /*
