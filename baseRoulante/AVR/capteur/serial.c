@@ -1,6 +1,6 @@
 #include "serial.h"
 
-volatile unsigned char lcd_val = 0;
+volatile unsigned char lcb_val = '0';
 
 /*
  * Partie réception de DATA
@@ -13,10 +13,10 @@ ISR(USART_RX_vect)
 	unsigned char c = UDR0;
 	
     if (c == 'Q') 
-        lcd_val = 'Q';
+        lcb_val = 'Q';
    
     else if (c == 'K')
-        lcd_val = 'K';
+        lcb_val = 'K';
 }
 
 inline void store_char(unsigned char c, struct ring_buffer *rx_buffer)

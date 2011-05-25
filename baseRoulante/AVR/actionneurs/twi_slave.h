@@ -10,6 +10,7 @@
 #define MASTER_CMD_ASC2_GOTO    0X42
 #define MASTER_CMD_ASCB_GOTO    0X4B
 #define MASTER_CMD_STOP         0XA0
+#define MASTER_CMD_RECALAGE     0XA1
 
 extern unsigned char messageBuf[];
 

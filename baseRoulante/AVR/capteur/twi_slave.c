@@ -48,7 +48,7 @@ void TWI_Init ( void )
 void TWI_Data( void )
 {
     if ( ! TWI_Transceiver_Busy() ) {
-
+        
         if ( TWI_statusReg.RxDataInBuf ) {
             TWI_Get_Data_From_Transceiver(messageBuf, 1);
         }
@@ -70,10 +70,8 @@ void TWI_Data( void )
         else if (messageBuf[0] == MASTER_CMD_ULTRA3) {
             messageBuf[0] = (uint8_t) ultra3;
             messageBuf[1] = (uint8_t) (ultra3 >> 8);
-            messageBuf[2] = (uint8_t) (ultra3 >> 16);
-            messageBuf[3] = (uint8_t) (ultra3 >> 24);
             
-            TWI_Start_Transceiver_With_Data(messageBuf, 4);
+            TWI_Start_Transceiver_With_Data(messageBuf, 2);
         }
         
 //         else if (messageBuf[0] == MASTER_CMD_SHARP1) {
@@ -95,7 +93,7 @@ void TWI_Data( void )
             
             TWI_Start_Transceiver_With_Data(messageBuf, 1);
             
-            lcb_val = 0;
+            lcb_val = '0';
         }
 
         else if (messageBuf[0] == MASTER_CMD_BRAS1) {
@@ -109,7 +107,6 @@ void TWI_Data( void )
             
             TWI_Start_Transceiver_With_Data(messageBuf, 1);
         }
-        
     }
 }
 
