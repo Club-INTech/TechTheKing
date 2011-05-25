@@ -13,6 +13,9 @@
 
 enum SensDeplacement {POSITIF, NEGATIF};
 enum ModeAimant {BAS, HAUT};
+enum Ultrason {UGAUCHE = 0X11, UDROITE = 0X12, UARRIERE = 0X13};
+enum FinCourse {FCGAUCHE = 0X41, FCDROITE = 0X42};
+enum PresencePion {OUI, NON};
 
 std::string exec(char* cmd);
 class InterfaceAsservissement;
@@ -55,6 +58,8 @@ private:
 class InterfaceCapteurs : public Thread {
 public:
     InterfaceCapteurs();
+    unsigned short DistanceUltrason( Ultrason val );
+    PresencePion EtatBras ( FinCourse val );
 private:
     inline void traiterAbsenceObstacle();
     inline void traiterPresenceObstacle();
@@ -77,11 +82,12 @@ class InterfaceActionneurs {
         void angleBrasDroit(unsigned char pourcentageAngle);
         void positionAimantGauche(ModeAimant mode);
         void positionAimantDroit(ModeAimant mode);
+        void recalage(void);
         
     private:
-        // D'un pourcentage à une valeur entre 0 et 15000
+        // D'un pourcentage à une valeur entre 0 et 900 à envoyer via i2c
         inline unsigned int pourcentageHauteurConversion(unsigned char pourcentage); 
-        // D'un pourcentage à une valeur entre 0 et 1023 à envoyer via i2c
+        // D'un pourcentage à une valeur adaptée entre 0 et 1023 à envoyer via i2c
         inline unsigned int pourcentageAngleConversion(unsigned char pourcentage);
         
 };

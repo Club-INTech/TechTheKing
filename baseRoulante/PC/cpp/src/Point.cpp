@@ -10,8 +10,23 @@ double angleBkp=0;
  */
 
 template<typename T>
+T abs(T smthg){
+	return (smthg>0)?smthg:-smthg;
+}
+
+template<typename T>
 T min(T a,T b,T c){
 	return min(a,min(b,c));
+}
+
+int minTab(double angles[3]){
+	int indMin=0;
+	for(int i=0;i<3;i++){
+		if(angles[i]<angles[indMin]){
+			indMin=i;
+		}
+	}
+	return indMin;
 }
 
 Point::Point(double x,double y){
@@ -112,9 +127,13 @@ double Point::angle(Point Point2){
 	REQUIRE(Point2.m_x>=0, "Abscisse du point avec lequel on détermine l'angle est positive");
 	REQUIRE(Point2.m_y>=0, "Ordonnée du point avec lequel on détermine l'angle est positive");
 	double dx=(Point2.m_x-m_x);
-	double dy=(Point2.m_y-m_y);
-	int res=atan2(dy,dx);
+	if(COULEUR_ROBOT==BLEU){
+		dx=-dx;
+	}
+	double dy=-(Point2.m_y-m_y);
+	double res=atan2(dy,dx);
 	//Remise entre 0 et 2PI
+	//TODO : Couleur du robot
 	return (res>0)?res:res+2*M_PI;
 }
 
@@ -169,11 +188,24 @@ vector<Consigne> ListePoints::convertirEnConsignes(vector<Point>& listePoints,in
 	Consigne nouvelleConsigne;
 		for(int i=0;i<longueur-1;i++){
 			angle=listePoints[i].angle(listePoints[i+1]);
-			angle=min(abs(angle-angleBkp),
-				  abs(angle+2*M_PI-angleBkp),
-				  abs(angle-2*M_PI-angleBkp));
+			//sensDeRotation = (angle>angleBkp)?1:-1; // 1 : sens horraire, -1 : sens antihorraire.
+			//if((angle-angleBkp)>=M_PI)
+				//angle+=sensDeRotation*2*M_PI;
+			double angles[3] = {abs(angle-angleBkp),
+								abs(angle+2*M_PI-angleBkp),
+								abs(angle-2*M_PI-angleBkp)};
+			switch(minTab(angles)){
+				case 0:
+					break;
+				case 1:
+					angle+=2*M_PI;
+					break;
+				case 2:
+					angle-=2*M_PI;
+			}			
 			//nombreTours=(angleBkp>=0)?floor(angleBkp/(2*M_PI)):1+floor(angleBkp/(2*M_PI));
 			//angle+=2*nombreTours*M_PI;
+			cout << angle << endl;
 			angleBkp=angle;
 			angle*=CONVERSION_RADIAN_TIC;
 			rayon+=listePoints[i].rayon(listePoints[i+1])*CONVERSION_MM_TIC; //conversion en ticks...

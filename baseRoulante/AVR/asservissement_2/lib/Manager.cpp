@@ -64,19 +64,19 @@ Manager::assPolaire(){
 	}
 	
 	
-	if(consigneActuelle == tableauConsignes.nbConsignes){
+	if(consigneActuelle ==tableauConsignes.nbConsignes){
 		//assRotation.setActivationKd(1);
-		assTranslation.setActivationKd(1);
+		//assTranslation.setActivationKd(1);
 	}
 	else
 	{
 		//assRotation.setActivationKd(0);
-		assTranslation.setActivationKd(0);
+		//assTranslation.setActivationKd(0);
 	}
 	
 	
-	if(ABS((tableauConsignes.listeConsignes[consigneActuelle-1]).distance - distance) < 50
-		|| ABS((tableauConsignes.listeConsignes[consigneActuelle-1]).angle - angle) < 10 ){
+	if(ABS((tableauConsignes.listeConsignes[consigneActuelle-1]).distance - distance) < 300
+		&& ABS((tableauConsignes.listeConsignes[consigneActuelle-1]).angle - angle) < 300 ){
 			if( consigneActuelle < tableauConsignes.nbConsignes){
 					consigneActuelle++;
 			}
@@ -143,8 +143,8 @@ Manager::Manager(){
 
 void Manager::init()
 {
-	x=2550;
-	y=500;
+	x=2760;
+	y=1940;
 	
 	distanceBkp=0;
 	angleBkp=0;

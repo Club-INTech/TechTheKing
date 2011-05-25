@@ -8,8 +8,8 @@ all: main.hex
 main.hex: main.out
 	avr-objcopy -O ihex -R .eeprom main.out main.hex
 
-main.out: main.o actionneurs.o serial.o ax12.o twi_slave.o
-	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) main.o actionneurs.o twi_slave.o ax12.o -o main.out
+main.out: main.o actionneurs.o serial.o twi_slave.o ax12.o
+	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) main.o twi_slave.o actionneurs.o ax12.o -o main.out
 
 main.o: main.c
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) main.c -c

@@ -9,7 +9,7 @@
  */
 
 #include "config.h"
-
+#include "Constantes.h"
 #include "Point.h"
 #ifdef DEBUG_GRAPHIQUE
 #include <Magick++.h>
@@ -19,20 +19,7 @@
 
 using namespace std;
 
-/*!
- * \enum Couleur
- * \brief les constantes des couleurs;
- */
-enum Couleur
-{
-    ROUGE, /*!< Le pion est au robot rouge. */
-    BLEU, /*!< Le pion est au robot bleu. */
-    NEUTRE, /*!< Le pion n'est à personne.*/
-    NOIR /*!<L'obstacle est une planche de bois*/
-};
 
-extern Couleur COULEUR_ROBOT;
-extern Couleur COULEUR_ADVERSE;
 
 /*!
  * \class Obstacle

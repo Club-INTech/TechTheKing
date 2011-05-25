@@ -117,10 +117,13 @@ void detectionSerieUsb(InterfaceAsservissement* asserv){
 
 
 void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
+	int xDepart = getXRobot();
+	int yDepart = getYRobot();
    #ifdef DEBUG			
-	cout<<"Tentative de déplacement du robot en : (x = " << arrivee.getX() << ", y = " << arrivee.getY() << ")" << endl;
+	cout<<"Tentative de déplacement du robot de" << "( " << xDepart << ", " << yDepart << ")"
+	 << "en : " << "(" << arrivee.getX() << ", " << arrivee.getY() << ")" << endl;
    #endif
-   Point depart(1000,1000);
+   Point depart(xDepart,yDepart);
    vector<Point> listePointsTmp=m_pathfinding.getChemin(depart,arrivee);
    m_lastTrajectory=ListePoints::lissageBezier(listePointsTmp,nbPoints);
    m_lastListeConsignes=ListePoints::convertirEnConsignes(m_lastTrajectory,getDistanceRobot()); 
@@ -142,9 +145,9 @@ void InterfaceAsservissement::reculer(unsigned int distanceMm){
 
 void InterfaceAsservissement::tourner(int angleRadian){
 	if(angleRadian>0)
-		m_liaisonSerie<<"b0"+formaterInt(angleRadian*CONVERSION_RADIAN_TIC)<<endl;
+		m_liaisonSerie<<"a0"+formaterInt(angleRadian*CONVERSION_RADIAN_TIC)<<endl;
 	else
-		m_liaisonSerie<<"b1"+formaterInt(angleRadian*CONVERSION_RADIAN_TIC)<<endl;
+		m_liaisonSerie<<"a1"+formaterInt(angleRadian*CONVERSION_RADIAN_TIC)<<endl;
 }
 
 InterfaceAsservissement::InterfaceAsservissement(int precision) : m_compteurImages(0), m_pathfinding(precision){
@@ -177,7 +180,6 @@ int InterfaceAsservissement::getXRobot()
 	int result;
 	m_liaisonSerie << "x" << endl ;
 	m_liaisonSerie >> result;
-	cout<< "x : " << result<<endl;
 	return result;
 }
 
@@ -186,7 +188,6 @@ int InterfaceAsservissement::getYRobot()
 	int result;
 	m_liaisonSerie << "y" << endl ;
 	m_liaisonSerie >> result;
-	cout<< "y : " << result<<endl;
 	return result;
 }
 
@@ -285,16 +286,25 @@ void InterfaceActionneurs::positionAimantDroit(ModeAimant mode)
     i2c_write(adaptateur_i2c, 0X10, message, 2);
 }
 
+void InterfaceActionneurs::recalage(void)
+{
+    unsigned char message[2];
+
+    message[0] = 0XA1;
+    message[1] = '\0';
+    
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
+}
 
 unsigned int InterfaceActionneurs::pourcentageHauteurConversion(unsigned char pourcentage)
 {
-    return (pourcentage*150);
+    return (pourcentage*90);
 }
 
 
 unsigned int InterfaceActionneurs::pourcentageAngleConversion(unsigned char pourcentage)
 {
-    return(pourcentage*10.23);
+    return(pourcentage*6+200);
 }
 
 
@@ -304,6 +314,11 @@ unsigned int InterfaceActionneurs::pourcentageAngleConversion(unsigned char pour
 /*********************************************************/
 
 
+
+/*********************************************************/
+/*   CAPTEURS                                            */
+/*********************************************************/
+
 void InterfaceCapteurs::thread(){
     while(1){
         //Tant que le capteur ne détecte pas d'obstacle
@@ -312,6 +327,56 @@ void InterfaceCapteurs::thread(){
     }   
 }
 
+unsigned short InterfaceCapteurs::DistanceUltrason( Ultrason val ) {
+    
+    unsigned char msg[3];
+    msg[0] = val;
+    
+    unsigned char rec[3];
+    
+    int err;
+
+    if( (err= i2c_write(adaptateur_i2c,0X20,msg,2)) != 0){
+        fprintf(stderr, "Error writing to the adapter: %s\n", linkm_error_msg(err));
+        exit(1);
+    }
+    if( (err= i2c_read(adaptateur_i2c,0X20,rec,2)) != 0){
+        fprintf(stderr, "Error reading from the adapter: %s\n", linkm_error_msg(err));
+        exit(1);
+    }
+    
+    unsigned short resu;
+    unsigned short temp;
+    
+    resu = rec[0];
+    temp = rec[1];
+    resu += (temp << 8);
+    
+    return resu;
+}
+
+PresencePion InterfaceCapteurs::EtatBras ( FinCourse val ) {
+    
+    unsigned char msg[2] = {val, '\0'};
+    unsigned char rec[1];
+    
+    int err;
+    
+    if( (err= i2c_write(adaptateur_i2c,0X20,msg,2)) != 0){
+        fprintf(stderr, "Error writing to the adapter: %s\n", linkm_error_msg(err));
+        exit(1);
+    }
+    if( (err= i2c_read(adaptateur_i2c,0X20,rec,1)) != 0){
+        fprintf(stderr, "Error reading from the adapter: %s\n", linkm_error_msg(err));
+        exit(1);
+    }
+    
+    return ((PresencePion) rec[0]);
+}
+
+/*********************************************************/
+/*  FIN CAPTEURS                                         */
+/*********************************************************/
 
 void ouvrir_adaptateur_i2c ()
 {
