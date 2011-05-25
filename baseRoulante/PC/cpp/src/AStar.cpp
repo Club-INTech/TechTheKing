@@ -6,14 +6,13 @@
  *
  * le périmetre dans lequel le robot se déplacera pour aller bouger un pion à l'adversaire...
  */
-#define RAYON_DE_DETECTION 350
+int RAYON_DE_DETECTION = 350;
 
 /*!
  * \def EMPIETEMENT
  * l'empietement du robot sur le pion adverse, lorsque celui ci n'est pas sur le chemin le plus court
  */
-#define EMPIETEMENT 100
-
+int EMPIETEMENT = 100 ;
 /*!
  * \class Noeud
  *

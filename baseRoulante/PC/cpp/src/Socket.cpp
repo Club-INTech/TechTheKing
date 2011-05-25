@@ -1,219 +1,149 @@
 #include "Socket.h"
-#include "config.h"
-#include <time.h>
-#include <list>
-
-
+#include <netdb.h> 
+#include <sys/socket.h>
+#include <boost/thread.hpp>
+#include <Magick++.h>
 Socket* Socket::m_instance=NULL;
 
-Socket::Socket(int port):Thread(), m_port(port),m_isOpened(false),m_isAccepted(false),m_isRequesting(false){
-   bzero(m_buffer,sizeof(m_buffer));
+Socket::Socket(int port){
 }
 
 Socket::~Socket(){
-    if(m_instance)
-      delete(m_instance);
-    onClose();
-}
-
-void Socket::request(){
     
-    cout<<m_isRequesting<<endl;
-    m_mutex.lock();
-    m_isRequesting = true;
-    m_mutex.unlock();
-    cout<<m_isRequesting<<endl;
-}
-void Socket::thread(){
-    
-   
-     while(1){
-
-        if((m_newsockfd=accept(m_sockfd,(struct sockaddr*)&m_cliAddr,&m_cliLen))<0){
-            std::cerr<<"Erreur lors de l'acceptation du socket"<<std::endl;
-            m_isOpened=false;
-            return;
-        }
-        else{
-            #ifdef DEBUG
-             cout<<"Socket acceptée"<<endl;
-             #endif
-        }   
-        while(!m_isRequesting){
-            usleep(100000);
-        }
-            onWrite('p');
-            bzero(m_buffer,sizeof(m_buffer));
-            onRead();
-            traitementReception();
-            m_mutex.lock();
-            m_isRequesting=false;
-            m_mutex.unlock();
-    }
-      
 }
 
-void Socket::traitementReception(){
-    switch(m_buffer[0]){
-          case 't':
-             onWrite('o');
-             break;
-          case 'e':
-             #ifdef DEBUG
-             cout<<"Fermeture du thread"<<endl;
-             #endif
-             break;
-          case 'd':
-             #ifdef DEBUG
-             cout<<"Réception d'une liste d'obstacle"<<endl;
-             #endif
-             m_mutex.lock();
-             std::list<Obstacle*> listeRecue = analyserListeObstacle();
-             if(listeRecue.empty()){
-                 #ifdef DEBUG
-                cout<<"Echec."<<endl;
-                #endif
-                break;
-             }
-             #ifdef DEBUG
-             cout<<"Ajout des obstacles reçus à la liste : "<<endl;
-             #endif
-             for(std::list<Obstacle*>::iterator it=listeRecue.begin();it!=listeRecue.end();it++){
-                #ifdef DEBUG
-                cout<< "( x : " << (*it)->getX() << " y : " << (*it)-> getY() << " ) ; " ;
-                #endif
-                listeObstacles.push_back(*it);
-             }
-             #ifdef DEBUG
-             cout<< endl;
-             #endif
-             m_mutex.unlock();
-             break;
-      }
-}
+
 Socket* Socket::Instance(int port){
     if(m_instance==NULL){
-         #ifdef DEBUG
-         cout<<"Création du socket"<<endl;
-         #endif
-         m_instance= new Socket(port);
+        m_instance= new Socket(port);
     }
     else{
-         #ifdef DEBUG
-         cout<<"Socket déjà crée : récupération de l'instance existante."<<endl;
-         #endif
+        cerr<<"Instance déjà créée. port : " << port << endl;
     }
     return m_instance;
 }
 
+void Socket::getPions(){
+	boost::thread_group group;
+	//group.create_thread(boost::bind(&Socket::getPions,this,"192.168.6.3"));
+	group.create_thread(boost::bind(&Socket::getPions,this,"192.168.6.2"));
+	//group.create_thread(boost::bind(&Socket::getPions,this,"192.168.6.4"));
+	group.join_all();
+}
+void Socket::getPions(const char* address){
+	int port = 42000;
+	int sockfd = getFd(address);
+	struct hostent *server;
+	struct sockaddr_in serv_addr;
+	int n;
+	server = gethostbyname(address);
+    if (server == NULL) {
+        std::cerr << "ERROR, no such host\n" << std::endl;
+        exit(0);
+    }
+    bzero((char *) &serv_addr, sizeof(serv_addr));
+    serv_addr.sin_family = AF_INET;
+    bcopy((char *)server->h_addr, 
+         (char *)&serv_addr.sin_addr.s_addr,
+         server->h_length);
+    serv_addr.sin_port = htons(port);
+   
+    if (connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0) {
+        std::cerr << "Could not connect\n" << std::endl;
+    }
+    onWrite(sockfd,"pions");
+    std::vector<Obstacle*> ranranru = trouverObstacles(onRead(sockfd));
+    
+    Magick::Image image( "img/table.png" );
+	for(std::vector<Obstacle *>::iterator it=ranranru.begin();it!=ranranru.end();it++){
+		(*it)->draw(&image);
+	}
+	image.display();
+    close(sockfd);
+}
+
+
 void Socket::onOpen(){
-   if(m_isOpened)
-      return;
-    #ifdef DEBUG
-    cout<<"Ouverture du Socket sur le port " << m_instance->m_port << endl;
-    #endif
-    if( (m_sockfd = socket(AF_INET, SOCK_STREAM, 0)) <0){
-        std::cerr<<"Erreur lors de l'ouverture du Socket"<<std::endl;
-        m_isOpened=false;
-    }
-    bzero((char*)&m_servAddr,sizeof(m_servAddr));
-    m_servAddr.sin_family=AF_INET;
-    m_servAddr.sin_addr.s_addr=INADDR_ANY;
-    m_servAddr.sin_port=htons(m_port);
-    if(bind(m_sockfd,(struct sockaddr*)&m_servAddr,sizeof(m_servAddr))<0){
-      std::cerr<<"Erreur lors du binding du socket"<<std::endl;
-      m_isOpened=false;
-      return;
-   }
-   #ifdef DEBUG
-   cout<<"Socket bindé"<<endl;
-   #endif
-   listen(m_sockfd,5);
-   m_cliLen = sizeof(m_cliAddr);
-   m_isOpened=true;
-   
+	int socketTmp;
+	if((socketTmp=socket(AF_INET,SOCK_STREAM,0))<0){
+		std::cerr << "Failed to create socket" << std::endl;
+	}else{
+		m_sockfds_map.insert(std::pair<const char* , int>("192.168.6.2",socketTmp));
+	}
+	if((socketTmp=socket(AF_INET,SOCK_STREAM,0))<0){
+		std::cerr << "Failed to create socket" << std::endl;
+	}else{
+		m_sockfds_map.insert(std::pair<const char* ,int>("192.168.6.3",socketTmp));
+	}
+	if((socketTmp=socket(AF_INET,SOCK_STREAM,0))<0){
+		std::cerr << "Failed to create socket" << std::endl;
+	}else{
+		m_sockfds_map.insert(std::pair<const char* ,int>("192.168.6.4",socketTmp));
+	}
+	
 }
 
-void Socket::onRead(){
-   #ifdef DEBUG
-    cout<<"Début de l'écoute ; "<< m_buffer <<endl;
-    #endif
-    if(read(m_newsockfd,m_buffer,sizeof(m_buffer)-1)<0){
-      std::cerr<<"Erreur lors de la lecture du socket"<<std::endl;
-      return;
-    }
-    #ifdef DEBUG
-    cout<<"Fin de l'écoute. Message lu :" << m_buffer << endl;
-    #endif
+std::string Socket::onRead(int sockfd){
+	char buffer[TAILLE_BUFFER];
+	if (read(sockfd,buffer,255) < 0) 
+         std::cerr << "ERROR reading from socket " << sockfd << std::endl;
+    cout << "Read : " << buffer << endl;
+    return std::string(buffer);
 }
 
-void Socket::onWrite(std::string msg){
-   const char* msgTmp = msg.c_str();
-   #ifdef DEBUG
-   cout<<"Début de l'écriture du message :" << msgTmp << endl;
-   #endif
-   if(write(m_newsockfd,msgTmp,sizeof(msgTmp))<0){
-      std::cerr<<"Erreur lors de l'écriture du message"<<std::endl;
-      return;
-   }
-   #ifdef DEBUG
-   cout<<"Message écrit." << endl;
-   #endif
-   
+void Socket::onWrite(int sockfd,std::string msg){
+	msg.push_back('\n');
+	char buffer[TAILLE_BUFFER];
+	bzero(buffer,TAILLE_BUFFER);
+	memcpy(buffer,msg.c_str(),msg.size());
+	if (write(sockfd,buffer,strlen(buffer)) < 0){
+         std::cerr << "ERROR writing to socket" <<  sockfd  << std::endl;
+	 }
 }
 
-void Socket::onWrite(char msg){
-   #ifdef DEBUG
-   cout<<"Début de l'écriture du message :" << msg << endl;
-   #endif
-   if(write(m_newsockfd,&msg,sizeof(msg))<0){
-      std::cerr<<"Erreur lors de l'écriture du message"<<std::endl;
-      return;
-   }
-   #ifdef DEBUG
-   cout<<"Message écrit." << endl;
-   #endif
+int Socket::getFd(const char* address){
+	boost::mutex::scoped_lock scoped_lock(m_mutex);
+	int result = m_sockfds_map[address];
+	return result;
 }
-
 void Socket::onClose(){
-    if(m_isOpened){
-        close(m_sockfd);
-        m_isOpened=false;
-    }
 }
 
-std::list<Obstacle*> Socket::analyserListeObstacle(){
-   std::list<Obstacle*> res;
-   std::string x,y;
-   int i=1;
-    char courant = m_buffer[i];
-    char coordCourante='x';
-    while(courant!='f'){
-      courant=m_buffer[++i];
-      if(courant=='x' || courant=='f'){
-         Obstacle* obstacleCourant = new CercleObstacle(atoi(x.c_str()),atoi(y.c_str()));
-         res.push_back(obstacleCourant);
-         coordCourante='x';
-      }
-      else if(courant=='y'){
-         coordCourante='y';
-      }
-      else if(courant<48 || courant>57){
-         cerr<<"Trame (liste des obstacles) invalide"<<endl;
-         return res;
-      }
-      else{
-         switch(coordCourante){
-            case 'x':
-               cout<<x<<endl;
-               x.push_back(courant);
-               break;
-            case 'y':
-               y.push_back(courant);
-               break;
-         }
-         cout<<coordCourante<<endl;
-      }
-   }
-    return res;
+std::vector<Obstacle*> Socket::trouverObstacles(std::string trame){
+	std::vector<Obstacle*> result;
+    std::string x,y;
+    if(trame[0]!='d'){
+		return result;
+	}
+	else{
+		int i=1;
+		char currentCoord = 'x';
+		while(trame[i]!='f'){
+			switch(trame[++i]){
+				case 'f':
+				case 'x':
+					if(currentCoord=='y'){
+						std::cout << "x = " << x << " y = " << y << std::endl;
+						result.push_back(new CercleObstacle(atoi(x.c_str()),atoi(y.c_str())));
+					}
+					x="";
+					y="";
+					currentCoord='x';
+					break;
+				case 'y':
+					currentCoord='y';
+					break;
+				default:
+					switch(currentCoord){
+						case 'x':
+							x.push_back(trame[i]);
+							break;
+						case 'y':
+							y.push_back(trame[i]);
+							break;
+					}
+			}
+		}
+		return result;
+	}
 }

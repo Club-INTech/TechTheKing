@@ -1,17 +1,17 @@
 #include "Thread.h"
 
-Thread::Thread():m_thread(NULL){
+Thread::Thread(){
 	
 }
 
 Thread::~Thread(){
-	m_thread->join();
+	m_thread.join();
 }
 
 void Thread::ouvrirThread(){
-	m_thread = new boost::thread(&Thread::thread,this);
+	m_thread = boost::thread(&Thread::thread,this);
 }
 
 void Thread::fermerThread(){
-	m_thread->interrupt();
+	m_thread.interrupt();
 }

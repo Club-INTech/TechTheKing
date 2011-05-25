@@ -1,6 +1,9 @@
 #include "Obstacles.h"
 #include "Constantes.h"
 
+Couleur COULEUR_ROBOT=BLEU;
+Couleur COULEUR_ADVERSE=ROUGE;
+
 Obstacle::Obstacle(double x,double y,Couleur couleur){
     m_x=x;
     m_y=y;
@@ -20,7 +23,7 @@ CercleObstacle::CercleObstacle(double x,double y,Couleur couleur) : Obstacle(x,y
 #ifdef DEBUG_GRAPHIQUE
 void CercleObstacle::draw(Magick::Image* image){
     image->fillColor("yellow");
-    image->draw(Magick::DrawableEllipse(m_x*900/3000,630-m_y*630/2100, m_rayon, m_rayon, 0, 360));
+    image->draw(Magick::DrawableEllipse(m_x*900/3000,630-m_y*630/2100, m_rayon*0.3, m_rayon*0.3, 0, 360));
 }
 #endif
 

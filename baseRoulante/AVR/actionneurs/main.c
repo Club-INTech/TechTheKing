@@ -1,7 +1,6 @@
 #include <util/delay.h>
 #include "actionneurs.h"
 #include "twi_slave.h"
-#include "serial.h"
 
 int main()
 {
@@ -10,7 +9,7 @@ int main()
     
     while(1)
     {
-        asservissement();
+        TWI_Loop();
     }
     
     return 0;

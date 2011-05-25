@@ -1,3 +1,7 @@
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifndef I2C_H
 #define I2C_H
 
@@ -35,6 +39,16 @@ enum {
     LINKM_CMD_I2CSCAN  = 4,      // i2c bus scan     (2 args: start,end)
     LINKM_CMD_I2CCONN  = 5,      // i2c connect/disc (1 args: 1/0)
     LINKM_CMD_I2CINIT  = 6,      // i2c init         (0 args: )
+
+    // linkm board commands
+    LINKM_CMD_VERSIONGET = 100,  // return linkm version
+    LINKM_CMD_STATLEDSET = 101,  // status LED set   (1 args: 1/0)
+    LINKM_CMD_STATLEDGET = 102,  // status LED get   (0 args)
+    LINKM_CMD_PLAYSET    = 103,  // set params of player state machine
+    LINKM_CMD_PLAYGET    = 104,  // get params of  player state machine
+    LINKM_CMD_EESAVE     = 105,  // save linkm state to EEPROM
+    LINKM_CMD_EELOAD     = 106,  // load linkm state from EEPROM
+    LINKM_CMD_GOBOOTLOAD = 107,  // trigger USB bootload
 };
 
 // Return values for linkm_command()
@@ -49,31 +63,16 @@ enum {
 
 typedef struct usbDevice Adaptator;
 
-char* linkm_error_msg(int errCode);
-void hexdump(const char* intro, uint8_t *buffer, int len);
-
-
-/*********************************************************/
-
-#define ADRESSE_ACTIONNEURS     0X10
-#define ADRESSE_CAPTEURS        0
-
-#define HAUTEUR_GAUCHE          0X41
-#define HAUTEUR_DROITE          0X42
-#define HAUTEUR_DEUX            0X4B
-#define ANGLE_GAUCHE            0X11
-#define ANGLE_DROITE            0X12
-#define AIMANT_GAUCHE_HAUT      0X21
-#define AIMANT_DROITE_HAUT       0X22
-#define AIMANT_GAUCHE_BAS       0X31
-#define AIMANT_DROITE_BAS        0X32
 
 int i2c_open(Adaptator** ad);
 void i2c_close(Adaptator* ad);
-int i2c_order(Adaptator* ad, unsigned char slave_addr, unsigned char msg_array[], unsigned int msg_size);
-int i2c_request(Adaptator* ad, unsigned char slave_address, unsigned char request, char* read_buffer, unsigned int read_size);
+int i2c_write(Adaptator* ad,unsigned char slaveAddr,unsigned char msg[], unsigned int size);
+int i2c_read(Adaptator* ad, unsigned char slaveAddr, char* read_buffer, unsigned int size);
+char* linkm_error_msg(int errCode);
+void hexdump(const char* intro, uint8_t *buffer, int len);
 
-/*********************************************************/
+#endif
 
-
+#ifdef __cplusplus
+}
 #endif

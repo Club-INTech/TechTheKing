@@ -2,6 +2,7 @@
 #include <avr/interrupt.h>
 #include "twi_slave.h"
 #include "actionneurs.h"
+#include "ax12.h"
 
 union TWI_statusReg_t
 {
@@ -29,7 +30,7 @@ unsigned char messageBuf[TWI_BUFFER_SIZE];
 
 void TWI_Init ( void )
 {
-    unsigned char TWI_slaveAddress = 0x10;
+    unsigned char TWI_slaveAddress = 0X10;
 
     TWI_Slave_Initialise( (unsigned char)((TWI_slaveAddress<<TWI_ADR_BITS) | (TRUE<<TWI_GEN_BIT) ));
 
@@ -41,31 +42,47 @@ void TWI_Init ( void )
 void TWI_Loop( void )
 {
     if ( ! TWI_Transceiver_Busy() ) {
-
+        
         if ( TWI_statusReg.RxDataInBuf ) {
-            TWI_Get_Data_From_Transceiver(messageBuf, 1);
+            TWI_Get_Data_From_Transceiver(messageBuf, 4);
             order = messageBuf[0];
-
+            
             // Ordre pour l'AX12 1
             if ( order == MASTER_CMD_AX1_GOTO ) {
+                
                 // Lecture de la consigne
                 int16_t cons;
                 int16_t temp;
                 cons = messageBuf[1];
                 temp = messageBuf[2];
                 cons += (temp << 8);
+                
+                // Ecretage de la consigne
+                if (cons > 1023)
+                    cons = 1023;
+                else if (cons < 512)
+                    cons = 512;
+                
                 // Envoi de l'ordre au servo
                 AX12GoTo (ID_AX1, cons);
             }
 
             // Ordre pour l'AX12 2
             if ( order == MASTER_CMD_AX2_GOTO ) {
+                
                 // Lecture de la consigne
                 int16_t cons;
                 int16_t temp;
                 cons = messageBuf[1];
                 temp = messageBuf[2];
                 cons += (temp << 8);
+                
+                // Ecretage de la consigne
+                if (cons > 1023)
+                    cons = 1023;
+                else if (cons < 512)
+                    cons = 512;
+                
                 // Envoi de l'ordre au servo
                 AX12GoTo (ID_AX2, cons);
             }
@@ -87,42 +104,79 @@ void TWI_Loop( void )
             }
 
             if ( order == MASTER_CMD_ASC1_GOTO ) {
+                
                 // Lecture de la consigne
                 int16_t cons;
                 int16_t temp;
                 cons = messageBuf[1];
                 temp = messageBuf[2];
                 cons += (temp << 8);
-                // Modification du PWM
+                
+                // Ecretage de la consigne
+                if (cons > 15000)
+                    cons = 15000;
+                else if (cons < 0)
+                    cons = 0;
+                
+                // Modification de la consigne
                 consigne1 = cons;
+                
+                // Activation de l'asservissement independant
+                etat_asservissement = ASSERV_INDEP;
             }
 
             if ( order == MASTER_CMD_ASC2_GOTO ) {
+                
                 // Lecture de la consigne
                 int16_t cons;
                 int16_t temp;
                 cons = messageBuf[1];
                 temp = messageBuf[2];
                 cons += (temp << 8);
-                // Modification du PWM
+                
+                // Ecretage de la consigne
+                if (cons > 15000)
+                    cons = 15000;
+                else if (cons < 0)
+                    cons = 0;
+                
+                // Modification de la consigne
                 consigne2 = cons;
+                
+                // Activation de l'asservissement independant
+                etat_asservissement = ASSERV_INDEP;
             }
 
             if ( order == MASTER_CMD_ASCB_GOTO) {
+                
+                // Lecture de la consigne
                 int16_t cons;
                 int16_t temp;
                 cons = messageBuf[1];
                 temp = messageBuf[2];
                 cons += (temp << 8);
+                
+                // Ecretage de la consigne
+                if (cons > 15000)
+                    cons = 15000;
+                else if (cons < 0)
+                    cons = 0;
+                
+                // Modification de la consigne
+                consigneb = cons;
+                
+                // Activation de l'asservissement synchronise
+                etat_asservissement = ASSERV_SYNCHRO;
             }
 
             if ( order == MASTER_CMD_STOP) {
-                consigne1 = ascenseur1;
-                consigne2 = ascenseur2;
-                SERVO1 = PWM_DOWN;
-                SERVO2 = PWM_DOWN;
+                // On desactive l'asservissement
+                etat_asservissement = ASSERV_STOP;
             }
         }
+        
+        // Retour pour le debug
+        TWI_Start_Transceiver_With_Data(messageBuf, 3);
     }
 }
 

@@ -26,13 +26,17 @@
  *    facteur proportionnel
  *    ID des AX12
  *    PWM pour les servos
+ *    Type d'asservissement
  */
-#define PWM_MAX     200
+#define PWM_MAX     128
 #define KP          1
-#define ID_AX1      0X10
-#define ID_AX2      0X20
-#define PWM_UP      64
-#define PWM_DOWN    0
+#define ID_AX1      2
+#define ID_AX2      1
+#define PWM_UP      18
+#define PWM_DOWN    26
+#define ASSERV_INDEP    0
+#define ASSERV_SYNCHRO  1
+#define ASSERV_STOP     -1
 
 /*
  *  Pins des codeurs
@@ -50,9 +54,10 @@
  */
 extern int16_t consigne1;
 extern int16_t consigne2;
+extern int16_t consigneb;
 extern volatile int16_t ascenseur1;
 extern volatile int16_t ascenseur2;
-extern uint8_t synchro;
+extern int8_t etat_asservissement;
 
 /*
  *  Fonctions d'asservissement
@@ -84,7 +89,7 @@ int adc_sense2 (void); // PH 2
  *    angle : consigne en angle
  *    vitesse : vitesse de rotation
  */
-// void AX12Init (uint8_t ID, uint16_t angleCW, uint16_t angleCCW, uint16_t vitesse);
-// void AX12GoTo (uint8_t ID, uint16_t angle);
+void AX12Init (uint8_t ID, uint16_t angleCW, uint16_t angleCCW, uint16_t vitesse);
+void AX12GoTo (uint8_t ID, uint16_t angle);
 
 #endif

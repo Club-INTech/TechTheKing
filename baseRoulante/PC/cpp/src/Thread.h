@@ -13,7 +13,7 @@ class Thread{
       Thread();
       virtual void thread()=0;
    protected:
-      boost::thread* m_thread;
+      boost::thread m_thread;
       boost::mutex m_mutex;
 };
 

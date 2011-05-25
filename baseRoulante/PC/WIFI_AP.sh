@@ -3,7 +3,7 @@
 # Configuration du point d'accès
 
 #Infos générales
-if [ $? != 0 ]
+if [ $1 != 0 ]
 then
 INTERFACE=$1
 else

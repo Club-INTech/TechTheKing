@@ -11,8 +11,8 @@
 #include "Thread.h"
 #include "config.h"
 
-typedef enum{positif,negatif}SensDeplacement;
-typedef enum{bas,haut}ModeAimant;
+enum SensDeplacement {POSITIF, NEGATIF};
+enum ModeAimant {BAS, HAUT};
 
 std::string exec(char* cmd);
 class InterfaceAsservissement;
@@ -79,12 +79,13 @@ class InterfaceActionneurs {
         void positionAimantDroit(ModeAimant mode);
         
     private:
-        // D'un pourcentage à une valeur entre 0 et ?
+        // D'un pourcentage à une valeur entre 0 et 15000
         inline unsigned int pourcentageHauteurConversion(unsigned char pourcentage); 
         // D'un pourcentage à une valeur entre 0 et 1023 à envoyer via i2c
-        inline unsigned int pourcentageAngleConversion(unsigned char pourcentage); 
-        template <class T>  std::stack<unsigned char> decToBin(T dec);
+        inline unsigned int pourcentageAngleConversion(unsigned char pourcentage);
         
 };
+
+void ouvrir_adaptateur_i2c ();
 
 #endif

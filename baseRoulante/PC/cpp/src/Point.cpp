@@ -1,9 +1,18 @@
 #include "Point.h"
 #include "Constantes.h"
+#include "Util.hpp"
+
+int nombreTours = 0;
+double angleBkp=0;
 
 /*
  * constructeur
  */
+
+template<typename T>
+T min(T a,T b,T c){
+	return min(a,min(b,c));
+}
 
 Point::Point(double x,double y){
 	m_x=x;
@@ -104,14 +113,10 @@ double Point::angle(Point Point2){
 	REQUIRE(Point2.m_y>=0, "Ordonnée du point avec lequel on détermine l'angle est positive");
 	double dx=(Point2.m_x-m_x);
 	double dy=(Point2.m_y-m_y);
-	if(dx!=0){
-		return atan2(dx,dy)+M_PI_2;
-	}
-	else{
-		//TODO !!!!!!!!!!!!!!!!!!!!!!
-		//CHANGEMENT DE COULEUR DU ROBOT !!!!!!!!!!!!!!
-		return (dy>0)?-M_PI_2:M_PI_2;
-	}
+	int res=atan2(dy,dx);
+	//Remise entre 0 et 2PI
+	//TODO : Couleur du robot
+	return (res>0)?res:res+2*M_PI;
 }
 
 
@@ -161,23 +166,18 @@ vector<Consigne> ListePoints::convertirEnConsignes(vector<Point>& listePoints,in
 	int longueur=listePoints.size();
 	double rayon=dephasageRayon;
 	double angle=0;
-	double angleBkp=0; //nécéssaire pour les modulos
-
 	int sensDeRotation;
 	Consigne nouvelleConsigne;
-	
-		/*si la liste de points reçue est nulle, une exception est générée*/
-// 	try{
 		for(int i=0;i<longueur-1;i++){
-			
-			
-			/*
-			* mise à jour des paramètres de la consigne
-			*/
 			angle=listePoints[i].angle(listePoints[i+1]);
 			//sensDeRotation = (angle>angleBkp)?1:-1; // 1 : sens horraire, -1 : sens antihorraire.
 			//if((angle-angleBkp)>=M_PI)
 				//angle+=sensDeRotation*2*M_PI;
+			angle=min(abs(angle-angleBkp),
+				  abs(angle+2*M_PI-angleBkp),
+				  abs(angle-2*M_PI-angleBkp));
+			//nombreTours=(angleBkp>=0)?floor(angleBkp/(2*M_PI)):1+floor(angleBkp/(2*M_PI));
+			//angle+=2*nombreTours*M_PI;
 			angleBkp=angle;
 			angle*=CONVERSION_RADIAN_TIC;
 			rayon+=listePoints[i].rayon(listePoints[i+1])*CONVERSION_MM_TIC; //conversion en ticks...
@@ -185,7 +185,6 @@ vector<Consigne> ListePoints::convertirEnConsignes(vector<Point>& listePoints,in
 			nouvelleConsigne.setAngle(floor(angle+0.5));
 			resultat.push_back(nouvelleConsigne);
 		}
-	//}
 	return resultat;
 }
 
