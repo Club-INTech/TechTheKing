@@ -48,8 +48,6 @@ void TWI_Init ( void )
 void TWI_Data( void )
 {
     if ( ! TWI_Transceiver_Busy() ) {
-
-        volatile uint8_t messageBuf[0];
         
         if ( TWI_statusReg.RxDataInBuf ) {
             TWI_Get_Data_From_Transceiver(messageBuf, 1);
