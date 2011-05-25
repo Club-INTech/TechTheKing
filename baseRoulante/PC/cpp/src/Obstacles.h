@@ -159,6 +159,14 @@ class RectangleObstacle : public Obstacle{
         int m_demiCoteY;
 };
 
+class RobotObstacle : public CercleObstacle{
+	public:	
+		static RobotObstacle* Instance();
+		void setCoords(int x,int y);
+	private:
+		RobotObstacle();
+		static RobotObstacle* m_instance;
+}
 extern std::vector <Obstacle*> listeObstacles ; /*!< La liste d'obstacles dans la mémoire du robot*/
 
 /*!
@@ -200,6 +208,9 @@ void refreshPositions(const char nomFichier[]);
  * 
  */
 void initialisation();
+
+void addRobotAdverse();
+
 }
 
 #endif
