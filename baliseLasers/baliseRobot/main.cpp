@@ -74,6 +74,7 @@ int main() {
 
 	//démarrage : 
 	while(42) {
+		lasers_start();
 
 		/**
 		if (flag1==0) {
@@ -192,8 +193,8 @@ void commuter ( uint8_t pas_commuter[4] ) {
  * fonction d'initialisation du pwm du pont en H. 
  */
 void pwm_init() {
-	sbi(DDRB,PORTD5);	//définie la sortie A du timer0
-	sbi(DDRB,PORTD6);	//définie la sortie B du timer0
+	sbi(ddrMotPWM1,pinMotPWM1);	//définie la sortie A du timer0
+	sbi(ddrMotPWM2,pinMotPWM2);	//définie la sortie B du timer0
 	/*positionner le mode pwm*/
 	sbi(TCCR0A,WGM00);	//
 	sbi(TCCR0A,WGM01);	//fast-pwm
@@ -210,8 +211,8 @@ void pwm_init() {
 	cbi(TCCR0B,CS02);	//
 	sbi(TCCR0B,CS01);	//prescaler à 8, soit 9,76kHz (clock à 20MHz)
 	cbi(TCCR0B,CS00);	//
-	OCR0A=128;
-	OCR0B=128;
+	pwmMot1=128;
+	pwmMot2=128;
 	return ;
 }
 
