@@ -11,9 +11,12 @@ void temps_init() {
 }
 
 uint32_t micros() {
+	/** Allègement de la fonction.
 	uint32_t microseconds = 0;
 	microseconds = (cnt_ovf_timer1*65536+TCNT1H*256+TCNT1L)/(F_CPU/1000000);
-	return microseconds;
+	return microseconds;*/
+	uint8_t f_CPU_MHz = F_CPU/1000000;
+	return (cnt_ovf_timer1*65536/f_CPU_MHz+(TCNT1H*256+TCNT1L)/f_CPU_MHz);
 }
 
 ISR(TIMER1_OVF_vect) {

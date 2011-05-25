@@ -66,6 +66,7 @@ extern int8_t etat_asservissement;
  */
 void asservissement (void);
 void asservissement_synchro (void);
+void recalage (void);
 
 /*
  *  Initialisations

@@ -1,3 +1,5 @@
+#include <util/delay.h>
+
 #include "actionneurs.h"
 #include "ax12.h"
 
@@ -192,4 +194,19 @@ ISR (PCINT1_vect)
       else
           ascenseur1++;
     }
+}
+
+void recalage (void)
+{
+    // Tres sale, a ameliorer
+    etat_asservissement = ASSERV_INDEP;
+    PORTD &= ~DIR2;
+    PORTD |= DIR1;
+    MOTEUR1 = PWM_MAX1-50;
+    MOTEUR2 = PWM_MAX2-50;
+    _delay_ms(2500);
+    ascenseur1 = 0;
+    ascenseur2 = 0;
+    consigne1 = 0;
+    consigne2 = 0;
 }
