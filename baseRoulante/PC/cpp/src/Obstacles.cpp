@@ -12,7 +12,7 @@ Couleur Obstacle::couleurPlusProche() {
     return NEUTRE;
 }
 
-CercleObstacle::CercleObstacle(double x,double y,Couleur couleur,int rayon=TAILLE_PION) : Obstacle(x,y,couleur),m_rayon(rayon)
+CercleObstacle::CercleObstacle(double x,double y,Couleur couleur,int rayon) : Obstacle(x,y,couleur),m_rayon(rayon)
 {
 }
 
