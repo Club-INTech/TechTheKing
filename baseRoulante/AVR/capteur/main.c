@@ -5,17 +5,13 @@
 
 int main()
 {
-    TWI_Init();
-    
+    uart_init();
     
     while(1) {
-
-       _delay_ms(100);
-       
-       ultra1 = ping(PIN_ULTRASON_1);
-       ultra2 = ping(PIN_ULTRASON_2);
-       ultra3 = ping(PIN_ULTRASON_3);
-       
+        _delay_ms(100);
+        ultra1 = ping(PIN_ULTRASON_1);
+        ultra2 = ping(PIN_ULTRASON_2);
+        ultra3 = ping(PIN_ULTRASON_3);
     }
 
     return 0;
