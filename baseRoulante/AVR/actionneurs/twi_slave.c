@@ -60,10 +60,10 @@ void TWI_Loop( void )
                 cons += (temp << 8);
                 
                 // Ecretage de la consigne
-                if (cons > 1023)
-                    cons = 1023;
-                else if (cons < 512)
-                    cons = 512;
+                if (cons > 900)
+                    cons = 900;
+                else if (cons < 100)
+                    cons = 100;
                 
                 // Envoi de l'ordre au servo
                 AX12GoTo (ID_AX1, cons);
@@ -80,10 +80,10 @@ void TWI_Loop( void )
                 cons += (temp << 8);
                 
                 // Ecretage de la consigne
-                if (cons > 1023)
-                    cons = 1023;
-                else if (cons < 512)
-                    cons = 512;
+                if (cons > 900)
+                    cons = 900;
+                else if (cons < 100)
+                    cons = 100;
                 
                 // Envoi de l'ordre au servo
                 AX12GoTo (ID_AX2, cons);
