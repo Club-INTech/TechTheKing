@@ -97,7 +97,7 @@ int i2c_write(Adaptator* ad, unsigned char slaveAddr, unsigned char msg[], unsig
 	return 0;
 }
 
-int i2c_read(Adaptator* ad, unsigned char slaveAddr, char* read_buffer, unsigned int size){
+int i2c_read(Adaptator* ad, unsigned char slaveAddr, unsigned char* read_buffer, unsigned int size){
     //printf("addr %d: reading %d bytes: ",slaveAddr,size);
     int err;
     char write_buffer[] = {slaveAddr};

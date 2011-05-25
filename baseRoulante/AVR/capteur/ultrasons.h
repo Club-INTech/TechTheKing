@@ -1,3 +1,6 @@
+#ifndef ULTRASONS_H
+#define ULTRASONS_H
+
 #include <avr/io.h>
 #include <stdint.h>
 
@@ -26,3 +29,5 @@ uint16_t ping(uint8_t pin);
 extern volatile uint16_t ultra1;
 extern volatile uint16_t ultra2;
 extern volatile uint16_t ultra3;
+
+#endif

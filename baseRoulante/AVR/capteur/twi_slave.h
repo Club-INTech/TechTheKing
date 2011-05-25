@@ -9,6 +9,8 @@
 #define MASTER_CMD_SHARP1    0X21
 #define MASTER_CMD_SHARP2    0X22
 #define MASTER_CMD_LCB       0X30
+#define MASTER_CMD_BRAS1     0X41
+#define MASTER_CMD_BRAS2     0X42
 
 extern unsigned char messageBuf[];
 

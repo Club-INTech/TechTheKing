@@ -42,6 +42,8 @@ extern double TOLERANCE_Y;
 
 enum SensDeplacement {POSITIF, NEGATIF};
 enum ModeAimant {BAS, HAUT};
+enum FinCourse {FCGAUCHE = 0X41, FCDROITE = 0X42};
+enum PresencePion {OUI, NON};
 typedef struct usbDevice Adaptator;
 
 std::string exec(char* cmd);
@@ -122,6 +124,7 @@ private:
 };
 class InterfaceCapteurs : public Thread{
 public:
+    PresencePion EtatBras ( FinCourse val );
     InterfaceCapteurs();
 };
 
@@ -136,6 +139,7 @@ public:
     void angleBrasDroit(unsigned char pourcentageAngle);
     void positionAimantGauche(ModeAimant mode);
     void positionAimantDroit(ModeAimant mode);
+    void recalage(void);
 
 };
 

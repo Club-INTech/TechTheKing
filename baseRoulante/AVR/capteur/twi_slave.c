@@ -2,6 +2,8 @@
 #include <avr/interrupt.h>
 
 #include "ultrasons.h"
+#include "fin_course.h"
+#include "serial.h"
 
 #include "twi_slave.h"
 
@@ -65,15 +67,15 @@ void TWI_Data( void )
             TWI_Start_Transceiver_With_Data(messageBuf, 2);
         }
         
-//         else if (messageBuf[0] == MASTER_CMD_ULTRA3) {
-//             messageBuf[0] = (uint8_t) ultra3;
-//             messageBuf[1] = (uint8_t) (ultra3 >> 8);
-//             messageBuf[2] = (uint8_t) (ultra3 >> 16);
-//             messageBuf[3] = (uint8_t) (ultra3 >> 24);
-//             
-//             TWI_Start_Transceiver_With_Data(messageBuf, 4);
-//         }
-//         
+        else if (messageBuf[0] == MASTER_CMD_ULTRA3) {
+            messageBuf[0] = (uint8_t) ultra3;
+            messageBuf[1] = (uint8_t) (ultra3 >> 8);
+            messageBuf[2] = (uint8_t) (ultra3 >> 16);
+            messageBuf[3] = (uint8_t) (ultra3 >> 24);
+            
+            TWI_Start_Transceiver_With_Data(messageBuf, 4);
+        }
+        
 //         else if (messageBuf[0] == MASTER_CMD_SHARP1) {
 //             messageBuf[0] = (uint8_t) sharp1;
 //             messageBuf[1] = (uint8_t) (sharp1 >> 8);
@@ -87,12 +89,27 @@ void TWI_Data( void )
 //             
 //             TWI_Start_Transceiver_With_Data(messageBuf, 2);
 //         }
-//         
-//         else if (messageBuf[0] == MASTER_CMD_LCB) {
-//             messageBuf[0] = lcb_val;
-//             
-//             TWI_Start_Transceiver_With_Data(messageBuf, 1);
-//         }
+        
+        else if (messageBuf[0] == MASTER_CMD_LCB) {
+            messageBuf[0] = lcb_val;
+            
+            TWI_Start_Transceiver_With_Data(messageBuf, 1);
+            
+            lcb_val = 0;
+        }
+
+        else if (messageBuf[0] == MASTER_CMD_BRAS1) {
+            messageBuf[0] = etat_bras (PIN_FINCOURSE_1);
+            
+            TWI_Start_Transceiver_With_Data(messageBuf, 1);
+        }
+        
+        else if (messageBuf[0] == MASTER_CMD_BRAS2) {
+            messageBuf[0] = etat_bras (PIN_FINCOURSE_2);
+            
+            TWI_Start_Transceiver_With_Data(messageBuf, 1);
+        }
+        
     }
 }
 
