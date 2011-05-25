@@ -13,7 +13,9 @@
 
 enum SensDeplacement {POSITIF, NEGATIF};
 enum ModeAimant {BAS, HAUT};
-enum Ultrason {GAUCHE = 0X11, DROITE = 0X12, ARRIERE = 0X13};
+enum Ultrason {UGAUCHE = 0X11, UDROITE = 0X12, UARRIERE = 0X13};
+enum FinCourse {FCGAUCHE = 0X41, FCDROITE = 0X42};
+enum PresencePion {OUI, NON};
 
 std::string exec(char* cmd);
 class InterfaceAsservissement;
@@ -57,6 +59,7 @@ class InterfaceCapteurs : public Thread {
 public:
     InterfaceCapteurs();
     unsigned short DistanceUltrason( Ultrason val );
+    PresencePion EtatBras ( FinCourse val );
 private:
     inline void traiterAbsenceObstacle();
     inline void traiterPresenceObstacle();

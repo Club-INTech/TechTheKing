@@ -14,6 +14,6 @@
  *  Fonction pour obtenir l'etat d'un capteur fin de course
  *    Prend la pin du capteur en argument
  */
-int8_t etat_bras(uint8_t pin);
+uint8_t etat_bras(uint8_t pin);
 
 #endif
