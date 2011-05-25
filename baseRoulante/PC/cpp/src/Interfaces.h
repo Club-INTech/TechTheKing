@@ -77,11 +77,12 @@ class InterfaceActionneurs {
         void angleBrasDroit(unsigned char pourcentageAngle);
         void positionAimantGauche(ModeAimant mode);
         void positionAimantDroit(ModeAimant mode);
+        void recalage(void);
         
     private:
-        // D'un pourcentage à une valeur entre 0 et 15000
+        // D'un pourcentage à une valeur entre 0 et 900 à envoyer via i2c
         inline unsigned int pourcentageHauteurConversion(unsigned char pourcentage); 
-        // D'un pourcentage à une valeur entre 0 et 1023 à envoyer via i2c
+        // D'un pourcentage à une valeur adaptée entre 0 et 1023 à envoyer via i2c
         inline unsigned int pourcentageAngleConversion(unsigned char pourcentage);
         
 };

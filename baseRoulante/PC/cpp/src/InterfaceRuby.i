@@ -136,6 +136,7 @@ public:
     void angleBrasDroit(unsigned char pourcentageAngle);
     void positionAimantGauche(ModeAimant mode);
     void positionAimantDroit(ModeAimant mode);
+    void recalage(void);
 
 };
 
