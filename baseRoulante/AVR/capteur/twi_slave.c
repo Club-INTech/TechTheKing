@@ -49,28 +49,27 @@ void TWI_Data( void )
 {
     if ( ! TWI_Transceiver_Busy() ) {
 
-        uint8_t order;
+        volatile uint8_t messageBuf[0];
         
         if ( TWI_statusReg.RxDataInBuf ) {
             TWI_Get_Data_From_Transceiver(messageBuf, 1);
-            order = messageBuf[0];
         }
         
-        if (order == MASTER_CMD_ULTRA1) {
+        if (messageBuf[0] == MASTER_CMD_ULTRA1) {
             messageBuf[0] = (uint8_t) ultra1;
             messageBuf[1] = (uint8_t) (ultra1 >> 8);
         
             TWI_Start_Transceiver_With_Data(messageBuf, 2);
         }
         
-        else if (order == MASTER_CMD_ULTRA2) {
+        else if (messageBuf[0] == MASTER_CMD_ULTRA2) {
             messageBuf[0] = (uint8_t) ultra2;
             messageBuf[1] = (uint8_t) (ultra2 >> 8);
             
             TWI_Start_Transceiver_With_Data(messageBuf, 2);
         }
         
-        else if (order == MASTER_CMD_ULTRA3) {
+        else if (messageBuf[0] == MASTER_CMD_ULTRA3) {
             messageBuf[0] = (uint8_t) ultra3;
             messageBuf[1] = (uint8_t) (ultra3 >> 8);
             
@@ -91,7 +90,7 @@ void TWI_Data( void )
 //             TWI_Start_Transceiver_With_Data(messageBuf, 2);
 //         }
         
-        else if (order == MASTER_CMD_LCB) {
+        else if (messageBuf[0] == MASTER_CMD_LCB) {
             messageBuf[0] = lcb_val;
             
             TWI_Start_Transceiver_With_Data(messageBuf, 1);
@@ -99,13 +98,13 @@ void TWI_Data( void )
             lcb_val = '0';
         }
 
-        else if (order == MASTER_CMD_BRAS1) {
+        else if (messageBuf[0] == MASTER_CMD_BRAS1) {
             messageBuf[0] = etat_bras (PIN_FINCOURSE_1);
             
             TWI_Start_Transceiver_With_Data(messageBuf, 1);
         }
         
-        else if (order == MASTER_CMD_BRAS2) {
+        else if (messageBuf[0] == MASTER_CMD_BRAS2) {
             messageBuf[0] = etat_bras (PIN_FINCOURSE_2);
             
             TWI_Start_Transceiver_With_Data(messageBuf, 1);
