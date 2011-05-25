@@ -1,5 +1,6 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <util/delay.h>
 #include "twi_slave.h"
 #include "actionneurs.h"
 #include "ax12.h"
@@ -46,8 +47,10 @@ void TWI_Loop( void )
         if ( TWI_statusReg.RxDataInBuf ) {
             TWI_Get_Data_From_Transceiver(messageBuf, 4);
             
+            uint8_t order = messageBuf[0];
+            
             // Ordre pour l'AX12 1
-            if ( messageBuf[0] == MASTER_CMD_AX1_GOTO ) {
+            if ( order == MASTER_CMD_AX1_GOTO ) {
                 
                 // Lecture de la consigne
                 int16_t cons;
@@ -67,7 +70,7 @@ void TWI_Loop( void )
             }
 
             // Ordre pour l'AX12 2
-            if ( messageBuf[0] == MASTER_CMD_AX2_GOTO ) {
+            if ( order == MASTER_CMD_AX2_GOTO ) {
                 
                 // Lecture de la consigne
                 int16_t cons;
@@ -86,23 +89,23 @@ void TWI_Loop( void )
                 AX12GoTo (ID_AX2, cons);
             }
 
-            if ( messageBuf[0] == MASTER_CMD_SERVO1_UP ) {
+            if ( order == MASTER_CMD_SERVO1_UP ) {
                 SERVO1 = PWM_UP;
             }
 
-            if ( messageBuf[0] == MASTER_CMD_SERVO2_UP ) {
+            if ( order == MASTER_CMD_SERVO2_UP ) {
                 SERVO2 = PWM_UP;
             }
 
-            if ( messageBuf[0] == MASTER_CMD_SERVO1_DOWN ) {
+            if ( order == MASTER_CMD_SERVO1_DOWN ) {
                 SERVO1 = PWM_DOWN;
             }
 
-            if ( messageBuf[0] == MASTER_CMD_SERVO2_DOWN ) {
+            if ( order == MASTER_CMD_SERVO2_DOWN ) {
                 SERVO2 = PWM_DOWN;
             }
 
-            if ( messageBuf[0] == MASTER_CMD_ASC1_GOTO ) {
+            if ( order == MASTER_CMD_ASC1_GOTO ) {
                 
                 // Lecture de la consigne
                 int16_t cons;
@@ -124,7 +127,7 @@ void TWI_Loop( void )
                 etat_asservissement = ASSERV_INDEP;
             }
 
-            if ( messageBuf[0] == MASTER_CMD_ASC2_GOTO ) {
+            if ( order == MASTER_CMD_ASC2_GOTO ) {
                 
                 // Lecture de la consigne
                 int16_t cons;
@@ -146,7 +149,7 @@ void TWI_Loop( void )
                 etat_asservissement = ASSERV_INDEP;
             }
 
-            if ( messageBuf[0] == MASTER_CMD_ASCB_GOTO) {
+            if ( order == MASTER_CMD_ASCB_GOTO) {
                 
                 // Lecture de la consigne
                 int16_t cons;
@@ -168,14 +171,19 @@ void TWI_Loop( void )
                 etat_asservissement = ASSERV_SYNCHRO;
             }
 
-            if ( messageBuf[0] == MASTER_CMD_STOP) {
+            if ( order == MASTER_CMD_STOP ) {
                 // On desactive l'asservissement
                 etat_asservissement = ASSERV_STOP;
             }
+            
+            if ( order == MASTER_CMD_RECALAGE ) {
+                recalage();
+            }   
+                
         }
         
         // Retour pour le debug
-        TWI_Start_Transceiver_With_Data(messageBuf, 3);
+        // TWI_Start_Transceiver_With_Data(messageBuf, 3);
     }
 }
 
