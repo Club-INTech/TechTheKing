@@ -27,9 +27,9 @@ void Consigne::transfertSerie(SerialStream& interfaceDeTransfert){
 	else
 		interfaceDeTransfert.write(("g0" + formaterInt(-m_rayon)).c_str(),9);
 	if(m_angle>=0)
-		interfaceDeTransfert.write(("q0" + formaterInt(m_angle)).c_str(),9);
+		interfaceDeTransfert.write(("q1" + formaterInt(m_angle)).c_str(),9);
 	else
-		interfaceDeTransfert.write(("q1" + formaterInt(-m_angle)).c_str(),9);
+		interfaceDeTransfert.write(("q0" + formaterInt(-m_angle)).c_str(),9);
 }
 
 void Consigne::print()const{
