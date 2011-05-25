@@ -101,7 +101,7 @@ class CercleObstacle : public Obstacle{
     
     public:
         
-        CercleObstacle(double x,double y,Couleur m_couleur=NEUTRE);
+        CercleObstacle(double x,double y,Couleur couleur=NEUTRE,int rayon=TAILLE_ROBOT_ADVERSE);
 
         
 #ifdef DEBUG_GRAPHIQUE
@@ -146,6 +146,15 @@ class RectangleObstacle : public Obstacle{
         int m_demiCoteY;
 };
 
+class RobotAdverse : public CercleObstacle{
+	public:	
+		static RobotAdverse* Instance();
+		void setCoords(int x,int y);
+	private:
+		RobotAdverse();
+		static RobotAdverse* m_instance;
+};
+
 extern std::vector <Obstacle*> listeObstacles ; /*!< La liste d'obstacles dans la mémoire du robot*/
 
 /*!
@@ -187,6 +196,9 @@ void refreshPositions(const char nomFichier[]);
  * 
  */
 void initialisation();
+
+void addRobotAdverse();
+
 }
 
 #endif
