@@ -29,12 +29,16 @@
 #ifndef PINMOT
 #define portTop PORTD
 #define pinTop PORTD3
+#define ddrMot1 DDRD 
 #define portMot1 PORTD 
 #define pinMot1 PORTD7
+#define ddrMot2 DDRB 
 #define portMot2 PORTB 
-#define pinMot2 PORTD0 
+#define pinMot2 PORTB0 
+#define ddrMot3 DDRB 
 #define portMot3 PORTB 
 #define pinMot3 PORTB1
+#define ddrMot4 DDRB 
 #define portMot4 PORTB 
 #define pinMot4 PORTB2
 #endif
