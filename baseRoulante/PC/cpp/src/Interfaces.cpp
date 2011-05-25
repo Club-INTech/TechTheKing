@@ -117,10 +117,13 @@ void detectionSerieUsb(InterfaceAsservissement* asserv){
 
 
 void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
+	int xDepart = getXRobot();
+	int yDepart = getYRobot();
    #ifdef DEBUG			
-	cout<<"Tentative de déplacement du robot en : (x = " << arrivee.getX() << ", y = " << arrivee.getY() << ")" << endl;
+	cout<<"Tentative de déplacement du robot de" << "( " << xDepart << ", " << yDepart << ")"
+	 << "en : " << "(" << arrivee.getX() << ", " << arrivee.getY() << ")" << endl;
    #endif
-   Point depart(1000,1000);
+   Point depart(xDepart,yDepart);
    vector<Point> listePointsTmp=m_pathfinding.getChemin(depart,arrivee);
    m_lastTrajectory=ListePoints::lissageBezier(listePointsTmp,nbPoints);
    m_lastListeConsignes=ListePoints::convertirEnConsignes(m_lastTrajectory,getDistanceRobot()); 
@@ -142,9 +145,9 @@ void InterfaceAsservissement::reculer(unsigned int distanceMm){
 
 void InterfaceAsservissement::tourner(int angleRadian){
 	if(angleRadian>0)
-		m_liaisonSerie<<"b0"+formaterInt(angleRadian*CONVERSION_RADIAN_TIC)<<endl;
+		m_liaisonSerie<<"a0"+formaterInt(angleRadian*CONVERSION_RADIAN_TIC)<<endl;
 	else
-		m_liaisonSerie<<"b1"+formaterInt(angleRadian*CONVERSION_RADIAN_TIC)<<endl;
+		m_liaisonSerie<<"a1"+formaterInt(angleRadian*CONVERSION_RADIAN_TIC)<<endl;
 }
 
 InterfaceAsservissement::InterfaceAsservissement(int precision) : m_compteurImages(0), m_pathfinding(precision){
@@ -177,7 +180,6 @@ int InterfaceAsservissement::getXRobot()
 	int result;
 	m_liaisonSerie << "x" << endl ;
 	m_liaisonSerie >> result;
-	cout<< "x : " << result<<endl;
 	return result;
 }
 
@@ -186,7 +188,6 @@ int InterfaceAsservissement::getYRobot()
 	int result;
 	m_liaisonSerie << "y" << endl ;
 	m_liaisonSerie >> result;
-	cout<< "y : " << result<<endl;
 	return result;
 }
 
