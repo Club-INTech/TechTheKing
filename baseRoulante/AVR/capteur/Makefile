@@ -21,7 +21,7 @@ serial.o: serial.c serial.h
 	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) serial.c -c
 
 twi_slave.o: twi_slave.c twi_slave.h
-	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) serial.c -c
+	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) twi_slave.c -c
 
 clean:
 	rm -rf *.o *.hex *.out
