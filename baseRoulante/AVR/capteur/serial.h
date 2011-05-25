@@ -14,7 +14,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
-extern volatile unsigned char lcd_val;
+extern volatile unsigned char lcb_val;
 
 /**
  * @defgroup inline

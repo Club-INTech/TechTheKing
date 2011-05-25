@@ -5,7 +5,7 @@
 
 int main()
 {
-    uart_init();
+    TWI_Init();
     
     while(1) {
         _delay_ms(100);
