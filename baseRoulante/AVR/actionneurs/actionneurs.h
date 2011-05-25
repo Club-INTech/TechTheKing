@@ -28,8 +28,10 @@
  *    PWM pour les servos
  *    Type d'asservissement
  */
-#define PWM_MAX     128
-#define KP          1
+#define PWM_MAX1    150
+#define PWM_MAX2    200
+#define KP1         1
+#define KP2         2
 #define ID_AX1      2
 #define ID_AX2      1
 #define PWM_UP      18

@@ -72,8 +72,8 @@ void init (void)
 void asservissement (void)
 {
     // Calcul des PWM
-    int32_t pwm1 = (consigne1 - ascenseur1)*KP;
-    int32_t pwm2 = (consigne2 - ascenseur2)*KP;
+    int32_t pwm1 = (consigne1 - ascenseur1)*KP1;
+    int32_t pwm2 = (consigne2 - ascenseur2)*KP2;
     
     // Gestion du signe
     if (pwm1 < 0 ) {
@@ -85,14 +85,14 @@ void asservissement (void)
     
     if (pwm2 < 0 ) {
         pwm2 = -pwm2;
-        PORTD |= DIR2;
+        PORTD &= ~DIR2;
     }
     else
-        PORTD &= ~DIR2;
+        PORTD |= DIR2;
     
     // Ecrétage et application des PWM
-    MOTEUR1 = (pwm1 <= PWM_MAX)?pwm1:PWM_MAX;
-    MOTEUR2 = (pwm2 <= PWM_MAX)?pwm2:PWM_MAX;
+    MOTEUR1 = (pwm1 <= PWM_MAX1)?pwm1:PWM_MAX1;
+    MOTEUR2 = (pwm2 <= PWM_MAX2)?pwm2:PWM_MAX2;
 }
 
 void asservissement_synchro (void)
@@ -100,8 +100,8 @@ void asservissement_synchro (void)
     // L'un des moteurs est asservi sur la position de l'autre
     
     // Calcul des PWM
-    int8_t pwm1 = (consigneb - ascenseur1)*KP;
-    int8_t pwm2 = (ascenseur1 - ascenseur2)*KP;
+    int32_t pwm1 = (consigneb - ascenseur1)*KP1;
+    int32_t pwm2 = (ascenseur1 - ascenseur2)*KP2;
     
     // Gestion du signe
     if (pwm1 < 0 ) {
@@ -113,14 +113,14 @@ void asservissement_synchro (void)
     
     if (pwm2 < 0 ) {
         pwm2 = -pwm2;
-        PORTD |= DIR2;
+        PORTD &= ~DIR2;
     }
     else
-        PORTD &= ~DIR2;
+        PORTD |= DIR2;
     
     // Ecrétage et application des PWM
-    MOTEUR1 = (pwm1 <= PWM_MAX)?pwm1:PWM_MAX;
-    MOTEUR2 = (pwm2 <= PWM_MAX)?pwm2:PWM_MAX;
+    MOTEUR1 = (pwm1 <= PWM_MAX1)?pwm1:PWM_MAX1;
+    MOTEUR2 = (pwm2 <= PWM_MAX2)?pwm2:PWM_MAX2;
 }
 
 int adc_sense1 (void)
@@ -177,9 +177,9 @@ ISR (PCINT0_vect)
 {
    if (PINB & CODEUR21){
       if (PINB & CODEUR22)
-          ascenseur2--;
-      else
           ascenseur2++;
+      else
+          ascenseur2--;
     }
 }
 
