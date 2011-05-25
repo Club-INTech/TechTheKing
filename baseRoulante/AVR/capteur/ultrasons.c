@@ -1,5 +1,10 @@
 #include "ultrasons.h"
 #include <util/delay.h>
+#include <avr/interrupt.h>
+
+volatile uint16_t ultra1;
+volatile uint16_t ultra2;
+volatile uint16_t ultra3;
 
 uint16_t ping(uint8_t pin)
 {
@@ -18,20 +23,20 @@ uint16_t ping(uint8_t pin)
 
     uint16_t duree = 0;
     uint16_t duree_max = TIMEOUT;
-
+    
     // Attente de la fin de l'impulsion precedente
     while ((PIND & pin) == masque)
         if (duree++ == duree_max)
             return 0;
-
+        
     // Attente du demarrage de l'impulsion
     while ((PIND & pin) != masque)
         if (duree++ == duree_max)
-            return 0;
-
+            return 0; 
+        
     // Attente de la fin de l'impulsion
     while ((PIND & pin) == masque)
             duree++;
-
+    
     return duree;
 } 
