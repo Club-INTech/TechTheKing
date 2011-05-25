@@ -5,11 +5,14 @@
 
 int main()
 {
-    init();
+    // Initialisation I2C
     TWI_Init();
     
+    // Initialisation pour l'AX12 gauche
     AX12Init (1, 0, 1023, 511);
     
+    // Initialisation pour l'AX12 droite
+    AX12Init (2, 0, 1023, 511);
     
     while(1)
     {
