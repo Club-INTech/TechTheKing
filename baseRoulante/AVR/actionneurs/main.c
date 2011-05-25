@@ -1,13 +1,14 @@
 #include <util/delay.h>
 #include "actionneurs.h"
 #include "serial.h"
+#include "twi_slave.h"
 
 int main()
 {
     init();
     TWI_Init();
     
-    uart_init();
+    etat_asservissement = ASSERV_SYNCHRO;
     
     while(1)
     {
