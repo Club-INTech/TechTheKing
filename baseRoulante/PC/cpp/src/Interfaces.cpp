@@ -309,6 +309,11 @@ unsigned int InterfaceActionneurs::pourcentageAngleConversion(unsigned char pour
 /*********************************************************/
 
 
+
+/*********************************************************/
+/*   CAPTEURS                                            */
+/*********************************************************/
+
 void InterfaceCapteurs::thread(){
     while(1){
         //Tant que le capteur ne détecte pas d'obstacle
@@ -317,6 +322,35 @@ void InterfaceCapteurs::thread(){
     }   
 }
 
+unsigned short InterfaceCapteurs::DistanceUltrason( Ultrason val ) {
+    
+    unsigned char msg[3];
+    msg[0] = val;
+    
+    unsigned char rec[3];
+    
+    int err;
+
+    if( (err= i2c_write(adaptateur_i2c,0X20,msg,2)) != 0){
+        fprintf(stderr, "Error writing to the adapter: %s\n", linkm_error_msg(err));
+        exit(1);
+    }
+    if( (err= i2c_read(adaptateur_i2c,0X20,rec,2)) != 0){
+        fprintf(stderr, "Error reading from the adapter: %s\n", linkm_error_msg(err));
+        exit(1);
+    }
+    
+    unsigned short resu;
+    unsigned short temp;
+    
+    resu = rec[0];
+    temp = rec[1];
+    resu += (temp << 8);
+}
+
+/*********************************************************/
+/*  FIN CAPTEURS                                         */
+/*********************************************************/
 
 void ouvrir_adaptateur_i2c ()
 {
