@@ -1,7 +1,6 @@
 #include "Point.h"
 #include "Constantes.h"
-
-#define abs(x) ((x) > 0 ? (x) : -(x))
+#include "Util.hpp"
 
 int nombreTours = 0;
 double angleBkp=0;
@@ -9,6 +8,11 @@ double angleBkp=0;
 /*
  * constructeur
  */
+
+template<typename T>
+T min(T a,T b,T c){
+	return min(a,min(b,c));
+}
 
 Point::Point(double x,double y){
 	m_x=x;
@@ -165,19 +169,11 @@ vector<Consigne> ListePoints::convertirEnConsignes(vector<Point>& listePoints,in
 	Consigne nouvelleConsigne;
 		for(int i=0;i<longueur-1;i++){
 			angle=listePoints[i].angle(listePoints[i+1]);
-			nombreTours=(angleBkp>=0)?floor(angleBkp/(2*M_PI)):1+floor(angleBkp/(2*M_PI));
-			angleBkp-=2*M_PI*nombreTours; // angleBkp %= 2*M_PI
-			if( 0 < angleBkp && angleBkp < M_PI){
-				if(M_PI+angleBkp < angle && angle < 2*M_PI){
-					angle-=2*M_PI;
-				}
-			}
-			else{
-				if(0<angle && angle < angleBkp - M_PI){
-					angle+=2*M_PI;
-				}
-			}
-			angle+=2*nombreTours*M_PI;
+			angle=min(abs(angle-angleBkp),
+				  abs(angle+2*M_PI-angleBkp),
+				  abs(angle-2*M_PI-angleBkp));
+			//nombreTours=(angleBkp>=0)?floor(angleBkp/(2*M_PI)):1+floor(angleBkp/(2*M_PI));
+			//angle+=2*nombreTours*M_PI;
 			angleBkp=angle;
 			angle*=CONVERSION_RADIAN_TIC;
 			rayon+=listePoints[i].rayon(listePoints[i+1])*CONVERSION_MM_TIC; //conversion en ticks...
