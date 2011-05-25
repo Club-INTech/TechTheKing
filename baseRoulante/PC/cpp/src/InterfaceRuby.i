@@ -5,7 +5,7 @@
     #include "Interfaces.h"
     #include "Thread.h"
     #include "Singleton.h"
-    #include "Server.h"
+    #include "Socket.h"
     
 %}
 

@@ -123,7 +123,7 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
 	cout<<"Tentative de déplacement du robot de" << "( " << xDepart << ", " << yDepart << ")"
 	 << "en : " << "(" << arrivee.getX() << ", " << arrivee.getY() << ")" << endl;
    #endif
-   Point depart(getXRobot(),getYRobot());
+   Point depart(xDepart,yDepart);
    vector<Point> listePointsTmp=m_pathfinding.getChemin(depart,arrivee);
    m_lastTrajectory=ListePoints::lissageBezier(listePointsTmp,nbPoints);
    m_lastListeConsignes=ListePoints::convertirEnConsignes(m_lastTrajectory,getDistanceRobot()); 
@@ -180,7 +180,6 @@ int InterfaceAsservissement::getXRobot()
 	int result;
 	m_liaisonSerie << "x" << endl ;
 	m_liaisonSerie >> result;
-	cout<< "x : " << result<<endl;
 	return result;
 }
 
@@ -189,7 +188,6 @@ int InterfaceAsservissement::getYRobot()
 	int result;
 	m_liaisonSerie << "y" << endl ;
 	m_liaisonSerie >> result;
-	cout<< "y : " << result<<endl;
 	return result;
 }
 

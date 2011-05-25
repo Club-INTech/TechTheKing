@@ -104,7 +104,14 @@ double Point::angle(Point Point2){
 	REQUIRE(Point2.m_y>=0, "Ordonnée du point avec lequel on détermine l'angle est positive");
 	double dx=(Point2.m_x-m_x);
 	double dy=(Point2.m_y-m_y);
-	return (atan2(dx,dy)+M_PI_2);
+	if(dx!=0){
+		return atan2(dx,dy)+M_PI_2;
+	}
+	else{
+		//TODO !!!!!!!!!!!!!!!!!!!!!!
+		//CHANGEMENT DE COULEUR DU ROBOT !!!!!!!!!!!!!!
+		return (dy>0)?-M_PI_2:M_PI_2;
+	}
 }
 
 
@@ -168,9 +175,9 @@ vector<Consigne> ListePoints::convertirEnConsignes(vector<Point>& listePoints,in
 			* mise à jour des paramètres de la consigne
 			*/
 			angle=listePoints[i].angle(listePoints[i+1]);
-			sensDeRotation = (angle>angleBkp)?1:-1; // 1 : sens horraire, -1 : sens antihorraire.
-			if((angle-angleBkp)>M_PI)
-				angle+=sensDeRotation*2*M_PI;
+			//sensDeRotation = (angle>angleBkp)?1:-1; // 1 : sens horraire, -1 : sens antihorraire.
+			//if((angle-angleBkp)>=M_PI)
+				//angle+=sensDeRotation*2*M_PI;
 			angleBkp=angle;
 			angle*=CONVERSION_RADIAN_TIC;
 			rayon+=listePoints[i].rayon(listePoints[i+1])*CONVERSION_MM_TIC; //conversion en ticks...

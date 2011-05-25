@@ -64,7 +64,7 @@ Manager::assPolaire(){
 	}
 	
 	
-	if(consigneActuelle == tableauConsignes.nbConsignes){
+	if(consigneActuelle ==tableauConsignes.nbConsignes){
 		//assRotation.setActivationKd(1);
 		assTranslation.setActivationKd(1);
 	}
@@ -143,8 +143,8 @@ Manager::Manager(){
 
 void Manager::init()
 {
-	x=2928;
-	y=1950;
+	x=2780;
+	y=1940;
 	
 	distanceBkp=0;
 	angleBkp=0;
