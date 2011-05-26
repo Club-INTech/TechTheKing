@@ -13,7 +13,7 @@
 volatile double x;
 volatile double y;
 
-Couleur CouleurRobot = ROUGE;
+Couleur CouleurRobot = BLEU;
 
 void
 Manager::assPolaire(){
@@ -74,8 +74,7 @@ Manager::assPolaire(){
 	}
 	
 	
-	if(ABS(distance-distanceBkp) < 30
-		&& ABS(angle-angleBkp) < 30 ){
+	if( ABS(tableauConsignes.listeConsignes[consigneActuelle-1].distance - distance) < 0.7 * (tableauConsignes.listeConsignes[consigneActuelle+1].distance - tableauConsignes.listeConsignes[consigneActuelle-1].distance)) {
 			if( consigneActuelle < tableauConsignes.nbConsignes){
 					consigneActuelle++;
 			}
@@ -87,10 +86,12 @@ Manager::assPolaire(){
 	int16_t pwmRotation = (activationAssAngle?assRotation.calculePwm(((tableauConsignes.listeConsignes)[consigneActuelle-1]).angle,angle):0);
 	int16_t pwmTranslation = (activationAssDistance?assTranslation.calculePwm(((tableauConsignes.listeConsignes)[consigneActuelle-1]).distance,distance):0);
 
+	/*
 	if(pwmTranslation!=0 && (distance==distanceBkp)){
 		resetListeConsignes();
 		tableauConsignes.listeConsignes[consigneActuelle-1].distance-=200;
 	}
+	*/
 	
 	int16_t pwmG = pwmTranslation - pwmRotation;
 	int16_t pwmD = pwmTranslation + pwmRotation;
