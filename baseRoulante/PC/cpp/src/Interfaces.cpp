@@ -131,9 +131,12 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
 		m_lastListeConsignes=ListePoints::convertirEnConsignes(m_lastTrajectory,getDistanceRobot()); 
 		ListeConsignes::transfertSerie(m_lastListeConsignes,m_liaisonSerie);
 		unsigned char result;
+		
 		while(result != 'f'){
 			m_liaisonSerie >> result;
+			cout<<result<<endl;
 		}
+		
    }
    else{
 		
@@ -146,18 +149,26 @@ void InterfaceAsservissement::reGoTo(){
 }
 
 void InterfaceAsservissement::avancer(unsigned int distanceMm){
-	m_liaisonSerie<<"b1"+formaterInt(getDistanceRobot()+distanceMm*CONVERSION_MM_TIC)<<endl;
+	int distanceTicks = distanceMm*CONVERSION_MM_TIC;
+	if(distanceTicks>0)
+		m_liaisonSerie<<"b1"+formaterInt(distanceMm*CONVERSION_MM_TIC)<<endl;
+	else
+		m_liaisonSerie<<"b0"+formaterInt(-distanceMm*CONVERSION_MM_TIC)<<endl;
 }
 
 void InterfaceAsservissement::reculer(unsigned int distanceMm){
-	m_liaisonSerie<<"b0"+formaterInt(getDistanceRobot()+distanceMm*CONVERSION_MM_TIC)<<endl;
+	int distanceTicks = distanceMm*CONVERSION_MM_TIC;
+	if(distanceTicks>0)
+		m_liaisonSerie<<"b1"+formaterInt(distanceMm*CONVERSION_MM_TIC)<<endl;
+	else
+		m_liaisonSerie<<"b0"+formaterInt(-distanceMm*CONVERSION_MM_TIC)<<endl;
 }
 
 void InterfaceAsservissement::tourner(double angleRadian){
 	if(angleRadian>0)
 		m_liaisonSerie<<"a0"+formaterInt(angleRadian*CONVERSION_RADIAN_TIC)<<endl;
 	else
-		m_liaisonSerie<<"a1"+formaterInt(angleRadian*CONVERSION_RADIAN_TIC)<<endl;
+		m_liaisonSerie<<"a1"+formaterInt(-angleRadian*CONVERSION_RADIAN_TIC)<<endl;
 }
 
 InterfaceAsservissement::InterfaceAsservissement(int precision) : m_compteurImages(0), m_pathfinding(precision){

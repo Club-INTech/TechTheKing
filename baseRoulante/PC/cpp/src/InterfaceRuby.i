@@ -108,7 +108,7 @@ public:
     void goTo(Point arrivee,int nbPoints);
     void avancer(unsigned int distanceMm);
     void reculer(unsigned int distanceMm);
-    void tourner(int angleRadian);
+    void tourner(double angleRadian);
 	#ifdef DEBUG_GRAPHIQUE
 	void debugGraphique();
 	#endif

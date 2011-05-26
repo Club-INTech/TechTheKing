@@ -56,10 +56,16 @@ Manager::assPolaire(){
 	* Ceci ne s'applique pas à la dernière consigne
 	*/
 
+	/*
 	if(consigneActuelle>1 && consigneActuelle==tableauConsignes.nbConsignes)
 	{
-		resetListeConsignes();
+		tableauConsignes.listeConsignes[0].angle = tableauConsignes.listeConsignes[tableauConsignes.nbConsignes-1].angle;
+		tableauConsignes.listeConsignes[0].distance = tableauConsignes.listeConsignes[tableauConsignes.nbConsignes-1].distance;
+		tableauConsignes.nbConsignes = 1;
+		consigneActuelle = 1;
+		printlnChar('f');
 	}
+	*/
 	
 	
 	
@@ -74,7 +80,7 @@ Manager::assPolaire(){
 	}
 	
 	
-	if( ABS(tableauConsignes.listeConsignes[consigneActuelle-1].distance - distance) < 0.7 * (tableauConsignes.listeConsignes[consigneActuelle+1].distance - tableauConsignes.listeConsignes[consigneActuelle-1].distance)) {
+	if( ABS(tableauConsignes.listeConsignes[consigneActuelle-1].distance - distance) < 0.5 * (tableauConsignes.listeConsignes[consigneActuelle+1].distance - tableauConsignes.listeConsignes[consigneActuelle-1].distance)) {
 			if( consigneActuelle < tableauConsignes.nbConsignes){
 					consigneActuelle++;
 			}
@@ -218,14 +224,14 @@ void Manager::init()
 	// initialisation des constantes
 	assRotation.changeKp(5);
 	assRotation.changePWM(PWM_MAX);
-	assRotation.changeKd(400);
+	assRotation.changeKd(300);
 	assRotation.changeKi(0);
 	assRotation.changeVmax(0);
 	assRotation.changeKpVitesse(0);
 
-	assTranslation.changeKp(8);
+	assTranslation.changeKp(3);
 	assTranslation.changePWM(PWM_MAX);
-	assTranslation.changeKd(400);
+	assTranslation.changeKd(200);
 	assTranslation.changeKi(0);
 	assTranslation.changeVmax(0);
 	assTranslation.changeKpVitesse(0);

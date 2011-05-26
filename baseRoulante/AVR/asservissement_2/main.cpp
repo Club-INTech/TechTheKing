@@ -88,21 +88,31 @@ int main( void ){
 			printlnLong(i);
 			i=litEntierLong();
 			printlnLong(i);
-			if (i >= 10000000)
+			if (i >= 10000000){
 				//  avance
-				manager.changeIemeConsigneAngle(i-10000000,1);
-			else if(i>=0)
+				manager.pushConsigneDistance(manager.distanceBkp);
+				manager.pushConsigneAngle(i-10000000);
+			}
+			else if(i>=0){
 				// recule
-				manager.changeIemeConsigneAngle(-i,1);
+				manager.pushConsigneDistance(manager.distanceBkp);
+				manager.pushConsigneAngle(-i);
+			}
+			manager.resetListeConsignes();
 			break;
 		case 'b':
 			i=litEntierLong();
-			if (i >= 10000000)
+			if (i >= 10000000){
 				//  tourne positivement de i
-				manager.changeIemeConsigneDistance(i-10000000,1);
-			else if (i >= 0)
+				manager.pushConsigneDistance(manager.distanceBkp+(i-10000000));
+				manager.pushConsigneAngle(manager.angleBkp);
+			}
+			else if (i >= 0){
 				// tourne nÃ©gativement i
-				manager.changeIemeConsigneDistance(-i,1);
+				manager.pushConsigneDistance(manager.distanceBkp-i);
+				manager.pushConsigneAngle(manager.angleBkp);	
+			}
+			manager.resetListeConsignes();
 			break;
 		case 'g': // push consigne etape 1
 			i=litEntierLong();
