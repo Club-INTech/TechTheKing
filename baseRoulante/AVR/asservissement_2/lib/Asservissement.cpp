@@ -38,7 +38,7 @@ Asservissement::Asservissement()
 int16_t Asservissement::calculePwm(int32_t consigne, int32_t positionReelle)
 {
 	int32_t erreur = positionReelle - consigne;
-    
+   
 	if (erreur <= 3)
 		integraleErreur=0;
 	else

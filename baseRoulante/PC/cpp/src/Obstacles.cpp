@@ -12,9 +12,8 @@ Couleur Obstacle::couleurPlusProche() {
     return NEUTRE;
 }
 
-CercleObstacle::CercleObstacle(double x,double y,Couleur couleur) : Obstacle(x,y,couleur),m_rayon(TAILLE_PION)
+CercleObstacle::CercleObstacle(double x,double y,Couleur couleur,int rayon) : Obstacle(x,y,couleur),m_rayon(rayon)
 {
-
 }
 
 #ifdef DEBUG_GRAPHIQUE
@@ -92,6 +91,32 @@ bool RectangleObstacle::contientCercle(int centreX, int centreY, int rayonDonne)
 			&& centreY < (m_y + m_demiCoteY + rayonDonne);
 }
 
+RobotAdverse* RobotAdverse::m_instance = NULL;
+
+RobotAdverse::RobotAdverse() : CercleObstacle(0,0,NOIR,TAILLE_ROBOT_ADVERSE){	
+}
+
+void RobotAdverse::setCoords(int x,int y){
+	m_x=x;
+	m_y=y;
+}
+
+RobotAdverse* RobotAdverse::Instance(){
+    if(m_instance==NULL){
+       #ifdef DEBUG
+         cout<<"Création du robot adverse"<<endl;
+       #endif
+       m_instance= new RobotAdverse();
+    }
+    else{
+      #ifdef DEBUG
+         cout<<"Récupération du robot adverse déjà créé. " <<endl;
+      #endif
+    }
+    return m_instance;
+}
+
+
 Obstacle* ListeObstacles::contientCercle(int centreX, int centreY, int rayon,Couleur couleur){
     vector<Obstacle*> tmp; // contient la liste des correspondances.
     Obstacle* min=NULL;
@@ -131,6 +156,7 @@ void ListeObstacles::initialisation(){
     listeObstacles.push_back(new RectangleObstacle(2200,60,350,60));
     listeObstacles.push_back(new RectangleObstacle(1861,185,11,65+TAILLE_ROBOT));
     listeObstacles.push_back(new RectangleObstacle(2539,185,11,65+TAILLE_ROBOT));
+    listeObstacles.push_back(RobotAdverse::Instance());
 }
     
 void ListeObstacles::refreshPositions(const char nomFichier[]){
@@ -147,3 +173,5 @@ void ListeObstacles::refreshPositions(const char nomFichier[]){
         else
             cerr<<"ouverture du fichier impossible"<<endl;
 }
+
+

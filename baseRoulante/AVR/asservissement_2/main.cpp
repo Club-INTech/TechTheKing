@@ -167,10 +167,9 @@ int main( void ){
 			TIMSK1 |= (1 << TOIE1);
 			break;
 		case 'u':
-			i=litEntierLong();
-			if (i >= 0) {
-				manager.assRotation.changeKd(i);
-			}
+			TIMSK1 &= ~(1 << TOIE1);
+			printlnLong(manager.angleBkp);
+			TIMSK1 |= (1 << TOIE1);
 			break;
 		case 'v':
 			i=litEntierLong();

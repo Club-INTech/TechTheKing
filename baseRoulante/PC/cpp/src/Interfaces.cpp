@@ -7,6 +7,8 @@
 #include <Magick++.h>
 #endif
 #include "Util.hpp"
+#include "Obstacles.h"
+#include <ctime>
 
 using namespace std;
 Adaptator* adaptateur_i2c;
@@ -106,10 +108,6 @@ void detectionSerieUsb(InterfaceAsservissement* asserv){
                     asserv->m_liaisonSerie.Open(stringTmp);
                     cout<<"Asservissement : ok"<<endl;
                     break;
-                case '1':
-                    asserv->m_liaisonSerie.Open(stringTmp);
-                    cout<<"Actionneurs : ok"<<endl;
-                    break;
             }
         }
     }
@@ -117,6 +115,8 @@ void detectionSerieUsb(InterfaceAsservissement* asserv){
 
 
 void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
+	m_lastArrivee = arrivee;
+	m_lastNbPoints = nbPoints;
 	int xDepart = getXRobot();
 	int yDepart = getYRobot();
    #ifdef DEBUG			
@@ -124,26 +124,36 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
 	 << "en : " << "(" << arrivee.getX() << ", " << arrivee.getY() << ")" << endl;
    #endif
    Point depart(xDepart,yDepart);
-   vector<Point> listePointsTmp=m_pathfinding.getChemin(depart,arrivee);
-   m_lastTrajectory=ListePoints::lissageBezier(listePointsTmp,nbPoints);
-   m_lastListeConsignes=ListePoints::convertirEnConsignes(m_lastTrajectory,getDistanceRobot()); 
-   ListeConsignes::transfertSerie(m_lastListeConsignes,m_liaisonSerie);
-   unsigned char result;
-   /*
-   while(result != 'f'){
-		m_liaisonSerie >> result;
-   }*/
+   vector<Point> listePointsTmp;
+   listePointsTmp = m_pathfinding.getChemin(depart,arrivee);
+   if(!listePointsTmp.empty()){
+		m_lastTrajectory=ListePoints::lissageBezier(listePointsTmp,nbPoints);
+		m_lastListeConsignes=ListePoints::convertirEnConsignes(m_lastTrajectory,getDistanceRobot()); 
+		ListeConsignes::transfertSerie(m_lastListeConsignes,m_liaisonSerie);
+		unsigned char result;
+		while(result != 'f'){
+			m_liaisonSerie >> result;
+		}
+   }
+   else{
+		
+   }
+   
+}
+
+void InterfaceAsservissement::reGoTo(){
+	goTo(m_lastArrivee,m_lastNbPoints);
 }
 
 void InterfaceAsservissement::avancer(unsigned int distanceMm){
-	m_liaisonSerie<<"b1"+formaterInt(distanceMm*CONVERSION_MM_TIC)<<endl;
+	m_liaisonSerie<<"b1"+formaterInt(getDistanceRobot()+distanceMm*CONVERSION_MM_TIC)<<endl;
 }
 
 void InterfaceAsservissement::reculer(unsigned int distanceMm){
-	m_liaisonSerie<<"b0"+formaterInt(distanceMm*CONVERSION_MM_TIC)<<endl;
+	m_liaisonSerie<<"b0"+formaterInt(getDistanceRobot()+distanceMm*CONVERSION_MM_TIC)<<endl;
 }
 
-void InterfaceAsservissement::tourner(int angleRadian){
+void InterfaceAsservissement::tourner(double angleRadian){
 	if(angleRadian>0)
 		m_liaisonSerie<<"a0"+formaterInt(angleRadian*CONVERSION_RADIAN_TIC)<<endl;
 	else
@@ -175,6 +185,14 @@ int InterfaceAsservissement::getDistanceRobot()
 	return result;
 }
 
+int InterfaceAsservissement::getAngleRobot(){
+	int result;
+	m_liaisonSerie << "u" << endl ;
+	m_liaisonSerie >> result;
+	cout<< "ticks angle: " << result<<endl;
+	return result;
+}
+
 int InterfaceAsservissement::getXRobot()
 {
 	int result;
@@ -191,6 +209,11 @@ int InterfaceAsservissement::getYRobot()
 	return result;
 }
 
+void InterfaceAsservissement::stop()
+{
+	
+	
+}
 
 /*********************************************************/
 /*   Etranger, ici commence la terre des actionneurs...  */
@@ -321,9 +344,28 @@ unsigned int InterfaceActionneurs::pourcentageAngleConversion(unsigned char pour
 
 void InterfaceCapteurs::thread(){
     while(1){
-        //Tant que le capteur ne détecte pas d'obstacle
-            //traiterAbsenceObstacle()
-        //traiterPresenceObstacle()
+    	InterfaceAsservissement* interfaceAsservissement=InterfaceAsservissement::Instance();
+    	//Il y a quelquechose devant
+    	int distanceUltraSonG = DistanceUltrason(UGAUCHE);
+    	int distanceUltraSonD = DistanceUltrason(UDROITE);
+        if(distanceUltraSonG < 5000
+        && distanceUltraSonD < 5000){
+        	        	//On stop.
+  				interfaceAsservissement->stop();
+       	 	int distanceUltraSon = (distanceUltraSonG+distanceUltraSonD)/2;
+      	  	int xRobot =  CONVERSION_TIC_MM*interfaceAsservissement->getXRobot();
+      	  	int yRobot =  CONVERSION_TIC_MM*interfaceAsservissement->getYRobot();
+    	    	double angleRobot = CONVERSION_TIC_RADIAN*interfaceAsservissement->getAngleRobot();        	
+    	    	//On actualise la position du robot adverse
+				RobotAdverse::Instance()->setCoords(
+				xRobot+cos(angleRobot)*distanceUltraSon,
+				yRobot+cos(angleRobot)*distanceUltraSon);
+        		//On recule
+				interfaceAsservissement->reculer(200);
+				//On recalcule une trajectoire.
+				interfaceAsservissement->reGoTo();
+		}
+		usleep(1000);
     }   
 }
 

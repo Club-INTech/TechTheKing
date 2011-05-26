@@ -32,12 +32,10 @@ class Noeud : public Point{
 		double getCout3();	
 		Noeud* getParent();
 		bool getCollision(){ return m_collision ; };
-		
 		void setCout1(double cout1);
 		void setCout2(double cout2);
 		void setCout3(double cout3);
 		void setCollision(bool etat) { m_collision = etat ;};
-		
 		void setDistancePionAdverse(double distance);
 		void setParent(Noeud* parent);
 
@@ -53,11 +51,8 @@ class Noeud : public Point{
 		double m_cout1; /*!< Distance du noeud au point de départ.*/
 		double m_cout2; /*!< Distance du noeud au point d'arrivee.*/
 		double m_cout3; /*!< Somme des deux couts précédents.*/
-
 		double m_distancePionAdverse; /*!< La distance qui sépare un noeud d'un pion adverse. Nécéssaire pour l'attraction de la trajectoire par ce point.*/
-
 		bool m_collision; /*!< si on emp^eche toute collision avec les obstacles, ça va planter à cause des imprécisions. Il faut juste les éviter*/
-		
 		Noeud* m_parent; /*!< Le parent du noeud. Necessaire pour retrouver son chemin*/		
 };
 
@@ -74,7 +69,7 @@ class AStar {
 		 * \brief trouverChemin
 		 * C'est la boucle principale de recherche.
 		 */
-		void trouverChemin();
+		bool trouverChemin();
 
 
 		/*!

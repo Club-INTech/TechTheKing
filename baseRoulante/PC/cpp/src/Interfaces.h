@@ -28,23 +28,28 @@ public:
 	~InterfaceAsservissement();
     friend void detectionSerieUsb(InterfaceAsservissement* asserv); // ne devrait pas servir si on garde l'i2c
     int getDistanceRobot();
+    int getAngleRobot();
     void goTo(Point arrivee,int nbPoints);
+    void reGoTo();
     void avancer(unsigned int distanceMm);
     void reculer(unsigned int distanceMm);
-    void tourner(int angleRadian);
+    void tourner(double angleRadian);
+    void stop();
 	#ifdef DEBUG_GRAPHIQUE
 	void debugGraphique();
 	#endif
     void debugConsignes();
+    int getXRobot();
+	 int getYRobot();
 
 private:
     InterfaceAsservissement& operator=(const InterfaceAsservissement&);
     InterfaceAsservissement(const InterfaceAsservissement&){};
 	InterfaceAsservissement(int precisionAStar);
     void recupPosition();
-    int getXRobot();
-	int getYRobot();
 private:
+	Point m_lastArrivee;
+	int m_lastNbPoints;
 	int m_compteurImages;
 	vector<Point> m_lastTrajectory;
 	vector<Consigne> m_lastListeConsignes;

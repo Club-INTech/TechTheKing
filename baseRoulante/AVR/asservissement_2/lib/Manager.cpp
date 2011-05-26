@@ -8,10 +8,12 @@
 #define CONVERSION_TIC_MM 1.04195690364
 #define CONVERSION_TIC_DISTANCE 0.00000158990006049 // CONVERSION_TIC_MM/65536
 #define CONVERSION_COURBURE_TIC_MM  0.00215590466574 // CONVERSION_TIC_MM/(CONVERSION_TIC_RADIAN*65536)
-#define ABS(x) (x > 0 ? x : -x)
+#define ABS(x) ( (x) > 0 ? (x) : -(x))
 
 volatile double x;
 volatile double y;
+
+Couleur CouleurRobot = BLEU;
 
 void
 Manager::assPolaire(){
@@ -56,12 +58,9 @@ Manager::assPolaire(){
 
 	if(consigneActuelle>1 && consigneActuelle==tableauConsignes.nbConsignes)
 	{
-		tableauConsignes.listeConsignes[0].angle = tableauConsignes.listeConsignes[tableauConsignes.nbConsignes-1].angle;
-		tableauConsignes.listeConsignes[0].distance = tableauConsignes.listeConsignes[tableauConsignes.nbConsignes-1].distance;
-		tableauConsignes.nbConsignes = 1;
-		consigneActuelle = 1;
-		printlnChar('f');
+		resetListeConsignes();
 	}
+	
 	
 	
 	if(consigneActuelle ==tableauConsignes.nbConsignes){
@@ -75,8 +74,7 @@ Manager::assPolaire(){
 	}
 	
 	
-	if(ABS((tableauConsignes.listeConsignes[consigneActuelle-1]).distance - distance) < 300
-		&& ABS((tableauConsignes.listeConsignes[consigneActuelle-1]).angle - angle) < 300 ){
+	if( ABS(tableauConsignes.listeConsignes[consigneActuelle-1].distance - distance) < 0.7 * (tableauConsignes.listeConsignes[consigneActuelle+1].distance - tableauConsignes.listeConsignes[consigneActuelle-1].distance)) {
 			if( consigneActuelle < tableauConsignes.nbConsignes){
 					consigneActuelle++;
 			}
@@ -88,10 +86,16 @@ Manager::assPolaire(){
 	int16_t pwmRotation = (activationAssAngle?assRotation.calculePwm(((tableauConsignes.listeConsignes)[consigneActuelle-1]).angle,angle):0);
 	int16_t pwmTranslation = (activationAssDistance?assTranslation.calculePwm(((tableauConsignes.listeConsignes)[consigneActuelle-1]).distance,distance):0);
 
+	/*
+	if(pwmTranslation!=0 && (distance==distanceBkp)){
+		resetListeConsignes();
+		tableauConsignes.listeConsignes[consigneActuelle-1].distance-=200;
+	}
+	*/
+	
 	int16_t pwmG = pwmTranslation - pwmRotation;
 	int16_t pwmD = pwmTranslation + pwmRotation;
 	
-
 	
 	/*
 	* Envoi des PWM
@@ -140,11 +144,25 @@ Manager::assPolaire(){
 Manager::Manager(){
 }
 
+void Manager::resetListeConsignes(){
+		tableauConsignes.listeConsignes[0].angle = tableauConsignes.listeConsignes[tableauConsignes.nbConsignes-1].angle;
+		tableauConsignes.listeConsignes[0].distance = tableauConsignes.listeConsignes[tableauConsignes.nbConsignes-1].distance;
+		tableauConsignes.nbConsignes = 1;
+		consigneActuelle = 1;
+		printlnChar('f');
+}
+
 
 void Manager::init()
 {
-	x=2760;
-	y=1940;
+	if(CouleurRobot==BLEU){
+		x=2760;
+		y=1940;
+	}
+	else{
+		x=240;
+		y=1940;
+	}
 	
 	distanceBkp=0;
 	angleBkp=0;
