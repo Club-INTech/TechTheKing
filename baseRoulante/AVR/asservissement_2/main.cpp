@@ -77,7 +77,6 @@ int main( void ){
 		while (available() == 0) {
 			asm("nop");
 		}
-		
 		premierCaractere = read();
 		
 		switch (premierCaractere) {
