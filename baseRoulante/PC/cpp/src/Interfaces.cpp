@@ -130,13 +130,7 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
 		m_lastTrajectory=ListePoints::lissageBezier(listePointsTmp,nbPoints);
 		m_lastListeConsignes=ListePoints::convertirEnConsignes(m_lastTrajectory,getDistanceRobot()); 
 		ListeConsignes::transfertSerie(m_lastListeConsignes,m_liaisonSerie);
-		unsigned char result;
-		
-		while(result != 'f'){
-			m_liaisonSerie >> result;
-			cout<<result<<endl;
-		}
-		
+		attendreArrivee();
    }
    else{
 		
@@ -144,6 +138,12 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
    
 }
 
+void InterfaceAsservissement::attendreArrivee(){
+	unsigned char result;	
+	while(result != 'f'){
+		m_liaisonSerie >> result;
+	}
+}
 void InterfaceAsservissement::reGoTo(){
 	goTo(m_lastArrivee,m_lastNbPoints);
 }
@@ -154,6 +154,7 @@ void InterfaceAsservissement::avancer(unsigned int distanceMm){
 		m_liaisonSerie<<"b1"+formaterInt(distanceMm*CONVERSION_MM_TIC)<<endl;
 	else
 		m_liaisonSerie<<"b0"+formaterInt(-distanceMm*CONVERSION_MM_TIC)<<endl;
+	attendreArrivee();
 }
 
 void InterfaceAsservissement::reculer(unsigned int distanceMm){
@@ -162,6 +163,7 @@ void InterfaceAsservissement::reculer(unsigned int distanceMm){
 		m_liaisonSerie<<"b1"+formaterInt(distanceMm*CONVERSION_MM_TIC)<<endl;
 	else
 		m_liaisonSerie<<"b0"+formaterInt(-distanceMm*CONVERSION_MM_TIC)<<endl;
+	attendreArrivee();
 }
 
 void InterfaceAsservissement::tourner(double angleRadian){
@@ -169,6 +171,7 @@ void InterfaceAsservissement::tourner(double angleRadian){
 		m_liaisonSerie<<"a0"+formaterInt(angleRadian*CONVERSION_RADIAN_TIC)<<endl;
 	else
 		m_liaisonSerie<<"a1"+formaterInt(-angleRadian*CONVERSION_RADIAN_TIC)<<endl;
+	attendreArrivee();
 }
 
 InterfaceAsservissement::InterfaceAsservissement(int precision) : m_compteurImages(0), m_pathfinding(precision){
@@ -180,6 +183,21 @@ InterfaceAsservissement::InterfaceAsservissement(int precision) : m_compteurImag
       cout<<"Interface crée"<<endl;
       
     #endif
+}
+
+void InterfaceAsservissement::recalage()
+{
+	reculer(500);
+	avancer(500);
+	if(COULEUR_ROBOT==BLEU){
+		setXRobot(80);
+	}
+	else if(COULEUR_ROBOT==ROUGE){
+		setXRobot(2920);
+	}
+	tourner(-M_PI/2);
+	reculer(500);
+	setYRobot(2020);
 }
 
 InterfaceAsservissement::~InterfaceAsservissement()
@@ -207,23 +225,30 @@ int InterfaceAsservissement::getAngleRobot(){
 int InterfaceAsservissement::getXRobot()
 {
 	int result;
-	m_liaisonSerie << "x" << endl ;
+	m_liaisonSerie << "xg";
 	m_liaisonSerie >> result;
 	return result;
+}
+
+void InterfaceAsservissement::setXRobot(int xMm){
+	m_liaisonSerie << "xs0" << formaterInt(xMm) << endl;
 }
 
 int InterfaceAsservissement::getYRobot()
 {
 	int result;
-	m_liaisonSerie << "y" << endl ;
+	m_liaisonSerie << "yg";
 	m_liaisonSerie >> result;
 	return result;
 }
 
+void InterfaceAsservissement::setYRobot(int yMm){
+	m_liaisonSerie << "ys0" << formaterInt(yMm) << endl;
+}
+
 void InterfaceAsservissement::stop()
 {
-	
-	
+	m_liaisonSerie << "s" ;
 }
 
 /*********************************************************/

@@ -56,7 +56,7 @@ Manager::assPolaire(){
     * Ceci ne s'applique pas à la dernière consigne
     */
 
-    if(consigneActuelle>1 && consigneActuelle==tableauConsignes.nbConsignes)
+    if(consigneActuelle>2 && consigneActuelle==tableauConsignes.nbConsignes)
     {
         tableauConsignes.listeConsignes[0].angle = tableauConsignes.listeConsignes[tableauConsignes.nbConsignes-1].angle;
         tableauConsignes.listeConsignes[0].distance = tableauConsignes.listeConsignes[tableauConsignes.nbConsignes-1].distance;
@@ -261,9 +261,9 @@ void Manager::init()
     assRotation.changeVmax(0);
     assRotation.changeKpVitesse(0);
 
-    assTranslation.changeKp(3);
+    assTranslation.changeKp(2);
     assTranslation.changePWM(PWM_MAX);
-    assTranslation.changeKd(200);
+    assTranslation.changeKd(100);
     assTranslation.changeKi(0);
     assTranslation.changeVmax(0);
     assTranslation.changeKpVitesse(0);

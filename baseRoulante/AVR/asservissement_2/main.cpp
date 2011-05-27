@@ -80,7 +80,6 @@ int main( void ){
             asm("nop");
         }
         caractereLu = read();
-        
         switch (caractereLu) {
         case '?':
             printlnLong(0);
@@ -117,6 +116,9 @@ int main( void ){
             break;
         //Constantes.
         case 'c':
+        	while (available() == 0) {
+				asm("nop");
+			}
 			switch(caractereLu= read()){
 				//Translation
 				case 't' :
@@ -144,6 +146,9 @@ int main( void ){
 					break;
 				//Rotation
 				case 'r' :
+					while (available() == 0) {
+						asm("nop");
+					}
 					switch(caractereLu= read()){
 						//Proportionnel
 						case 'p':
@@ -224,17 +229,42 @@ int main( void ){
             TIMSK1 |= (1 << TOIE1);
             break;
         case 'x':
-            TIMSK1 &= ~(1 << TOIE1);
-            printlnLong(x);
-            TIMSK1 |= (1 << TOIE1);
-            break;
-    
+			while (available() == 0) {
+				asm("nop");
+			}
+			switch(caractereLu= read()){
+				case 'g':
+					TIMSK1 &= ~(1 << TOIE1);
+					printlnLong(x);
+					TIMSK1 |= (1 << TOIE1);
+					break;
+				case 's':
+					i=litEntierLong();
+					TIMSK1 &= ~(1 << TOIE1);
+					x=i;
+					TIMSK1 |= (1 << TOIE1);
+					break;
+					
+			}
+			break;
         case 'y':
-            TIMSK1 &= ~(1 << TOIE1);
-            printlnLong(y);
-            TIMSK1 |= (1 << TOIE1);
+			while (available() == 0) {
+				asm("nop");
+			}
+            switch(caractereLu= read()){
+				case 'g':
+					TIMSK1 &= ~(1 << TOIE1);
+					printlnLong(y);
+					TIMSK1 |= (1 << TOIE1);
+					break;
+				case 's':
+					i=litEntierLong();
+					TIMSK1 &= ~(1 << TOIE1);
+					y=i;
+					TIMSK1 |= (1 << TOIE1);
+					break;
+			}
             break;
-    
         case 'z':
             i=litEntierLong();
             if (i >= 0) {
