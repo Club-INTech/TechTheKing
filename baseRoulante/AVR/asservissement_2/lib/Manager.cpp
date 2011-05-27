@@ -94,7 +94,7 @@ Manager::assPolaire(){
 
     //Blocage
     if( (ABS(pwmTranslation)>0 && ABS(tableauConsignes.listeConsignes[consigneActuelle-1].distance - distance)>0)
-        || (ABS(pwmRotation)>0 && ABS(tableauConsignes.listeConsignes[consigneActuelle-1].angle - angle)>0 ){
+        || ( ABS(pwmRotation)>0 && ABS(tableauConsignes.listeConsignes[consigneActuelle-1].angle - angle)>0 ) ){
         tableauConsignes.listeConsignes[0].angle = angle;
         tableauConsignes.listeConsignes[0].distance = distance;
         tableauConsignes.nbConsignes = 1;

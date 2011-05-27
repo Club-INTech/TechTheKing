@@ -166,10 +166,7 @@ int main( void ){
             }
             break;
         case 's':
-            i=litEntierLong();
-            if (i >= 0) {
-                manager.assTranslation.changeKp(i);
-            }
+            manager.stop();
             break;
         case 't':
             TIMSK1 &= ~(1 << TOIE1);
