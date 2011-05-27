@@ -37,23 +37,23 @@
 
 int32_t litEntierLong()
 {
-	int32_t aux = 0;
-	unsigned char j=0;
-	int32_t k = 10000000;
-	unsigned char c;
-	for (j = 0; j < 8; j++) {
-		while (available()==0) { 
-			asm("nop");
-		}
-		c = read();
-		if (c < 48 || c > 57) {
-			aux = -1;
-			break;
-		}
-		aux += (c - 48) * k;
-		k /= 10;
-	}
-	return aux;
+    int32_t aux = 0;
+    unsigned char j=0;
+    int32_t k = 10000000;
+    unsigned char c;
+    for (j = 0; j < 8; j++) {
+        while (available()==0) { 
+            asm("nop");
+        }
+        c = read();
+        if (c < 48 || c > 57) {
+            aux = -1;
+            break;
+        }
+        aux += (c - 48) * k;
+        k /= 10;
+    }
+    return aux;
 }
 
 int main( void ){
@@ -70,140 +70,148 @@ int main( void ){
     
     int32_t i=0;
     
+    printlnString("debut");
     
     while(1)
     {
+		
         unsigned char premierCaractere;
-		while (available() == 0) {
-			asm("nop");
-		}
-		
-		premierCaractere = read();
-		
-		switch (premierCaractere) {
-		case '?':
-			printlnLong(0);
-			break;
-		case 'a':
-			printlnLong(i);
-			i=litEntierLong();
-			printlnLong(i);
-			if (i >= 10000000)
-				//  avance
-				manager.changeIemeConsigneAngle(i-10000000,1);
-			else if(i>=0)
-				// recule
-				manager.changeIemeConsigneAngle(-i,1);
-			break;
-		case 'b':
-			i=litEntierLong();
-			if (i >= 10000000)
-				//  tourne positivement de i
-				manager.changeIemeConsigneDistance(i-10000000,1);
-			else if (i >= 0)
-				// tourne nÃ©gativement i
-				manager.changeIemeConsigneDistance(-i,1);
-			break;
-		case 'g': // push consigne etape 1
-			i=litEntierLong();
-			if (i >= 10000000)
-				manager.pushConsigneDistance(i-10000000);
-			else if(i>=0)
-				manager.pushConsigneDistance(-i);
-			break;	
-		case 'h':
-			manager.switchAssDistance();
-			break;
-		case 'i':
-			manager.switchAssAngle();
-			break;
-		case 'j':
-			send_reset();
-			break;
-		case 'l':
-			i=litEntierLong();
-			if (i >= 0) {
-				manager.assRotation.changeVmax(i);
-			}
-			break;
-		case 'm':
-			i=litEntierLong();
-			if (i >= 0) {
-				manager.assRotation.changeKp(i);
-			}
-			break;
-		case 'n':
-			manager.assRotation.stop();
-			manager.assTranslation.stop();
-			break;
-		case 'o':
-			TIMSK1 &= ~(1 << TOIE1);
-			break;
-		case 'p':
-			TIMSK1 |= (1 << TOIE1);
-			break;
-		case 'q': // push consigne (étape 2)
-			i=litEntierLong();
-			if (i >= 10000000)
-				manager.pushConsigneAngle(i-10000000);
-			else if(i>=0)
-				manager.pushConsigneAngle(-i);
-			break;
-		case 'r':
-			i=litEntierLong();
-			if (i >= 0) {
-				manager.assTranslation.changeVmax(i);
-			}
-			break;
-		case 's':
-			i=litEntierLong();
-			if (i >= 0) {
-				manager.assTranslation.changeKp(i);
-			}
-			break;
-		case 't':
-			TIMSK1 &= ~(1 << TOIE1);
-			printlnLong(manager.distanceBkp);
-			TIMSK1 |= (1 << TOIE1);
-			break;
-		case 'u':
-			TIMSK1 &= ~(1 << TOIE1);
-			printlnLong(manager.angleBkp);
-			TIMSK1 |= (1 << TOIE1);
-			break;
-		case 'v':
-			i=litEntierLong();
-			if (i >= 0) {
-				manager.assTranslation.changeKd(i);
-			}
-			break;
-		case 'w':
-			i=litEntierLong();
-			if (i >= 0) {
-				manager.assTranslation.changeKi(i);
-			}
-			break;
-		
-		case 'x':
-			TIMSK1 &= ~(1 << TOIE1);
-			printlnLong(x);
-			TIMSK1 |= (1 << TOIE1);
-			break;
-	
-		case 'y':
-			TIMSK1 &= ~(1 << TOIE1);
-			printlnLong(y);
-			TIMSK1 |= (1 << TOIE1);
-			break;
-	
-		case 'z':
-			i=litEntierLong();
-			if (i >= 0) {
-				manager.assRotation.changeVmax(i);
-			}
+        while (available() == 0) {
+            asm("nop");
+        }
+        premierCaractere = read();
+        
+        switch (premierCaractere) {
+        case '?':
+            printlnLong(0);
+            break;
+        case 'a':
+            printlnLong(i);
+            i=litEntierLong();
+            printlnLong(i);
+            if (i >= 10000000){
+                //  avance
+                manager.pushConsigneDistance(manager.distanceBkp);
+                manager.pushConsigneAngle(i-10000000);
+            }
+            else if(i>=0){
+                // recule
+                manager.pushConsigneDistance(manager.distanceBkp);
+                manager.pushConsigneAngle(-i);
+            }
+            manager.resetListeConsignes();
+            break;
+        case 'b':
+            i=litEntierLong();
+            if (i >= 10000000){
+                //  tourne positivement de i
+                manager.pushConsigneDistance(manager.distanceBkp+(i-10000000));
+                manager.pushConsigneAngle(manager.angleBkp);
+            }
+            else if (i >= 0){
+                // tourne nÃ©gativement i
+                manager.pushConsigneDistance(manager.distanceBkp-i);
+                manager.pushConsigneAngle(manager.angleBkp);    
+            }
+            manager.resetListeConsignes();
+            break;
+        case 'g': // push consigne etape 1
+            i=litEntierLong();
+            if (i >= 10000000)
+                manager.pushConsigneDistance(i-10000000);
+            else if(i>=0)
+                manager.pushConsigneDistance(-i);
+            break;  
+        case 'h':
+            manager.switchAssDistance();
+            break;
+        case 'i':
+            manager.switchAssAngle();
+            break;
+        case 'j':
+            send_reset();
+            break;
+        case 'l':
+            i=litEntierLong();
+            if (i >= 0) {
+                manager.assRotation.changeVmax(i);
+            }
+            break;
+        case 'm':
+            i=litEntierLong();
+            if (i >= 0) {
+                manager.assRotation.changeKp(i);
+            }
+            break;
+        case 'n':
+            manager.assRotation.stop();
+            manager.assTranslation.stop();
+            break;
+        case 'o':
+            TIMSK1 &= ~(1 << TOIE1);
+            break;
+        case 'p':
+            TIMSK1 |= (1 << TOIE1);
+            break;
+        case 'q': // push consigne (étape 2)
+            i=litEntierLong();
+            if (i >= 10000000)
+                manager.pushConsigneAngle(i-10000000);
+            else if(i>=0)
+                manager.pushConsigneAngle(-i);
+            break;
+        case 'r':
+            i=litEntierLong();
+            if (i >= 0) {
+                manager.assTranslation.changeVmax(i);
+            }
+            break;
+        case 's':
+            manager.stop();
+            break;
+        case 't':
+            TIMSK1 &= ~(1 << TOIE1);
+            printlnLong(manager.distanceBkp);
+            TIMSK1 |= (1 << TOIE1);
+            break;
+        case 'u':
+            TIMSK1 &= ~(1 << TOIE1);
+            printlnLong(manager.angleBkp);
+            TIMSK1 |= (1 << TOIE1);
+            break;
+        case 'v':
+            i=litEntierLong();
+            if (i >= 0) {
+                manager.assTranslation.changeKd(i);
+            }
+            break;
+        case 'w':
+            i=litEntierLong();
+            if (i >= 0) {
+                manager.assTranslation.changeKi(i);
+            }
+            break;
+        
+        case 'x':
+            TIMSK1 &= ~(1 << TOIE1);
+            printlnLong(x);
+            TIMSK1 |= (1 << TOIE1);
+            break;
+    
+        case 'y':
+            TIMSK1 &= ~(1 << TOIE1);
+            printlnLong(y);
+            TIMSK1 |= (1 << TOIE1);
+            break;
+    
+        case 'z':
+            i=litEntierLong();
+            if (i >= 0) {
+                manager.assRotation.changeVmax(i);
+            }
 
-		default:
-			break;
-		}
+        default:
+            break;
+        }
     }
 }
