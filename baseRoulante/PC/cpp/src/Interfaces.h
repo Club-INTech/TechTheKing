@@ -90,10 +90,8 @@ class InterfaceActionneurs {
         void recalage(void);
         
     private:
-        // D'un pourcentage à une valeur entre 0 et 900 à envoyer via i2c
-        inline unsigned int pourcentageHauteurConversion(unsigned char pourcentage); 
-        // D'un pourcentage à une valeur adaptée entre 0 et 1023 à envoyer via i2c
-        inline unsigned int pourcentageAngleConversion(unsigned char pourcentage);
+        inline unsigned short pourcentageHauteurConversion(unsigned char pourcentage);
+        inline unsigned short pourcentageAngleConversion(unsigned char pourcentage);
         
 };
 

@@ -244,46 +244,46 @@ InterfaceActionneurs::~InterfaceActionneurs()
 
 void InterfaceActionneurs::hauteurBrasGauche(unsigned char pourcentageHauteur)
 {
-    unsigned int tics = pourcentageHauteurConversion(pourcentageHauteur);
-    unsigned char message[] = {0X41, (unsigned char) tics, (unsigned char) (tics >> 8), '\0'};
+    unsigned char tics = pourcentageHauteurConversion(pourcentageHauteur);
+    unsigned char message[] = {0X41, tics, '\0'};
     
-    i2c_write(adaptateur_i2c, 0X10, message, 4);
+    i2c_write(adaptateur_i2c, 0X10, message, 3);
 }
 
 
 void InterfaceActionneurs::hauteurBrasDroit(unsigned char pourcentageHauteur)
 {
-    unsigned int tics = pourcentageHauteurConversion(pourcentageHauteur);
-    unsigned char message[] = {0X42, (unsigned char) tics, (unsigned char) (tics >> 8), '\0'};
+    unsigned char tics = pourcentageHauteurConversion(pourcentageHauteur);
+    unsigned char message[] = {0X42, tics, '\0'};
     
-    i2c_write(adaptateur_i2c, 0X10, message, 4);
+    i2c_write(adaptateur_i2c, 0X10, message, 3);
 }
 
 
 void InterfaceActionneurs::hauteurDeuxBras(unsigned char pourcentageHauteur)
 {
-    unsigned int tics = pourcentageHauteurConversion(pourcentageHauteur);
-    unsigned char message[] = {0X4B, (unsigned char) tics, (unsigned char) (tics >> 8), '\0'};
+    unsigned char tics = pourcentageHauteurConversion(pourcentageHauteur);
+    unsigned char message[] = {0X4B, tics, '\0'};
     
-    i2c_write(adaptateur_i2c, 0X10, message, 4);
+    i2c_write(adaptateur_i2c, 0X10, message, 3);
 }
 
 
 void InterfaceActionneurs::angleBrasGauche(unsigned char pourcentageAngle)
 {
-    unsigned int angle = pourcentageAngleConversion(pourcentageAngle);
-    unsigned char message[] = {0X11, (unsigned char) angle, (unsigned char) (angle >> 8), '\0'};
+    unsigned char angle = pourcentageAngleConversion(pourcentageAngle);
+    unsigned char message[] = {0X11, angle, '\0'};
     
-    i2c_write(adaptateur_i2c, 0X10, message, 4);
+    i2c_write(adaptateur_i2c, 0X10, message, 3);
 }
 
 
 void InterfaceActionneurs::angleBrasDroit(unsigned char pourcentageAngle)
 {
-    unsigned int angle = pourcentageAngleConversion(pourcentageAngle);
-    unsigned char message[] = {0X12, (unsigned char) angle, (unsigned char) (angle >> 8), '\0'};
+    unsigned char angle = pourcentageAngleConversion(pourcentageAngle);
+    unsigned char message[] = {0X12, angle, '\0'};
     
-    i2c_write(adaptateur_i2c, 0X10, message, 4);
+    i2c_write(adaptateur_i2c, 0X10, message, 3);
 }
 
 
@@ -330,15 +330,15 @@ void InterfaceActionneurs::recalage(void)
     i2c_write(adaptateur_i2c, 0X10, message, 2);
 }
 
-unsigned int InterfaceActionneurs::pourcentageHauteurConversion(unsigned char pourcentage)
+unsigned short InterfaceActionneurs::pourcentageHauteurConversion(unsigned char pourcentage)
 {
     return (pourcentage*90);
 }
 
 
-unsigned int InterfaceActionneurs::pourcentageAngleConversion(unsigned char pourcentage)
+unsigned short InterfaceActionneurs::pourcentageAngleConversion(unsigned char pourcentage)
 {
-    return(pourcentage*6+200);
+    return(pourcentage*10,23);
 }
 
 

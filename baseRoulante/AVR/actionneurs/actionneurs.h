@@ -9,10 +9,10 @@
  *  Registres de comparaison pour le fast PWM
  *    entre 0 et 255
  */
-#define SERVO2      OCR0A
-#define SERVO1      OCR0B
-#define MOTEUR2     OCR2A
-#define MOTEUR1     OCR2B
+#define SERVO_CONS2      OCR0A
+#define SERVO_CONS1      OCR0B
+#define ASC_MOTEUR2     OCR2A
+#define ASC_MOTEUR1     OCR2B
 
 /*
  * Pins de direction des PH
@@ -28,17 +28,24 @@
  *    PWM pour les servos
  *    Type d'asservissement
  */
-#define PWM_MAX1    150
-#define PWM_MAX2    200
-#define KP1         1
-#define KP2         2
-#define ID_AX1      2
-#define ID_AX2      1
-#define PWM_UP      18
-#define PWM_DOWN    26
-#define ASSERV_INDEP    0
-#define ASSERV_SYNCHRO  1
-#define ASSERV_STOP     -1
+#define ASC_PWM_MAX1           150
+#define ASC_PWM_MAX2           150
+#define ASC_KP1                1
+#define ASC_KP2                2
+#define ASC_ASSERV_INDEP       0
+#define ASC_ASSERV_SYNCHRO     1
+#define ASC_ASSERV_STOP       -1
+#define ASC_CONS_MAX           8000
+
+#define AX_ID1                 1
+#define AX_ID2                 2
+#define AX_ANGLE_MEDIAN        511
+#define AX_ANGLE_EXT1          200
+#define AX_ANGLE_EXT2          800
+#define AX_SPEED               511
+
+#define SERVO_PWM_UP           18
+#define SERVO_PWM_DOWN         26
 
 /*
  *  Pins des codeurs
