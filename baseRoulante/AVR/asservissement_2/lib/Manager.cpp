@@ -12,6 +12,7 @@
 
 volatile double x;
 volatile double y;
+int compteurBlocage = 0 ;
 
 Couleur CouleurRobot = BLEU;
 
@@ -46,8 +47,7 @@ Manager::assPolaire(){
     assTranslation.setVitesse((distance-distanceBkp));
     
     
-    angleBkp = angle;
-    distanceBkp = distance;
+    
 
     /*
     * On changera de consigne si :
@@ -91,16 +91,27 @@ Manager::assPolaire(){
     int16_t pwmRotation = (activationAssAngle?assRotation.calculePwm(((tableauConsignes.listeConsignes)[consigneActuelle-1]).angle,angle):0);
     int16_t pwmTranslation = (activationAssDistance?assTranslation.calculePwm(((tableauConsignes.listeConsignes)[consigneActuelle-1]).distance,distance):0);
 
-
     //Blocage
-    if( (ABS(pwmTranslation)>0 && ABS(tableauConsignes.listeConsignes[consigneActuelle-1].distance - distance)>0)
-        || ( ABS(pwmRotation)>0 && ABS(tableauConsignes.listeConsignes[consigneActuelle-1].angle - angle)>0 ) ){
-        tableauConsignes.listeConsignes[0].angle = angle;
-        tableauConsignes.listeConsignes[0].distance = distance;
-        tableauConsignes.nbConsignes = 1;
-        consigneActuelle = 1;
-        printChar('f');
+    
+    if( (ABS(pwmTranslation))>0
+		&& distance==distanceBkp
+		&& (ABS(pwmRotation))>0
+		&& angle==angleBkp ) {
+		if(compteurBlocage==5){
+			tableauConsignes.listeConsignes[0].angle = angle;
+			tableauConsignes.listeConsignes[0].distance = distance;
+			tableauConsignes.nbConsignes = 1;
+			consigneActuelle = 1;
+			printChar('f');
+			compteurBlocage=0;
+		}
+		else{
+			compteurBlocage++;
+		}
     }
+    else{
+		compteurBlocage=0;
+	}
     /*
     if(pwmTranslation!=0 && (distance==distanceBkp)){
         resetListeConsignes();
@@ -151,6 +162,9 @@ Manager::assPolaire(){
         PORTB &= ~PINDIR2;
         MOTEUR2 = -pwmD;
     }
+    
+    angleBkp = angle;
+    distanceBkp = distance;
 }
 
 /*
@@ -231,6 +245,9 @@ void Manager::init()
     TCCR1B |= (1 << CS11);
    //prescaler 64
    //TCCR1B |= (1 << CS11) | (1 << CS10 );
+    
+    //Timer Blocage
+    
     
     // initialisation de la liste de point
     tableauConsignes.nbConsignes=1;
