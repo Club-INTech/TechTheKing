@@ -73,6 +73,7 @@ int main( void ){
     
     while(1)
     {
+		
         unsigned char premierCaractere;
 		while (available() == 0) {
 			asm("nop");
