@@ -26,7 +26,6 @@ static unsigned char TWI_busy = 0;
 
 union TWI_statusReg_t TWI_statusReg = {0};
 
-unsigned char order = 0;
 unsigned char messageBuf[TWI_BUFFER_SIZE];
 
 void TWI_Init ( void )
@@ -45,78 +44,70 @@ void TWI_Loop( void )
     if ( ! TWI_Transceiver_Busy() ) {
         
         if ( TWI_statusReg.RxDataInBuf ) {
-            TWI_Get_Data_From_Transceiver(messageBuf, 4);
-            
-            uint8_t order = messageBuf[0];
+            TWI_Get_Data_From_Transceiver(messageBuf, 3);
             
             // Ordre pour l'AX12 1
-            if ( order == MASTER_CMD_AX1_GOTO ) {
+            if ( messageBuf[0] == MASTER_CMD_AX1_GOTO ) {
                 
                 // Lecture de la consigne
-                int16_t cons;
-                int16_t temp;
-                cons = messageBuf[1];
-                temp = messageBuf[2];
+                uint16_t cons = messageBuf[1];
+                uint16_t temp = messageBuf[2];
                 cons += (temp << 8);
                 
                 // Ecretage de la consigne
-                if (cons > 900)
-                    cons = 900;
-                else if (cons < 100)
-                    cons = 100;
+                if (cons > AX_ANGLE_EXT2)
+                    cons = AX_ANGLE_EXT2;
+                else if (cons < AX_ANGLE_EXT1)
+                    cons = AX_ANGLE_EXT1;
                 
                 // Envoi de l'ordre au servo
-                AX12GoTo (ID_AX1, cons);
+                AX12GoTo (AX_ID1, cons);
             }
 
             // Ordre pour l'AX12 2
-            if ( order == MASTER_CMD_AX2_GOTO ) {
+            if ( messageBuf[0] == MASTER_CMD_AX2_GOTO ) {
                 
                 // Lecture de la consigne
-                int16_t cons;
-                int16_t temp;
-                cons = messageBuf[1];
-                temp = messageBuf[2];
+                uint16_t cons = messageBuf[1];
+                uint16_t temp = messageBuf[2];
                 cons += (temp << 8);
                 
                 // Ecretage de la consigne
-                if (cons > 900)
-                    cons = 900;
-                else if (cons < 100)
-                    cons = 100;
+                if (cons > AX_ANGLE_EXT2)
+                    cons = AX_ANGLE_EXT2;
+                else if (cons < AX_ANGLE_EXT1)
+                    cons = AX_ANGLE_EXT1;
                 
                 // Envoi de l'ordre au servo
-                AX12GoTo (ID_AX2, cons);
+                AX12GoTo (AX_ID2, cons);
             }
 
-            if ( order == MASTER_CMD_SERVO1_UP ) {
-                SERVO1 = PWM_UP;
+            else if ( messageBuf[0] == MASTER_CMD_SERVO1_UP ) {
+                SERVO_CONS1 = SERVO_PWM_UP;
             }
 
-            if ( order == MASTER_CMD_SERVO2_UP ) {
-                SERVO2 = PWM_UP;
+            else if ( messageBuf[0] == MASTER_CMD_SERVO2_UP ) {
+                SERVO_CONS2 = SERVO_PWM_UP;
             }
 
-            if ( order == MASTER_CMD_SERVO1_DOWN ) {
-                SERVO1 = PWM_DOWN;
+            else if ( messageBuf[0] == MASTER_CMD_SERVO1_DOWN ) {
+                SERVO_CONS1 = SERVO_PWM_DOWN;
             }
 
-            if ( order == MASTER_CMD_SERVO2_DOWN ) {
-                SERVO2 = PWM_DOWN;
+            else if ( messageBuf[0] == MASTER_CMD_SERVO2_DOWN ) {
+                SERVO_CONS2 = SERVO_PWM_DOWN;
             }
 
-            if ( order == MASTER_CMD_ASC1_GOTO ) {
+            else if ( messageBuf[0] == MASTER_CMD_ASC1_GOTO ) {
                 
                 // Lecture de la consigne
-                int16_t cons;
-                int16_t temp;
-                cons = messageBuf[1];
-                temp = messageBuf[2];
+                uint16_t cons = messageBuf[1];
+                uint16_t temp = messageBuf[2];
                 cons += (temp << 8);
                 
                 // Ecretage de la consigne
-                if (cons > 15000)
-                    cons = 15000;
+                if (cons > ASC_CONS_MAX)
+                    cons = ASC_CONS_MAX;
                 else if (cons < 0)
                     cons = 0;
                 
@@ -124,21 +115,19 @@ void TWI_Loop( void )
                 consigne1 = cons;
                 
                 // Activation de l'asservissement independant
-                etat_asservissement = ASSERV_INDEP;
+                etat_asservissement = ASC_ASSERV_INDEP;
             }
 
-            if ( order == MASTER_CMD_ASC2_GOTO ) {
+            else if ( messageBuf[0] == MASTER_CMD_ASC2_GOTO ) {
                 
                 // Lecture de la consigne
-                int16_t cons;
-                int16_t temp;
-                cons = messageBuf[1];
-                temp = messageBuf[2];
+                uint16_t cons = messageBuf[1];
+                uint16_t temp = messageBuf[2];
                 cons += (temp << 8);
                 
                 // Ecretage de la consigne
-                if (cons > 15000)
-                    cons = 15000;
+                if (cons > ASC_CONS_MAX)
+                    cons = ASC_CONS_MAX;
                 else if (cons < 0)
                     cons = 0;
                 
@@ -146,21 +135,18 @@ void TWI_Loop( void )
                 consigne2 = cons;
                 
                 // Activation de l'asservissement independant
-                etat_asservissement = ASSERV_INDEP;
+                etat_asservissement = ASC_ASSERV_INDEP;
             }
 
-            if ( order == MASTER_CMD_ASCB_GOTO) {
+            else if ( messageBuf[0] == MASTER_CMD_ASCB_GOTO) {
                 
                 // Lecture de la consigne
                 int16_t cons;
-                int16_t temp;
                 cons = messageBuf[1];
-                temp = messageBuf[2];
-                cons += (temp << 8);
                 
                 // Ecretage de la consigne
-                if (cons > 15000)
-                    cons = 15000;
+                if (cons > ASC_CONS_MAX)
+                    cons = ASC_CONS_MAX;
                 else if (cons < 0)
                     cons = 0;
                 
@@ -168,15 +154,15 @@ void TWI_Loop( void )
                 consigneb = cons;
                 
                 // Activation de l'asservissement synchronise
-                etat_asservissement = ASSERV_SYNCHRO;
+                etat_asservissement = ASC_ASSERV_SYNCHRO;
             }
 
-            if ( order == MASTER_CMD_STOP ) {
+            else if ( messageBuf[0] == MASTER_CMD_STOP ) {
                 // On desactive l'asservissement
-                etat_asservissement = ASSERV_STOP;
+                etat_asservissement = ASC_ASSERV_STOP;
             }
             
-            if ( order == MASTER_CMD_RECALAGE ) {
+            else if ( messageBuf[0] == MASTER_CMD_RECALAGE ) {
                 recalage();
             }   
                 
