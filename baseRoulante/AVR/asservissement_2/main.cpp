@@ -75,13 +75,13 @@ int main( void ){
     while(1)
     {
 		
-        unsigned char premierCaractere;
+        unsigned char caractereLu;
         while (available() == 0) {
             asm("nop");
         }
-        premierCaractere = read();
+        caractereLu = read();
         
-        switch (premierCaractere) {
+        switch (caractereLu) {
         case '?':
             printlnLong(0);
             break;
@@ -115,6 +115,59 @@ int main( void ){
             }
             manager.resetListeConsignes();
             break;
+        //Constantes.
+        case 'c':
+			switch(caractereLu= read()){
+				//Translation
+				case 't' :
+					switch(caractereLu= read()){
+						//Proportionnel
+						case 'p':
+							i=litEntierLong();
+							if (i >= 0) {
+								manager.assTranslation.changeKp(i);
+							}
+							break;
+						case 'd':
+							i=litEntierLong();
+							if (i >= 0) {
+								manager.assTranslation.changeKd(i);
+							}
+							break;
+						case 'i':
+							i=litEntierLong();
+							if (i >= 0) {
+								manager.assTranslation.changeKi(i);
+							}
+							break;
+					}
+					break;
+				//Rotation
+				case 'r' :
+					switch(caractereLu= read()){
+						//Proportionnel
+						case 'p':
+							i=litEntierLong();
+							if (i >= 0) {
+								manager.assRotation.changeKp(i);
+							}
+							break;
+						case 'd':
+							i=litEntierLong();
+							if (i >= 0) {
+								manager.assRotation.changeKd(i);
+							}
+							break;
+						case 'i':
+							i=litEntierLong();
+							if (i >= 0) {
+								manager.assRotation.changeKi(i);
+							}
+							break;
+					}
+					break;
+			}
+			break;
         case 'g': // push consigne etape 1
             i=litEntierLong();
             if (i >= 10000000)
@@ -137,15 +190,6 @@ int main( void ){
                 manager.assRotation.changeVmax(i);
             }
             break;
-        case 'm':
-            i=litEntierLong();
-            if (i >= 0) {
-                manager.assRotation.changeKp(i);
-            }
-            break;
-        case 'n':
-            manager.assRotation.stop();
-            manager.assTranslation.stop();
             break;
         case 'o':
             TIMSK1 &= ~(1 << TOIE1);
@@ -179,19 +223,6 @@ int main( void ){
             printlnLong(manager.angleBkp);
             TIMSK1 |= (1 << TOIE1);
             break;
-        case 'v':
-            i=litEntierLong();
-            if (i >= 0) {
-                manager.assTranslation.changeKd(i);
-            }
-            break;
-        case 'w':
-            i=litEntierLong();
-            if (i >= 0) {
-                manager.assTranslation.changeKi(i);
-            }
-            break;
-        
         case 'x':
             TIMSK1 &= ~(1 << TOIE1);
             printlnLong(x);
