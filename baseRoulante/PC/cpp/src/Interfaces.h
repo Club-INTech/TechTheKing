@@ -90,8 +90,8 @@ class InterfaceActionneurs {
         void recalage(void);
         
     private:
-        inline unsigned char pourcentageHauteurConversion(unsigned char pourcentage);
-        inline unsigned char pourcentageAngleConversion(unsigned char pourcentage);
+        inline unsigned short pourcentageHauteurConversion(unsigned char pourcentage);
+        inline unsigned short pourcentageAngleConversion(unsigned char pourcentage);
         
 };
 

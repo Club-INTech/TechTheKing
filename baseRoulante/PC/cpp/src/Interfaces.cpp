@@ -330,13 +330,13 @@ void InterfaceActionneurs::recalage(void)
     i2c_write(adaptateur_i2c, 0X10, message, 2);
 }
 
-unsigned int InterfaceActionneurs::pourcentageHauteurConversion(unsigned char pourcentage)
+unsigned short InterfaceActionneurs::pourcentageHauteurConversion(unsigned char pourcentage)
 {
     return (pourcentage*90);
 }
 
 
-unsigned int InterfaceActionneurs::pourcentageAngleConversion(unsigned char pourcentage)
+unsigned short InterfaceActionneurs::pourcentageAngleConversion(unsigned char pourcentage)
 {
     return(pourcentage*10,23);
 }
