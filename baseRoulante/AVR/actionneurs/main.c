@@ -7,7 +7,6 @@
 
 int main()
 {
-<<<<<<< HEAD
 	// Pour le debug serie
 	//uart_init();
 
