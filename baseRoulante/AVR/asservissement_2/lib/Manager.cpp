@@ -86,12 +86,12 @@ Manager::assPolaire(){
 
     //On est à l'arrêt
     if(distance==distanceBkp
-	   && angle==angleBkp
-	   && ABS(delta_distance) < ABS(delta_distanceBkp))
+	   && angle==angleBkp)
     {
 		//On est arrivé
 		if(consigneActuelle>1
-		   && consigneActuelle==tableauConsignes.nbConsignes){
+		   && consigneActuelle==tableauConsignes.nbConsignes
+		   && ABS(delta_distance) < ABS(delta_distanceBkp)){
 			resetListeConsignes();
 			printChar('f');
 		}
