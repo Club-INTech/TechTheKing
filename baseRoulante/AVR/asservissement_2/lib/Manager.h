@@ -9,7 +9,7 @@
 #include "serial.h"
 #include "Cos.h"
 
-#define PWM_MAX 255
+#define PWM_MAX 70
 #define NB_MAX_CONSIGNES 100
 #define PRESCALER 64
 //#define TEMPS_ASS 20000000/(2^16*PRESCALER)

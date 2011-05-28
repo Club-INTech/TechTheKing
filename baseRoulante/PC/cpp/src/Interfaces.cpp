@@ -153,19 +153,13 @@ void InterfaceAsservissement::reGoTo(){
 
 void InterfaceAsservissement::avancer(unsigned int distanceMm){
 	int distanceTicks = distanceMm*CONVERSION_MM_TIC;
-	if(distanceTicks>0)
-		m_liaisonSerie<<"b1"+formaterInt(distanceMm*CONVERSION_MM_TIC)<<endl;
-	else
-		m_liaisonSerie<<"b0"+formaterInt(-distanceMm*CONVERSION_MM_TIC)<<endl;
+	m_liaisonSerie<<"b1"+formaterInt(distanceMm*CONVERSION_MM_TIC)<<endl;
 	attendreArrivee();
 }
 
 void InterfaceAsservissement::reculer(unsigned int distanceMm){
 	int distanceTicks = distanceMm*CONVERSION_MM_TIC;
-	if(distanceTicks>0)
-		m_liaisonSerie<<"b1"+formaterInt(distanceMm*CONVERSION_MM_TIC)<<endl;
-	else
-		m_liaisonSerie<<"b0"+formaterInt(-distanceMm*CONVERSION_MM_TIC)<<endl;
+	m_liaisonSerie<<"b0"+formaterInt(distanceMm*CONVERSION_MM_TIC)<<endl;
 	attendreArrivee();
 }
 
@@ -191,13 +185,13 @@ InterfaceAsservissement::InterfaceAsservissement(int precision) : m_compteurImag
 void InterfaceAsservissement::recalage()
 {
 	reculer(500);
-	avancer(500);
 	if(COULEUR_ROBOT==BLEU){
 		setXRobot(80);
 	}
 	else if(COULEUR_ROBOT==ROUGE){
 		setXRobot(2920);
 	}
+	avancer(500);
 	tourner(-M_PI/2);
 	reculer(500);
 	setYRobot(2020);
