@@ -1,6 +1,7 @@
 CC=avr-gcc
 CFLAGS=-Wall -O2 
-MMCU=atmega328p
+MMCU_GCC=atmega328p
+MMCU_DUDE=m328p
 FREQ=16000000
 
 all: main.hex
@@ -8,33 +9,21 @@ all: main.hex
 main.hex: main.out
 	avr-objcopy -O ihex -R .eeprom main.out main.hex
 
-main.out: main.o actionneurs.o ax12.o twi_slave.o
-	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) main.o actionneurs.o twi_slave.o ax12.o -o main.out
+main.out: main.o actionneurs.o ax12.o twi_slave.o adc.o
+	$(CC) $(CFLAGS) -mmcu=$(MMCU_GCC) -DF_CPU=$(FREQ) main.o adc.o actionneurs.o twi_slave.o ax12.o -o main.out
 
-main.o: main.c
-	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) main.c -c
-
-actionneurs.o: actionneurs.c actionneurs.h
-	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) actionneurs.c -c
-
-twi_slave.o: twi_slave.c twi_slave.h
-	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) twi_slave.c -c
-
-ax12.o: ax12.c ax12.h
-	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) ax12.c -c
-
-serial.o: serial.c serial.h
-	$(CC) $(CFLAGS) -mmcu=$(MMCU) -DF_CPU=$(FREQ) serial.c -c
+%.o: %.c
+	$(CC) $(CFLAGS) -mmcu=$(MMCU_GCC) -DF_CPU=$(FREQ) -c $<
 
 clean:
-	rm -rf *.o *.hex *.out
+	rm -rf *.o *.hex *.out *~
 
 upload: all
-	sudo avrdude -P /dev/ttyUSB0 -c stk500v1 -p m328p -b 57600 -D -U flash:w:main.hex
+	sudo avrdude -P /dev/ttyUSB0 -c stk500v1 -p $(MMCU_DUDE) -b 57600 -D -U flash:w:main.hex
 
 upload2: all
-	sudo avrdude -c usbasp -p m328p -U flash:w:main.hex
+	sudo avrdude -c usbasp -p $(MMCU_DUDE) -U flash:w:main.hex
 
 upload3: all
-	sudo avrdude -c usbtiny -p m328p -U flash:w:main.hex
+	sudo avrdude -c usbtiny -p $(MMCU_DUDE) -U flash:w:main.hex
  
