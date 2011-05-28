@@ -90,8 +90,7 @@ Manager::assPolaire(){
     {
 		//On est arrivé
 		if(consigneActuelle>1
-		   && consigneActuelle==tableauConsignes.nbConsignes
-		   && ABS(delta_distance) < ABS(delta_distanceBkp)){
+		   && consigneActuelle==tableauConsignes.nbConsignes){
 			resetListeConsignes();
 			printlnChar('f');
 		}

@@ -142,6 +142,9 @@ void InterfaceAsservissement::attendreArrivee(){
 	unsigned char result = 0;	
 	while(result != 'f'){
 		m_liaisonSerie >> result;
+		#ifdef DEBUG
+		cout << result << endl;
+		#endif
 	}
 }
 void InterfaceAsservissement::reGoTo(){
