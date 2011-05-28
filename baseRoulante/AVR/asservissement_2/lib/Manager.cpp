@@ -13,7 +13,7 @@
 volatile double x;
 volatile double y;
 int compteurBlocage = 0 ;
-
+int delta_distanceBkp = 0;
 Couleur CouleurRobot = BLEU;
 
 void
@@ -86,7 +86,8 @@ Manager::assPolaire(){
 
     //On est à l'arrêt
     if(distance==distanceBkp
-	   && angle==angleBkp )
+	   && angle==angleBkp
+	   && delta_distance < delta_distanceBkp)
     {
 		//On est arrivé
 		if(consigneActuelle>1
@@ -168,6 +169,7 @@ Manager::assPolaire(){
     
     angleBkp = angle;
     distanceBkp = distance;
+    delta_distanceBkp = delta_distance;
 }
 
 /*
