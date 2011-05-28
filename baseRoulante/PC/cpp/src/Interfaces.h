@@ -30,6 +30,7 @@ public:
     int getDistanceRobot();
     int getAngleRobot();
     void goTo(Point arrivee,int nbPoints);
+    void recalage();
     void reGoTo();
     void avancer(unsigned int distanceMm);
     void reculer(unsigned int distanceMm);
@@ -40,13 +41,16 @@ public:
 	#endif
     void debugConsignes();
     int getXRobot();
-	 int getYRobot();
+	int getYRobot();
+	void setXRobot(int xMm);
+	void setYRobot(int yMm);
 
 private:
     InterfaceAsservissement& operator=(const InterfaceAsservissement&);
     InterfaceAsservissement(const InterfaceAsservissement&){};
 	InterfaceAsservissement(int precisionAStar);
     void recupPosition();
+    void attendreArrivee();
 private:
 	Point m_lastArrivee;
 	int m_lastNbPoints;
@@ -65,6 +69,7 @@ public:
     InterfaceCapteurs();
     unsigned short DistanceUltrason( Ultrason val );
     PresencePion EtatBras ( FinCourse val );
+    void attendreJumper();
 private:
     inline void traiterAbsenceObstacle();
     inline void traiterPresenceObstacle();

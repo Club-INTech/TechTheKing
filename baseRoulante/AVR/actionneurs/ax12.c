@@ -184,3 +184,25 @@ byte regWrite (byte id, byte regstart, byte reglength, int value) {
     ax12SendPacket (id, reglength+1, AX_REG_WRITE, data);
     return ax12ReadPacket();
 }
+
+
+
+
+
+void AX12Init (uint8_t ID, uint16_t angleCW, uint16_t angleCCW, uint16_t vitesse)
+{
+    // Active l'asservissement du servo
+    writeData (ID, AX_TORQUE_ENABLE, 1, 1);
+    // Définit les angles mini et maxi
+    writeData (ID, AX_CW_ANGLE_LIMIT_L, 2, angleCW);
+    writeData (ID, AX_CCW_ANGLE_LIMIT_L, 2, angleCCW);
+    // Définit la vitesse de rotation
+    writeData (ID, AX_GOAL_SPEED_L, 2, vitesse);
+    // Fonction bas niveau pour la transmission série
+    ax12Init (1000000);
+}
+
+void AX12GoTo (uint8_t ID, uint16_t angle)
+{
+    writeData (ID, AX_GOAL_POSITION_L, 2, angle);
+}
