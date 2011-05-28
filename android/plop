@@ -1,0 +1,63 @@
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:9: error: 'vector' has not been declared
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:9: error: expected ',' or '...' before '<' token
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp: In function 'void proba_post(uchar*, int)':
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:11: error: 'nbr_classes' was not declared in this scope
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:16: error: 'height' was not declared in this scope
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:18: error: 'width' was not declared in this scope
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:26: error: 'p' was not declared in this scope
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:26: error: 'pi' was not declared in this scope
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:26: error: 'moy' was not declared in this scope
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:26: error: 'var' was not declared in this scope
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:26: error: 'loi_norm' was not declared in this scope
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:34: error: 'proba' was not declared in this scope
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:34: error: 'p' was not declared in this scope
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:38: error: 'proba' was not declared in this scope
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:38: error: 'p' was not declared in this scope
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp: In function 'void em(IplImage*, double*, double*, double*, int)':
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:48: error: 'vector' was not declared in this scope
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:48: error: 'Matrix' was not declared in this scope
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:48: error: expected primary-expression before 'double'
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:48: error: expected ';' before 'double'
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:49: error: expected primary-expression before 'double'
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:49: error: expected ';' before 'double'
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:50: error: expected primary-expression before 'double'
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:50: error: expected ';' before 'double'
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:51: error: expected primary-expression before 'double'
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:51: error: expected ';' before 'double'
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:52: error: expected primary-expression before 'double'
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:52: error: expected ';' before 'double'
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:53: error: 'proba' was not declared in this scope
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:53: error: 'A' was not declared in this scope
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:54: error: 'B' was not declared in this scope
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:55: error: 'C' was not declared in this scope
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:56: error: 'D' was not declared in this scope
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:58: error: 'width' was not declared in this scope
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:58: error: 'height' was not declared in this scope
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:65: error: 'cout' was not declared in this scope
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:65: error: 'endl' was not declared in this scope
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:71: error: 'resetTab' was not declared in this scope
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:83: error: 'nbr_classes' was not declared in this scope
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:91: error: 'nbr_classes' was not declared in this scope
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:96: error: 'print_tab' was not declared in this scope
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:105: error: 'nbr_classes' was not declared in this scope
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:113: error: 'nbr_classes' was not declared in this scope
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:127: error: 'nbr_classes' was not declared in this scope
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:135: error: 'nbr_classes' was not declared in this scope
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:141: error: 'cout' is not a member of 'std'
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp: In function 'void segmentation(IplImage*, IplImage*, double*, double*, double*)':
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:211: error: 'nbr_classes' was not declared in this scope
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:214: error: 'height' was not declared in this scope
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:216: error: 'width' was not declared in this scope
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:226: error: 'p' was not declared in this scope
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:226: error: 'loi_norm' was not declared in this scope
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:229: error: 'p' was not declared in this scope
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:229: error: 'max' was not declared in this scope
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp: In function 'void resetTab(double*)':
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:241: error: 'nbr_classes' was not declared in this scope
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp: In function 'int max(double*)':
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:258: error: 'nbr_classes' was not declared in this scope
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp: In function 'IplImage* extractionComposante(IplImage*)':
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:279: error: 'width' was not declared in this scope
+/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/jni/pions/traitement.cpp:279: error: 'height' was not declared in this scope
+make: *** [/home/phil/Projets/intech/TechTheKing/detectionPions/Android-INTech/AppliAndroid/obj/local/armeabi/objs/opencv/pions/traitement.o] Error 1
+

@@ -42,7 +42,7 @@
  * @fn BAUD_RATE
  * @def BAUD_RATE
  */
-#define BAUD_RATE 57600
+#define BAUD_RATE 9600
 
 /**
  * Define interne pour charger la bonne valeur dans les registres du microcontrôleur.

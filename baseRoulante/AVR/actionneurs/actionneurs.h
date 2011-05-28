@@ -45,10 +45,10 @@
 #define AX_ANGLE_EXT2          800
 #define AX_SPEED               511
 
-#define SERVO_PWM_UP1          18
-#define SERVO_PWM_DOWN1        26
-#define SERVO_PWM_UP2          18
-#define SERVO_PWM_DOWN2        26
+#define SERVO_PWM_UP1           26
+#define SERVO_PWM_DOWN1         26
+#define SERVO_PWM_UP2           26
+#define SERVO_PWM_DOWN2         26
 
 /**
  * Définition du courant de seuil maximum

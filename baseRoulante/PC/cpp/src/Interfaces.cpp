@@ -139,9 +139,12 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
 }
 
 void InterfaceAsservissement::attendreArrivee(){
-	unsigned char result;	
+	unsigned char result = 0;	
 	while(result != 'f'){
 		m_liaisonSerie >> result;
+		#ifdef DEBUG
+		cout << result << endl;
+		#endif
 	}
 }
 void InterfaceAsservissement::reGoTo(){
@@ -150,19 +153,13 @@ void InterfaceAsservissement::reGoTo(){
 
 void InterfaceAsservissement::avancer(unsigned int distanceMm){
 	int distanceTicks = distanceMm*CONVERSION_MM_TIC;
-	if(distanceTicks>0)
-		m_liaisonSerie<<"b1"+formaterInt(distanceMm*CONVERSION_MM_TIC)<<endl;
-	else
-		m_liaisonSerie<<"b0"+formaterInt(-distanceMm*CONVERSION_MM_TIC)<<endl;
+	m_liaisonSerie<<"b1"+formaterInt(distanceMm*CONVERSION_MM_TIC)<<endl;
 	attendreArrivee();
 }
 
 void InterfaceAsservissement::reculer(unsigned int distanceMm){
 	int distanceTicks = distanceMm*CONVERSION_MM_TIC;
-	if(distanceTicks>0)
-		m_liaisonSerie<<"b1"+formaterInt(distanceMm*CONVERSION_MM_TIC)<<endl;
-	else
-		m_liaisonSerie<<"b0"+formaterInt(-distanceMm*CONVERSION_MM_TIC)<<endl;
+	m_liaisonSerie<<"b0"+formaterInt(distanceMm*CONVERSION_MM_TIC)<<endl;
 	attendreArrivee();
 }
 
@@ -188,7 +185,6 @@ InterfaceAsservissement::InterfaceAsservissement(int precision) : m_compteurImag
 void InterfaceAsservissement::recalage()
 {
 	reculer(500);
-	avancer(500);
 	if(COULEUR_ROBOT==BLEU){
 		setXRobot(80);
 	}
@@ -200,6 +196,9 @@ void InterfaceAsservissement::recalage()
 	setYRobot(2020);
 }
 
+void InterfaceAsservissement::pwmMax(unsigned char valPWM){
+	
+}
 InterfaceAsservissement::~InterfaceAsservissement()
 {
 	m_liaisonSerie.Close();
@@ -273,6 +272,8 @@ void InterfaceActionneurs::hauteurBrasGauche(unsigned char pourcentageHauteur)
     unsigned char message[] = {0X41, (unsigned char) tics, (unsigned char) (tics >> 8),'\0'};
     
     i2c_write(adaptateur_i2c, 0X10, message, 3+1);
+    
+    usleep(i2c_wait);
 }
 
 
@@ -282,6 +283,8 @@ void InterfaceActionneurs::hauteurBrasDroit(unsigned char pourcentageHauteur)
     unsigned char message[] = {0X42, (unsigned char) tics, (unsigned char) (tics >> 8), '\0'};
     
     i2c_write(adaptateur_i2c, 0X10, message, 3+1);
+    
+    usleep(i2c_wait);
 }
 
 
@@ -291,24 +294,31 @@ void InterfaceActionneurs::hauteurDeuxBras(unsigned char pourcentageHauteur)
     unsigned char message[] = {0X4B, (unsigned char) tics, (unsigned char) (tics >> 8), '\0'};
     
     i2c_write(adaptateur_i2c, 0X10, message, 3+1);
+    
+    usleep(i2c_wait);
 }
 
 
 void InterfaceActionneurs::angleBrasGauche(unsigned char pourcentageAngle)
-{
+{   
     unsigned short angle = pourcentageAngleConversion(pourcentageAngle);
+    
     unsigned char message[] = {0X11, (unsigned char) angle, (unsigned char) (angle >> 8), '\0'};
     
     i2c_write(adaptateur_i2c, 0X10, message, 3+1);
+    
+    usleep(i2c_wait);
 }
 
 
 void InterfaceActionneurs::angleBrasDroit(unsigned char pourcentageAngle)
 {
     unsigned short angle = pourcentageAngleConversion(pourcentageAngle);
-    unsigned char message[] = {0X12, (unsigned char) angle, (unsigned char) (tics >> 8), '\0'};
+    unsigned char message[] = {0X12, (unsigned char) angle, (unsigned char) (angle >> 8), '\0'};
     
     i2c_write(adaptateur_i2c, 0X10, message, 3+1);
+    
+    usleep(i2c_wait);
 }
 
 
@@ -326,6 +336,8 @@ void InterfaceActionneurs::positionAimantGauche(ModeAimant mode)
     }
     
     i2c_write(adaptateur_i2c, 0X10, message, 1+1);
+    
+    usleep(i2c_wait);
 }
 
 
@@ -343,6 +355,8 @@ void InterfaceActionneurs::positionAimantDroit(ModeAimant mode)
     }
     
     i2c_write(adaptateur_i2c, 0X10, message, 1+1);
+    
+    usleep(i2c_wait);
 }
 
 void InterfaceActionneurs::recalage(void)
@@ -353,6 +367,8 @@ void InterfaceActionneurs::recalage(void)
     message[1] = '\0';
     
     i2c_write(adaptateur_i2c, 0X10, message, 1+1);
+    
+    usleep(i2c_wait);
 }
 
 unsigned short InterfaceActionneurs::pourcentageHauteurConversion(unsigned char pourcentage)
@@ -363,7 +379,7 @@ unsigned short InterfaceActionneurs::pourcentageHauteurConversion(unsigned char 
 
 unsigned short InterfaceActionneurs::pourcentageAngleConversion(unsigned char pourcentage)
 {
-    return(pourcentage*10,23);
+    return(pourcentage*10.23);
 }
 
 
