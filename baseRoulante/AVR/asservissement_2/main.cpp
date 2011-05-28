@@ -98,7 +98,6 @@ int main( void ){
                 manager.pushConsigneDistance(manager.distanceBkp);
                 manager.pushConsigneAngle(-i);
             }
-            manager.resetListeConsignes();
             break;
         case 'b':
             i=litEntierLong();
@@ -112,7 +111,6 @@ int main( void ){
                 manager.pushConsigneDistance(manager.distanceBkp-i);
                 manager.pushConsigneAngle(manager.angleBkp);    
             }
-            manager.resetListeConsignes();
             break;
         //Constantes.
         case 'c':

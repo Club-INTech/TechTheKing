@@ -71,17 +71,15 @@ Manager::assPolaire(){
         assTranslation.setActivationKd(0);
     }
     */
-    
-    if( ABS(tableauConsignes.listeConsignes[consigneActuelle-1].distance - distance) < 0.5 * (tableauConsignes.listeConsignes[consigneActuelle+1].distance - tableauConsignes.listeConsignes[consigneActuelle-1].distance)) {
-            if( consigneActuelle < tableauConsignes.nbConsignes){
+    if( consigneActuelle < tableauConsignes.nbConsignes){
+		if(consigneActuelle==1){
+			consigneActuelle++;
+		}
+		if( ABS(tableauConsignes.listeConsignes[consigneActuelle-1].distance - distance)
+			< 0.5 * ABS(tableauConsignes.listeConsignes[consigneActuelle+1].distance - tableauConsignes.listeConsignes[consigneActuelle-1].distance))
+			{
                     consigneActuelle++;
-            }
-            else{
-				if(distance==distanceBkp
-				   && angle==angleBkp){
-					   //resetListeConsignes();
-					}
-			}				
+            }			
     }
     
     /*
@@ -90,8 +88,6 @@ Manager::assPolaire(){
     int16_t pwmRotation = (activationAssAngle?assRotation.calculePwm(((tableauConsignes.listeConsignes)[consigneActuelle-1]).angle,angle):0);
     int16_t pwmTranslation = (activationAssDistance?assTranslation.calculePwm(((tableauConsignes.listeConsignes)[consigneActuelle-1]).distance,distance):0);
 
-	/*
-    //Blocage
     if(distance==distanceBkp
 	   && angle==angleBkp)
     {
@@ -103,7 +99,7 @@ Manager::assPolaire(){
 		}
 		else{
 			//Blocage
-			if( ABS(pwmTranslation)>5 && ABS(pwmRotation)>5 ){
+			if( ABS(pwmTranslation)>0 && ABS(pwmRotation)>0 ){
 				//On n'en tient compte que si il dure depuis suffisament longtemps lolilol.
 				if(compteurBlocage==10){
 					tableauConsignes.listeConsignes[0].angle = angle;
@@ -120,11 +116,8 @@ Manager::assPolaire(){
 			else{
 				compteurBlocage=0;
 			}
-<<<<<<< HEAD
 		}
 	}
-=======
-	}*/
 
 
     /*
@@ -194,7 +187,6 @@ void Manager::resetListeConsignes(){
         tableauConsignes.listeConsignes[0].distance = tableauConsignes.listeConsignes[tableauConsignes.nbConsignes-1].distance;
         tableauConsignes.nbConsignes = 1;
         consigneActuelle = 1;
-        printlnChar('f');
 }
 
 
