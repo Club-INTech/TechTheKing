@@ -103,18 +103,26 @@ class Socket{
 
 class InterfaceAsservissement {
 public:
-   static InterfaceAsservissement* Instance(int precisionAStar=50);
+	static InterfaceAsservissement* Instance(int precisionAStar=50);
+	~InterfaceAsservissement();
     friend void detectionSerieUsb(InterfaceAsservissement* asserv); // ne devrait pas servir si on garde l'i2c
+    int getDistanceRobot();
+    int getAngleRobot();
     void goTo(Point arrivee,int nbPoints);
+    void reGoTo();
+    void recalage();
     void avancer(unsigned int distanceMm);
     void reculer(unsigned int distanceMm);
-    void tourner(int angleRadian);
+    void tourner(double angleRadian);
+    void stop();
 	#ifdef DEBUG_GRAPHIQUE
 	void debugGraphique();
 	#endif
     void debugConsignes();
-    ~InterfaceAsservissement();
-
+    int getXRobot();
+	int getYRobot();
+	void setXRobot(int xMm);
+	void setYRobot(int yMm);
     
 private:
     InterfaceAsservissement& operator=(const InterfaceAsservissement&);

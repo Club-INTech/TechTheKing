@@ -4,6 +4,7 @@
 
 #include "twi_slave.h"
 #include "compteur.h"
+//#include "serial.h"
 
 int main( void ){
 	
@@ -20,8 +21,10 @@ int main( void ){
     compteur_init();
     
     while(1) {
-		//printlnLong(roue1);
         TWI_Loop();
+	//printLong(roue1);
+	//printChar(' ');
+	//printlnLong(roue2);
     }
 
     return 0;

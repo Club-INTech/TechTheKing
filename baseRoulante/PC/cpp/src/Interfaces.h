@@ -28,23 +28,32 @@ public:
 	~InterfaceAsservissement();
     friend void detectionSerieUsb(InterfaceAsservissement* asserv); // ne devrait pas servir si on garde l'i2c
     int getDistanceRobot();
+    int getAngleRobot();
     void goTo(Point arrivee,int nbPoints);
+    void recalage();
+    void reGoTo();
     void avancer(unsigned int distanceMm);
     void reculer(unsigned int distanceMm);
-    void tourner(int angleRadian);
+    void tourner(double angleRadian);
+    void stop();
 	#ifdef DEBUG_GRAPHIQUE
 	void debugGraphique();
 	#endif
     void debugConsignes();
+    int getXRobot();
+	int getYRobot();
+	void setXRobot(int xMm);
+	void setYRobot(int yMm);
 
 private:
     InterfaceAsservissement& operator=(const InterfaceAsservissement&);
     InterfaceAsservissement(const InterfaceAsservissement&){};
 	InterfaceAsservissement(int precisionAStar);
     void recupPosition();
-    int getXRobot();
-	int getYRobot();
+    void attendreArrivee();
 private:
+	Point m_lastArrivee;
+	int m_lastNbPoints;
 	int m_compteurImages;
 	vector<Point> m_lastTrajectory;
 	vector<Consigne> m_lastListeConsignes;
@@ -85,10 +94,8 @@ class InterfaceActionneurs {
         void recalage(void);
         
     private:
-        // D'un pourcentage à une valeur entre 0 et 900 à envoyer via i2c
-        inline unsigned int pourcentageHauteurConversion(unsigned char pourcentage); 
-        // D'un pourcentage à une valeur adaptée entre 0 et 1023 à envoyer via i2c
-        inline unsigned int pourcentageAngleConversion(unsigned char pourcentage);
+        inline unsigned short pourcentageHauteurConversion(unsigned char pourcentage);
+        inline unsigned short pourcentageAngleConversion(unsigned char pourcentage);
         
 };
 

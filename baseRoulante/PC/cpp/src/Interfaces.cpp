@@ -7,6 +7,8 @@
 #include <Magick++.h>
 #endif
 #include "Util.hpp"
+#include "Obstacles.h"
+#include <ctime>
 
 using namespace std;
 Adaptator* adaptateur_i2c;
@@ -106,10 +108,6 @@ void detectionSerieUsb(InterfaceAsservissement* asserv){
                     asserv->m_liaisonSerie.Open(stringTmp);
                     cout<<"Asservissement : ok"<<endl;
                     break;
-                case '1':
-                    asserv->m_liaisonSerie.Open(stringTmp);
-                    cout<<"Actionneurs : ok"<<endl;
-                    break;
             }
         }
     }
@@ -117,6 +115,8 @@ void detectionSerieUsb(InterfaceAsservissement* asserv){
 
 
 void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
+	m_lastArrivee = arrivee;
+	m_lastNbPoints = nbPoints;
 	int xDepart = getXRobot();
 	int yDepart = getYRobot();
    #ifdef DEBUG			
@@ -124,30 +124,54 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
 	 << "en : " << "(" << arrivee.getX() << ", " << arrivee.getY() << ")" << endl;
    #endif
    Point depart(xDepart,yDepart);
-   vector<Point> listePointsTmp=m_pathfinding.getChemin(depart,arrivee);
-   m_lastTrajectory=ListePoints::lissageBezier(listePointsTmp,nbPoints);
-   m_lastListeConsignes=ListePoints::convertirEnConsignes(m_lastTrajectory,getDistanceRobot()); 
-   ListeConsignes::transfertSerie(m_lastListeConsignes,m_liaisonSerie);
-   unsigned char result;
-   /*
-   while(result != 'f'){
+   vector<Point> listePointsTmp;
+   listePointsTmp = m_pathfinding.getChemin(depart,arrivee);
+   if(!listePointsTmp.empty()){
+		m_lastTrajectory=ListePoints::lissageBezier(listePointsTmp,nbPoints);
+		m_lastListeConsignes=ListePoints::convertirEnConsignes(m_lastTrajectory,getDistanceRobot()); 
+		ListeConsignes::transfertSerie(m_lastListeConsignes,m_liaisonSerie);
+		attendreArrivee();
+   }
+   else{
+		
+   }
+   
+}
+
+void InterfaceAsservissement::attendreArrivee(){
+	unsigned char result;	
+	while(result != 'f'){
 		m_liaisonSerie >> result;
-   }*/
+	}
+}
+void InterfaceAsservissement::reGoTo(){
+	goTo(m_lastArrivee,m_lastNbPoints);
 }
 
 void InterfaceAsservissement::avancer(unsigned int distanceMm){
-	m_liaisonSerie<<"b1"+formaterInt(distanceMm*CONVERSION_MM_TIC)<<endl;
+	int distanceTicks = distanceMm*CONVERSION_MM_TIC;
+	if(distanceTicks>0)
+		m_liaisonSerie<<"b1"+formaterInt(distanceMm*CONVERSION_MM_TIC)<<endl;
+	else
+		m_liaisonSerie<<"b0"+formaterInt(-distanceMm*CONVERSION_MM_TIC)<<endl;
+	attendreArrivee();
 }
 
 void InterfaceAsservissement::reculer(unsigned int distanceMm){
-	m_liaisonSerie<<"b0"+formaterInt(distanceMm*CONVERSION_MM_TIC)<<endl;
+	int distanceTicks = distanceMm*CONVERSION_MM_TIC;
+	if(distanceTicks>0)
+		m_liaisonSerie<<"b1"+formaterInt(distanceMm*CONVERSION_MM_TIC)<<endl;
+	else
+		m_liaisonSerie<<"b0"+formaterInt(-distanceMm*CONVERSION_MM_TIC)<<endl;
+	attendreArrivee();
 }
 
-void InterfaceAsservissement::tourner(int angleRadian){
+void InterfaceAsservissement::tourner(double angleRadian){
 	if(angleRadian>0)
 		m_liaisonSerie<<"a0"+formaterInt(angleRadian*CONVERSION_RADIAN_TIC)<<endl;
 	else
-		m_liaisonSerie<<"a1"+formaterInt(angleRadian*CONVERSION_RADIAN_TIC)<<endl;
+		m_liaisonSerie<<"a1"+formaterInt(-angleRadian*CONVERSION_RADIAN_TIC)<<endl;
+	attendreArrivee();
 }
 
 InterfaceAsservissement::InterfaceAsservissement(int precision) : m_compteurImages(0), m_pathfinding(precision){
@@ -159,6 +183,21 @@ InterfaceAsservissement::InterfaceAsservissement(int precision) : m_compteurImag
       cout<<"Interface crée"<<endl;
       
     #endif
+}
+
+void InterfaceAsservissement::recalage()
+{
+	reculer(500);
+	avancer(500);
+	if(COULEUR_ROBOT==BLEU){
+		setXRobot(80);
+	}
+	else if(COULEUR_ROBOT==ROUGE){
+		setXRobot(2920);
+	}
+	tourner(-M_PI/2);
+	reculer(500);
+	setYRobot(2020);
 }
 
 InterfaceAsservissement::~InterfaceAsservissement()
@@ -175,22 +214,42 @@ int InterfaceAsservissement::getDistanceRobot()
 	return result;
 }
 
+int InterfaceAsservissement::getAngleRobot(){
+	int result;
+	m_liaisonSerie << "u" << endl ;
+	m_liaisonSerie >> result;
+	cout<< "ticks angle: " << result<<endl;
+	return result;
+}
+
 int InterfaceAsservissement::getXRobot()
 {
 	int result;
-	m_liaisonSerie << "x" << endl ;
+	m_liaisonSerie << "xg";
 	m_liaisonSerie >> result;
 	return result;
+}
+
+void InterfaceAsservissement::setXRobot(int xMm){
+	m_liaisonSerie << "xs0" << formaterInt(xMm) << endl;
 }
 
 int InterfaceAsservissement::getYRobot()
 {
 	int result;
-	m_liaisonSerie << "y" << endl ;
+	m_liaisonSerie << "yg";
 	m_liaisonSerie >> result;
 	return result;
 }
 
+void InterfaceAsservissement::setYRobot(int yMm){
+	m_liaisonSerie << "ys0" << formaterInt(yMm) << endl;
+}
+
+void InterfaceAsservissement::stop()
+{
+	m_liaisonSerie << "s" ;
+}
 
 /*********************************************************/
 /*   Etranger, ici commence la terre des actionneurs...  */
@@ -210,46 +269,46 @@ InterfaceActionneurs::~InterfaceActionneurs()
 
 void InterfaceActionneurs::hauteurBrasGauche(unsigned char pourcentageHauteur)
 {
-    unsigned int tics = pourcentageHauteurConversion(pourcentageHauteur);
-    unsigned char message[] = {0X41, (unsigned char) tics, (unsigned char) (tics >> 8), '\0'};
+    unsigned char tics = pourcentageHauteurConversion(pourcentageHauteur);
+    unsigned char message[] = {0X41, tics, '\0'};
     
-    i2c_write(adaptateur_i2c, 0X10, message, 4);
+    i2c_write(adaptateur_i2c, 0X10, message, 3);
 }
 
 
 void InterfaceActionneurs::hauteurBrasDroit(unsigned char pourcentageHauteur)
 {
-    unsigned int tics = pourcentageHauteurConversion(pourcentageHauteur);
-    unsigned char message[] = {0X42, (unsigned char) tics, (unsigned char) (tics >> 8), '\0'};
+    unsigned char tics = pourcentageHauteurConversion(pourcentageHauteur);
+    unsigned char message[] = {0X42, tics, '\0'};
     
-    i2c_write(adaptateur_i2c, 0X10, message, 4);
+    i2c_write(adaptateur_i2c, 0X10, message, 3);
 }
 
 
 void InterfaceActionneurs::hauteurDeuxBras(unsigned char pourcentageHauteur)
 {
-    unsigned int tics = pourcentageHauteurConversion(pourcentageHauteur);
-    unsigned char message[] = {0X4B, (unsigned char) tics, (unsigned char) (tics >> 8), '\0'};
+    unsigned char tics = pourcentageHauteurConversion(pourcentageHauteur);
+    unsigned char message[] = {0X4B, tics, '\0'};
     
-    i2c_write(adaptateur_i2c, 0X10, message, 4);
+    i2c_write(adaptateur_i2c, 0X10, message, 3);
 }
 
 
 void InterfaceActionneurs::angleBrasGauche(unsigned char pourcentageAngle)
 {
-    unsigned int angle = pourcentageAngleConversion(pourcentageAngle);
-    unsigned char message[] = {0X11, (unsigned char) angle, (unsigned char) (angle >> 8), '\0'};
+    unsigned char angle = pourcentageAngleConversion(pourcentageAngle);
+    unsigned char message[] = {0X11, angle, '\0'};
     
-    i2c_write(adaptateur_i2c, 0X10, message, 4);
+    i2c_write(adaptateur_i2c, 0X10, message, 3);
 }
 
 
 void InterfaceActionneurs::angleBrasDroit(unsigned char pourcentageAngle)
 {
-    unsigned int angle = pourcentageAngleConversion(pourcentageAngle);
-    unsigned char message[] = {0X12, (unsigned char) angle, (unsigned char) (angle >> 8), '\0'};
+    unsigned char angle = pourcentageAngleConversion(pourcentageAngle);
+    unsigned char message[] = {0X12, angle, '\0'};
     
-    i2c_write(adaptateur_i2c, 0X10, message, 4);
+    i2c_write(adaptateur_i2c, 0X10, message, 3);
 }
 
 
@@ -296,15 +355,15 @@ void InterfaceActionneurs::recalage(void)
     i2c_write(adaptateur_i2c, 0X10, message, 2);
 }
 
-unsigned int InterfaceActionneurs::pourcentageHauteurConversion(unsigned char pourcentage)
+unsigned short InterfaceActionneurs::pourcentageHauteurConversion(unsigned char pourcentage)
 {
     return (pourcentage*90);
 }
 
 
-unsigned int InterfaceActionneurs::pourcentageAngleConversion(unsigned char pourcentage)
+unsigned short InterfaceActionneurs::pourcentageAngleConversion(unsigned char pourcentage)
 {
-    return(pourcentage*6+200);
+    return(pourcentage*10,23);
 }
 
 
@@ -321,9 +380,28 @@ unsigned int InterfaceActionneurs::pourcentageAngleConversion(unsigned char pour
 
 void InterfaceCapteurs::thread(){
     while(1){
-        //Tant que le capteur ne détecte pas d'obstacle
-            //traiterAbsenceObstacle()
-        //traiterPresenceObstacle()
+    	InterfaceAsservissement* interfaceAsservissement=InterfaceAsservissement::Instance();
+    	//Il y a quelquechose devant
+    	int distanceUltraSonG = DistanceUltrason(UGAUCHE);
+    	int distanceUltraSonD = DistanceUltrason(UDROITE);
+        if(distanceUltraSonG < 5000
+        && distanceUltraSonD < 5000){
+        	        	//On stop.
+  				interfaceAsservissement->stop();
+       	 	int distanceUltraSon = (distanceUltraSonG+distanceUltraSonD)/2;
+      	  	int xRobot =  CONVERSION_TIC_MM*interfaceAsservissement->getXRobot();
+      	  	int yRobot =  CONVERSION_TIC_MM*interfaceAsservissement->getYRobot();
+    	    	double angleRobot = CONVERSION_TIC_RADIAN*interfaceAsservissement->getAngleRobot();        	
+    	    	//On actualise la position du robot adverse
+				RobotAdverse::Instance()->setCoords(
+				xRobot+cos(angleRobot)*distanceUltraSon,
+				yRobot+cos(angleRobot)*distanceUltraSon);
+        		//On recule
+				interfaceAsservissement->reculer(200);
+				//On recalcule une trajectoire.
+				interfaceAsservissement->reGoTo();
+		}
+		usleep(1000);
     }   
 }
 

@@ -129,24 +129,35 @@ char* linkm_error_msg(int errCode)
     return NULL;    // not reached 
 }
 
-// int main(){
-// 	Adaptator* ad = NULL;
-// 	unsigned char msg[3];
-//     msg[0] = 0X32;
-//     unsigned char rec[10];
-// 	int err;
-// 	if( (err = i2c_open( &ad )) != 0 ){
-//         fprintf(stderr, "Error opening the adapter: %s\n", linkm_error_msg(err));
-//         exit(1);
-//     }
-//     if( (err= i2c_write(ad,0X10,msg,4)) != 0){
-//         fprintf(stderr, "Error writing to the adapter: %s\n", linkm_error_msg(err));
-//         exit(1);
-//     }
-// 	if( (err= i2c_read(ad,0X10,rec,1)) != 0){
-//         fprintf(stderr, "Error reading from the adapter: %s\n", linkm_error_msg(err));
-//         exit(1);
-//     }
-// 	return 0;
-// }
+ int main(){
+ 	Adaptator* ad = NULL;
+ 	unsigned char msg[3];
+     msg[0] = 0X11;
+     unsigned char rec[10];
+ 	int err;
+ 	if( (err = i2c_open( &ad )) != 0 ){
+         fprintf(stderr, "Error opening the adapter: %s\n", linkm_error_msg(err));
+         exit(1);
+     }
+     if( (err= i2c_write(ad,0X20,msg,2)) != 0){
+         fprintf(stderr, "Error writing to the adapter: %s\n", linkm_error_msg(err));
+         exit(1);
+     }
+     if( (err= i2c_read(ad,0X20,rec,2)) != 0){
+         fprintf(stderr, "Error reading from the adapter: %s\n", linkm_error_msg(err));
+         exit(1);
+     }
+     
+     short temp;
+     short resu;
+     
+     resu = rec[0];
+     temp = rec[1];
+     
+     resu |= (temp << 8);
+     
+     printf("%u\n", resu);
+     
+ 	return 0;
+ }
 
