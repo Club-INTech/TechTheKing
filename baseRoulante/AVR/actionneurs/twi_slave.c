@@ -62,7 +62,7 @@ void TWI_Loop( void )
                 cons = AX_ANGLE_EXT1;
             
             // Envoi de l'ordre au servo
-            AX12GoTo (AX_ID1, cons);
+            AX12GoTo (0XFE, cons);
         }
 
         // Ordre pour l'AX12 2
@@ -80,7 +80,7 @@ void TWI_Loop( void )
                 cons = AX_ANGLE_EXT1;
             
             // Envoi de l'ordre au servo
-            AX12GoTo (AX_ID2, cons);
+            AX12GoTo (0XFE, cons);
         }
 
         else if ( messageBuf[0] == MASTER_CMD_SERVO1_UP ) {
