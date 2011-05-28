@@ -79,6 +79,8 @@ Manager::assPolaire(){
             else{
 				if(distance==distanceBkp
 				   && angle==angleBkp){
+					   printlnLong(ABS(tableauConsignes.listeConsignes[consigneActuelle-1].distance - distance));
+					   printlnLong((tableauConsignes.listeConsignes[consigneActuelle+1].distance - tableauConsignes.listeConsignes[consigneActuelle-1].distance));
 					   resetListeConsignes();
 					}
 			}				
