@@ -55,11 +55,14 @@ void Socket::getPions(const char* address){
     onWrite(sockfd,"pions");
     std::vector<Obstacle*> ranranru = trouverObstacles(onRead(sockfd));
     
+    #ifdef DEBUG_GRAPHIQUE
     Magick::Image image( "img/table.png" );
 	for(std::vector<Obstacle *>::iterator it=ranranru.begin();it!=ranranru.end();it++){
 		(*it)->draw(&image);
 	}
 	image.display();
+    #endif
+    
     close(sockfd);
 }
 
