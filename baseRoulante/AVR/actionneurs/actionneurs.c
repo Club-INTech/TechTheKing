@@ -187,36 +187,6 @@ void asservissement_synchro (void)
 	ASC_MOTEUR2 = (pwm2 <= ASC_PWM_MAX2)?pwm2:ASC_PWM_MAX2;
 }
 
-int adc_sense1 (void)
-{
-	// Sélectionne ADC1 pour la lecture
-	ADMUX |= 1;
-
-	// Démarre la lecture
-	ADCSRA |= (1 << ADSC);
-
-	// On attend que ADSC passe à 0 (fin de la conversion)
-	while (ADCSRA & (1 << ADSC));
-
-	// On recompose le résultat et on le renvoie
-	return (ADCH | ADCL);
-}
-
-int adc_sense2 (void)
-{
-	// Sélectionne ADC0 pour la lecture
-	ADMUX &= ~1;
-
-	// Démarre la lecture
-	ADCSRA |= (1 << ADSC);
-
-	// On attend que ADSC passe à 0 (fin de la conversion)
-	while (ADCSRA & (1 << ADSC));
-
-	// On recompose le résultat et on le renvoie
-	return (ADCH | ADCL);
-}
-
 // Interruption codeur 2
 ISR (PCINT0_vect)
 {
