@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_height="wrap_content"
+android:layout_width="fill_parent"
+android:orientation="vertical"
+android:id="@+id/linearLayout1">
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical" android:layout_width="fill_parent"
+  android:layout_height="wrap_content" android:id="@+id/relativeLayout1">
+  <!-- <1> -->
+  <EditText
+        android:id="@+id/seuilEntry"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/editbox_background"
+        android:layout_centerHorizontal="true"
+        android:layout_width="100dip"
+        android:inputType="numberSigned"/>
+
+
+  <EditText
+        android:id="@+id/morphRowsEntry"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/editbox_background"
+        android:layout_width="100dip"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/seuilEntry"
+        android:inputType="numberDecimal"/>
+        
+  <EditText
+        android:id="@+id/morphColsEntry"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/editbox_background"
+        android:layout_width="100dip"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/morphRowsEntry"
+        android:inputType="numberDecimal"/>
+  <TextView
+        android:id="@+id/seuilLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Seuil "
+        android:layout_toLeftOf="@+id/seuilEntry"
+        android:layout_alignBaseline="@+id/seuilEntry"/>
+        
+  <TextView
+        android:id="@+id/morphRowsLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=" Rows  "
+        android:layout_toLeftOf="@+id/morphRowsEntry"
+        android:layout_alignBaseline="@+id/morphRowsEntry"/>
+  <TextView
+        android:id="@+id/morphColsLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=" Cols  "
+        android:layout_toLeftOf="@+id/morphColsEntry"
+        android:layout_alignBaseline="@+id/morphColsEntry"/>
+  <TextView
+        android:id="@+id/morphLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Morph :  "
+        android:layout_toLeftOf="@+id/morphRowsLabel"
+        android:layout_alignBaseline="@+id/morphRowsLabel"
+        />
+  <!-- <2> -->
+  <!-- <3> -->
+</RelativeLayout>
+<RelativeLayout android:layout_width="fill_parent" android:layout_height="fill_parent" android:id="@+id/relativeLayout2" android:orientation="horizontal">
+ 
+ <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1">
+        
+        <FrameLayout android:id="@+id/preview"
+ 	 		android:gravity="center_horizontal"
+ 	  		android:layout_width="fill_parent"
+   			android:layout_height="wrap_content"
+   			android:layout_weight="1">
+  		</FrameLayout>
+  		<ImageView android:id="@+id/imageDebug"
+ 			android:gravity="center_horizontal"
+  		 	android:layout_width="fill_parent"
+   			android:layout_height="wrap_content"
+			android:layout_weight="2"/>
+  
+                
+    </LinearLayout>
+ 
+</RelativeLayout>
+</LinearLayout>
