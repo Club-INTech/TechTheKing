@@ -76,6 +76,12 @@ Manager::assPolaire(){
             if( consigneActuelle < tableauConsignes.nbConsignes){
                     consigneActuelle++;
             }
+            else{
+				if(distance==distanceBkp
+				   && angle==angleBkp){
+					   resetListeConsignes();
+					}
+			}				
     }
     
     /*
@@ -84,18 +90,10 @@ Manager::assPolaire(){
     int16_t pwmRotation = (activationAssAngle?assRotation.calculePwm(((tableauConsignes.listeConsignes)[consigneActuelle-1]).angle,angle):0);
     int16_t pwmTranslation = (activationAssDistance?assTranslation.calculePwm(((tableauConsignes.listeConsignes)[consigneActuelle-1]).distance,distance):0);
 
-    //On est à l'arrêt
+    //Blocage
     if(distance==distanceBkp
 	   && angle==angleBkp)
     {
-		//On est arrivé
-		if(consigneActuelle>1
-		   && consigneActuelle==tableauConsignes.nbConsignes){
-			resetListeConsignes();
-			printChar('f');
-		}
-		else{
-			//Blocage
 			if( ABS(pwmTranslation)>0 && ABS(pwmRotation)>0 ){
 				//On n'en tient compte que si il dure depuis suffisament longtemps lolilol.
 				if(compteurBlocage==5){
@@ -113,8 +111,7 @@ Manager::assPolaire(){
 			else{
 				compteurBlocage=0;
 			}
-		}
-    }
+	}
     /*
     if(pwmTranslation!=0 && (distance==distanceBkp)){
         resetListeConsignes();
