@@ -191,12 +191,14 @@ void InterfaceAsservissement::recalage()
 	else if(COULEUR_ROBOT==ROUGE){
 		setXRobot(2920);
 	}
-	avancer(500);
 	tourner(-M_PI/2);
 	reculer(500);
 	setYRobot(2020);
 }
 
+void InterfaceAsservissement::pwmMax(unsigned char valPWM){
+	
+}
 InterfaceAsservissement::~InterfaceAsservissement()
 {
 	m_liaisonSerie.Close();

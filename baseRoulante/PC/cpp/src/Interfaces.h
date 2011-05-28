@@ -30,6 +30,7 @@ public:
     int getDistanceRobot();
     int getAngleRobot();
     void goTo(Point arrivee,int nbPoints);
+    void pwmMax(unsigned char valPWM);
     void recalage();
     void reGoTo();
     void avancer(unsigned int distanceMm);
