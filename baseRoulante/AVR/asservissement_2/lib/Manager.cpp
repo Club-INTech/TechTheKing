@@ -56,12 +56,12 @@ Manager::assPolaire(){
     * Ceci ne s'applique pas à la dernière consigne
     */
 
-    if(consigneActuelle>2 && consigneActuelle==tableauConsignes.nbConsignes)
+    if(consigneActuelle>1
+	   && consigneActuelle==tableauConsignes.nbConsignes
+	   && distance==distanceBkp
+	   && angle==angleBkp )
     {
-        tableauConsignes.listeConsignes[0].angle = tableauConsignes.listeConsignes[tableauConsignes.nbConsignes-1].angle;
-        tableauConsignes.listeConsignes[0].distance = tableauConsignes.listeConsignes[tableauConsignes.nbConsignes-1].distance;
-        tableauConsignes.nbConsignes = 1;
-        consigneActuelle = 1;
+        resetListeConsignes();
         printChar('f');
     }
     
