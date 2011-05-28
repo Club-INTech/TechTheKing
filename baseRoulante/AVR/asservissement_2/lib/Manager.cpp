@@ -87,7 +87,7 @@ Manager::assPolaire(){
     //On est à l'arrêt
     if(distance==distanceBkp
 	   && angle==angleBkp
-	   && delta_distance < delta_distanceBkp)
+	   && ABS(delta_distance) < ABS(delta_distanceBkp))
     {
 		//On est arrivé
 		if(consigneActuelle>1
