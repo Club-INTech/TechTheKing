@@ -2,6 +2,7 @@
 #include <netdb.h> 
 #include <sys/socket.h>
 #include <boost/thread.hpp>
+#include <boost/bind.hpp>
 #include <Magick++.h>
 #include <boost/bind.hpp>
 Socket* Socket::m_instance=NULL;
