@@ -11,8 +11,8 @@
  */
 #define SERVO_CONS2      OCR0A
 #define SERVO_CONS1      OCR0B
-#define ASC_MOTEUR2     OCR2A
-#define ASC_MOTEUR1     OCR2B
+#define ASC_MOTEUR2      OCR2A
+#define ASC_MOTEUR1      OCR2B
 
 /*
  * Pins de direction des PH
@@ -44,8 +44,10 @@
 #define AX_ANGLE_EXT2          800
 #define AX_SPEED               511
 
-#define SERVO_PWM_UP           18
-#define SERVO_PWM_DOWN         26
+#define SERVO_PWM_UP1          18
+#define SERVO_PWM_DOWN1        26
+#define SERVO_PWM_UP2          18
+#define SERVO_PWM_DOWN2        26
 
 /*
  *  Pins des codeurs
@@ -81,7 +83,7 @@ void recalage (void);
  *    fast pwm
  *    timers
  */
-void init (void);
+void actio_init (void);
 
 /*
  *  Lecture analogique de la sortie sense des PHs
@@ -91,15 +93,5 @@ void init (void);
 int adc_sense1 (void); // PH 1
 int adc_sense2 (void); // PH 2
 
-/*
- *  Fonctions pour les AX12
- *    ID : ID du servo
- *    angleCW : angle max antitrigo
- *    angleCCW : angle max trigo
- *    angle : consigne en angle
- *    vitesse : vitesse de rotation
- */
-void AX12Init (uint8_t ID, uint16_t angleCW, uint16_t angleCCW, uint16_t vitesse);
-void AX12GoTo (uint8_t ID, uint16_t angle);
 
 #endif
