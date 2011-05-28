@@ -72,13 +72,15 @@ Manager::assPolaire(){
     }
     */
     
-    if( ABS(tableauConsignes.listeConsignes[consigneActuelle-1].distance - distance) < 0.5 * (tableauConsignes.listeConsignes[consigneActuelle+1].distance - tableauConsignes.listeConsignes[consigneActuelle-1].distance)) {
+    if( ABS(tableauConsignes.listeConsignes[consigneActuelle-1].distance - distance) < 0.5 * (tableauConsignes.listeConsignes[consigneActuelle].distance - tableauConsignes.listeConsignes[consigneActuelle-1].distance)) {
             if( consigneActuelle < tableauConsignes.nbConsignes){
                     consigneActuelle++;
             }
             else{
 				if(distance==distanceBkp
 				   && angle==angleBkp){
+					   printlnLong(ABS(tableauConsignes.listeConsignes[consigneActuelle-1].distance - distance));
+					   printlnLong(ABS(tableauConsignes.listeConsignes[consigneActuelle].distance - tableauConsignes.listeConsignes[consigneActuelle-2].distance));
 					   resetListeConsignes();
 					}
 			}				
