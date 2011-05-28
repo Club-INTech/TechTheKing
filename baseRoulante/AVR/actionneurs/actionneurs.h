@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include "adc.h"
 
 /*
  *  Registres de comparaison pour le fast PWM
@@ -48,6 +49,17 @@
 #define SERVO_PWM_DOWN1        26
 #define SERVO_PWM_UP2          18
 #define SERVO_PWM_DOWN2        26
+
+/**
+ * Définition du courant de seuil maximum
+ */
+#define CUR_LIM 512
+#define CUR_MAX 700
+
+/**
+ * Définition du temps max pour la limite de courant
+ */
+#define TEMPS_MAX 100
 
 /*
  *  Pins des codeurs
