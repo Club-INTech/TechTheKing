@@ -69,6 +69,7 @@ public:
     InterfaceCapteurs();
     unsigned short DistanceUltrason( Ultrason val );
     PresencePion EtatBras ( FinCourse val );
+    void attendreJumper();
 private:
     inline void traiterAbsenceObstacle();
     inline void traiterPresenceObstacle();

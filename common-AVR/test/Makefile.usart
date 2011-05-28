@@ -1,5 +1,5 @@
-MMCU=atmega168
-MMCU2=atmega168
+MMCU=atmega328p
+MMCU2=m328p
 FREQ=16000000
 
 all: main_test_serie.hex
@@ -21,4 +21,4 @@ clean:
 	rm *.o *.out *.hex *~
 
 upload:
-	sudo avrdude -c usbtiny -p $(MMCU2) -U flash:w:main_test_serie.hex
+	sudo avrdude -c usbasp -p $(MMCU2) -U flash:w:main_test_serie.hex

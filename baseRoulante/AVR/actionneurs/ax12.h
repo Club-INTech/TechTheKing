@@ -7,6 +7,8 @@
 #ifndef ax12_h
 #define ax12_h
 
+#include <stdint.h>
+
 #define AX12_MAX_SERVOS             18
 #define AX12_BUFFER_SIZE            32
 
@@ -91,6 +93,17 @@ extern int status_id;
 extern int status_error;
 extern int status_data;
 
+
+/*
+ *  Fonctions pour les AX12
+ *    ID : ID du servo
+ *    angleCW : angle max antitrigo
+ *    angleCCW : angle max trigo
+ *    angle : consigne en angle
+ *    vitesse : vitesse de rotation
+ */
+void AX12Init (uint8_t ID, uint16_t angleCW, uint16_t angleCCW, uint16_t vitesse);
+void AX12GoTo (uint8_t ID, uint16_t angle);
 
 
 #endif
