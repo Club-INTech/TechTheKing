@@ -80,6 +80,7 @@ Manager::assPolaire(){
 				if(distance==distanceBkp
 				   && angle==angleBkp){
 					   resetListeConsignes();
+					   printlnChar('f');
 					}
 			}				
     }
@@ -180,7 +181,6 @@ void Manager::resetListeConsignes(){
         tableauConsignes.listeConsignes[0].distance = tableauConsignes.listeConsignes[tableauConsignes.nbConsignes-1].distance;
         tableauConsignes.nbConsignes = 1;
         consigneActuelle = 1;
-        printlnChar('f');
 }
 
 
