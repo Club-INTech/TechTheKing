@@ -274,7 +274,7 @@ void InterfaceActionneurs::hauteurBrasGauche(unsigned char pourcentageHauteur)
     
     i2c_write(adaptateur_i2c, 0X10, message, 3+1);
     
-    usleep(1);
+    usleep(i2c_wait);
 }
 
 
@@ -285,7 +285,7 @@ void InterfaceActionneurs::hauteurBrasDroit(unsigned char pourcentageHauteur)
     
     i2c_write(adaptateur_i2c, 0X10, message, 3+1);
     
-    usleep(1);
+    usleep(i2c_wait);
 }
 
 
@@ -296,18 +296,19 @@ void InterfaceActionneurs::hauteurDeuxBras(unsigned char pourcentageHauteur)
     
     i2c_write(adaptateur_i2c, 0X10, message, 3+1);
     
-    usleep(1);
+    usleep(i2c_wait);
 }
 
 
 void InterfaceActionneurs::angleBrasGauche(unsigned char pourcentageAngle)
-{
+{   
     unsigned short angle = pourcentageAngleConversion(pourcentageAngle);
+    
     unsigned char message[] = {0X11, (unsigned char) angle, (unsigned char) (angle >> 8), '\0'};
     
     i2c_write(adaptateur_i2c, 0X10, message, 3+1);
     
-    usleep(1);
+    usleep(i2c_wait);
 }
 
 
@@ -318,7 +319,7 @@ void InterfaceActionneurs::angleBrasDroit(unsigned char pourcentageAngle)
     
     i2c_write(adaptateur_i2c, 0X10, message, 3+1);
     
-    usleep(1);
+    usleep(i2c_wait);
 }
 
 
@@ -337,7 +338,7 @@ void InterfaceActionneurs::positionAimantGauche(ModeAimant mode)
     
     i2c_write(adaptateur_i2c, 0X10, message, 1+1);
     
-    usleep(1);
+    usleep(i2c_wait);
 }
 
 
@@ -356,7 +357,7 @@ void InterfaceActionneurs::positionAimantDroit(ModeAimant mode)
     
     i2c_write(adaptateur_i2c, 0X10, message, 1+1);
     
-    usleep(1);
+    usleep(i2c_wait);
 }
 
 void InterfaceActionneurs::recalage(void)
@@ -368,7 +369,7 @@ void InterfaceActionneurs::recalage(void)
     
     i2c_write(adaptateur_i2c, 0X10, message, 1+1);
     
-    usleep(1);
+    usleep(i2c_wait);
 }
 
 unsigned short InterfaceActionneurs::pourcentageHauteurConversion(unsigned char pourcentage)
@@ -379,7 +380,7 @@ unsigned short InterfaceActionneurs::pourcentageHauteurConversion(unsigned char 
 
 unsigned short InterfaceActionneurs::pourcentageAngleConversion(unsigned char pourcentage)
 {
-    return(pourcentage*10,23);
+    return(pourcentage*10.23);
 }
 
 
