@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="reglagesDetection">Réglages de détection</string>
+    <string name="app_name">INTech</string>
+    <string name="msg_fen2">Fenêtre 2</string>
+    <string name="reglagesCx">Réglages de connexion</string>
+</resources>
