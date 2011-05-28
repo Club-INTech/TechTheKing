@@ -4,7 +4,6 @@
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
 #include <Magick++.h>
-#include <boost/bind.hpp>
 Socket* Socket::m_instance=NULL;
 
 Socket::Socket(int port){

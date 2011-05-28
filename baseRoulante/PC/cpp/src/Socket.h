@@ -21,7 +21,7 @@ class Socket{
         void getPions();
     private:
 		int getFd(const char* address);
-		//void getPions(const char* address);
+		void getPions(const char* address);
         std::vector<Obstacle*> trouverObstacles(std::string trame);
         Socket(int port);
         void onWrite(int sockfd,std::string msg);
