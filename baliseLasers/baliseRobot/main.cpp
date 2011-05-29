@@ -11,7 +11,7 @@ volatile uint32_t milAP=0;	//micros après top
 volatile uint32_t milAV=0;	//micros avant top
 
 //pour la commande du moteur
-uint32_t periode = 12000;	//periode de commande du moteur, en microsecondes
+uint32_t periode = 70000;	//periode de commande du moteur, en microsecondes
 uint16_t incPeriode = 5000;	//periode d'incrémentation de periode pour le démarrage, en microsecondes
 uint32_t incTemps = 0;	//stocke le temps écoulé depuis le début pour le démarrage
 uint32_t micTemps = 0;	//stocke le temps écoulé depuis le début pour les commutions du moteur
@@ -69,14 +69,38 @@ int main() {
 
 	//démarrage : 
 	while(42) {
-		//lasers_start();
 
 		//calcul de la valeur de periode à utiliser ici (en gros pour le démarrage, on se contente pour l'instant d'une simple rampe) : 
-		if (periode > 7700) {
+		if (periode > 35000) {
+			lasers_start();
+			if (micros() > incTemps + incPeriode) {
+				incTemps = micros();
+				periode -= 30;
+			}
+			pwmMot1=180;
+			pwmMot2=180;
+		}
+		else if (periode > 20000) {
+			if (micros() > incTemps + incPeriode) {
+				incTemps = micros();
+				periode -= 15;
+			}
+			pwmMot1=210;
+			pwmMot2=210;
+		}
+		else if (periode > 10000) {
 			if (micros() > incTemps + incPeriode) {
 				incTemps = micros();
 				periode -= 7;
 			}
+			pwmMot1=220;
+			pwmMot2=220;
+		}
+		else if (periode > 7695) {
+			lasers_stop();
+			pwmMot1=192;
+			pwmMot2=192;
+			periode = 7695;
 		}
 		//commutation des bobines du moteur : 
 		if (micros() > micTemps + periode) {
@@ -86,9 +110,6 @@ int main() {
 			printString("\t");
 			printUShort(ind);
 			printString("\t");
-			//printULong(temps[1]);
-			//printString("\t");
-			//printlnInt(1000000/temps[1]);
 			printlnString("");	
 
 			// et on commute
@@ -151,8 +172,8 @@ void pwm_init() {
 	cbi(TCCR0B,CS00);	//
 
 	//régler des valeurs des comp
-	pwmMot1=128;
-	pwmMot2=128;
+	pwmMot1=192;
+	pwmMot2=192;
 	return ;
 }
 
