@@ -1,0 +1,30 @@
+MMCUGCC=atmega168
+MMCUDUDE=atmega168
+FREQ=16000000
+
+all: main_test_adc.hex
+
+main_test_adc.hex: main_test_adc.out
+	avr-objcopy -O ihex -R .eeprom main_test_adc.out main_test_adc.hex
+
+main_test_adc.out: main_test_adc.o usart.o adc.o
+	avr-gcc -Wall -O2 -mmcu=$(MMCUGCC) -DF_CPU=$(FREQ) main_test_adc.o usart.o adc.o -o main_test_adc.out
+
+main_test_adc.o: main_test_adc.c
+	avr-gcc -Wall -O2 -mmcu=$(MMCUGCC) -DF_CPU=$(FREQ) main_test_adc.c -c
+
+usart.o: ../usart.c
+	avr-gcc -Wall -mmcu=$(MMCUGCC) -DF_CPU=$(FREQ) ../usart.c -c
+
+adc.o: ../adc.c
+	avr-gcc -Wall -mmcu=$(MMCUGCC) -DF_CPU$(FREQ) ../adc.c -c
+
+
+clean:
+	rm *.o *.out *.hex *~
+
+upload: main_test_adc.hex
+	sudo avrdude -c usbasp -p $(MMCUDUDE) -U flash:w:main_test_adc.hex
+
+upload2: main_test_adc.hex
+	sudo avrdude -c usbtiny -p $(MMCUDUDE) -U flash:w:main_test_adc.hex

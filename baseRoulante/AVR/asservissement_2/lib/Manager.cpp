@@ -13,7 +13,7 @@
 volatile double x;
 volatile double y;
 int compteurBlocage = 0 ;
-
+int delta_distanceBkp = 0;
 Couleur CouleurRobot = BLEU;
 
 void
@@ -56,14 +56,7 @@ Manager::assPolaire(){
     * Ceci ne s'applique pas à la dernière consigne
     */
 
-    if(consigneActuelle>2 && consigneActuelle==tableauConsignes.nbConsignes)
-    {
-        tableauConsignes.listeConsignes[0].angle = tableauConsignes.listeConsignes[tableauConsignes.nbConsignes-1].angle;
-        tableauConsignes.listeConsignes[0].distance = tableauConsignes.listeConsignes[tableauConsignes.nbConsignes-1].distance;
-        tableauConsignes.nbConsignes = 1;
-        consigneActuelle = 1;
-        printChar('f');
-    }
+
     
     
     
@@ -78,11 +71,15 @@ Manager::assPolaire(){
         assTranslation.setActivationKd(0);
     }
     */
-    
-    if( ABS(tableauConsignes.listeConsignes[consigneActuelle-1].distance - distance) < 0.5 * (tableauConsignes.listeConsignes[consigneActuelle+1].distance - tableauConsignes.listeConsignes[consigneActuelle-1].distance)) {
-            if( consigneActuelle < tableauConsignes.nbConsignes){
+    if( consigneActuelle < tableauConsignes.nbConsignes){
+		if(consigneActuelle==1){
+			consigneActuelle++;
+		}
+		if( ABS(tableauConsignes.listeConsignes[consigneActuelle-1].distance - distance)
+			< 0.5 * ABS(tableauConsignes.listeConsignes[consigneActuelle-1].distance - tableauConsignes.listeConsignes[consigneActuelle-2].distance))
+			{
                     consigneActuelle++;
-            }
+            }			
     }
     
     /*
@@ -91,27 +88,36 @@ Manager::assPolaire(){
     int16_t pwmRotation = (activationAssAngle?assRotation.calculePwm(((tableauConsignes.listeConsignes)[consigneActuelle-1]).angle,angle):0);
     int16_t pwmTranslation = (activationAssDistance?assTranslation.calculePwm(((tableauConsignes.listeConsignes)[consigneActuelle-1]).distance,distance):0);
 
-    //Blocage
-    
-    if( (ABS(pwmTranslation))>0
-		&& distance==distanceBkp
-		&& (ABS(pwmRotation))>0
-		&& angle==angleBkp ) {
-		if(compteurBlocage==5){
-			tableauConsignes.listeConsignes[0].angle = angle;
-			tableauConsignes.listeConsignes[0].distance = distance;
-			tableauConsignes.nbConsignes = 1;
-			consigneActuelle = 1;
-			printChar('f');
-			compteurBlocage=0;
+    if(distance==distanceBkp
+	   && angle==angleBkp)
+    {
+		//On est arriv�
+		if(consigneActuelle>1
+		   && consigneActuelle==tableauConsignes.nbConsignes
+		   && ABS(delta_distance) < ABS(delta_distanceBkp)){
+			resetListeConsignes();
+			printlnChar('f');
 		}
 		else{
-			compteurBlocage++;
+			//Blocage
+			if( ABS(pwmTranslation)>0 && ABS(pwmRotation)>0 ){
+				//On n'en tient compte que si il dure depuis suffisament longtemps lolilol.
+				if(compteurBlocage==10){
+					resetListeConsignes();
+					printlnChar('f');
+					compteurBlocage=0;
+				}
+				else{
+					compteurBlocage++;
+				}
+			}
+			else{
+				compteurBlocage=0;
+			}
 		}
-    }
-    else{
-		compteurBlocage=0;
 	}
+
+
     /*
     if(pwmTranslation!=0 && (distance==distanceBkp)){
         resetListeConsignes();
@@ -163,8 +169,10 @@ Manager::assPolaire(){
         MOTEUR2 = -pwmD;
     }
     
+    
     angleBkp = angle;
     distanceBkp = distance;
+    delta_distanceBkp = delta_distance;
 }
 
 /*
@@ -174,19 +182,15 @@ Manager::Manager(){
 }
 
 void Manager::resetListeConsignes(){
-        tableauConsignes.listeConsignes[0].angle = tableauConsignes.listeConsignes[tableauConsignes.nbConsignes-1].angle;
-        tableauConsignes.listeConsignes[0].distance = tableauConsignes.listeConsignes[tableauConsignes.nbConsignes-1].distance;
-        tableauConsignes.nbConsignes = 1;
-        consigneActuelle = 1;
-        printlnChar('f');
+        tableauConsignes.listeConsignes[0].angle = angleBkp;
+		tableauConsignes.listeConsignes[0].distance = distanceBkp;
+		tableauConsignes.nbConsignes = 1;
+		consigneActuelle = 1;
 }
 
 
 void Manager::stop(){
-    tableauConsignes.listeConsignes[0].angle = angleBkp;
-    tableauConsignes.listeConsignes[0].distance = distanceBkp;
-    tableauConsignes.nbConsignes = 1;
-    consigneActuelle = 1;
+    resetListeConsignes();
 }
 void Manager::init()
 {
