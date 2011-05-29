@@ -1,6 +1,5 @@
 #include "Interfaces.h"
 #include "config.h"
-#include "Debug.h"
 #include "i2cLib.h"
 #include "Constantes.h"
 #ifdef DEBUG_GRAPHIQUE
@@ -17,33 +16,33 @@ Adaptator* adaptateur_i2c;
 InterfaceAsservissement* InterfaceAsservissement::m_instance=NULL;
 
 void InterfaceAsservissement::debugConsignes(){
-	cout<<m_lastListeConsignes<<endl;
+    cout<<m_lastListeConsignes<<endl;
 }
 
 #ifdef DEBUG_GRAPHIQUE
 using namespace Magick;
 void InterfaceAsservissement::debugGraphique(){
-	cout<<"Conversion du chemin emprunté par le robot en graphique..."<<endl;
-	Image image( "img/table.png" );
-	
-	/* Affiche les obstacles */
-	for(unsigned int i=0;i<listeObstacles.size();i++){
-		listeObstacles[i]->draw(&image);
-	}
-	
-	/* Affiche la courbe */
-	image.strokeColor(Color(MaxRGB,MaxRGB,MaxRGB,MaxRGB/2));
-	//image.strokeWidth(2*TAILLE_ROBOT);
-	image.strokeWidth(15);
-	for(unsigned int i=0;i<m_lastTrajectory.size()-1;i++)
-		image.draw(DrawableLine((m_lastTrajectory[i].getX())*900/3000,
-		630-m_lastTrajectory[i].getY()*630/2100,
-		m_lastTrajectory[i+1].getX()*900/3000,
-		630-m_lastTrajectory[i+1].getY()*630/2100));
-	image.magick("png");
-	std::string tmp("cheminRobot");
-	image.write(tmp + numToString(m_compteurImages++));
-	cout<<"chemin emprunté dans le robot écrit dans cheminRobot.png"<<endl;
+    cout<<"Conversion du chemin emprunté par le robot en graphique..."<<endl;
+    Image image( "img/table.png" );
+    
+    /* Affiche les obstacles */
+    for(unsigned int i=0;i<listeObstacles.size();i++){
+        listeObstacles[i]->draw(&image);
+    }
+    
+    /* Affiche la courbe */
+    image.strokeColor(Color(MaxRGB,MaxRGB,MaxRGB,MaxRGB/2));
+    //image.strokeWidth(2*TAILLE_ROBOT);
+    image.strokeWidth(15);
+    for(unsigned int i=0;i<m_lastTrajectory.size()-1;i++)
+        image.draw(DrawableLine((m_lastTrajectory[i].getX())*900/3000,
+        630-m_lastTrajectory[i].getY()*630/2100,
+        m_lastTrajectory[i+1].getX()*900/3000,
+        630-m_lastTrajectory[i+1].getY()*630/2100));
+    image.magick("png");
+    std::string tmp("cheminRobot");
+    image.write(tmp + numToString(m_compteurImages++));
+    cout<<"chemin emprunté dans le robot écrit dans cheminRobot.png"<<endl;
 }
 #endif
 
@@ -115,25 +114,25 @@ void detectionSerieUsb(InterfaceAsservissement* asserv){
 
 
 void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
-	m_lastArrivee = arrivee;
-	m_lastNbPoints = nbPoints;
-	int xDepart = getXRobot();
-	int yDepart = getYRobot();
-   #ifdef DEBUG			
-	cout<<"Tentative de déplacement du robot de" << "( " << xDepart << ", " << yDepart << ")"
-	 << "en : " << "(" << arrivee.getX() << ", " << arrivee.getY() << ")" << endl;
+    m_lastArrivee = arrivee;
+    m_lastNbPoints = nbPoints;
+    int xDepart = getXRobot();
+    int yDepart = getYRobot();
+   #ifdef DEBUG         
+    cout<<"Tentative de déplacement du robot de" << "( " << xDepart << ", " << yDepart << ")"
+     << "en : " << "(" << arrivee.getX() << ", " << arrivee.getY() << ")" << endl;
    #endif
    Point depart(xDepart,yDepart);
    vector<Point> listePointsTmp;
    listePointsTmp = m_pathfinding.getChemin(depart,arrivee);
    if(!listePointsTmp.empty()){
-		m_lastTrajectory=ListePoints::lissageBezier(listePointsTmp,nbPoints);
-		m_lastListeConsignes=ListePoints::convertirEnConsignes(m_lastTrajectory,getDistanceRobot()); 
-		ListeConsignes::transfertSerie(m_lastListeConsignes,m_liaisonSerie);
-		attendreArrivee();
+        m_lastTrajectory=ListePoints::lissageBezier(listePointsTmp,nbPoints);
+        m_lastListeConsignes=ListePoints::convertirEnConsignes(m_lastTrajectory,getDistanceRobot()); 
+        ListeConsignes::transfertSerie(m_lastListeConsignes,m_liaisonSerie);
+        attendreArrivee();
    }
    else{
-		
+        
    }
    
 }
@@ -145,27 +144,27 @@ void InterfaceAsservissement::attendreArrivee(){
 	}
 }
 void InterfaceAsservissement::reGoTo(){
-	goTo(m_lastArrivee,m_lastNbPoints);
+    goTo(m_lastArrivee,m_lastNbPoints);
 }
 
 void InterfaceAsservissement::avancer(unsigned int distanceMm){
-	int distanceTicks = distanceMm*CONVERSION_MM_TIC;
-	m_liaisonSerie<<"b1"+formaterInt(distanceMm*CONVERSION_MM_TIC)<<endl;
-	attendreArrivee();
+    unsigned int distanceTicks = distanceMm*CONVERSION_MM_TIC;
+    m_liaisonSerie<<"b1"+formaterInt(distanceTicks)<<endl;
+    attendreArrivee();
 }
 
 void InterfaceAsservissement::reculer(unsigned int distanceMm){
-	int distanceTicks = distanceMm*CONVERSION_MM_TIC;
-	m_liaisonSerie<<"b0"+formaterInt(distanceMm*CONVERSION_MM_TIC)<<endl;
-	attendreArrivee();
+    unsigned int distanceTicks = distanceMm*CONVERSION_MM_TIC;
+    m_liaisonSerie<<"b0"+formaterInt(distanceTicks)<<endl;
+    attendreArrivee();
 }
 
 void InterfaceAsservissement::tourner(double angleRadian){
-	if(angleRadian>0)
-		m_liaisonSerie<<"a0"+formaterInt(angleRadian*CONVERSION_RADIAN_TIC)<<endl;
-	else
-		m_liaisonSerie<<"a1"+formaterInt(-angleRadian*CONVERSION_RADIAN_TIC)<<endl;
-	attendreArrivee();
+    if(angleRadian>0)
+        m_liaisonSerie<<"a0"+formaterInt(angleRadian*CONVERSION_RADIAN_TIC)<<endl;
+    else
+        m_liaisonSerie<<"a1"+formaterInt(-angleRadian*CONVERSION_RADIAN_TIC)<<endl;
+    attendreArrivee();
 }
 
 InterfaceAsservissement::InterfaceAsservissement(int precision) : m_compteurImages(0), m_pathfinding(precision){
@@ -181,6 +180,7 @@ InterfaceAsservissement::InterfaceAsservissement(int precision) : m_compteurImag
 
 void InterfaceAsservissement::recalage()
 {
+<<<<<<< HEAD
 	reculer(500);
 	if(COULEUR_ROBOT==BLEU){
 		setXRobot(80);
@@ -200,16 +200,33 @@ void InterfaceAsservissement::pwmMaxTranslation(unsigned char valPWM){
 
 void InterfaceAsservissement::pwmMaxRotation(unsigned char valPWM){
 	m_liaisonSerie << "pr0" << formaterInt(valPWM) ;
+=======
+    reculer(500);
+    if(COULEUR_ROBOT==BLEU){
+        setXRobot(80);
+    }
+    else if(COULEUR_ROBOT==ROUGE){
+        setXRobot(2920);
+    }
+    tourner(-M_PI/2);
+    reculer(500);
+    setYRobot(2020);
+}
+
+void InterfaceAsservissement::pwmMax(unsigned char valPWM){
+    
+>>>>>>> 4916e13d787fc53b25ab7e2aa61509eb85048052
 }
 
 
 InterfaceAsservissement::~InterfaceAsservissement()
 {
-	m_liaisonSerie.Close();
+    m_liaisonSerie.Close();
 }
 
 int InterfaceAsservissement::getDistanceRobot()
 {
+<<<<<<< HEAD
 	int result;
 	m_liaisonSerie << "t" ;
 	m_liaisonSerie >> result;
@@ -221,37 +238,60 @@ int InterfaceAsservissement::getAngleRobot(){
 	m_liaisonSerie << "u" ;
 	m_liaisonSerie >> result;
 	return result;
+=======
+    int result;
+    m_liaisonSerie << "t" << endl ;
+    m_liaisonSerie >> result;
+    cout<< "ticks : " << result<<endl;
+    return result;
+}
+
+int InterfaceAsservissement::getAngleRobot(){
+    int result;
+    m_liaisonSerie << "u" << endl ;
+    m_liaisonSerie >> result;
+    cout<< "ticks angle: " << result<<endl;
+    return result;
+>>>>>>> 4916e13d787fc53b25ab7e2aa61509eb85048052
 }
 
 int InterfaceAsservissement::getXRobot()
 {
-	int result;
-	m_liaisonSerie << "xg";
-	m_liaisonSerie >> result;
-	return result;
+    int result;
+    m_liaisonSerie << "xg";
+    m_liaisonSerie >> result;
+    return result;
 }
 
 void InterfaceAsservissement::setXRobot(int xMm){
+<<<<<<< HEAD
 	m_liaisonSerie << "xs0" << formaterInt(xMm);
+=======
+    m_liaisonSerie << "xs0" << formaterInt(xMm) << endl;
+>>>>>>> 4916e13d787fc53b25ab7e2aa61509eb85048052
 }
 
 int InterfaceAsservissement::getYRobot()
 {
-	int result;
-	m_liaisonSerie << "yg";
-	m_liaisonSerie >> result;
-	return result;
+    int result;
+    m_liaisonSerie << "yg";
+    m_liaisonSerie >> result;
+    return result;
 }
 
 void InterfaceAsservissement::setYRobot(int yMm){
-	m_liaisonSerie << "ys0" << formaterInt(yMm) << endl;
+    m_liaisonSerie << "ys0" << formaterInt(yMm) << endl;
 }
 
 void InterfaceAsservissement::stop()
 {
+<<<<<<< HEAD
 	m_liaisonSerie << "s" ;
 	pwmMaxRotation(0);
 	pwmMaxTranslation(0);
+=======
+    m_liaisonSerie << "s" ;
+>>>>>>> 4916e13d787fc53b25ab7e2aa61509eb85048052
 }
 
 /*********************************************************/
@@ -400,28 +440,28 @@ unsigned short InterfaceActionneurs::pourcentageAngleConversion(unsigned char po
 
 void InterfaceCapteurs::thread(){
     while(1){
-    	InterfaceAsservissement* interfaceAsservissement=InterfaceAsservissement::Instance();
-    	//Il y a quelquechose devant
-    	int distanceUltraSonG = DistanceUltrason(UGAUCHE);
-    	int distanceUltraSonD = DistanceUltrason(UDROITE);
+        InterfaceAsservissement* interfaceAsservissement=InterfaceAsservissement::Instance();
+        //Il y a quelquechose devant
+        int distanceUltraSonG = DistanceUltrason(UGAUCHE);
+        int distanceUltraSonD = DistanceUltrason(UDROITE);
         if(distanceUltraSonG < 5000
         && distanceUltraSonD < 5000){
-        	        	//On stop.
-  				interfaceAsservissement->stop();
-       	 	int distanceUltraSon = (distanceUltraSonG+distanceUltraSonD)/2;
-      	  	int xRobot =  CONVERSION_TIC_MM*interfaceAsservissement->getXRobot();
-      	  	int yRobot =  CONVERSION_TIC_MM*interfaceAsservissement->getYRobot();
-    	    	double angleRobot = CONVERSION_TIC_RADIAN*interfaceAsservissement->getAngleRobot();        	
-    	    	//On actualise la position du robot adverse
-				RobotAdverse::Instance()->setCoords(
-				xRobot+cos(angleRobot)*distanceUltraSon,
-				yRobot+cos(angleRobot)*distanceUltraSon);
-        		//On recule
-				interfaceAsservissement->reculer(200);
-				//On recalcule une trajectoire.
-				interfaceAsservissement->reGoTo();
-		}
-		usleep(1000);
+                        //On stop.
+                interfaceAsservissement->stop();
+            int distanceUltraSon = (distanceUltraSonG+distanceUltraSonD)/2;
+            int xRobot =  CONVERSION_TIC_MM*interfaceAsservissement->getXRobot();
+            int yRobot =  CONVERSION_TIC_MM*interfaceAsservissement->getYRobot();
+                double angleRobot = CONVERSION_TIC_RADIAN*interfaceAsservissement->getAngleRobot();         
+                //On actualise la position du robot adverse
+                RobotAdverse::Instance()->setCoords(
+                xRobot+cos(angleRobot)*distanceUltraSon,
+                yRobot+cos(angleRobot)*distanceUltraSon);
+                //On recule
+                interfaceAsservissement->reculer(200);
+                //On recalcule une trajectoire.
+                interfaceAsservissement->reGoTo();
+        }
+        usleep(1000);
     }
 }
 
@@ -474,19 +514,19 @@ PresencePion InterfaceCapteurs::EtatBras ( FinCourse val ) {
 
 void InterfaceCapteurs::attendreJumper()
 {
-	unsigned char msg[2] = {0x50, '\0'};
-	unsigned char rec[1];
-	int err;
-	while(rec[0]!=1){
-		if( (err= i2c_write(adaptateur_i2c,0X20,msg,2)) != 0){
-			fprintf(stderr, "Error writing to the adapter: %s\n", linkm_error_msg(err));
-			exit(1);
-		}
-		if( (err= i2c_read(adaptateur_i2c,0X20,rec,1)) != 0){
-			fprintf(stderr, "Error reading from the adapter: %s\n", linkm_error_msg(err));
-			exit(1);
-		}
-		usleep(500);
+    unsigned char msg[2] = {0x50, '\0'};
+    unsigned char rec[1];
+    int err;
+    while(rec[0]!=1){
+        if( (err= i2c_write(adaptateur_i2c,0X20,msg,2)) != 0){
+            fprintf(stderr, "Error writing to the adapter: %s\n", linkm_error_msg(err));
+            exit(1);
+        }
+        if( (err= i2c_read(adaptateur_i2c,0X20,rec,1)) != 0){
+            fprintf(stderr, "Error reading from the adapter: %s\n", linkm_error_msg(err));
+            exit(1);
+        }
+        usleep(500);
     }
 }
 
@@ -497,8 +537,7 @@ void InterfaceCapteurs::attendreJumper()
 void ouvrir_adaptateur_i2c ()
 {
     int err;
-    
-    if (err = i2c_open( &adaptateur_i2c ) != 0 ) {
+    if ( ( err = i2c_open( &adaptateur_i2c ) ) != 0 ) {
                fprintf(stderr, "Adaptateur pas branché : %s\n", linkm_error_msg(err));
     }
      
