@@ -30,7 +30,8 @@ public:
     int getDistanceRobot();
     int getAngleRobot();
     void goTo(Point arrivee,int nbPoints);
-    void pwmMax(unsigned char valPWM);
+    void pwmMaxTranslation(unsigned char valPWM);
+    void pwmMaxRotation(unsigned char valPWM);
     void recalage();
     void reGoTo();
     void avancer(unsigned int distanceMm);
@@ -101,7 +102,7 @@ class InterfaceActionneurs : public Singleton<InterfaceActionneurs> {
         inline unsigned short pourcentageAngleConversion(unsigned char pourcentage);
         
     private:
-        static const int i2c_wait = 1000;
+        static const int i2c_wait = 1500;
 };
 
 void ouvrir_adaptateur_i2c ();

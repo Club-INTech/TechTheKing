@@ -138,13 +138,10 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
 }
 
 void InterfaceAsservissement::attendreArrivee(){
-    unsigned char result = 0;   
-    while(result != 'f'){
-        m_liaisonSerie >> result;
-        #ifdef DEBUG
-        cout << result << endl;
-        #endif
-    }
+	unsigned char result = 0;	
+	while(result != 'f'){
+		m_liaisonSerie >> result;
+	}
 }
 void InterfaceAsservissement::reGoTo(){
     goTo(m_lastArrivee,m_lastNbPoints);
@@ -183,6 +180,27 @@ InterfaceAsservissement::InterfaceAsservissement(int precision) : m_compteurImag
 
 void InterfaceAsservissement::recalage()
 {
+<<<<<<< HEAD
+	reculer(500);
+	if(COULEUR_ROBOT==BLEU){
+		setXRobot(80);
+	}
+	else if(COULEUR_ROBOT==ROUGE){
+		setXRobot(2920);
+	}
+	avancer(1000);
+	tourner(-M_PI/2);
+	reculer(500);
+	setYRobot(2020);
+}
+
+void InterfaceAsservissement::pwmMaxTranslation(unsigned char valPWM){
+	m_liaisonSerie << "pt0" << formaterInt(valPWM) ;
+}
+
+void InterfaceAsservissement::pwmMaxRotation(unsigned char valPWM){
+	m_liaisonSerie << "pr0" << formaterInt(valPWM) ;
+=======
     reculer(500);
     if(COULEUR_ROBOT==BLEU){
         setXRobot(80);
@@ -197,7 +215,10 @@ void InterfaceAsservissement::recalage()
 
 void InterfaceAsservissement::pwmMax(unsigned char valPWM){
     
+>>>>>>> 4916e13d787fc53b25ab7e2aa61509eb85048052
 }
+
+
 InterfaceAsservissement::~InterfaceAsservissement()
 {
     m_liaisonSerie.Close();
@@ -205,6 +226,19 @@ InterfaceAsservissement::~InterfaceAsservissement()
 
 int InterfaceAsservissement::getDistanceRobot()
 {
+<<<<<<< HEAD
+	int result;
+	m_liaisonSerie << "t" ;
+	m_liaisonSerie >> result;
+	return result;
+}
+
+int InterfaceAsservissement::getAngleRobot(){
+	int result;
+	m_liaisonSerie << "u" ;
+	m_liaisonSerie >> result;
+	return result;
+=======
     int result;
     m_liaisonSerie << "t" << endl ;
     m_liaisonSerie >> result;
@@ -218,6 +252,7 @@ int InterfaceAsservissement::getAngleRobot(){
     m_liaisonSerie >> result;
     cout<< "ticks angle: " << result<<endl;
     return result;
+>>>>>>> 4916e13d787fc53b25ab7e2aa61509eb85048052
 }
 
 int InterfaceAsservissement::getXRobot()
@@ -229,7 +264,11 @@ int InterfaceAsservissement::getXRobot()
 }
 
 void InterfaceAsservissement::setXRobot(int xMm){
+<<<<<<< HEAD
+	m_liaisonSerie << "xs0" << formaterInt(xMm);
+=======
     m_liaisonSerie << "xs0" << formaterInt(xMm) << endl;
+>>>>>>> 4916e13d787fc53b25ab7e2aa61509eb85048052
 }
 
 int InterfaceAsservissement::getYRobot()
@@ -246,7 +285,13 @@ void InterfaceAsservissement::setYRobot(int yMm){
 
 void InterfaceAsservissement::stop()
 {
+<<<<<<< HEAD
+	m_liaisonSerie << "s" ;
+	pwmMaxRotation(0);
+	pwmMaxTranslation(0);
+=======
     m_liaisonSerie << "s" ;
+>>>>>>> 4916e13d787fc53b25ab7e2aa61509eb85048052
 }
 
 /*********************************************************/
