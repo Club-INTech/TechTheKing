@@ -142,9 +142,6 @@ void InterfaceAsservissement::attendreArrivee(){
 	unsigned char result = 0;	
 	while(result != 'f'){
 		m_liaisonSerie >> result;
-		#ifdef DEBUG
-		cout << result << endl;
-		#endif
 	}
 }
 void InterfaceAsservissement::reGoTo(){
@@ -191,14 +188,21 @@ void InterfaceAsservissement::recalage()
 	else if(COULEUR_ROBOT==ROUGE){
 		setXRobot(2920);
 	}
+	avancer(1000);
 	tourner(-M_PI/2);
 	reculer(500);
 	setYRobot(2020);
 }
 
-void InterfaceAsservissement::pwmMax(unsigned char valPWM){
-	
+void InterfaceAsservissement::pwmMaxTranslation(unsigned char valPWM){
+	m_liaisonSerie << "pt0" << formaterInt(valPWM) ;
 }
+
+void InterfaceAsservissement::pwmMaxRotation(unsigned char valPWM){
+	m_liaisonSerie << "pr0" << formaterInt(valPWM) ;
+}
+
+
 InterfaceAsservissement::~InterfaceAsservissement()
 {
 	m_liaisonSerie.Close();
@@ -207,17 +211,15 @@ InterfaceAsservissement::~InterfaceAsservissement()
 int InterfaceAsservissement::getDistanceRobot()
 {
 	int result;
-	m_liaisonSerie << "t" << endl ;
+	m_liaisonSerie << "t" ;
 	m_liaisonSerie >> result;
-	cout<< "ticks : " << result<<endl;
 	return result;
 }
 
 int InterfaceAsservissement::getAngleRobot(){
 	int result;
-	m_liaisonSerie << "u" << endl ;
+	m_liaisonSerie << "u" ;
 	m_liaisonSerie >> result;
-	cout<< "ticks angle: " << result<<endl;
 	return result;
 }
 
@@ -230,7 +232,7 @@ int InterfaceAsservissement::getXRobot()
 }
 
 void InterfaceAsservissement::setXRobot(int xMm){
-	m_liaisonSerie << "xs0" << formaterInt(xMm) << endl;
+	m_liaisonSerie << "xs0" << formaterInt(xMm);
 }
 
 int InterfaceAsservissement::getYRobot()
@@ -248,6 +250,8 @@ void InterfaceAsservissement::setYRobot(int yMm){
 void InterfaceAsservissement::stop()
 {
 	m_liaisonSerie << "s" ;
+	pwmMaxRotation(0);
+	pwmMaxTranslation(0);
 }
 
 /*********************************************************/

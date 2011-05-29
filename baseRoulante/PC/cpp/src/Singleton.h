@@ -3,17 +3,18 @@
 
 #include <iostream>
 
+template<typename T>
 class Singleton{
 public:
-	static Singleton* Instance();
+	static T* Instance();
 	template <class C> static Singleton* Instance(C a);
 	template <class C, class M> static Singleton* Instance(C a,M b);
     ~Singleton(){};
 protected:
-	static Singleton* m_instance;
+	static T* m_instance;
 	Singleton(){};
 	Singleton(const Singleton&);
-    Singleton* operator=(const Singleton&){};
+    T* operator=(const Singleton&){};
 };
 
 #endif
