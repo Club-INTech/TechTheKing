@@ -51,10 +51,10 @@ class InterfaceAsservissement;
 std::vector<char> getTtyUSB();
 
 namespace ListeObstacles {
-	Obstacle* contientCercle(int centreX,int centreY,int rayon, Couleur couleur);
-	void setCouleursAuto();
-	void refreshPositions(const char nomFichier[]);
-	void initialisation();
+    Obstacle* contientCercle(int centreX,int centreY,int rayon, Couleur couleur);
+    void setCouleursAuto();
+    void refreshPositions(const char nomFichier[]);
+    void initialisation();
 }
 
 class Point{
@@ -103,26 +103,28 @@ class Socket{
 
 class InterfaceAsservissement {
 public:
-	static InterfaceAsservissement* Instance(int precisionAStar=50);
-	~InterfaceAsservissement();
+    static InterfaceAsservissement* Instance(int precisionAStar=50);
+    ~InterfaceAsservissement();
     friend void detectionSerieUsb(InterfaceAsservissement* asserv); // ne devrait pas servir si on garde l'i2c
     int getDistanceRobot();
     int getAngleRobot();
     void goTo(Point arrivee,int nbPoints);
-    void reGoTo();
+    void pwmMax(unsigned char valPWM);
     void recalage();
+    void reGoTo();
     void avancer(unsigned int distanceMm);
     void reculer(unsigned int distanceMm);
     void tourner(double angleRadian);
     void stop();
-	#ifdef DEBUG_GRAPHIQUE
-	void debugGraphique();
-	#endif
+    #ifdef DEBUG_GRAPHIQUE
+    void debugGraphique();
+    #endif
     void debugConsignes();
     int getXRobot();
-	int getYRobot();
-	void setXRobot(int xMm);
-	void setYRobot(int yMm);
+    int getYRobot();
+    void setXRobot(int xMm);
+    void setYRobot(int yMm);
+
     
 private:
     InterfaceAsservissement& operator=(const InterfaceAsservissement&);
