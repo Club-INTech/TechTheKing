@@ -7,7 +7,7 @@
 #include "Point.h"
 #include "AStar.h"
 #include <SerialPort.h>
-#include "Singleton.h"
+//#include "Singleton.h"
 #include "Thread.h"
 #include "config.h"
 
@@ -67,7 +67,7 @@ private:
 
 // Interface passive : capteurs. A priori, pas besoin de méthode publique autre que ouvrirThread.
 
-class InterfaceCapteurs : public Thread,public Singleton<InterfaceCapteurs> {
+class InterfaceCapteurs : public Thread {
 public:
     InterfaceCapteurs();
     unsigned short DistanceUltrason( Ultrason val );
@@ -83,7 +83,7 @@ private:
 
 
 
-class InterfaceActionneurs : public Singleton<InterfaceActionneurs> {
+class InterfaceActionneurs{
     
     public:
         InterfaceActionneurs();

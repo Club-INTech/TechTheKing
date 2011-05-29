@@ -14,7 +14,9 @@ volatile double x;
 volatile double y;
 int compteurBlocage = 0 ;
 int delta_distanceBkp = 0;
+int delta_angleBkp = 0;
 Couleur CouleurRobot = BLEU;
+bool isBlocked = false;
 
 void
 Manager::assPolaire(){
@@ -75,8 +77,8 @@ Manager::assPolaire(){
 		if(consigneActuelle==1){
 			consigneActuelle++;
 		}
-		if( ABS(tableauConsignes.listeConsignes[consigneActuelle-1].distance - distance)
-			< 0.5 * ABS(tableauConsignes.listeConsignes[consigneActuelle-1].distance - tableauConsignes.listeConsignes[consigneActuelle-2].distance))
+		else if( ABS(tableauConsignes.listeConsignes[consigneActuelle-1].distance - distance)
+			< 0.5 * ABS(tableauConsignes.listeConsignes[consigneActuelle+1].distance - tableauConsignes.listeConsignes[consigneActuelle-1].distance))
 			{
                     consigneActuelle++;
             }			
@@ -91,18 +93,9 @@ Manager::assPolaire(){
     if(distance==distanceBkp
 	   && angle==angleBkp)
     {
-		//On est arrivé
-		if(consigneActuelle>1
-		   && consigneActuelle==tableauConsignes.nbConsignes
-		   && ABS(delta_distance) < ABS(delta_distanceBkp)){
-			resetListeConsignes();
-			printlnChar('f');
-		}
-		else{
-			//Blocage
-			if( ABS(pwmTranslation)>0 && ABS(pwmRotation)>0 ){
+		if( ABS(pwmTranslation)>0 && ABS(pwmRotation)>0 ){
 				//On n'en tient compte que si il dure depuis suffisament longtemps lolilol.
-				if(compteurBlocage==10){
+				if(compteurBlocage==60){
 					resetListeConsignes();
 					printlnChar('f');
 					compteurBlocage=0;
@@ -111,8 +104,17 @@ Manager::assPolaire(){
 					compteurBlocage++;
 				}
 			}
-			else{
+		else{
 				compteurBlocage=0;
+				if(consigneActuelle>1
+				&& consigneActuelle==tableauConsignes.nbConsignes
+			    && ABS(delta_distance) < ABS(delta_distanceBkp)
+			    && ABS(delta_angle) < ABS(delta_angleBkp)){
+					tableauConsignes.listeConsignes[0].angle = tableauConsignes.listeConsignes[tableauConsignes.nbConsignes-1].angle;
+					tableauConsignes.listeConsignes[0].distance = tableauConsignes.listeConsignes[tableauConsignes.nbConsignes-1].distance;
+					tableauConsignes.nbConsignes = 1;
+					consigneActuelle = 1;
+					printlnChar('f');
 			}
 		}
 	}
@@ -173,6 +175,7 @@ Manager::assPolaire(){
     angleBkp = angle;
     distanceBkp = distance;
     delta_distanceBkp = delta_distance;
+    delta_angleBkp = delta_angle;
 }
 
 /*
@@ -267,7 +270,7 @@ void Manager::init()
 
     assTranslation.changeKp(2);
     assTranslation.changePWM(PWM_MAX);
-    assTranslation.changeKd(100);
+    assTranslation.changeKd(200);
     assTranslation.changeKi(0);
     assTranslation.changeVmax(0);
     assTranslation.changeKpVitesse(0);

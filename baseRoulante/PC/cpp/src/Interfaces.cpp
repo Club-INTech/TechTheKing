@@ -142,28 +142,42 @@ void InterfaceAsservissement::attendreArrivee(){
 	while(result != 'f'){
 		m_liaisonSerie >> result;
 	}
+	sleep(1);
 }
 void InterfaceAsservissement::reGoTo(){
     goTo(m_lastArrivee,m_lastNbPoints);
 }
 
 void InterfaceAsservissement::avancer(unsigned int distanceMm){
-    unsigned int distanceTicks = distanceMm*CONVERSION_MM_TIC;
-    m_liaisonSerie<<"b1"+formaterInt(distanceTicks)<<endl;
+    int distanceTicks = getDistanceRobot() + distanceMm*CONVERSION_MM_TIC;
+    cout << distanceTicks << endl ;
+    if(distanceTicks>0){
+		m_liaisonSerie<<"b1"+formaterInt(distanceTicks)<<endl;
+	}
+	else{
+		m_liaisonSerie<< "b0"+formaterInt(-distanceTicks)<<endl;
+	}
     attendreArrivee();
 }
 
 void InterfaceAsservissement::reculer(unsigned int distanceMm){
-    unsigned int distanceTicks = distanceMm*CONVERSION_MM_TIC;
-    m_liaisonSerie<<"b0"+formaterInt(distanceTicks)<<endl;
+    int distanceTicks = getDistanceRobot() - distanceMm*CONVERSION_MM_TIC;
+    cout << distanceTicks << endl ;
+    if(distanceTicks>0){
+		m_liaisonSerie<<"b1"+formaterInt(distanceTicks)<<endl;
+	}
+	else{
+		m_liaisonSerie<<"b0"+formaterInt(-distanceTicks)<<endl;
+	}
     attendreArrivee();
 }
 
 void InterfaceAsservissement::tourner(double angleRadian){
+	int angleTicks = angleRadian*CONVERSION_RADIAN_TIC;
     if(angleRadian>0)
-        m_liaisonSerie<<"a0"+formaterInt(angleRadian*CONVERSION_RADIAN_TIC)<<endl;
+        m_liaisonSerie<<"a0"+formaterInt(angleTicks)<<endl;
     else
-        m_liaisonSerie<<"a1"+formaterInt(-angleRadian*CONVERSION_RADIAN_TIC)<<endl;
+        m_liaisonSerie<<"a1"+formaterInt(-angleTicks)<<endl;
     attendreArrivee();
 }
 
@@ -180,17 +194,23 @@ InterfaceAsservissement::InterfaceAsservissement(int precision) : m_compteurImag
 
 void InterfaceAsservissement::recalage()
 {
-<<<<<<< HEAD
+	pwmMaxTranslation(100);
+	pwmMaxRotation(0);
 	reculer(500);
+	pwmMaxRotation(255);
 	if(COULEUR_ROBOT==BLEU){
 		setXRobot(80);
 	}
 	else if(COULEUR_ROBOT==ROUGE){
 		setXRobot(2920);
 	}
-	avancer(1000);
+	avancer(200);
 	tourner(-M_PI/2);
+	pwmMaxRotation(0);
+	pwmMaxTranslation(100);
 	reculer(500);
+	pwmMaxRotation(255);
+	avancer(200);
 	setYRobot(2020);
 }
 
@@ -200,22 +220,6 @@ void InterfaceAsservissement::pwmMaxTranslation(unsigned char valPWM){
 
 void InterfaceAsservissement::pwmMaxRotation(unsigned char valPWM){
 	m_liaisonSerie << "pr0" << formaterInt(valPWM) ;
-=======
-    reculer(500);
-    if(COULEUR_ROBOT==BLEU){
-        setXRobot(80);
-    }
-    else if(COULEUR_ROBOT==ROUGE){
-        setXRobot(2920);
-    }
-    tourner(-M_PI/2);
-    reculer(500);
-    setYRobot(2020);
-}
-
-void InterfaceAsservissement::pwmMax(unsigned char valPWM){
-    
->>>>>>> 4916e13d787fc53b25ab7e2aa61509eb85048052
 }
 
 
@@ -226,7 +230,6 @@ InterfaceAsservissement::~InterfaceAsservissement()
 
 int InterfaceAsservissement::getDistanceRobot()
 {
-<<<<<<< HEAD
 	int result;
 	m_liaisonSerie << "t" ;
 	m_liaisonSerie >> result;
@@ -238,21 +241,6 @@ int InterfaceAsservissement::getAngleRobot(){
 	m_liaisonSerie << "u" ;
 	m_liaisonSerie >> result;
 	return result;
-=======
-    int result;
-    m_liaisonSerie << "t" << endl ;
-    m_liaisonSerie >> result;
-    cout<< "ticks : " << result<<endl;
-    return result;
-}
-
-int InterfaceAsservissement::getAngleRobot(){
-    int result;
-    m_liaisonSerie << "u" << endl ;
-    m_liaisonSerie >> result;
-    cout<< "ticks angle: " << result<<endl;
-    return result;
->>>>>>> 4916e13d787fc53b25ab7e2aa61509eb85048052
 }
 
 int InterfaceAsservissement::getXRobot()
@@ -264,11 +252,7 @@ int InterfaceAsservissement::getXRobot()
 }
 
 void InterfaceAsservissement::setXRobot(int xMm){
-<<<<<<< HEAD
 	m_liaisonSerie << "xs0" << formaterInt(xMm);
-=======
-    m_liaisonSerie << "xs0" << formaterInt(xMm) << endl;
->>>>>>> 4916e13d787fc53b25ab7e2aa61509eb85048052
 }
 
 int InterfaceAsservissement::getYRobot()
@@ -285,13 +269,9 @@ void InterfaceAsservissement::setYRobot(int yMm){
 
 void InterfaceAsservissement::stop()
 {
-<<<<<<< HEAD
 	m_liaisonSerie << "s" ;
 	pwmMaxRotation(0);
 	pwmMaxTranslation(0);
-=======
-    m_liaisonSerie << "s" ;
->>>>>>> 4916e13d787fc53b25ab7e2aa61509eb85048052
 }
 
 /*********************************************************/

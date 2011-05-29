@@ -4,7 +4,6 @@
 %{
     #include "Interfaces.h"
     #include "Thread.h"
-    #include "Singleton.h"
     #include "Socket.h"
     #include "i2cLib.h"
     #include "hiddata.h"
@@ -101,24 +100,6 @@ class Socket{
         void getPions();
 };
 
-template<class T>
-class Singleton : private boost::noncopyable
-{
-public:
-    static T& Instance();
-    static void init();
-protected:
-    ~Singleton() {}
-     Singleton() {}
-private:
-     static boost::scoped_ptr<T> t;
-     static boost::once_flag flag;
-};
-
-%rename(InterfaceActionneursSingleton) Singleton<InterfaceActionneurs>;
-%rename(InterfaceCapteursSingleton) Singleton<InterfaceCapteursSingleton>;
-
-
 class InterfaceAsservissement {
 public:
     static InterfaceAsservissement* Instance(int precisionAStar=50);
@@ -127,7 +108,8 @@ public:
     int getDistanceRobot();
     int getAngleRobot();
     void goTo(Point arrivee,int nbPoints);
-    void pwmMax(unsigned char valPWM);
+    void pwmMaxRotation(unsigned char valPWM);
+    void pwmMaxTranslation(unsigned char valPWM);
     void recalage();
     void reGoTo();
     void avancer(unsigned int distanceMm);
@@ -156,7 +138,7 @@ public:
     InterfaceCapteurs();
 };
 
-class InterfaceActionneurs : public InterfaceActionneursSingleton{
+class InterfaceActionneurs{
 public:
     InterfaceActionneurs();
     ~InterfaceActionneurs();
