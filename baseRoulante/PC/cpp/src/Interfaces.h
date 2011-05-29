@@ -66,8 +66,8 @@ private:
 
 class InterfaceCapteurs : public Thread {
 public:
-    InterfaceCapteurs() : Thread() {}
-    ~InterfaceCapteurs() {}
+    InterfaceCapteurs();
+    ~InterfaceCapteurs();
     unsigned short DistanceUltrason( void );
     bool EtatBras ( Bras val );
     char LecteurCB ( void );

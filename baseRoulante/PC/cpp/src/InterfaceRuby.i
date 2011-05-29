@@ -138,6 +138,11 @@ public:
     unsigned short DistanceUltrason( void );
     bool EtatBras ( Bras val );
     char LecteurCB ( void );
+private:
+    inline void traiterAbsenceObstacle();
+    inline void traiterPresenceObstacle();
+    bool EtatJumper ( void );
+    void thread();
 };
 
 class InterfaceActionneurs{

@@ -428,6 +428,15 @@ unsigned short InterfaceActionneurs::pourcentageAngleConversion(unsigned char po
 /*   CAPTEURS                                            */
 /*********************************************************/
 
+InterfaceCapteurs::InterfaceCapteurs() : Thread()  
+{
+}
+
+
+InterfaceCapteurs::~InterfaceCapteurs() 
+{
+}
+
 void InterfaceCapteurs::thread(){
     while(1){
         InterfaceAsservissement* interfaceAsservissement=InterfaceAsservissement::Instance();
