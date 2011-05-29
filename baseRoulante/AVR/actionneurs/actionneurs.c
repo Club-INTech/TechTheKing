@@ -151,39 +151,40 @@ void asservissement_synchro (void)
 	else
 		PORTD |= DIR2;
 
+	if( (unsigned long)adcRead(ADC0) >= CUR_LIM )	//Si l'on depasse le courant limite
+	{
+		if( tempo1 >= TEMPS_MAX )	//Plus d'un certains temps
+			pwm2--;			//On décrémente le pwm
+		else				//Par contre, si le temps max n'est pas atteint
+			tempo1++;		//On incrémente le temps
+	}
+	else					//Mais si le courant limite n'est pas (ou plus) dépassé
+	{
+		if( tempo1 >= TEMPS_MAX )	//et que le temps max a était atteint
+			tempo1 = 0;		//On le reset
+	}
+
+	if( (unsigned long)adcRead(ADC1) >= CUR_LIM )
+	{
+		if( tempo2 >= TEMPS_MAX )
+			pwm1--;
+		else
+			tempo2++;
+	}
+	else
+	{
+		if( tempo2 >= TEMPS_MAX )
+			tempo2 = 0;
+	}
+
+	if( (unsigned long)adcRead(ADC0) >= CUR_MAX )	//Si l'on dépasse le courant maximum
+		pwm2=0;					//Alors on coupe carrement le pwm
+	if( (unsigned long)adcRead(ADC1) >= CUR_MAX )
+		pwm1=0;
+	
 	// Ecrétage et application des PWM
 	ASC_MOTEUR1 = (pwm1 <= ASC_PWM_MAX1)?pwm1:ASC_PWM_MAX1;
 	ASC_MOTEUR2 = (pwm2 <= ASC_PWM_MAX2)?pwm2:ASC_PWM_MAX2;
-}
-
-int adc_sense1 (void)
-{
-	// Sélectionne ADC1 pour la lecture
-	ADMUX |= 1;
-
-	// Démarre la lecture
-	ADCSRA |= (1 << ADSC);
-
-	// On attend que ADSC passe à 0 (fin de la conversion)
-	while (ADCSRA & (1 << ADSC));
-
-	// On recompose le résultat et on le renvoie
-	return (ADCH | ADCL);
-}
-
-int adc_sense2 (void)
-{
-	// Sélectionne ADC0 pour la lecture
-	ADMUX &= ~1;
-
-	// Démarre la lecture
-	ADCSRA |= (1 << ADSC);
-
-	// On attend que ADSC passe à 0 (fin de la conversion)
-	while (ADCSRA & (1 << ADSC));
-
-	// On recompose le résultat et on le renvoie
-	return (ADCH | ADCL);
 }
 
 // Interruption codeur 2
