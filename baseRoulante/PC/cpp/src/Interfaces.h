@@ -102,7 +102,7 @@ class InterfaceActionneurs{
         inline unsigned short pourcentageAngleConversion(unsigned char pourcentage);
         
     private:
-        static const int i2c_wait = 1000;
+        static const int i2c_wait = 1500;
 };
 
 void ouvrir_adaptateur_i2c ();

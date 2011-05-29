@@ -11,6 +11,7 @@
 #define MASTER_CMD_LCB       0X30
 #define MASTER_CMD_BRAS1     0X41
 #define MASTER_CMD_BRAS2     0X42
+#define MASTER_CMD_JUMPER    0X50
 
 extern unsigned char messageBuf[];
 

@@ -86,7 +86,7 @@ int i2c_init(Adaptator* ad){
 
 int i2c_write(Adaptator* ad, unsigned char slaveAddr, unsigned char msg[], unsigned int size){
 	//printf("addr %d: sending: %s\n",slaveAddr,msg);
-	unsigned char write_buffer[5];
+	unsigned char write_buffer[10];
 	int err;
 	write_buffer[0]=slaveAddr;
     memcpy(write_buffer+1, msg, size*sizeof(char));
