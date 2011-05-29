@@ -4,9 +4,9 @@
 #include <list>
 #include "detectionEllipse.h"
 
-CvMat* initHomogMatrix(char vue);
-std::list<Point> homogListe(std::list<Point> listeCentres, CvMat* homogMatrix);
-float correctionTranchePion(float y);
+CvMat* initHomogMatrix(int vue);
+std::list<Point> homogListe(std::list<Point> listeCentres, CvMat* homogMatrix, int vue);
+float correctionTranchePion(float y, int vue);
 IplImage* extractionComposante(IplImage *img);
 void ouverture(IplImage *imgBin, IplImage *imgBinOp, int cfg_morph_cols, int cfg_morph_rows);
 IplImage* nvgHSV(const IplImage *imageRGB);

@@ -76,10 +76,11 @@ void ajouterPion(std::vector< std::pair<Obstacle*,int> > &v, std::vector<Obstacl
 	}
 }
 
-void printVector(std::vector<Obstacle*> v)
+void printVector(std::vector< std::pair<Obstacle*,int> > v)
 {	
-	for(std::vector<Obstacle*>::iterator it=v.begin();it!=v.end();it++)
+	for(std::vector< std::pair<Obstacle*,int> >::iterator it=v.begin();it!=v.end();it++)
 	{
-		std::cout << (*it)->getX() << " " << (*it)->getY() << std::endl;
+		std::cout << ((it->first))->getX() << " " << ((it->first))->getY() << " n=" << it->second << std::endl;
 	}
 }
+

@@ -43,8 +43,8 @@ int main(int argc, char** argv)
 	afficherListeCentres(imgCentres,listeCentres);
 	
 	// Transformation des coordonnées (homographie)
-	CvMat* homogMatrix = initHomogMatrix('5') ;
-	std::list<Point> listeCentresTable = homogListe(listeCentres, homogMatrix);
+	CvMat* homogMatrix = initHomogMatrix(3) ;
+	std::list<Point> listeCentresTable = homogListe(listeCentres, homogMatrix,3);
 	
 	// Affichage des pions
 	IplImage *table = cvLoadImage("img/table.png",1);
