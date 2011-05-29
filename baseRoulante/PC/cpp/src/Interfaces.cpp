@@ -9,6 +9,7 @@
 #include "Obstacles.h"
 #include <ctime>
 
+#define DEMI_LARGEUR_ROBOT 77
 using namespace std;
 Adaptator* adaptateur_i2c;
 
@@ -149,8 +150,10 @@ void InterfaceAsservissement::reGoTo(){
 }
 
 void InterfaceAsservissement::avancer(unsigned int distanceMm){
-    int distanceTicks = getDistanceRobot() + distanceMm*CONVERSION_MM_TIC;
-    cout << distanceTicks << endl ;
+    #ifdef DEBUG
+		std::cout << "Avance de " << distanceMm << std::endl;
+	#endif
+	int distanceTicks = getDistanceRobot() + distanceMm*CONVERSION_MM_TIC;
     if(distanceTicks>0){
 		m_liaisonSerie<<"b1"+formaterInt(distanceTicks)<<endl;
 	}
@@ -161,6 +164,9 @@ void InterfaceAsservissement::avancer(unsigned int distanceMm){
 }
 
 void InterfaceAsservissement::reculer(unsigned int distanceMm){
+	#ifdef DEBUG
+		std::cout << "Recule de " << distanceMm << std::endl;
+	#endif
     int distanceTicks = getDistanceRobot() - distanceMm*CONVERSION_MM_TIC;
     cout << distanceTicks << endl ;
     if(distanceTicks>0){
@@ -173,6 +179,9 @@ void InterfaceAsservissement::reculer(unsigned int distanceMm){
 }
 
 void InterfaceAsservissement::tourner(double angleRadian){
+	#ifdef DEBUG
+		std::cout << "Tourne de " << angleRadian << std::endl;
+	#endif
 	int angleTicks = angleRadian*CONVERSION_RADIAN_TIC;
     if(angleRadian>0)
         m_liaisonSerie<<"a0"+formaterInt(angleTicks)<<endl;
@@ -199,10 +208,10 @@ void InterfaceAsservissement::recalage()
 	reculer(500);
 	pwmMaxRotation(255);
 	if(COULEUR_ROBOT==BLEU){
-		setXRobot(80);
+		setXRobot(3000-DEMI_LARGEUR_ROBOT);
 	}
 	else if(COULEUR_ROBOT==ROUGE){
-		setXRobot(2920);
+		setXRobot(DEMI_LARGEUR_ROBOT);
 	}
 	avancer(200);
 	tourner(-M_PI/2);
@@ -210,8 +219,8 @@ void InterfaceAsservissement::recalage()
 	pwmMaxTranslation(100);
 	reculer(500);
 	pwmMaxRotation(255);
+	setYRobot(2100-DEMI_LARGEUR_ROBOT);
 	avancer(200);
-	setYRobot(2020);
 }
 
 void InterfaceAsservissement::pwmMaxTranslation(unsigned char valPWM){
@@ -246,7 +255,7 @@ int InterfaceAsservissement::getAngleRobot(){
 int InterfaceAsservissement::getXRobot()
 {
     int result;
-    m_liaisonSerie << "xg";
+    m_liaisonSerie << "xg" << endl;
     m_liaisonSerie >> result;
     return result;
 }
@@ -258,8 +267,9 @@ void InterfaceAsservissement::setXRobot(int xMm){
 int InterfaceAsservissement::getYRobot()
 {
     int result;
-    m_liaisonSerie << "yg";
+    m_liaisonSerie << "yg" << endl;
     m_liaisonSerie >> result;
+    cout << result << endl;
     return result;
 }
 

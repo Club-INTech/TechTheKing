@@ -90,12 +90,12 @@ Manager::assPolaire(){
     int16_t pwmRotation = (activationAssAngle?assRotation.calculePwm(((tableauConsignes.listeConsignes)[consigneActuelle-1]).angle,angle):0);
     int16_t pwmTranslation = (activationAssDistance?assTranslation.calculePwm(((tableauConsignes.listeConsignes)[consigneActuelle-1]).distance,distance):0);
 
-    if(distance==distanceBkp
-	   && angle==angleBkp)
-    {
-		if( ABS(pwmTranslation)>0 && ABS(pwmRotation)>0 ){
+		if( ABS(pwmTranslation)>0
+			&& ABS(pwmRotation)>0
+			&& distance==distanceBkp
+			&& angle==angleBkp){
 				//On n'en tient compte que si il dure depuis suffisament longtemps lolilol.
-				if(compteurBlocage==60){
+				if(compteurBlocage==40){
 					resetListeConsignes();
 					printlnChar('f');
 					compteurBlocage=0;
@@ -103,21 +103,20 @@ Manager::assPolaire(){
 				else{
 					compteurBlocage++;
 				}
-			}
+		}
 		else{
 				compteurBlocage=0;
 				if(consigneActuelle>1
 				&& consigneActuelle==tableauConsignes.nbConsignes
-			    && ABS(delta_distance) < ABS(delta_distanceBkp)
-			    && ABS(delta_angle) < ABS(delta_angleBkp)){
+				&& ABS(delta_distance) < ABS(delta_distanceBkp)
+				&& ABS(delta_angle) < ABS(delta_angleBkp)){
 					tableauConsignes.listeConsignes[0].angle = tableauConsignes.listeConsignes[tableauConsignes.nbConsignes-1].angle;
 					tableauConsignes.listeConsignes[0].distance = tableauConsignes.listeConsignes[tableauConsignes.nbConsignes-1].distance;
 					tableauConsignes.nbConsignes = 1;
 					consigneActuelle = 1;
 					printlnChar('f');
-			}
+				}
 		}
-	}
 
 
     /*
