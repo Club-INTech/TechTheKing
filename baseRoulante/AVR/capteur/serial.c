@@ -1,6 +1,6 @@
 #include "serial.h"
 
-volatile unsigned char lcb_val = '0';
+volatile unsigned char lcb_val = 'P';
 
 /*
  * Partie réception de DATA

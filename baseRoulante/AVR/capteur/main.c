@@ -1,25 +1,21 @@
-#include "serial.h"
-#include "ultrasons.h"
-#include "twi_slave.h"
-#include "infrarouges.h"
 #include <util/delay.h>
+
+#include "serial.h"
+#include "capteurs.h"
+#include "twi_slave.h"
 
 int main()
 {
+    // Initialisation I2C
     TWI_Init();
-    infra_init();
-    uart_init();
     
+    // Initialisation serie
+    uart_init();
+
     while(1) {
-        printlnLong(infra_distance1());
-        _delay_ms(250);
-        
-//         /***** Polling Ultrasons *****/
-//         _delay_ms(100);
-//         ultra1 = ping(PIN_ULTRASON_1);
-//         ultra2 = ping(PIN_ULTRASON_2);
-//         ultra3 = ping(PIN_ULTRASON_3);
-//         /*****************************/
+        _delay_ms(50);
+        // Polling ultrason
+        ultra1 = ping(PIN_ULTRASON);
     }
 
     return 0;
