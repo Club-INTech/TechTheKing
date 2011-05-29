@@ -76,7 +76,7 @@ Manager::assPolaire(){
 			consigneActuelle++;
 		}
 		if( ABS(tableauConsignes.listeConsignes[consigneActuelle-1].distance - distance)
-			< 0.5 * ABS(tableauConsignes.listeConsignes[consigneActuelle+1].distance - tableauConsignes.listeConsignes[consigneActuelle-1].distance))
+			< 0.5 * ABS(tableauConsignes.listeConsignes[consigneActuelle-1].distance - tableauConsignes.listeConsignes[consigneActuelle-2].distance))
 			{
                     consigneActuelle++;
             }			
@@ -93,7 +93,8 @@ Manager::assPolaire(){
     {
 		//On est arrivé
 		if(consigneActuelle>1
-		   && consigneActuelle==tableauConsignes.nbConsignes){
+		   && consigneActuelle==tableauConsignes.nbConsignes
+		   && ABS(delta_distance) < ABS(delta_distanceBkp)){
 			resetListeConsignes();
 			printlnChar('f');
 		}
@@ -102,10 +103,7 @@ Manager::assPolaire(){
 			if( ABS(pwmTranslation)>0 && ABS(pwmRotation)>0 ){
 				//On n'en tient compte que si il dure depuis suffisament longtemps lolilol.
 				if(compteurBlocage==10){
-					tableauConsignes.listeConsignes[0].angle = angle;
-					tableauConsignes.listeConsignes[0].distance = distance;
-					tableauConsignes.nbConsignes = 1;
-					consigneActuelle = 1;
+					resetListeConsignes();
 					printlnChar('f');
 					compteurBlocage=0;
 				}
@@ -171,6 +169,7 @@ Manager::assPolaire(){
         MOTEUR2 = -pwmD;
     }
     
+    
     angleBkp = angle;
     distanceBkp = distance;
     delta_distanceBkp = delta_distance;
@@ -183,18 +182,15 @@ Manager::Manager(){
 }
 
 void Manager::resetListeConsignes(){
-        tableauConsignes.listeConsignes[0].angle = tableauConsignes.listeConsignes[tableauConsignes.nbConsignes-1].angle;
-        tableauConsignes.listeConsignes[0].distance = tableauConsignes.listeConsignes[tableauConsignes.nbConsignes-1].distance;
-        tableauConsignes.nbConsignes = 1;
-        consigneActuelle = 1;
+        tableauConsignes.listeConsignes[0].angle = angleBkp;
+		tableauConsignes.listeConsignes[0].distance = distanceBkp;
+		tableauConsignes.nbConsignes = 1;
+		consigneActuelle = 1;
 }
 
 
 void Manager::stop(){
-    tableauConsignes.listeConsignes[0].angle = angleBkp;
-    tableauConsignes.listeConsignes[0].distance = distanceBkp;
-    tableauConsignes.nbConsignes = 1;
-    consigneActuelle = 1;
+    resetListeConsignes();
 }
 void Manager::init()
 {

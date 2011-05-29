@@ -2,10 +2,10 @@
 /* config.h.in.  Generated from configure.in by autoheader.  */
 
 /* Informations de debug sur la sortie standart */
-/* #undef DEBUG */
+#define DEBUG /**/
 
 /* Informations graphiques de debug (Magick++) */
-/* #undef DEBUG_GRAPHIQUE */
+#define DEBUG_GRAPHIQUE /**/
 
 /* Define to 1 if you have the <boost/thread.hpp> header file. */
 #define HAVE_BOOST_THREAD_HPP 1

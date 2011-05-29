@@ -62,11 +62,11 @@ void TWI_Loop( void )
                 cons = AX_ANGLE_EXT1;
             
             // Envoi de l'ordre au servo
-            AX12GoTo (0XFE, cons);
+            AX12GoTo (AX_ID1, cons);
         }
 
         // Ordre pour l'AX12 2
-        else if ( messageBuf[0] == MASTER_CMD_AX2_GOTO ) {
+        if ( messageBuf[0] == MASTER_CMD_AX2_GOTO ) {
             
             // Lecture de la consigne
             uint16_t cons = messageBuf[1];
@@ -83,23 +83,23 @@ void TWI_Loop( void )
             AX12GoTo (0XFE, cons);
         }
 
-        else if ( messageBuf[0] == MASTER_CMD_SERVO1_UP ) {
+        if ( messageBuf[0] == MASTER_CMD_SERVO1_UP ) {
             SERVO_CONS1 = SERVO_PWM_UP1;
         }
 
-        else if ( messageBuf[0] == MASTER_CMD_SERVO2_UP ) {
+        if ( messageBuf[0] == MASTER_CMD_SERVO2_UP ) {
             SERVO_CONS2 = SERVO_PWM_UP2;
         }
 
-        else if ( messageBuf[0] == MASTER_CMD_SERVO1_DOWN ) {
+        if ( messageBuf[0] == MASTER_CMD_SERVO1_DOWN ) {
             SERVO_CONS1 = SERVO_PWM_DOWN1;
         }
 
-        else if ( messageBuf[0] == MASTER_CMD_SERVO2_DOWN ) {
+        if ( messageBuf[0] == MASTER_CMD_SERVO2_DOWN ) {
             SERVO_CONS2 = SERVO_PWM_DOWN2;
         }
 
-        else if ( messageBuf[0] == MASTER_CMD_ASC1_GOTO ) {
+        if ( messageBuf[0] == MASTER_CMD_ASC1_GOTO ) {
             
             // Lecture de la consigne
             uint16_t cons = messageBuf[1];
@@ -119,7 +119,7 @@ void TWI_Loop( void )
             etat_asservissement = ASC_ASSERV_INDEP;
         }
 
-        else if ( messageBuf[0] == MASTER_CMD_ASC2_GOTO ) {
+        if ( messageBuf[0] == MASTER_CMD_ASC2_GOTO ) {
             
             // Lecture de la consigne
             uint16_t cons = messageBuf[1];
@@ -139,7 +139,7 @@ void TWI_Loop( void )
             etat_asservissement = ASC_ASSERV_INDEP;
         }
 
-        else if ( messageBuf[0] == MASTER_CMD_ASCB_GOTO) {
+        if ( messageBuf[0] == MASTER_CMD_ASCB_GOTO) {
             
             // Lecture de la consigne
             int16_t cons;
@@ -158,12 +158,12 @@ void TWI_Loop( void )
             etat_asservissement = ASC_ASSERV_SYNCHRO;
         }
 
-        else if ( messageBuf[0] == MASTER_CMD_STOP ) {
+        if ( messageBuf[0] == MASTER_CMD_STOP ) {
             // On desactive l'asservissement
             etat_asservissement = ASC_ASSERV_STOP;
         }
         
-        else if ( messageBuf[0] == MASTER_CMD_RECALAGE ) {
+        if ( messageBuf[0] == MASTER_CMD_RECALAGE ) {
             recalage();
         }   
         
@@ -377,8 +377,5 @@ ISR(TWI_vect)
       
       TWI_busy = 0; // Unknown status, so we wait for a new address match that might be something we can handle
   }
-  
-  TWI_Loop();
-  //TWI_Loop();
   
 }

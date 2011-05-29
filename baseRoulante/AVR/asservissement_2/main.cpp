@@ -198,7 +198,23 @@ int main( void ){
             TIMSK1 &= ~(1 << TOIE1);
             break;
         case 'p':
-            TIMSK1 |= (1 << TOIE1);
+            while (available() == 0) {
+				asm("nop");
+			}
+			switch(caractereLu= read()){
+				case 't':
+					i=litEntierLong();
+					if (i >= 0) {
+						manager.assTranslation.changePWM(i);
+					}
+					break;
+				case 'r':
+					i=litEntierLong();
+					if (i >= 0) {
+						manager.assRotation.changePWM(i);
+					}
+					break;
+			}
             break;
         case 'q': // push consigne (étape 2)
             i=litEntierLong();

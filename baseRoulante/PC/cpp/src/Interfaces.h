@@ -24,47 +24,50 @@ std::vector<char> getTtyUSB();
 
 class InterfaceAsservissement {
 public:
-	static InterfaceAsservissement* Instance(int precisionAStar=50);
-	~InterfaceAsservissement();
+    static InterfaceAsservissement* Instance(int precisionAStar=50);
+    ~InterfaceAsservissement();
     friend void detectionSerieUsb(InterfaceAsservissement* asserv); // ne devrait pas servir si on garde l'i2c
     int getDistanceRobot();
     int getAngleRobot();
     void goTo(Point arrivee,int nbPoints);
+    void pwmMaxTranslation(unsigned char valPWM);
+    void pwmMaxRotation(unsigned char valPWM);
     void recalage();
     void reGoTo();
     void avancer(unsigned int distanceMm);
     void reculer(unsigned int distanceMm);
     void tourner(double angleRadian);
     void stop();
-	#ifdef DEBUG_GRAPHIQUE
-	void debugGraphique();
-	#endif
+    #ifdef DEBUG_GRAPHIQUE
+    void debugGraphique();
+    #endif
     void debugConsignes();
     int getXRobot();
-	int getYRobot();
-	void setXRobot(int xMm);
-	void setYRobot(int yMm);
+    int getYRobot();
+    void setXRobot(int xMm);
+    void setYRobot(int yMm);
 
 private:
     InterfaceAsservissement& operator=(const InterfaceAsservissement&);
     InterfaceAsservissement(const InterfaceAsservissement&){};
-	InterfaceAsservissement(int precisionAStar);
+    InterfaceAsservissement(int precisionAStar);
     void recupPosition();
     void attendreArrivee();
 private:
-	Point m_lastArrivee;
-	int m_lastNbPoints;
-	int m_compteurImages;
-	vector<Point> m_lastTrajectory;
-	vector<Consigne> m_lastListeConsignes;
-	static InterfaceAsservissement* m_instance;
+    Point m_lastArrivee;
+    int m_lastNbPoints;
+    int m_compteurImages;
+    vector<Point> m_lastTrajectory;
+    vector<Consigne> m_lastListeConsignes;
+    static InterfaceAsservissement* m_instance;
     AStar m_pathfinding;
     unsigned int vitesseMax;
     SerialStream m_liaisonSerie;
 };
 
 // Interface passive : capteurs. A priori, pas besoin de méthode publique autre que ouvrirThread.
-class InterfaceCapteurs : public Thread {
+
+class InterfaceCapteurs : public Thread,public Singleton<InterfaceCapteurs> {
 public:
     InterfaceCapteurs();
     unsigned short DistanceUltrason( Ultrason val );
@@ -80,7 +83,7 @@ private:
 
 
 
-class InterfaceActionneurs {
+class InterfaceActionneurs : public Singleton<InterfaceActionneurs> {
     
     public:
         InterfaceActionneurs();
