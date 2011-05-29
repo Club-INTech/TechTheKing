@@ -25,9 +25,7 @@ public class DebugCamera extends Activity {
 
 	ImageView image;
 	
-    private EditText seuilEntry;
-    private EditText morphRowsEntry;
-    private EditText morphColsEntry;
+    private EditText vueEntry;
 
     
 	/** Called when the activity is first created. */
@@ -38,13 +36,9 @@ public class DebugCamera extends Activity {
 	    setContentView(R.layout.camera);
 	    
 	    //Association des champs.
-        seuilEntry=(EditText) findViewById(R.id.seuilEntry);
-        morphRowsEntry=(EditText) findViewById(R.id.morphRowsEntry);
-        morphColsEntry=(EditText) findViewById(R.id.morphColsEntry);
+        vueEntry=(EditText) findViewById(R.id.vueEntry);
         
-        seuilEntry.setText(String.valueOf(CameraHandler.getInstance().getSeuil()));
-        morphRowsEntry.setText(String.valueOf(CameraHandler.getInstance().getMorphRows()));
-        morphColsEntry.setText(String.valueOf(CameraHandler.getInstance().getMorphCols()));
+        vueEntry.setText(String.valueOf(CameraHandler.getInstance().getVue()));
 	    
 	    
 	    preview = new CameraPreview(this); // <3>
@@ -60,9 +54,7 @@ public class DebugCamera extends Activity {
 	    	
   			Intent intentPrisePhoto = new Intent(DebugCamera.this, PictureTaker.class);
 			
-  	    	CameraHandler.getInstance().setSeuil(Integer.parseInt(seuilEntry.getText().toString()));
-  	    	CameraHandler.getInstance().setMorphRows(Integer.parseInt(morphRowsEntry.getText().toString()));
-  	    	CameraHandler.getInstance().setMorphCols(Integer.parseInt(morphColsEntry.getText().toString()));
+  	    	CameraHandler.getInstance().setVue(Integer.parseInt(vueEntry.getText().toString()));
   	    	
 			startActivityForResult(intentPrisePhoto , 0);
 			
@@ -94,9 +86,7 @@ public class DebugCamera extends Activity {
     public void onBackPressed(){
     	super.onDestroy();
     	Intent resultIntent = new Intent();
-    	CameraHandler.getInstance().setSeuil(Integer.parseInt(seuilEntry.getText().toString()));
-    	CameraHandler.getInstance().setMorphRows(Integer.parseInt(morphRowsEntry.getText().toString()));
-    	CameraHandler.getInstance().setMorphCols(Integer.parseInt(morphColsEntry.getText().toString()));
+    	CameraHandler.getInstance().setVue(Integer.parseInt(vueEntry.getText().toString()));
     	setResult(Activity.RESULT_OK, resultIntent);
     	finish();
     }

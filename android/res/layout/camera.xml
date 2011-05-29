@@ -10,61 +10,19 @@ android:id="@+id/linearLayout1">
   android:layout_height="wrap_content" android:id="@+id/relativeLayout1">
   <!-- <1> -->
   <EditText
-        android:id="@+id/seuilEntry"
+        android:id="@+id/vueEntry"
         android:layout_height="wrap_content"
         android:background="@android:drawable/editbox_background"
         android:layout_centerHorizontal="true"
         android:layout_width="100dip"
         android:inputType="numberSigned"/>
-
-
-  <EditText
-        android:id="@+id/morphRowsEntry"
-        android:layout_height="wrap_content"
-        android:background="@android:drawable/editbox_background"
-        android:layout_width="100dip"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/seuilEntry"
-        android:inputType="numberDecimal"/>
-        
-  <EditText
-        android:id="@+id/morphColsEntry"
-        android:layout_height="wrap_content"
-        android:background="@android:drawable/editbox_background"
-        android:layout_width="100dip"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/morphRowsEntry"
-        android:inputType="numberDecimal"/>
   <TextView
-        android:id="@+id/seuilLabel"
+        android:id="@+id/vueLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Seuil "
+        android:text="Vue "
         android:layout_toLeftOf="@+id/seuilEntry"
         android:layout_alignBaseline="@+id/seuilEntry"/>
-        
-  <TextView
-        android:id="@+id/morphRowsLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=" Rows  "
-        android:layout_toLeftOf="@+id/morphRowsEntry"
-        android:layout_alignBaseline="@+id/morphRowsEntry"/>
-  <TextView
-        android:id="@+id/morphColsLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=" Cols  "
-        android:layout_toLeftOf="@+id/morphColsEntry"
-        android:layout_alignBaseline="@+id/morphColsEntry"/>
-  <TextView
-        android:id="@+id/morphLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Morph :  "
-        android:layout_toLeftOf="@+id/morphRowsLabel"
-        android:layout_alignBaseline="@+id/morphRowsLabel"
-        />
   <!-- <2> -->
   <!-- <3> -->
 </RelativeLayout>

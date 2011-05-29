@@ -18,13 +18,11 @@ public class PictureTaker extends Activity {
 	    System.loadLibrary("opencv");  
 	}  
 	public native boolean setSourceImage(int[] pixels, int width, int height);
-	public native String trouverPions(int morph_rows,int morph_cols);
+	public native String trouverPions(int vue);
 	
 	private final static String  TAG = "Picture Taker";
 	
-	private int m_seuil;
-	private int m_morphRows;
-	private int m_morphCols;
+	private int m_vue;
 	
 	ShutterCallback shutterCallback = new ShutterCallback() { // <6>
 		    public void onShutter() {
@@ -41,9 +39,9 @@ public class PictureTaker extends Activity {
 	private PictureCallback m_jpegCallback = new PictureCallback() {
 		
 	    public void onPictureTaken(byte[] data, Camera camera){
-	    	try{
-	    		
+	    	try{	
 		    	Bitmap bitmap = BitmapFactory.decodeByteArray(data,0,data.length);
+		    	
 		    	
 		    	//Pour le Galaxy S :
 		    	Matrix mat = new Matrix();
@@ -63,7 +61,7 @@ public class PictureTaker extends Activity {
 		    	*/
 		    	
 		    	setSourceImage(pixels,width,height);
-		    	String listePositions = trouverPions(m_morphRows,m_morphCols);
+		    	String listePositions = trouverPions(m_vue);
 		    	Intent resultIntent = new Intent();
 		    	resultIntent.putExtra("listePositions", listePositions);
 		    	setResult(Activity.RESULT_OK, resultIntent);
@@ -83,10 +81,8 @@ public class PictureTaker extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 
-	    m_seuil = CameraHandler.getInstance().getSeuil();
-	    m_morphRows = CameraHandler.getInstance().getMorphRows();
-	    m_morphCols = CameraHandler.getInstance().getMorphCols();
-	    
+	    m_vue = CameraHandler.getInstance().getVue();
+
 	    CameraHandler.getInstance().m_camera.takePicture(shutterCallback, rawCallback, m_jpegCallback);
 	}
 }
