@@ -77,11 +77,11 @@ class Point{
 
 class Thread{
     public:
+        Thread();
         void ouvrirThread();
         void fermerThread();
         virtual ~Thread();
     protected:
-        Thread();
         virtual void thread()=0;
     protected:
         boost::thread* m_thread;
@@ -131,9 +131,10 @@ private:
     InterfaceAsservissement(int precisionAStar);
     void recupPosition();
 };
-class InterfaceCapteurs : public Thread{
+class InterfaceCapteurs : public Thread {
 public:
     InterfaceCapteurs();
+    ~InterfaceCapteurs();
     unsigned short DistanceUltrason( void );
     bool EtatBras ( Bras val );
     char LecteurCB ( void );

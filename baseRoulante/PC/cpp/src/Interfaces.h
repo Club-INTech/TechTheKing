@@ -13,12 +13,11 @@
 
 enum SensDeplacement {POSITIF, NEGATIF};
 enum ModeAimant {BAS, HAUT};
-enum Bras {BGAUCHE = 0X41, BROITE = 0X42};
+enum Bras {BGAUCHE = 0X41, BDROITE = 0X42};
 
 std::string exec(char* cmd);
 class InterfaceAsservissement;
 std::vector<char> getTtyUSB();
-
 
 class InterfaceAsservissement {
 public:
@@ -67,7 +66,8 @@ private:
 
 class InterfaceCapteurs : public Thread {
 public:
-    InterfaceCapteurs();
+    InterfaceCapteurs() : Thread() {}
+    ~InterfaceCapteurs() {}
     unsigned short DistanceUltrason( void );
     bool EtatBras ( Bras val );
     char LecteurCB ( void );
