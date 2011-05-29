@@ -47,7 +47,7 @@ public class MainMenu extends Activity {
         
         /*Initialisation des constantes*/
         
-        CameraHandler.getInstance().setVue(180);
+        CameraHandler.getInstance().setVue(5);
         
         m_port = 42000;
         m_ssid = "Test";
