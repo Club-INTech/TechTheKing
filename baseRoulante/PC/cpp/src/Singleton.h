@@ -1,19 +1,22 @@
-#ifndef SINGLETON_H
-#define SINGLETON_H
+#ifndef SINGLETON_HPP
+#define SINGLETON_HPP
 
-#include <iostream>
+#include <boost/utility.hpp>
+#include <boost/thread/once.hpp>
+#include <boost/scoped_ptr.hpp>
 
-class Singleton{
+template<class T>
+class Singleton : private boost::noncopyable
+{
 public:
-	static Singleton* Instance();
-	template <class C> static Singleton* Instance(C a);
-	template <class C, class M> static Singleton* Instance(C a,M b);
-    ~Singleton(){};
+    static T& Instance();
+    static void init();
 protected:
-	static Singleton* m_instance;
-	Singleton(){};
-	Singleton(const Singleton&);
-    Singleton* operator=(const Singleton&){};
+    ~Singleton() {}
+     Singleton() {}
+private:
+     static boost::scoped_ptr<T> t;
+     static boost::once_flag flag;
 };
 
 #endif

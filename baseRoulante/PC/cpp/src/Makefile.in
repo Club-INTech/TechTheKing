@@ -69,8 +69,8 @@ am__installdirs = "$(DESTDIR)$(libdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libChessUp_la_LIBADD =
 am_libChessUp_la_OBJECTS = hiddata.lo i2cLib.lo AStar.lo Consigne.lo \
-	Debug.lo Interfaces.lo InterfaceRuby_wrap.lo Obstacles.lo \
-	Point.lo Socket.lo Thread.lo Constantes.lo
+	Interfaces.lo InterfaceRuby_wrap.lo Obstacles.lo Point.lo \
+	Socket.lo Thread.lo Constantes.lo Singleton.lo
 libChessUp_la_OBJECTS = $(am_libChessUp_la_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -217,7 +217,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 lib_LTLIBRARIES = libChessUp.la
-libChessUp_la_SOURCES = hiddata.c i2cLib.c AStar.cpp Consigne.cpp Debug.cpp Interfaces.cpp InterfaceRuby_wrap.cxx Obstacles.cpp Point.cpp Socket.cpp Thread.cpp Constantes.cpp
+libChessUp_la_SOURCES = hiddata.c i2cLib.c AStar.cpp Consigne.cpp Interfaces.cpp InterfaceRuby_wrap.cxx Obstacles.cpp Point.cpp Socket.cpp Thread.cpp Constantes.cpp Singleton.c
 all: all-am
 
 .SUFFIXES:
@@ -295,11 +295,11 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AStar.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Consigne.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Constantes.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Debug.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/InterfaceRuby_wrap.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Interfaces.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Obstacles.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Point.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Singleton.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Socket.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Thread.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hiddata.Plo@am__quote@

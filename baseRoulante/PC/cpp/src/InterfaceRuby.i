@@ -101,6 +101,24 @@ class Socket{
         void getPions();
 };
 
+template<class T>
+class Singleton : private boost::noncopyable
+{
+public:
+    static T& Instance();
+    static void init();
+protected:
+    ~Singleton() {}
+     Singleton() {}
+private:
+     static boost::scoped_ptr<T> t;
+     static boost::once_flag flag;
+};
+
+%rename(InterfaceActionneursSingleton) Singleton<InterfaceActionneurs>;
+%rename(InterfaceCapteursSingleton) Singleton<InterfaceCapteursSingleton>;
+
+
 class InterfaceAsservissement {
 public:
     static InterfaceAsservissement* Instance(int precisionAStar=50);
@@ -138,7 +156,7 @@ public:
     InterfaceCapteurs();
 };
 
-class InterfaceActionneurs {
+class InterfaceActionneurs : public InterfaceActionneursSingleton{
 public:
     InterfaceActionneurs();
     ~InterfaceActionneurs();
