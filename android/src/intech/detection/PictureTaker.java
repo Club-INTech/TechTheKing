@@ -41,16 +41,27 @@ public class PictureTaker extends Activity {
 	private PictureCallback m_jpegCallback = new PictureCallback() {
 		
 	    public void onPictureTaken(byte[] data, Camera camera){
-	    	try{	
+	    	try{
+	    		
 		    	Bitmap bitmap = BitmapFactory.decodeByteArray(data,0,data.length);
+		    	
+		    	//Pour le Galaxy S :
 		    	Matrix mat = new Matrix();
 		    	mat.postRotate(90);
 		    	Bitmap bitmapRotate = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), mat, true);
 		    	int width = bitmapRotate.getWidth();
 		    	int height = bitmapRotate.getHeight();
-		    	Log.d(TAG,"Seuil  :  " + String.valueOf(m_seuil));
 		    	int[] pixels = new int[width * height];
 		    	bitmapRotate.getPixels(pixels, 0, width, 0, 0, width, height);
+		    	
+		    	/*
+		    	//Pour tous les autres
+		    	int width = bitmap.getWidth();
+		    	int height = bitmap.getHeight();
+		    	int[] pixels = new int[width * height];
+		    	bitmapRotate.getPixels(pixels, 0, width, 0, 0, width, height);
+		    	*/
+		    	
 		    	setSourceImage(pixels,width,height);
 		    	String listePositions = trouverPions(m_morphRows,m_morphCols);
 		    	Intent resultIntent = new Intent();
