@@ -78,7 +78,7 @@ Manager::assPolaire(){
 			consigneActuelle++;
 		}
 		else if( ABS(tableauConsignes.listeConsignes[consigneActuelle-1].distance - distance)
-			< 0.5 * ABS(tableauConsignes.listeConsignes[consigneActuelle+1].distance - tableauConsignes.listeConsignes[consigneActuelle-1].distance))
+			<= ABS(tableauConsignes.listeConsignes[consigneActuelle-1].distance - tableauConsignes.listeConsignes[consigneActuelle-2].distance))
 			{
                     consigneActuelle++;
             }			
@@ -267,9 +267,9 @@ void Manager::init()
     assRotation.changeVmax(0);
     assRotation.changeKpVitesse(0);
 
-    assTranslation.changeKp(2);
+    assTranslation.changeKp(5);
     assTranslation.changePWM(PWM_MAX);
-    assTranslation.changeKd(200);
+    assTranslation.changeKd(500);
     assTranslation.changeKi(0);
     assTranslation.changeVmax(0);
     assTranslation.changeKpVitesse(0);
