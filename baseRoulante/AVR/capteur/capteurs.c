@@ -1,10 +1,10 @@
-#include "ultrasons.h"
-#include <util/delay.h>
 #include <avr/interrupt.h>
+#include <avr/io.h>
+#include <util/delay.h>
 
-volatile uint16_t ultra1;
-volatile uint16_t ultra2;
-volatile uint16_t ultra3;
+#include "capteurs.h"
+
+uint16_t ultrason;
 
 uint16_t ping(uint8_t pin)
 {
@@ -40,3 +40,7 @@ uint16_t ping(uint8_t pin)
     
     return duree;
 } 
+
+uint8_t etat_capteur (uint8_t pin) {
+    return (PINC & pin);
+}
