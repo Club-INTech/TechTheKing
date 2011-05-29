@@ -3,15 +3,11 @@
 
 #define TWI_BUFFER_SIZE 8
                                
-#define MASTER_CMD_ULTRA1    0X11
-#define MASTER_CMD_ULTRA2    0X12
-#define MASTER_CMD_ULTRA3    0X13
-#define MASTER_CMD_SHARP1    0X21
-#define MASTER_CMD_SHARP2    0X22
-#define MASTER_CMD_LCB       0X30
-#define MASTER_CMD_BRAS1     0X41
-#define MASTER_CMD_BRAS2     0X42
-#define MASTER_CMD_JUMPER    0X50
+#define MASTER_CMD_ULTRA    0X11
+#define MASTER_CMD_LCB      0X30
+#define MASTER_CMD_BRAS1    0X41
+#define MASTER_CMD_BRAS2    0X42
+#define MASTER_CMD_JUMPER   0X50
 
 extern unsigned char messageBuf[];
 

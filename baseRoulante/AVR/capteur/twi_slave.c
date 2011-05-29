@@ -1,8 +1,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
-#include "ultrasons.h"
-#include "fin_course.h"
+#include "capteurs.h"
 #include "serial.h"
 
 #include "twi_slave.h"
@@ -53,57 +52,31 @@ void TWI_Data( void )
             TWI_Get_Data_From_Transceiver(messageBuf, 1);
         }
         
-        if (messageBuf[0] == MASTER_CMD_ULTRA1) {
-            messageBuf[0] = (uint8_t) ultra1;
-            messageBuf[1] = (uint8_t) (ultra1 >> 8);
-        
-            TWI_Start_Transceiver_With_Data(messageBuf, 2);
+        if (messageBuf[0] == MASTER_CMD_JUMPER) {
+            messageBuf[0] = etat_capteur (PIN_JUMPER);
+            TWI_Start_Transceiver_With_Data(messageBuf, 1);
         }
         
-        else if (messageBuf[0] == MASTER_CMD_ULTRA2) {
-            messageBuf[0] = (uint8_t) ultra2;
-            messageBuf[1] = (uint8_t) (ultra2 >> 8);
-            
+        else if (messageBuf[0] == MASTER_CMD_ULTRA) {
+            messageBuf[0] = (uint8_t) ultrason;
+            messageBuf[1] = (uint8_t) (ultrason >> 8);
             TWI_Start_Transceiver_With_Data(messageBuf, 2);
         }
-        
-        else if (messageBuf[0] == MASTER_CMD_ULTRA3) {
-            messageBuf[0] = (uint8_t) ultra3;
-            messageBuf[1] = (uint8_t) (ultra3 >> 8);
-            
-            TWI_Start_Transceiver_With_Data(messageBuf, 2);
-        }
-        
-//         else if (messageBuf[0] == MASTER_CMD_SHARP1) {
-//             messageBuf[0] = (uint8_t) sharp1;
-//             messageBuf[1] = (uint8_t) (sharp1 >> 8);
-//             
-//             TWI_Start_Transceiver_With_Data(messageBuf, 2);
-//         }
-//         
-//         else if (messageBuf[0] == MASTER_CMD_SHARP2) {
-//             messageBuf[0] = (uint8_t) sharp2;
-//             messageBuf[1] = (uint8_t) (sharp2 >> 8);
-//             
-//             TWI_Start_Transceiver_With_Data(messageBuf, 2);
-//         }
-        
+                
         else if (messageBuf[0] == MASTER_CMD_LCB) {
             messageBuf[0] = lcb_val;
-            
             TWI_Start_Transceiver_With_Data(messageBuf, 1);
-            
-            lcb_val = '0';
+            // On reset la valeur lue par le lecteur codes barres
+            lcb_val = 'P';
         }
 
         else if (messageBuf[0] == MASTER_CMD_BRAS1) {
-            messageBuf[0] = etat_bras (PIN_FINCOURSE_1);
-            
+            messageBuf[0] = etat_capteur(PIN_BRAS1);
             TWI_Start_Transceiver_With_Data(messageBuf, 1);
         }
         
         else if (messageBuf[0] == MASTER_CMD_BRAS2) {
-            messageBuf[0] = etat_bras (PIN_FINCOURSE_2);
+            messageBuf[0] = etat_capteur(PIN_BRAS2);
             
             TWI_Start_Transceiver_With_Data(messageBuf, 1);
         }
