@@ -5,49 +5,35 @@
 
 bool comparerPions(std::vector<Obstacle*>::iterator a, std::vector<Obstacle*>::iterator b);
 void printVector(std::vector<Obstacle*> v);
-std::vector< std::pair<Obstacle*,int> > fusionResultats(std::vector<Obstacle*> t1, std::vector<Obstacle*> t2, std::vector<Obstacle*> t3);
+std::vector< std::pair<Obstacle*,int> > fusionResultats(std::vector<Obstacle*> t1, std::vector<Obstacle*> t2, std::vector<Obstacle*> t3, int niveau);
+void ajouterPion(std::vector< std::pair<Obstacle*,int> > &v, std::vector<Obstacle*>::iterator p);
 
 // Intersection des résultats (au moins 2 téléphones nécessaires)
-std::vector< std::pair<Obstacle*,int> > fusionResultats(std::vector<Obstacle*> t1, std::vector<Obstacle*> t2, std::vector<Obstacle*> t3)
+std::vector< std::pair<Obstacle*,int> > fusionResultats(std::vector<Obstacle*> t1, std::vector<Obstacle*> t2, std::vector<Obstacle*> t3, int niveau)
 {
-	std::vector<Obstacle*>::iterator it1,it2,it3;
-	int n;
-	double x,y;
+	std::vector<Obstacle*>::iterator it;
 	std::vector< std::pair<Obstacle*,int> > resultatFusion;
 	
-	for(it1=t1.begin();it1!=t1.end();it1++)
+	// Une double boucle pour 3 instructions c'est mal
+	for(it=t1.begin();it!=t1.end();it++)
 	{
-		n = 1;
-		x = (*it1)->getX();
-		y = (*it1)->getY();
-		
-		for(it2=t2.begin();it2!=t2.end();it2++)
-		{
-			if (comparerPions(it1,it2))
-			{
-				n++;
-				x += (*it2)->getX();
-				y += (*it2)->getY();
-				t2.erase(it2);
-			}
-		}
-		for(it3=t3.begin();it3!=t3.end();it3++)
-		{
-			if (comparerPions(it1,it3))
-			{
-				n++;
-				x += (*it3)->getX();
-				y += (*it3)->getY();
-				t3.erase(it3);
-			}
-		}
-		
-		if (n > 1)
-		{
-			x = x/n;
-			y = y/n;
-			resultatFusion.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(x,y),n));
-		}
+		ajouterPion(resultatFusion,it);
+	}
+	
+	for(it=t2.begin();it!=t2.end();it++)
+	{
+		ajouterPion(resultatFusion,it);
+	}
+	
+	for(it=t3.begin();it!=t3.end();it++)
+	{
+		ajouterPion(resultatFusion,it);
+	}
+	
+	// Tri des résultats en fonction du niveau
+	for(it=resultatFusion.begin();it!=resultatFusion.end();it++)
+	{
+		if (it.second < niveau) resultatFusion.erase(it);
 	}
 	
 	return resultatFusion;
@@ -58,6 +44,36 @@ bool comparerPions(std::vector<Obstacle*>::iterator a, std::vector<Obstacle*>::i
 {
 	double d = (*a)->rayon(**b);
 	return (d < TOLERANCE_DISTANCE);
+}
+
+// Vérifie si un pion est déjà présent, l'ajoute sinon
+void ajouterPion(std::vector< std::pair<Obstacle*,int> > &v, std::vector<Obstacle*>::iterator p)
+{
+	std::vector<Obstacle*>::iterator it;
+	bool present = false;
+	
+	for(it=v.begin();it!=v.end();it++)
+	{
+		// Si pion déjà présent, on augmente le poids
+		if (comparerPions(it,p))
+		{
+			present = true;
+			
+			// Calcul du barycentre
+			(*(it.first))->setX( ( it.second * (*(it.first))->getX() + (*p)->getX() ) / (it.second + 1) );
+			(*(it.first))->setY( ( it.second * (*(it.first))->getY() + (*p)->getY() ) / (it.second + 1) );
+			
+			// Incrémentation du poids
+			it.second += 1;
+		}
+	}
+	
+	// Ajout du pion s'il n'est pas déjà présent
+	if (!present)
+	{
+		// new CercleObstacle((*p)->getX(),(*p)->getY()) ?
+		v.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle((*p)->getX(),(*p)->getY()),1));
+	}
 }
 
 void printVector(std::vector<Obstacle*> v)
