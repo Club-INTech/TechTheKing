@@ -41,8 +41,7 @@ extern double TOLERANCE_Y;
 
 enum SensDeplacement {POSITIF, NEGATIF};
 enum ModeAimant {BAS, HAUT};
-enum FinCourse {FCGAUCHE = 0X41, FCDROITE = 0X42};
-enum PresencePion {OUI, NON};
+enum Bras {BGAUCHE = 0X41, BDROITE = 0X42};
 typedef struct usbDevice Adaptator;
 
 std::string exec(char* cmd);
@@ -78,11 +77,11 @@ class Point{
 
 class Thread{
     public:
+        Thread();
         void ouvrirThread();
         void fermerThread();
         virtual ~Thread();
     protected:
-        Thread();
         virtual void thread()=0;
     protected:
         boost::thread* m_thread;
@@ -132,10 +131,18 @@ private:
     InterfaceAsservissement(int precisionAStar);
     void recupPosition();
 };
-class InterfaceCapteurs : public Thread{
+class InterfaceCapteurs : public Thread {
 public:
-    PresencePion EtatBras ( FinCourse val );
     InterfaceCapteurs();
+    ~InterfaceCapteurs();
+    unsigned short DistanceUltrason( void );
+    bool EtatBras ( Bras val );
+    char LecteurCB ( void );
+private:
+    inline void traiterAbsenceObstacle();
+    inline void traiterPresenceObstacle();
+    bool EtatJumper ( void );
+    void thread();
 };
 
 class InterfaceActionneurs{

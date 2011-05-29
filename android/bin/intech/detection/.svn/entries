@@ -2,13 +2,13 @@
 
 dir
 45
-svn://svn.bpmconcept.com/Android-INTech/AppliAndroid/bin/intech/detection
+svn://svn.bpmconcept.com/Android-INTech/AppliAndroid/src/intech/detection
 svn://svn.bpmconcept.com/Android-INTech
 
 
 
-2011-05-19T20:03:33.336407Z
-2
+2011-05-19T22:22:08.500034Z
+11
 philippe
 
 
@@ -26,18 +26,17 @@ philippe
 
 88355928-644e-44d6-85e3-c1c8f8c45b2e
 
-ConnexionWifi.class
+ConnexionWifi.java
 file
 
 
 
 
-2011-05-25T11:41:49.809950Z
-7682b73d7bcb1b246fcbd89f120d3a30
+2011-05-25T11:41:48.939949Z
+414c9c97f0cfbbbb503575cccfac2e35
 2011-05-19T20:03:33.336407Z
 2
 philippe
-has-props
 
 
 
@@ -58,20 +57,20 @@ has-props
 
 
 
-4933
+
+4285
 
-ServerPions.class
+DebugCamera.java
 file
 
 
 
 
-2011-05-25T11:41:49.809950Z
-1fb3818a23f5ffa846332c01f308c327
+2011-05-25T11:41:48.939949Z
+6f02da4860093ae68ff854d2b0386d14
 2011-05-19T20:03:33.336407Z
 2
 philippe
-has-props
 
 
 
@@ -92,20 +91,20 @@ has-props
 
 
 
-2525
+
+3306
 
-InterfaceResults.class
+ServerPions.java
 file
 
 
 
 
-2011-05-25T11:41:49.809950Z
-802258a42e164875ed6ed430b0ef3ebb
-2011-05-19T20:03:33.336407Z
-2
+2011-05-25T11:41:48.939949Z
+8882ca6fa1815ced634fd8ac995a6c5e
+2011-05-19T22:22:08.500034Z
+11
 philippe
-has-props
 
 
 
@@ -126,360 +125,21 @@ has-props
 
 
 
-637
+
+1946
 
-R$id.class
+InterfaceResults.java
 file
 
 
 
 
-2011-05-25T11:41:49.809950Z
-ac1cfba5a651dc583fa4eeef381423e3
+2011-05-25T11:41:48.939949Z
+db94f5edd335046046e27026dd3b520f
 2011-05-19T20:03:33.336407Z
 2
 philippe
-has-props
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-1112
-
-Start$1.class
-file
-
-
-
-
-2011-05-25T11:41:49.809950Z
-03736cd3a223c2eb36bca38d9357ad96
-2011-05-19T20:03:33.336407Z
-2
-philippe
-has-props
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-749
-
-DebugCamera$1.class
-file
-
-
-
-
-2011-05-25T11:41:49.809950Z
-e65e74d61cdb93b1e8b8d29bb454ce0a
-2011-05-19T20:03:33.336407Z
-2
-philippe
-has-props
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-1625
-
-CameraHandler.class
-file
-
-
-
-
-2011-05-25T11:41:49.809950Z
-a22ccb09378ea0edafe3158f6fee3039
-2011-05-19T20:03:33.336407Z
-2
-philippe
-has-props
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-2515
-
-PictureTaker$1.class
-file
-
-
-
-
-2011-05-25T11:41:49.809950Z
-d3c490d6c2a467c65588de4f79d24d60
-2011-05-19T20:03:33.336407Z
-2
-philippe
-has-props
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-797
-
-Start$MatchSocket.class
-file
-
-
-
-
-2011-05-25T11:41:49.809950Z
-795c93d276054488695b065c7936d710
-2011-05-19T20:03:33.336407Z
-2
-philippe
-has-props
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-1410
-
-PictureTaker$2.class
-file
-
-
-
-
-2011-05-25T11:41:49.809950Z
-8ac3ea2c5c373a497806bbb488bb7082
-2011-05-19T20:03:33.336407Z
-2
-philippe
-has-props
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-913
-
-PictureTaker$3.class
-file
-
-
-
-
-2011-05-25T11:41:49.809950Z
-1624840c927338e96508111bfa74dafc
-2011-05-19T20:03:33.336407Z
-2
-philippe
-has-props
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-2546
-
-DebugWifi$DebugSocket.class
-file
-
-
-
-
-2011-05-25T11:41:49.809950Z
-8ae497d15a28aafd822a5878ac8c1ad8
-2011-05-19T20:03:33.336407Z
-2
-philippe
-has-props
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-866
-
-CameraPreview.class
-file
-
-
-
-
-2011-05-25T11:41:49.809950Z
-7d818f97236abcfc3a50eb9ba501699e
-2011-05-19T20:03:33.336407Z
-2
-philippe
-has-props
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-1423
-
-R$menu.class
-file
-
-
-
-
-2011-05-25T11:41:49.809950Z
-121b19c597e5f897d5e89090ca522fc1
-2011-05-19T20:03:33.336407Z
-2
-philippe
-has-props
 
 
 
@@ -502,18 +162,17 @@ has-props
 
 375
 
-R$string.class
+PictureTaker.java
 file
 
 
 
 
-2011-05-25T11:41:49.809950Z
-a7b9d705e114dabfdf29c0f1bdeb87eb
+2011-05-25T11:41:48.939949Z
+6fafd098f101b870539b910d1e2228fe
 2011-05-19T20:03:33.336407Z
 2
 philippe
-has-props
 
 
 
@@ -534,20 +193,20 @@ has-props
 
 
 
-499
+
+2598
 
-Start.class
+DebugWifi.java
 file
 
 
 
 
-2011-05-25T11:41:49.809950Z
-7890628af94458f908677c4b5367fcac
+2011-05-25T11:41:48.939949Z
+a70046f21bf1d2dbf3ed0f11abf8838b
 2011-05-19T20:03:33.336407Z
 2
 philippe
-has-props
 
 
 
@@ -568,20 +227,20 @@ has-props
 
 
 
-2624
+
+855
 
-MainMenu$1.class
+CameraHandler.java
 file
 
 
 
 
-2011-05-25T11:41:49.809950Z
-3b974dec767724345af172d3f3f95a95
+2011-05-25T11:41:48.939949Z
+2ae19a4ede49af8d3d438e73cd0bee19
 2011-05-19T20:03:33.336407Z
 2
 philippe
-has-props
 
 
 
@@ -602,20 +261,20 @@ has-props
 
 
 
-1492
+
+1928
 
-DebugCamera.class
+MainMenu.java
 file
 
 
 
 
-2011-05-25T11:41:49.809950Z
-168d63182d7acf66fdac96220a58dc8e
+2011-05-25T11:41:48.939949Z
+f1a1d4cfa804c11784957a4d8ce3e658
 2011-05-19T20:03:33.336407Z
 2
 philippe
-has-props
 
 
 
@@ -636,20 +295,20 @@ has-props
 
 
 
-3498
+
+3846
 
-R$attr.class
+CameraPreview.java
 file
 
 
 
 
-2011-05-25T11:41:49.809950Z
-031cb72d691957437e8d5c6fbedb55ec
+2011-05-25T11:41:48.939949Z
+b420c4aac251054d047d27d5d0dcb036
 2011-05-19T20:03:33.336407Z
 2
 philippe
-has-props
 
 
 
@@ -670,20 +329,20 @@ has-props
 
 
 
-334
+
+1178
 
-R.class
+Start.java
 file
 
 
 
 
-2011-05-25T11:41:49.819950Z
-07b1b732b0d5560ec4fdda44d2541753
-2011-05-19T20:03:33.336407Z
-2
+2011-05-25T11:41:48.939949Z
+3594868774f96663b362431af3d66213
+2011-05-19T22:22:08.500034Z
+11
 philippe
-has-props
 
 
 
@@ -704,175 +363,6 @@ has-props
 
 
 
-561
-
-PictureTaker.class
-file
 
-
-
-
-2011-05-25T11:41:49.819950Z
-b0e0ea21f3c084e527f583a4014a6860
-2011-05-19T20:03:33.336407Z
-2
-philippe
-has-props
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-2165
-
-R$layout.class
-file
-
-
-
-
-2011-05-25T11:41:49.819950Z
-2aa33f855729e02c0a15af1f257c0242
-2011-05-19T20:03:33.336407Z
-2
-philippe
-has-props
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-446
-
-DebugWifi.class
-file
-
-
-
-
-2011-05-25T11:41:49.819950Z
-ee33647158a71d1f4b2ae08c1f60899c
-2011-05-19T20:03:33.336407Z
-2
-philippe
-has-props
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-1237
-
-R$drawable.class
-file
-
-
-
-
-2011-05-25T11:41:49.819950Z
-51bf1ba6a450b3dc21eb951a5f18ccb1
-2011-05-19T20:03:33.336407Z
-2
-philippe
-has-props
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-394
-
-MainMenu.class
-file
-
-
-
-
-2011-05-25T11:41:49.819950Z
-76855601c8bbb31e4b8c2952bb560549
-2011-05-19T20:03:33.336407Z
-2
-philippe
-has-props
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-3749
+2094
 

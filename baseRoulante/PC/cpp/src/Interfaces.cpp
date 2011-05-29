@@ -428,20 +428,25 @@ unsigned short InterfaceActionneurs::pourcentageAngleConversion(unsigned char po
 /*   CAPTEURS                                            */
 /*********************************************************/
 
+InterfaceCapteurs::InterfaceCapteurs() : Thread()  
+{
+}
+
+
+InterfaceCapteurs::~InterfaceCapteurs() 
+{
+}
+
 void InterfaceCapteurs::thread(){
     while(1){
         InterfaceAsservissement* interfaceAsservissement=InterfaceAsservissement::Instance();
         //Il y a quelquechose devant
-        int distanceUltraSonG = DistanceUltrason(UGAUCHE);
-        int distanceUltraSonD = DistanceUltrason(UDROITE);
-        if(distanceUltraSonG < 5000
-        && distanceUltraSonD < 5000){
-                        //On stop.
-                interfaceAsservissement->stop();
-            int distanceUltraSon = (distanceUltraSonG+distanceUltraSonD)/2;
+        int distanceUltraSon = DistanceUltrason();
+        if(distanceUltraSon < 5000) {
+            interfaceAsservissement->stop();
             int xRobot =  CONVERSION_TIC_MM*interfaceAsservissement->getXRobot();
             int yRobot =  CONVERSION_TIC_MM*interfaceAsservissement->getYRobot();
-                double angleRobot = CONVERSION_TIC_RADIAN*interfaceAsservissement->getAngleRobot();         
+            double angleRobot = CONVERSION_TIC_RADIAN*interfaceAsservissement->getAngleRobot();         
                 //On actualise la position du robot adverse
                 RobotAdverse::Instance()->setCoords(
                 xRobot+cos(angleRobot)*distanceUltraSon,
@@ -455,10 +460,9 @@ void InterfaceCapteurs::thread(){
     }
 }
 
-unsigned short InterfaceCapteurs::DistanceUltrason( Ultrason val ) {
+unsigned short InterfaceCapteurs::DistanceUltrason( void ) {
     
-    unsigned char msg[3];
-    msg[0] = val;
+    unsigned char msg[2] = {0X11, '\0'};
     
     unsigned char rec[3];
     
@@ -483,7 +487,8 @@ unsigned short InterfaceCapteurs::DistanceUltrason( Ultrason val ) {
     return resu;
 }
 
-PresencePion InterfaceCapteurs::EtatBras ( FinCourse val ) {
+
+bool InterfaceCapteurs::EtatBras ( Bras val ) {
     
     unsigned char msg[2] = {val, '\0'};
     unsigned char rec[1];
@@ -499,8 +504,49 @@ PresencePion InterfaceCapteurs::EtatBras ( FinCourse val ) {
         exit(1);
     }
     
-    return ((PresencePion) rec[0]);
+    return rec[0];
 }
+
+
+char InterfaceCapteurs::LecteurCB ( void ) {
+
+    unsigned char msg[2] = {0X30, '\0'};
+    unsigned char rec[1];
+    
+    int err;
+    
+    if( (err= i2c_write(adaptateur_i2c,0X20,msg,2)) != 0){
+        fprintf(stderr, "Error writing to the adapter: %s\n", linkm_error_msg(err));
+        exit(1);
+    }
+    if( (err= i2c_read(adaptateur_i2c,0X20,rec,1)) != 0){
+        fprintf(stderr, "Error reading from the adapter: %s\n", linkm_error_msg(err));
+        exit(1);
+    }
+    
+    return rec[0];
+}
+    
+
+bool EtatJumper ( void ) {
+    
+    unsigned char msg[2] = {0X50, '\0'};
+    unsigned char rec[1];
+    
+    int err;
+    
+    if( (err= i2c_write(adaptateur_i2c,0X20,msg,2)) != 0){
+        fprintf(stderr, "Error writing to the adapter: %s\n", linkm_error_msg(err));
+        exit(1);
+    }
+    if( (err= i2c_read(adaptateur_i2c,0X20,rec,1)) != 0){
+        fprintf(stderr, "Error reading from the adapter: %s\n", linkm_error_msg(err));
+        exit(1);
+    }
+    
+    return rec[0];
+}
+
 
 void InterfaceCapteurs::attendreJumper()
 {
