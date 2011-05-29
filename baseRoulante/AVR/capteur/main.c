@@ -15,7 +15,7 @@ int main()
     while(1) {
         _delay_ms(50);
         // Polling ultrason
-        ultra1 = ping(PIN_ULTRASON);
+        ultrason = ping(PIN_ULTRASON);
     }
 
     return 0;

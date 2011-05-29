@@ -1,5 +1,6 @@
 #include <avr/interrupt.h>
 #include <avr/io.h>
+#include <util/delay.h>
 
 #include "capteurs.h"
 
@@ -40,6 +41,6 @@ uint16_t ping(uint8_t pin)
     return duree;
 } 
 
-uint8_t etat_bras (uint8_t pin) {
+uint8_t etat_capteur (uint8_t pin) {
     return (PINC & pin);
 }

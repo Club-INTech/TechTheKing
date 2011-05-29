@@ -1,10 +1,8 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
-#include "ultrasons.h"
-#include "fin_course.h"
+#include "capteurs.h"
 #include "serial.h"
-#include "adc.h"
 
 #include "twi_slave.h"
 
@@ -54,7 +52,7 @@ void TWI_Data( void )
             TWI_Get_Data_From_Transceiver(messageBuf, 1);
         }
         
-        if (messageBuf[0] = MASTER_CMD_JUMPER) {
+        if (messageBuf[0] == MASTER_CMD_JUMPER) {
             messageBuf[0] = etat_capteur (PIN_JUMPER);
             TWI_Start_Transceiver_With_Data(messageBuf, 1);
         }
@@ -73,12 +71,12 @@ void TWI_Data( void )
         }
 
         else if (messageBuf[0] == MASTER_CMD_BRAS1) {
-            messageBuf[0] = etat_bras (PIN_BRAS1);
+            messageBuf[0] = etat_capteur(PIN_BRAS1);
             TWI_Start_Transceiver_With_Data(messageBuf, 1);
         }
         
         else if (messageBuf[0] == MASTER_CMD_BRAS2) {
-            messageBuf[0] = etat_bras (PIN_BRAS2);
+            messageBuf[0] = etat_capteur(PIN_BRAS2);
             
             TWI_Start_Transceiver_With_Data(messageBuf, 1);
         }
