@@ -32,10 +32,13 @@ void Socket::getPions(){
     std::vector<Obstacle*> listeObstacles1;
     std::vector<Obstacle*> listeObstacles2;
     std::vector<Obstacle*> listeObstacles3;
+    std::vector< std::pair<Obstacle*,int> >  intersection;
     group.create_thread(boost::bind(&Socket::getPions,this,"192.168.6.2",listeObstacles1));
     group.create_thread(boost::bind(&Socket::getPions,this,"192.168.6.3",listeObstacles2));
     //group.create_thread(boost::bind(&Socket::getPions,this,"192.168.6.4",listeObstacles3));
     group.join_all();
+    intersection = fusionResultats(listeObstacles1,listeObstacles2,listeObstacles3,1);
+    
     
 }
 void Socket::getPions(const char* address,std::vector<Obstacle*>& Obstacles){
