@@ -538,7 +538,7 @@ char InterfaceCapteurs::LecteurCB ( void ) {
 }
     
 
-bool EtatJumper ( void ) {
+bool InterfaceCapteurs::EtatJumper ( void ) {
     
     unsigned char msg[2] = {0X50, '\0'};
     unsigned char rec[1];
