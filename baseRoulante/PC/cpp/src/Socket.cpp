@@ -28,20 +28,34 @@ Socket* Socket::Instance(int port){
 }
 
 void Socket::getPions(){
+	#ifdef DEBUG
+		std::cout << "Récupération des informations" << std::endl;
+	#endif
     boost::thread_group group;
     std::vector<Obstacle*> listeObstacles1;
     std::vector<Obstacle*> listeObstacles2;
     std::vector<Obstacle*> listeObstacles3;
-    std::vector< std::pair<Obstacle*,int> >  intersection;
+    std::vector< std::pair<Obstacle*,int> >  fusion;
     group.create_thread(boost::bind(&Socket::getPions,this,"192.168.6.2",listeObstacles1));
     group.create_thread(boost::bind(&Socket::getPions,this,"192.168.6.3",listeObstacles2));
     //group.create_thread(boost::bind(&Socket::getPions,this,"192.168.6.4",listeObstacles3));
     group.join_all();
-    intersection = fusionResultats(listeObstacles1,listeObstacles2,listeObstacles3,1);
+    fusion = fusionResultats(listeObstacles1,listeObstacles2,listeObstacles3,1);
+    #ifdef DEBUG_GRAPHIQUE
+    Magick::Image image( "img/table.png" );
+    for(std::vector< std::pair<Obstacle*,int> >::iterator  it=fusion.begin();it!=fusion.end();it++){
+        (it->first)->draw(&image);
+    }
+    image.display();
+    #endif
+    
     
     
 }
 void Socket::getPions(const char* address,std::vector<Obstacle*>& Obstacles){
+	#ifdef DEBUG
+		std::cout << "Récupération de " << address << std::endl;
+	#endif
     int port = 42000;
     int sockfd = getFd(address);
     struct hostent *server;
@@ -58,21 +72,17 @@ void Socket::getPions(const char* address,std::vector<Obstacle*>& Obstacles){
          server->h_length);
     serv_addr.sin_port = htons(port);
    
+    #ifdef DEBUG
+		std::cout << "Connection à " << address << std::endl;
+	#endif
     if (connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0) {
         std::cerr << "Could not connect\n" << std::endl;
     }
+    #ifdef DEBUG
+		std::cout << "Ecriture sur " << address << std::endl;
+	#endif
     onWrite(sockfd,"pions");
     trouverObstacles(onRead(sockfd),Obstacles);
-
-	/*
-    #ifdef DEBUG_GRAPHIQUE
-    Magick::Image image( "img/table.png" );
-    for(std::vector<Obstacle *>::iterator it=ranranru.begin();it!=ranranru.end();it++){
-        (*it)->draw(&image);
-    }
-    image.display();
-    #endif
-    */
     
     close(sockfd);
 }

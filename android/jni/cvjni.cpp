@@ -87,7 +87,7 @@ JNIEXPORT jstring JNICALL Java_intech_detection_PictureTaker_trouverPions(JNIEnv
 	
 	LOGI("Transformation des coordonnées");
 	// Transformation des coordonnées (homographie)
-	CvMat* homogMatrix = initHomogMatrix('5') ;
+	CvMat* homogMatrix = initHomogMatrix(vue) ;
 	std::list<Point> listeCentresTable = homogListe(listeCentres, homogMatrix,vue);
 	
 	// Affichage de la liste des centres
