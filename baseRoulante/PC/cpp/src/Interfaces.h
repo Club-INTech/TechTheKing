@@ -20,6 +20,7 @@ class InterfaceAsservissement;
 std::vector<char> getTtyUSB();
 
 class InterfaceAsservissement {
+	friend class InterfaceCapteurs;
 public:
     static InterfaceAsservissement* Instance(int precisionAStar=50);
     ~InterfaceAsservissement();
@@ -43,7 +44,6 @@ public:
     int getYRobot();
     void setXRobot(int xMm);
     void setYRobot(int yMm);
-
 private:
     InterfaceAsservissement& operator=(const InterfaceAsservissement&);
     InterfaceAsservissement(const InterfaceAsservissement&){};
@@ -51,6 +51,7 @@ private:
     void recupPosition();
     void attendreArrivee();
 private:
+	bool m_evitement;
     Point m_lastArrivee;
     int m_lastNbPoints;
     int m_compteurImages;
@@ -60,6 +61,7 @@ private:
     AStar m_pathfinding;
     unsigned int vitesseMax;
     SerialStream m_liaisonSerie;
+    boost::mutex m_evitement_mutex;
 };
 
 // Interface passive : capteurs. A priori, pas besoin de méthode publique autre que ouvrirThread.
@@ -71,11 +73,11 @@ public:
     unsigned short DistanceUltrason( void );
     bool EtatBras ( Bras val );
     char LecteurCB ( void );
-    bool EtatJumper ( void );
     void attendreJumper();
 private:
     inline void traiterAbsenceObstacle();
     inline void traiterPresenceObstacle();
+    bool EtatJumper ( void );
     void thread();
 private:
 };

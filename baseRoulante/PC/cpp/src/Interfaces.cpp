@@ -102,7 +102,6 @@ void detectionSerieUsb(InterfaceAsservissement* asserv){
             streamTmp.Open( stringTmp );
             streamTmp << "?" << endl;
             streamTmp >> charTmp ;
-            cout<<charTmp<<endl;
             switch(charTmp){
                 case '0':
                     asserv->m_liaisonSerie.Open(stringTmp);
@@ -141,6 +140,12 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
 void InterfaceAsservissement::attendreArrivee(){
 	unsigned char result = 0;	
 	while(result != 'f'){
+		{
+			boost::mutex::scoped_lock lolilol(m_evitement_mutex);
+			if(m_evitement==true){
+				break;
+			}
+		}
 		m_liaisonSerie >> result;
 	}
 	sleep(1);
@@ -168,7 +173,6 @@ void InterfaceAsservissement::reculer(unsigned int distanceMm){
 		std::cout << "Recule de " << distanceMm << std::endl;
 	#endif
     int distanceTicks = getDistanceRobot() - distanceMm*CONVERSION_MM_TIC;
-    cout << distanceTicks << endl ;
     if(distanceTicks>0){
 		m_liaisonSerie<<"b1"+formaterInt(distanceTicks)<<endl;
 	}
@@ -190,7 +194,7 @@ void InterfaceAsservissement::tourner(double angleRadian){
     attendreArrivee();
 }
 
-InterfaceAsservissement::InterfaceAsservissement(int precision) : m_compteurImages(0), m_pathfinding(precision){
+InterfaceAsservissement::InterfaceAsservissement(int precision) : m_Evitement(false), m_compteurImages(0), m_pathfinding(precision){
     detectionSerieUsb(this);
     m_liaisonSerie.SetBaudRate(SerialStreamBuf::BAUD_57600);
     m_liaisonSerie.SetNumOfStopBits(1);
@@ -240,15 +244,21 @@ InterfaceAsservissement::~InterfaceAsservissement()
 int InterfaceAsservissement::getDistanceRobot()
 {
 	int result;
-	m_liaisonSerie << "t" ;
+	m_liaisonSerie << "t" << std::endl;
 	m_liaisonSerie >> result;
+	#ifdef DEBUG
+	std::cout << "Distance du robot (ticks :)" << result << std::endl;
+	#endif
 	return result;
 }
 
 int InterfaceAsservissement::getAngleRobot(){
 	int result;
-	m_liaisonSerie << "u" ;
+	m_liaisonSerie << "u" << std::endl;
 	m_liaisonSerie >> result;
+	#ifdef DEBUG
+	std::cout << "Angle du robot (ticks :)" << result << std::endl;
+	#endif
 	return result;
 }
 
@@ -429,21 +439,24 @@ void InterfaceCapteurs::thread(){
         #ifdef DEBUG
 			std::cout << "Distance ultrasons = " << distanceUltraSon << std::endl;
 		#endif
-        if(distanceUltraSon < 5000) {
+        if(distanceUltraSon>0 && distanceUltraSon < 9000) {
 			#ifdef DEBUG
 			std::cout << "Objet détecté par les ultrasons à " << distanceUltraSon << std::endl;
 			#endif
+			{
+				boost::scoped_mutex lolilol(m_evitement_mutex);
+				InterfaceAsservissement.m_evitement==true;
+			}
+			interfaceAsservissement->reculer(200);
 			//Arrêt
-            interfaceAsservissement->stop();
             int xRobot =  CONVERSION_TIC_MM*interfaceAsservissement->getXRobot();
             int yRobot =  CONVERSION_TIC_MM*interfaceAsservissement->getYRobot();
             double angleRobot = CONVERSION_TIC_RADIAN*interfaceAsservissement->getAngleRobot();         
                 //On actualise la position du robot adverse
                 RobotAdverse::Instance()->setCoords(
-                xRobot+cos(angleRobot)*distanceUltraSon,
-                yRobot+sin(angleRobot)*distanceUltraSon);
+                xRobot+cos(angleRobot)*distanceUltraSon*CONVERSION_ULTRASONS_CM,
+                yRobot+sin(angleRobot)*distanceUltraSon*CONVERSION_ULTRASONS_CM);
                 //On recule
-                interfaceAsservissement->reculer(200);
                 //On recalcule une trajectoire.
                 interfaceAsservissement->reGoTo();
         }
