@@ -94,6 +94,9 @@ extern int status_error;
 extern int status_data;
 
 
+// extern volatile uint16_t ax_cons1;
+// extern volatile uint16_t ax_cons2;
+
 /*
  *  Fonctions pour les AX12
  *    ID : ID du servo

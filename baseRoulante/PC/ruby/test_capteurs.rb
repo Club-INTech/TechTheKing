@@ -6,4 +6,10 @@ InterfaceCapteurs = LibChessUp::InterfaceCapteurs.new;
 
 #Modèles et tests pour les capteurs
 
-print InterfaceCapteurs.DistanceUltrason();
+puts InterfaceCapteurs.DistanceUltrason();
+
+puts InterfaceCapteurs.EtatBras(LibChessUp::BGAUCHE);
+
+puts InterfaceCapteurs.EtatBras(LibChessUp::BDROITE);
+
+puts InterfaceCapteurs.LecteurCB();
