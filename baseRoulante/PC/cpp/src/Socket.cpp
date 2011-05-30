@@ -45,7 +45,7 @@ void Socket::getAllPions(){
     
     printVector(fusion);
     
-	/*
+	
     #ifdef DEBUG_GRAPHIQUE
     Magick::Image image( "img/table.png" );
     for(std::vector< std::pair<Obstacle*,int> >::iterator  it=fusion.begin();it!=fusion.end();it++){
@@ -53,7 +53,7 @@ void Socket::getAllPions(){
     }
     image.display();
     #endif
-    */
+    
     
     
     

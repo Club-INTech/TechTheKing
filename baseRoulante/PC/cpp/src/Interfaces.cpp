@@ -438,11 +438,18 @@ InterfaceCapteurs::~InterfaceCapteurs()
 }
 
 void InterfaceCapteurs::thread(){
+	InterfaceAsservissement* interfaceAsservissement=InterfaceAsservissement::Instance();
     while(1){
-        InterfaceAsservissement* interfaceAsservissement=InterfaceAsservissement::Instance();
         //Il y a quelquechose devant
         int distanceUltraSon = DistanceUltrason();
+        #ifdef DEBUG
+			std::cout << "Distance ultrasons = " << distanceUltraSon << std::endl;
+		#endif
         if(distanceUltraSon < 5000) {
+			#ifdef DEBUG
+			std::cout << "Objet détecté par les ultrasons à " << distanceUltraSon << std::endl;
+			#endif
+			//Arrêt
             interfaceAsservissement->stop();
             int xRobot =  CONVERSION_TIC_MM*interfaceAsservissement->getXRobot();
             int yRobot =  CONVERSION_TIC_MM*interfaceAsservissement->getYRobot();
@@ -450,7 +457,7 @@ void InterfaceCapteurs::thread(){
                 //On actualise la position du robot adverse
                 RobotAdverse::Instance()->setCoords(
                 xRobot+cos(angleRobot)*distanceUltraSon,
-                yRobot+cos(angleRobot)*distanceUltraSon);
+                yRobot+sin(angleRobot)*distanceUltraSon);
                 //On recule
                 interfaceAsservissement->reculer(200);
                 //On recalcule une trajectoire.
