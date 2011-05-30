@@ -39,7 +39,7 @@ public class Start extends ConnexionWifi {
 		super.onCreate(savedInstanceState);
 		PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
 		m_wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
-		m_wl.acquire();
+		m_wl.acquire(120000);
 		CameraHandler.getInstance().onOpen();
 		CameraHandler.getInstance().startPreview();
 		matchSocket = new MatchSocket(42000);
@@ -65,7 +65,7 @@ public class Start extends ConnexionWifi {
 	    			matchSocket.write(listePositions);
 			    	CameraHandler.getInstance().m_camera.startPreview();
 			    	CameraHandler.getInstance().reconnect();
-			    	m_wl.acquire();
+			    	//m_wl.acquire();
 	    		}
 	    		else{
 	    			isConnected=false;

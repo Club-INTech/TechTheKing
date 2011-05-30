@@ -43,17 +43,20 @@ public class PictureTaker extends Activity {
 		    	Bitmap bitmap = BitmapFactory.decodeByteArray(data,0,data.length);
 		    	
 		    	
-		    	//Pour le Galaxy S :
-		    	if(m_vue==5 || m_vue==2){
-			    	Matrix mat = new Matrix();
-			    	mat.postRotate(90);
-			    	Bitmap bitmapRotate = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), mat, true);
-			    	int width = bitmapRotate.getWidth();
-			    	int height = bitmapRotate.getHeight();
-			    	int[] pixels = new int[width * height];
-			    	bitmapRotate.getPixels(pixels, 0, width, 0, 0, width, height);
-			    	setSourceImage(pixels,width,height);
-		    	}
+		    	
+			    Matrix mat = new Matrix();
+			    mat.postRotate(90);
+			    Bitmap bitmapRotate = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), mat, true);
+			    int width = bitmapRotate.getWidth();
+			    int height = bitmapRotate.getHeight();
+			    int[] pixels = new int[width * height];
+			    bitmapRotate.getPixels(pixels, 0, width, 0, 0, width, height);
+			    setSourceImage(pixels,width,height);
+		    	
+			    /*
+			    //Pour le Galaxy S :
+			    if(m_vue==5 || m_vue==3){
+	    			}
 		    	
 		    	//Pour tous les autres
 		    	else{
@@ -63,7 +66,7 @@ public class PictureTaker extends Activity {
 			    	bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
 			    	setSourceImage(pixels,width,height);
 		    	}
-		    	
+		    	*/
 		    	String listePositions = trouverPions(m_vue);
 		    	Intent resultIntent = new Intent();
 		    	resultIntent.putExtra("listePositions", listePositions);
