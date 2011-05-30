@@ -140,6 +140,12 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
 void InterfaceAsservissement::attendreArrivee(){
 	unsigned char result = 0;	
 	while(result != 'f'){
+		{
+			boost::mutex::scoped_lock lolilol(m_evitement_mutex);
+			if(m_evitement==true){
+				break;
+			}
+		}
 		m_liaisonSerie >> result;
 	}
 	sleep(1);
@@ -188,7 +194,7 @@ void InterfaceAsservissement::tourner(double angleRadian){
     attendreArrivee();
 }
 
-InterfaceAsservissement::InterfaceAsservissement(int precision) : m_compteurImages(0), m_pathfinding(precision){
+InterfaceAsservissement::InterfaceAsservissement(int precision) : m_Evitement(false), m_compteurImages(0), m_pathfinding(precision){
     detectionSerieUsb(this);
     m_liaisonSerie.SetBaudRate(SerialStreamBuf::BAUD_57600);
     m_liaisonSerie.SetNumOfStopBits(1);
@@ -453,6 +459,10 @@ void InterfaceCapteurs::thread(){
 			#ifdef DEBUG
 			std::cout << "Objet détecté par les ultrasons à " << distanceUltraSon << std::endl;
 			#endif
+			{
+				boost::scoped_mutex lolilol(m_evitement_mutex);
+				InterfaceAsservissement.m_evitement==true;
+			}
 			interfaceAsservissement->reculer(200);
 			//Arrêt
             int xRobot =  CONVERSION_TIC_MM*interfaceAsservissement->getXRobot();

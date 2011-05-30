@@ -9,5 +9,6 @@ InterfaceCapteurs = LibChessUp::InterfaceCapteurs.new;
 while ( true )
 
 puts InterfaceCapteurs.DistanceUltrason();
+sleep(0.1);
 
 end

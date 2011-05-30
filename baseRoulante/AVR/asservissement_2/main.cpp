@@ -85,6 +85,7 @@ int main( void ){
             printlnLong(0);
             break;
         case 'a':
+			manager.resetListeConsignes();
             i=litEntierLong();
             if (i >= 10000000){
                 //  avance
@@ -99,6 +100,7 @@ int main( void ){
             }
             break;
         case 'b':
+			manager.resetListeConsignes();
             i=litEntierLong();
             if (i >= 10000000){
                 manager.pushConsigneDistance((i-10000000));
@@ -227,7 +229,9 @@ int main( void ){
             }
             break;
         case 's':
-            manager.stop();
+			TIMSK1 &= ~(1 << TOIE1);
+            manager.resetListeConsignes();
+            TIMSK1 |= (1 << TOIE1);
             break;
         case 't':
             TIMSK1 &= ~(1 << TOIE1);
