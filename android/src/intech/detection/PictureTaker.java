@@ -18,13 +18,11 @@ public class PictureTaker extends Activity {
 	    System.loadLibrary("opencv");  
 	}  
 	public native boolean setSourceImage(int[] pixels, int width, int height);
-	public native String trouverPions(int morph_rows,int morph_cols);
+	public native String trouverPions(int vue);
 	
 	private final static String  TAG = "Picture Taker";
 	
-	private int m_seuil;
-	private int m_morphRows;
-	private int m_morphCols;
+	private int m_vue;
 	
 	ShutterCallback shutterCallback = new ShutterCallback() { // <6>
 		    public void onShutter() {
@@ -43,16 +41,33 @@ public class PictureTaker extends Activity {
 	    public void onPictureTaken(byte[] data, Camera camera){
 	    	try{	
 		    	Bitmap bitmap = BitmapFactory.decodeByteArray(data,0,data.length);
-		    	Matrix mat = new Matrix();
-		    	mat.postRotate(90);
-		    	Bitmap bitmapRotate = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), mat, true);
-		    	int width = bitmapRotate.getWidth();
-		    	int height = bitmapRotate.getHeight();
-		    	Log.d(TAG,"Seuil  :  " + String.valueOf(m_seuil));
-		    	int[] pixels = new int[width * height];
-		    	bitmapRotate.getPixels(pixels, 0, width, 0, 0, width, height);
-		    	setSourceImage(pixels,width,height);
-		    	String listePositions = trouverPions(m_morphRows,m_morphCols);
+		    	
+		    	
+		    	
+			    Matrix mat = new Matrix();
+			    mat.postRotate(90);
+			    Bitmap bitmapRotate = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), mat, true);
+			    int width = bitmapRotate.getWidth();
+			    int height = bitmapRotate.getHeight();
+			    int[] pixels = new int[width * height];
+			    bitmapRotate.getPixels(pixels, 0, width, 0, 0, width, height);
+			    setSourceImage(pixels,width,height);
+		    	
+			    /*
+			    //Pour le Galaxy S :
+			    if(m_vue==5 || m_vue==3){
+	    			}
+		    	
+		    	//Pour tous les autres
+		    	else{
+			    	int width = bitmap.getWidth();
+			    	int height = bitmap.getHeight();
+			    	int[] pixels = new int[width * height];
+			    	bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
+			    	setSourceImage(pixels,width,height);
+		    	}
+		    	*/
+		    	String listePositions = trouverPions(m_vue);
 		    	Intent resultIntent = new Intent();
 		    	resultIntent.putExtra("listePositions", listePositions);
 		    	setResult(Activity.RESULT_OK, resultIntent);
@@ -72,10 +87,8 @@ public class PictureTaker extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 
-	    m_seuil = CameraHandler.getInstance().getSeuil();
-	    m_morphRows = CameraHandler.getInstance().getMorphRows();
-	    m_morphCols = CameraHandler.getInstance().getMorphCols();
-	    
+	    m_vue = CameraHandler.getInstance().getVue();
+
 	    CameraHandler.getInstance().m_camera.takePicture(shutterCallback, rawCallback, m_jpegCallback);
 	}
 }

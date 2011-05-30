@@ -17,9 +17,7 @@ public class MainMenu extends Activity {
     private EditText ssidEntry;
     private EditText wpaEntry;
     
-    private int m_seuil;
-    private int m_morphRows;
-    private int m_morphCols;
+    private int m_vue;
     
     private int m_port;
     private String m_ssid;
@@ -49,9 +47,7 @@ public class MainMenu extends Activity {
         
         /*Initialisation des constantes*/
         
-        CameraHandler.getInstance().setSeuil(180);
-    	CameraHandler.getInstance().setMorphRows(8);
-    	CameraHandler.getInstance().setMorphCols(8);
+        CameraHandler.getInstance().setVue(5);
         
         m_port = 42000;
         m_ssid = "Test";
@@ -120,13 +116,12 @@ public class MainMenu extends Activity {
         switch(requestCode) { 
           case (1) : { 
             if (resultCode == Activity.RESULT_OK) { 
-                bundle.putInt("seuil", data.getIntExtra("seuil", m_seuil));
-            	bundle.putInt("morphRows", data.getIntExtra("morphRows", m_morphRows));
-            	bundle.putInt("morphCols", data.getIntExtra("morphCols", m_morphCols));
+                bundle.putInt("vue", data.getIntExtra("seuil", m_vue));
             } 
             break; 
           } 
         } 
       }
 }
+
 

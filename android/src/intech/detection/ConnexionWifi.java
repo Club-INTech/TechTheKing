@@ -101,6 +101,7 @@ public class ConnexionWifi extends Activity {
 	}
 
     private boolean associateWifi(){
+    	wifiManager.startScan();
     	List<ScanResult> hotSpots = wifiManager.getScanResults();
     	for(ScanResult hotSpot: hotSpots) {
     		String hotSpotSsid = hotSpot.SSID;

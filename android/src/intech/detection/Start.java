@@ -60,12 +60,12 @@ public class Start extends ConnexionWifi {
 	    switch(requestCode) { 
 	    	case (0) :
 	    		if (resultCode == Activity.RESULT_OK) {
+	    			m_wl.acquire();
 	    			String listePositions = data.getStringExtra("listePositions");
 	    			Log.d(TAG,"Liste des positions : " + listePositions);
-	    			matchSocket.write(listePositions);
+	    			matchSocket.write("d"+listePositions+"f");
 			    	CameraHandler.getInstance().m_camera.startPreview();
 			    	CameraHandler.getInstance().reconnect();
-			    	m_wl.acquire();
 	    		}
 	    		else{
 	    			isConnected=false;

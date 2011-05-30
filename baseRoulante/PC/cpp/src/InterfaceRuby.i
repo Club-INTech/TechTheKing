@@ -96,7 +96,7 @@ class Socket{
         static Socket* Instance(int port);
         ~Socket();
         void onOpen();
-        void getPions();
+        void getAllPions();
 };
 
 class InterfaceAsservissement {

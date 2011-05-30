@@ -83,6 +83,9 @@ class Point{
 		 */
 		Point(double x=0,double y=0);
 
+
+		Point(const Point&);
+		
 		/*!\brief Fonction d'affichage du point sur la sortie standart*/
 		void print();
 

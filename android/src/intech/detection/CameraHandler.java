@@ -13,9 +13,7 @@ public class CameraHandler {
 	protected Camera m_camera;
 	private boolean isPreviewStarted;
 	
-	private int m_seuil;
-	private int m_morphRows;
-	private int m_morphCols;
+	private int m_vue;
 	
 	public static CameraHandler getInstance() {
         if (null == instance) { // Premier appel
@@ -28,35 +26,17 @@ public class CameraHandler {
         return instance;
     }
 	
-	public void setSeuil(int seuil){
-		m_seuil = seuil;
+	public void setVue(int vue){
+		m_vue = vue;
 	}
 	
-	public void setMorphRows(int morphRows){
-		m_morphRows = morphRows;
-	}
-	
-	public void setMorphCols(int morphCols){
-		m_morphCols = morphCols;
-	}
-	
-	public int getSeuil(){
-		return m_seuil;
-	}
-	
-	public int getMorphRows(){
-		return m_morphRows;
-	}
-	
-	public int getMorphCols(){
-		return m_morphCols;
+	public int getVue(){
+		return m_vue;
 	}
 	
 	private CameraHandler(){
 		isPreviewStarted = false;
-		m_seuil=0;
-		m_morphRows=0;
-		m_morphCols=0;
+		m_vue = 5;
 	}
 	
 	protected void onOpen(){
@@ -98,3 +78,4 @@ public class CameraHandler {
 	  	m_camera = null;
 	}
 }
+

@@ -40,11 +40,11 @@ IplImage* getIplImageFromIntArray(JNIEnv* env, jintArray array_data,
 		jint width, jint height);
 
 // TODO: cvRelease
-JNIEXPORT jstring JNICALL Java_intech_detection_PictureTaker_trouverPions(JNIEnv* env, jobject thiz,jint morphRows,jint morphCols){
+JNIEXPORT jstring JNICALL Java_intech_detection_PictureTaker_trouverPions(JNIEnv* env, jobject thiz,jint vue){
 
-	// Type de point de vue
-	char vue = '5' ;
-
+	LOGI( " Vue : ");
+	LOGI(convertString(vue).c_str());
+	
 	// Filtre HSV
 	LOGI("Filtrage HSV");
     IplImage *imgHSV = nvgHSV(pImage);
@@ -90,8 +90,8 @@ JNIEXPORT jstring JNICALL Java_intech_detection_PictureTaker_trouverPions(JNIEnv
 	
 	LOGI("Transformation des coordonnées");
 	// Transformation des coordonnées (homographie)
-	CvMat* homogMatrix = initHomogMatrix('5') ;
-	std::list<Point> listeCentresTable = homogListe(listeCentres, homogMatrix);
+	CvMat* homogMatrix = initHomogMatrix(vue) ;
+	std::list<Point> listeCentresTable = homogListe(listeCentres, homogMatrix,vue);
 	
 	// Affichage de la liste des centres
 	inverserXY(listeCentresTable);
