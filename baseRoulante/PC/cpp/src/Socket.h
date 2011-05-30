@@ -11,7 +11,7 @@
 #include "Obstacles.h"
 #include <map>
 #include <boost/thread/mutex.hpp>
-#define TAILLE_BUFFER 256
+#define TAILLE_BUFFER 1024
     
 class Socket{
     public:

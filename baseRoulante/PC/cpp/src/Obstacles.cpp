@@ -99,6 +99,9 @@ RobotAdverse::RobotAdverse() : CercleObstacle(0,0,NOIR,TAILLE_ROBOT_ADVERSE){
 void RobotAdverse::setCoords(int x,int y){
 	m_x=x;
 	m_y=y;
+	#ifdef DEBUG
+	std::cout<< "Robot adverse maintenant en (" << x << "," << y << ")" << std::endl;
+	#endif
 }
 
 RobotAdverse* RobotAdverse::Instance(){
@@ -158,7 +161,11 @@ void ListeObstacles::initialisation(){
     listeObstacles.push_back(new RectangleObstacle(2539,185,11,65+TAILLE_ROBOT));
     listeObstacles.push_back(RobotAdverse::Instance());
 }
+
+void ListeObstacles::refreshPositions(const char nomFichier[]){
     
+}
+
 void ListeObstacles::refreshPositions(const char nomFichier[]){
     listeObstacles.clear();
     ifstream fichierObstacles(nomFichier, ios::in);
