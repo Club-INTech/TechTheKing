@@ -9,8 +9,8 @@ class Thread{
       void ouvrirThread();
       void fermerThread();
       virtual ~Thread();
-   protected:
       Thread();
+   protected:
       virtual void thread()=0;
    protected:
       boost::thread m_thread;
