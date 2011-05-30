@@ -4,8 +4,12 @@ LibChessUp.ouvrir_adaptateur_i2c();
 
 InterfaceCapteurs = LibChessUp::InterfaceCapteurs.new;
 
+InterfaceCapteurs.ouvrirThread();
 #Modèles et tests pour les capteurs
 
+while(1)
+
+end;
 puts InterfaceCapteurs.DistanceUltrason();
 
 puts InterfaceCapteurs.EtatBras(LibChessUp::BGAUCHE);
