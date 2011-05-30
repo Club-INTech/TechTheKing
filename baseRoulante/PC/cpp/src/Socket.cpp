@@ -4,6 +4,9 @@
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
 #include <Magick++.h>
+
+#define TOLERANCE_DISTANCE 10
+
 Socket* Socket::m_instance=NULL;
 
 Socket::Socket(int port){
@@ -25,13 +28,34 @@ Socket* Socket::Instance(int port){
 }
 
 void Socket::getPions(){
+	#ifdef DEBUG
+		std::cout << "Récupération des informations" << std::endl;
+	#endif
     boost::thread_group group;
-    //group.create_thread(boost::bind(&Socket::getPions,this,"192.168.6.3"));
-    group.create_thread(boost::bind(&Socket::getPions,this,"192.168.6.2"));
-    //group.create_thread(boost::bind(&Socket::getPions,this,"192.168.6.4"));
+    std::vector<Obstacle*> listeObstacles1;
+    std::vector<Obstacle*> listeObstacles2;
+    std::vector<Obstacle*> listeObstacles3;
+    std::vector< std::pair<Obstacle*,int> >  fusion;
+    group.create_thread(boost::bind(&Socket::getPions,this,"192.168.6.2",listeObstacles1));
+    group.create_thread(boost::bind(&Socket::getPions,this,"192.168.6.3",listeObstacles2));
+    //group.create_thread(boost::bind(&Socket::getPions,this,"192.168.6.4",listeObstacles3));
     group.join_all();
+    fusion = fusionResultats(listeObstacles1,listeObstacles2,listeObstacles3,1);
+    #ifdef DEBUG_GRAPHIQUE
+    Magick::Image image( "img/table.png" );
+    for(std::vector< std::pair<Obstacle*,int> >::iterator  it=fusion.begin();it!=fusion.end();it++){
+        (it->first)->draw(&image);
+    }
+    image.display();
+    #endif
+    
+    
+    
 }
-void Socket::getPions(const char* address){
+void Socket::getPions(const char* address,std::vector<Obstacle*>& Obstacles){
+	#ifdef DEBUG
+		std::cout << "Récupération de " << address << std::endl;
+	#endif
     int port = 42000;
     int sockfd = getFd(address);
     struct hostent *server;
@@ -48,19 +72,17 @@ void Socket::getPions(const char* address){
          server->h_length);
     serv_addr.sin_port = htons(port);
    
+    #ifdef DEBUG
+		std::cout << "Connection à " << address << std::endl;
+	#endif
     if (connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0) {
         std::cerr << "Could not connect\n" << std::endl;
     }
+    #ifdef DEBUG
+		std::cout << "Ecriture sur " << address << std::endl;
+	#endif
     onWrite(sockfd,"pions");
-    std::vector<Obstacle*> ranranru = trouverObstacles(onRead(sockfd));
-    
-    #ifdef DEBUG_GRAPHIQUE
-    Magick::Image image( "img/table.png" );
-    for(std::vector<Obstacle *>::iterator it=ranranru.begin();it!=ranranru.end();it++){
-        (*it)->draw(&image);
-    }
-    image.display();
-    #endif
+    trouverObstacles(onRead(sockfd),Obstacles);
     
     close(sockfd);
 }
@@ -112,11 +134,10 @@ int Socket::getFd(const char* address){
 void Socket::onClose(){
 }
 
-std::vector<Obstacle*> Socket::trouverObstacles(std::string trame){
-    std::vector<Obstacle*> result;
+void Socket::trouverObstacles(std::string trame, std::vector<Obstacle*>& Obstacles){
     std::string x,y;
     if(trame[0]!='d'){
-        return result;
+        return ;
     }
     else{
         int i=1;
@@ -127,7 +148,7 @@ std::vector<Obstacle*> Socket::trouverObstacles(std::string trame){
                 case 'x':
                     if(currentCoord=='y'){
                         std::cout << "x = " << x << " y = " << y << std::endl;
-                        result.push_back(new CercleObstacle(atoi(x.c_str()),atoi(y.c_str())));
+                        Obstacles.push_back(new CercleObstacle(atoi(x.c_str()),atoi(y.c_str())));
                     }
                     x="";
                     y="";
@@ -147,6 +168,82 @@ std::vector<Obstacle*> Socket::trouverObstacles(std::string trame){
                     }
             }
         }
-        return result;
     }
 }
+
+// Intersection des résultats (au moins 2 téléphones nécessaires)
+std::vector< std::pair<Obstacle*,int> > Socket::fusionResultats(std::vector<Obstacle*> t1, std::vector<Obstacle*> t2, std::vector<Obstacle*> t3, int niveau)
+{
+	std::vector<Obstacle*>::iterator it;
+	std::vector< std::pair<Obstacle*,int> > resultatFusion;
+	
+	// Une double boucle pour 3 instructions c'est mal
+	for(it=t1.begin();it!=t1.end();it++)
+	{
+		ajouterPion(resultatFusion,it);
+	}
+	
+	for(it=t2.begin();it!=t2.end();it++)
+	{
+		ajouterPion(resultatFusion,it);
+	}
+	
+	for(it=t3.begin();it!=t3.end();it++)
+	{
+		ajouterPion(resultatFusion,it);
+	}
+	
+	// Tri des résultats en fonction du niveau
+	for(std::vector< std::pair<Obstacle*,int> >::iterator it2=resultatFusion.begin();it2!=resultatFusion.end();it2++)
+	{
+		if (it2->second < niveau) resultatFusion.erase(it2);
+	}
+	
+	return resultatFusion;
+}
+
+// True si les 2 pions sont les mêmes, false sinon 
+bool Socket::comparerPions(std::vector< std::pair<Obstacle*,int> >::iterator a, std::vector<Obstacle*>::iterator b)
+{
+	double d = (a->first)->rayon(**b);
+	return (d < TOLERANCE_DISTANCE);
+}
+
+// Vérifie si un pion est déjà présent, l'ajoute sinon
+void Socket::ajouterPion(std::vector< std::pair<Obstacle*,int> > &v, std::vector<Obstacle*>::iterator p)
+{
+	std::vector< std::pair<Obstacle*,int> >::iterator it;
+	bool present = false;
+	
+	for(it=v.begin();it!=v.end();it++)
+	{
+		// Si pion déjà présent, on augmente le poids
+		if (comparerPions(it,p))
+		{
+			present = true;
+			
+			// Calcul du barycentre
+			((it->first))->setX( ( it->second * ((it->first))->getX() + (*p)->getX() ) / (it->second + 1) );
+			((it->first))->setY( ( it->second * ((it->first))->getY() + (*p)->getY() ) / (it->second + 1) );
+			
+			// Incrémentation du poids
+			it->second += 1;
+		}
+	}
+	
+	// Ajout du pion s'il n'est pas déjà présent
+	if (!present)
+	{
+		// new CercleObstacle((*p)->getX(),(*p)->getY()) ?
+		v.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle((*p)->getX(),(*p)->getY()),1));
+	}
+}
+
+void Socket::printVector(std::vector<Obstacle*> v)
+{	
+	for(std::vector<Obstacle*>::iterator it=v.begin();it!=v.end();it++)
+	{
+		std::cout << (*it)->getX() << " " << (*it)->getY() << std::endl;
+	}
+}
+

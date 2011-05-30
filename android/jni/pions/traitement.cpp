@@ -3,7 +3,7 @@
 #include "traitement.h"
 
 // Calcul de la matrice d'homographie
-CvMat* initHomogMatrix(char vue)
+CvMat* initHomogMatrix(int vue)
 {
 	// Matrice de l'homographie
 	CvMat* homogMatrix = cvCreateMat(3,3,CV_32FC1);
@@ -14,87 +14,63 @@ CvMat* initHomogMatrix(char vue)
 	// Coordonnées sources des sommets sur l'image
 	switch(vue)
 	{
-		// Point de vue A (1.jpg)
-		case 'a' :
+		
+		// Point de vue 3
+		case 3 :
 			
 			// Haut gauche
-			srcQuad[0].x = 133; //dst Top left
-			srcQuad[0].y = 94;
+			srcQuad[0].x = 457; //dst Top left
+			srcQuad[0].y = 550;
 				
 			// Haut droite
-			srcQuad[1].x = 685; //dst Top right
-			srcQuad[1].y = 95;
+			srcQuad[1].x = 6; //dst Top right
+			srcQuad[1].y = 202;
 				
 			// Bas gauche
-			srcQuad[2].x = -890; //dst Bottom left
-			srcQuad[2].y = 610;
+			srcQuad[2].x = 441; //dst Bottom left
+			srcQuad[2].y = 226;
 				
 			// Bas droit
-			srcQuad[3].x = 1850; //dst Bot right
-			srcQuad[3].y = 610;
+			srcQuad[3].x = 345; //dst Bot right
+			srcQuad[3].y = 126;
+			
+			// Cordonnées destination
+			// Haut gauche
+			dstQuad[0].y = NY*450/2100;
+			dstQuad[0].x = NX*120/3000;
+			
+			// Haut droite
+			dstQuad[1].x = NY*1750/2100;
+			dstQuad[1].y = NX*800/3000;
+			
+			// Bas gauche
+			dstQuad[2].x = NY*700/2100;
+			dstQuad[2].y = NX*1500/3000;
+			
+			// Bas droite
+			dstQuad[3].x = NY-1;
+			dstQuad[3].y = NX-1;
 		
 		break ;
 		
-		// Point de vue B (2.jpg)
-		case 'b' :
-		
-			// Haut gauche
-			srcQuad[0].x = 256; //dst Top left
-			srcQuad[0].y = 3;
-				
-			// Haut droite
-			srcQuad[1].x = 772; //dst Top right
-			srcQuad[1].y = 34;
-				
-			// Bas gauche
-			srcQuad[2].x = -940; //dst Bottom left
-			srcQuad[2].y = 250;
-				
-			// Bas droit
-			srcQuad[3].x = 642; //dst Bot right
-			srcQuad[3].y = 914;
-		
-		break ;
-		
-		// Point de vue C (3.jpg)
-		case 'c' :
+		// Point de vue 5
+		case 5 :
 			
 			// Haut gauche
-			srcQuad[0].x = -85; //dst Top left
+			srcQuad[0].x = -8; //dst Top left
 			srcQuad[0].y = 40;
 				
 			// Haut droite
-			srcQuad[1].x = 450; //dst Top right
-			srcQuad[1].y = 23;
+			srcQuad[1].x = 488; //dst Top right
+			srcQuad[1].y = 40;
 				
 			// Bas gauche
-			srcQuad[2].x = 260; //dst Bottom left
-			srcQuad[2].y = 1075;
+			srcQuad[2].x = -2; //dst Bottom left
+			srcQuad[2].y = 273;
 				
 			// Bas droit
-			srcQuad[3].x = 1650; //dst Bot right
-			srcQuad[3].y = 245;
-		
-		break ;
-		
-		// Point de vue A (1.jpg)
-		case '5' :
-			
-			// Haut gauche
-			srcQuad[0].x = 10; //dst Top left
-			srcQuad[0].y = 45;
-				
-			// Haut droite
-			srcQuad[1].x = 495; //dst Top right
-			srcQuad[1].y = 45;
-				
-			// Bas gauche
-			srcQuad[2].x = 5; //dst Bottom left
-			srcQuad[2].y = 266;
-				
-			// Bas droit
-			srcQuad[3].x = 471; //dst Bot right
-			srcQuad[3].y = 277;
+			srcQuad[3].x = 468; //dst Bot right
+			srcQuad[3].y = 282;
 			
 			// Cordonnées destination
 			// Haut gauche
@@ -124,7 +100,7 @@ CvMat* initHomogMatrix(char vue)
 
 
 // Application de l'homographie à la liste de points détectés
-std::list<Point> homogListe(std::list<Point> listeCentres, CvMat* homogMatrix)
+std::list<Point> homogListe(std::list<Point> listeCentres, CvMat* homogMatrix, int vue)
 {
 	std::list<Point> listeCentresHomog;
 	
@@ -137,7 +113,7 @@ std::list<Point> homogListe(std::list<Point> listeCentres, CvMat* homogMatrix)
 		float y_centre = lit->y ;
 		
 		// Correction de la hauteur de la tranche
-		y_centre += correctionTranchePion(y_centre) ;		
+		y_centre += correctionTranchePion(y_centre,vue) ;		
 		
 		// Application de l'homographie
 		float x = cvmGet(homogMatrix,0,0)*x_centre + cvmGet(homogMatrix,0,1)*y_centre + cvmGet(homogMatrix,0,2) ;
@@ -149,8 +125,6 @@ std::list<Point> homogListe(std::list<Point> listeCentres, CvMat* homogMatrix)
 		y = y/z * 2100 / NY ;
 
 		Point tmp;
-		//tmp.x = y + 60 ;
-		//tmp.y = x - 130;
 		tmp.x = x;
 		tmp.y = y;
 		listeCentresHomog.push_back(tmp);		
@@ -159,11 +133,23 @@ std::list<Point> homogListe(std::list<Point> listeCentres, CvMat* homogMatrix)
 	return listeCentresHomog ;
 }
 
-float correctionTranchePion(float y)
+float correctionTranchePion(float y, int vue)
 {
-	return 0.10*y+10.6 ;
+	switch(vue)
+	{
+		case 3 :
+			return 0.12*y-5.4 ;
+		break;
+		
+		case 5 :
+			return 0.10*y+10.6 ;
+		break;
+		
+		default:
+			return 0;
+		break;
+	}
 }
-
 
 
 void ouverture(IplImage *imgBin, IplImage *imgBinOp, int cfg_morph_cols, int cfg_morph_rows)

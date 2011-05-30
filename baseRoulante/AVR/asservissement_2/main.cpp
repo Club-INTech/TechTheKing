@@ -85,13 +85,12 @@ int main( void ){
             printlnLong(0);
             break;
         case 'a':
-            printlnLong(i);
             i=litEntierLong();
-            printlnLong(i);
             if (i >= 10000000){
                 //  avance
                 manager.pushConsigneDistance(manager.distanceBkp);
                 manager.pushConsigneAngle(i-10000000);
+                
             }
             else if(i>=0){
                 // recule
@@ -102,13 +101,11 @@ int main( void ){
         case 'b':
             i=litEntierLong();
             if (i >= 10000000){
-                //  tourne positivement de i
-                manager.pushConsigneDistance(manager.distanceBkp+(i-10000000));
+                manager.pushConsigneDistance((i-10000000));
                 manager.pushConsigneAngle(manager.angleBkp);
             }
             else if (i >= 0){
-                // tourne nÃ©gativement i
-                manager.pushConsigneDistance(manager.distanceBkp-i);
+                manager.pushConsigneDistance(-i);
                 manager.pushConsigneAngle(manager.angleBkp);    
             }
             break;

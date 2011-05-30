@@ -7,20 +7,17 @@
 #include "Point.h"
 #include "AStar.h"
 #include <SerialPort.h>
-#include "Singleton.h"
+//#include "Singleton.h"
 #include "Thread.h"
 #include "config.h"
 
 enum SensDeplacement {POSITIF, NEGATIF};
 enum ModeAimant {BAS, HAUT};
-enum Ultrason {UGAUCHE = 0X11, UDROITE = 0X12, UARRIERE = 0X13};
-enum FinCourse {FCGAUCHE = 0X41, FCDROITE = 0X42};
-enum PresencePion {OUI, NON};
+enum Bras {BGAUCHE = 0X41, BDROITE = 0X42};
 
 std::string exec(char* cmd);
 class InterfaceAsservissement;
 std::vector<char> getTtyUSB();
-
 
 class InterfaceAsservissement {
 public:
@@ -67,15 +64,18 @@ private:
 
 // Interface passive : capteurs. A priori, pas besoin de méthode publique autre que ouvrirThread.
 
-class InterfaceCapteurs : public Thread,public Singleton<InterfaceCapteurs> {
+class InterfaceCapteurs : public Thread {
 public:
     InterfaceCapteurs();
-    unsigned short DistanceUltrason( Ultrason val );
-    PresencePion EtatBras ( FinCourse val );
+    ~InterfaceCapteurs();
+    unsigned short DistanceUltrason( void );
+    bool EtatBras ( Bras val );
+    char LecteurCB ( void );
     void attendreJumper();
 private:
     inline void traiterAbsenceObstacle();
     inline void traiterPresenceObstacle();
+    bool EtatJumper ( void );
     void thread();
 private:
 };
@@ -83,7 +83,7 @@ private:
 
 
 
-class InterfaceActionneurs : public Singleton<InterfaceActionneurs> {
+class InterfaceActionneurs{
     
     public:
         InterfaceActionneurs();

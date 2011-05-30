@@ -4,7 +4,6 @@
 %{
     #include "Interfaces.h"
     #include "Thread.h"
-    #include "Singleton.h"
     #include "Socket.h"
     #include "i2cLib.h"
     #include "hiddata.h"
@@ -42,8 +41,7 @@ extern double TOLERANCE_Y;
 
 enum SensDeplacement {POSITIF, NEGATIF};
 enum ModeAimant {BAS, HAUT};
-enum FinCourse {FCGAUCHE = 0X41, FCDROITE = 0X42};
-enum PresencePion {OUI, NON};
+enum Bras {BGAUCHE = 0X41, BDROITE = 0X42};
 typedef struct usbDevice Adaptator;
 
 std::string exec(char* cmd);
@@ -79,11 +77,11 @@ class Point{
 
 class Thread{
     public:
+        Thread();
         void ouvrirThread();
         void fermerThread();
         virtual ~Thread();
     protected:
-        Thread();
         virtual void thread()=0;
     protected:
         boost::thread* m_thread;
@@ -101,24 +99,6 @@ class Socket{
         void getPions();
 };
 
-template<class T>
-class Singleton : private boost::noncopyable
-{
-public:
-    static T& Instance();
-    static void init();
-protected:
-    ~Singleton() {}
-     Singleton() {}
-private:
-     static boost::scoped_ptr<T> t;
-     static boost::once_flag flag;
-};
-
-%rename(InterfaceActionneursSingleton) Singleton<InterfaceActionneurs>;
-%rename(InterfaceCapteursSingleton) Singleton<InterfaceCapteursSingleton>;
-
-
 class InterfaceAsservissement {
 public:
     static InterfaceAsservissement* Instance(int precisionAStar=50);
@@ -127,7 +107,8 @@ public:
     int getDistanceRobot();
     int getAngleRobot();
     void goTo(Point arrivee,int nbPoints);
-    void pwmMax(unsigned char valPWM);
+    void pwmMaxRotation(unsigned char valPWM);
+    void pwmMaxTranslation(unsigned char valPWM);
     void recalage();
     void reGoTo();
     void avancer(unsigned int distanceMm);
@@ -150,13 +131,21 @@ private:
     InterfaceAsservissement(int precisionAStar);
     void recupPosition();
 };
-class InterfaceCapteurs : public Thread{
+class InterfaceCapteurs : public Thread {
 public:
-    PresencePion EtatBras ( FinCourse val );
     InterfaceCapteurs();
+    ~InterfaceCapteurs();
+    unsigned short DistanceUltrason( void );
+    bool EtatBras ( Bras val );
+    char LecteurCB ( void );
+private:
+    inline void traiterAbsenceObstacle();
+    inline void traiterPresenceObstacle();
+    bool EtatJumper ( void );
+    void thread();
 };
 
-class InterfaceActionneurs : public InterfaceActionneursSingleton{
+class InterfaceActionneurs{
 public:
     InterfaceActionneurs();
     ~InterfaceActionneurs();

@@ -9,6 +9,7 @@
 #include "Obstacles.h"
 #include <ctime>
 
+#define DEMI_LARGEUR_ROBOT 77
 using namespace std;
 Adaptator* adaptateur_i2c;
 
@@ -142,28 +143,50 @@ void InterfaceAsservissement::attendreArrivee(){
 	while(result != 'f'){
 		m_liaisonSerie >> result;
 	}
+	sleep(1);
 }
 void InterfaceAsservissement::reGoTo(){
     goTo(m_lastArrivee,m_lastNbPoints);
 }
 
 void InterfaceAsservissement::avancer(unsigned int distanceMm){
-    unsigned int distanceTicks = distanceMm*CONVERSION_MM_TIC;
-    m_liaisonSerie<<"b1"+formaterInt(distanceTicks)<<endl;
+    #ifdef DEBUG
+		std::cout << "Avance de " << distanceMm << std::endl;
+	#endif
+	int distanceTicks = getDistanceRobot() + distanceMm*CONVERSION_MM_TIC;
+    if(distanceTicks>0){
+		m_liaisonSerie<<"b1"+formaterInt(distanceTicks)<<endl;
+	}
+	else{
+		m_liaisonSerie<< "b0"+formaterInt(-distanceTicks)<<endl;
+	}
     attendreArrivee();
 }
 
 void InterfaceAsservissement::reculer(unsigned int distanceMm){
-    unsigned int distanceTicks = distanceMm*CONVERSION_MM_TIC;
-    m_liaisonSerie<<"b0"+formaterInt(distanceTicks)<<endl;
+	#ifdef DEBUG
+		std::cout << "Recule de " << distanceMm << std::endl;
+	#endif
+    int distanceTicks = getDistanceRobot() - distanceMm*CONVERSION_MM_TIC;
+    cout << distanceTicks << endl ;
+    if(distanceTicks>0){
+		m_liaisonSerie<<"b1"+formaterInt(distanceTicks)<<endl;
+	}
+	else{
+		m_liaisonSerie<<"b0"+formaterInt(-distanceTicks)<<endl;
+	}
     attendreArrivee();
 }
 
 void InterfaceAsservissement::tourner(double angleRadian){
+	#ifdef DEBUG
+		std::cout << "Tourne de " << angleRadian << std::endl;
+	#endif
+	int angleTicks = angleRadian*CONVERSION_RADIAN_TIC;
     if(angleRadian>0)
-        m_liaisonSerie<<"a0"+formaterInt(angleRadian*CONVERSION_RADIAN_TIC)<<endl;
+        m_liaisonSerie<<"a0"+formaterInt(angleTicks)<<endl;
     else
-        m_liaisonSerie<<"a1"+formaterInt(-angleRadian*CONVERSION_RADIAN_TIC)<<endl;
+        m_liaisonSerie<<"a1"+formaterInt(-angleTicks)<<endl;
     attendreArrivee();
 }
 
@@ -180,18 +203,24 @@ InterfaceAsservissement::InterfaceAsservissement(int precision) : m_compteurImag
 
 void InterfaceAsservissement::recalage()
 {
-<<<<<<< HEAD
+	pwmMaxTranslation(100);
+	pwmMaxRotation(0);
 	reculer(500);
+	pwmMaxRotation(255);
 	if(COULEUR_ROBOT==BLEU){
-		setXRobot(80);
+		setXRobot(3000-DEMI_LARGEUR_ROBOT);
 	}
 	else if(COULEUR_ROBOT==ROUGE){
-		setXRobot(2920);
+		setXRobot(DEMI_LARGEUR_ROBOT);
 	}
-	avancer(1000);
+	avancer(200);
 	tourner(-M_PI/2);
+	pwmMaxRotation(0);
+	pwmMaxTranslation(100);
 	reculer(500);
-	setYRobot(2020);
+	pwmMaxRotation(255);
+	setYRobot(2100-DEMI_LARGEUR_ROBOT);
+	avancer(200);
 }
 
 void InterfaceAsservissement::pwmMaxTranslation(unsigned char valPWM){
@@ -200,22 +229,6 @@ void InterfaceAsservissement::pwmMaxTranslation(unsigned char valPWM){
 
 void InterfaceAsservissement::pwmMaxRotation(unsigned char valPWM){
 	m_liaisonSerie << "pr0" << formaterInt(valPWM) ;
-=======
-    reculer(500);
-    if(COULEUR_ROBOT==BLEU){
-        setXRobot(80);
-    }
-    else if(COULEUR_ROBOT==ROUGE){
-        setXRobot(2920);
-    }
-    tourner(-M_PI/2);
-    reculer(500);
-    setYRobot(2020);
-}
-
-void InterfaceAsservissement::pwmMax(unsigned char valPWM){
-    
->>>>>>> 4916e13d787fc53b25ab7e2aa61509eb85048052
 }
 
 
@@ -226,7 +239,6 @@ InterfaceAsservissement::~InterfaceAsservissement()
 
 int InterfaceAsservissement::getDistanceRobot()
 {
-<<<<<<< HEAD
 	int result;
 	m_liaisonSerie << "t" ;
 	m_liaisonSerie >> result;
@@ -238,44 +250,26 @@ int InterfaceAsservissement::getAngleRobot(){
 	m_liaisonSerie << "u" ;
 	m_liaisonSerie >> result;
 	return result;
-=======
-    int result;
-    m_liaisonSerie << "t" << endl ;
-    m_liaisonSerie >> result;
-    cout<< "ticks : " << result<<endl;
-    return result;
-}
-
-int InterfaceAsservissement::getAngleRobot(){
-    int result;
-    m_liaisonSerie << "u" << endl ;
-    m_liaisonSerie >> result;
-    cout<< "ticks angle: " << result<<endl;
-    return result;
->>>>>>> 4916e13d787fc53b25ab7e2aa61509eb85048052
 }
 
 int InterfaceAsservissement::getXRobot()
 {
     int result;
-    m_liaisonSerie << "xg";
+    m_liaisonSerie << "xg" << endl;
     m_liaisonSerie >> result;
     return result;
 }
 
 void InterfaceAsservissement::setXRobot(int xMm){
-<<<<<<< HEAD
 	m_liaisonSerie << "xs0" << formaterInt(xMm);
-=======
-    m_liaisonSerie << "xs0" << formaterInt(xMm) << endl;
->>>>>>> 4916e13d787fc53b25ab7e2aa61509eb85048052
 }
 
 int InterfaceAsservissement::getYRobot()
 {
     int result;
-    m_liaisonSerie << "yg";
+    m_liaisonSerie << "yg" << endl;
     m_liaisonSerie >> result;
+    cout << result << endl;
     return result;
 }
 
@@ -285,13 +279,9 @@ void InterfaceAsservissement::setYRobot(int yMm){
 
 void InterfaceAsservissement::stop()
 {
-<<<<<<< HEAD
 	m_liaisonSerie << "s" ;
 	pwmMaxRotation(0);
 	pwmMaxTranslation(0);
-=======
-    m_liaisonSerie << "s" ;
->>>>>>> 4916e13d787fc53b25ab7e2aa61509eb85048052
 }
 
 /*********************************************************/
@@ -438,20 +428,25 @@ unsigned short InterfaceActionneurs::pourcentageAngleConversion(unsigned char po
 /*   CAPTEURS                                            */
 /*********************************************************/
 
+InterfaceCapteurs::InterfaceCapteurs() : Thread()  
+{
+}
+
+
+InterfaceCapteurs::~InterfaceCapteurs() 
+{
+}
+
 void InterfaceCapteurs::thread(){
     while(1){
         InterfaceAsservissement* interfaceAsservissement=InterfaceAsservissement::Instance();
         //Il y a quelquechose devant
-        int distanceUltraSonG = DistanceUltrason(UGAUCHE);
-        int distanceUltraSonD = DistanceUltrason(UDROITE);
-        if(distanceUltraSonG < 5000
-        && distanceUltraSonD < 5000){
-                        //On stop.
-                interfaceAsservissement->stop();
-            int distanceUltraSon = (distanceUltraSonG+distanceUltraSonD)/2;
+        int distanceUltraSon = DistanceUltrason();
+        if(distanceUltraSon < 5000) {
+            interfaceAsservissement->stop();
             int xRobot =  CONVERSION_TIC_MM*interfaceAsservissement->getXRobot();
             int yRobot =  CONVERSION_TIC_MM*interfaceAsservissement->getYRobot();
-                double angleRobot = CONVERSION_TIC_RADIAN*interfaceAsservissement->getAngleRobot();         
+            double angleRobot = CONVERSION_TIC_RADIAN*interfaceAsservissement->getAngleRobot();         
                 //On actualise la position du robot adverse
                 RobotAdverse::Instance()->setCoords(
                 xRobot+cos(angleRobot)*distanceUltraSon,
@@ -465,10 +460,9 @@ void InterfaceCapteurs::thread(){
     }
 }
 
-unsigned short InterfaceCapteurs::DistanceUltrason( Ultrason val ) {
+unsigned short InterfaceCapteurs::DistanceUltrason( void ) {
     
-    unsigned char msg[3];
-    msg[0] = val;
+    unsigned char msg[2] = {0X11, '\0'};
     
     unsigned char rec[3];
     
@@ -493,7 +487,8 @@ unsigned short InterfaceCapteurs::DistanceUltrason( Ultrason val ) {
     return resu;
 }
 
-PresencePion InterfaceCapteurs::EtatBras ( FinCourse val ) {
+
+bool InterfaceCapteurs::EtatBras ( Bras val ) {
     
     unsigned char msg[2] = {val, '\0'};
     unsigned char rec[1];
@@ -509,8 +504,49 @@ PresencePion InterfaceCapteurs::EtatBras ( FinCourse val ) {
         exit(1);
     }
     
-    return ((PresencePion) rec[0]);
+    return rec[0];
 }
+
+
+char InterfaceCapteurs::LecteurCB ( void ) {
+
+    unsigned char msg[2] = {0X30, '\0'};
+    unsigned char rec[1];
+    
+    int err;
+    
+    if( (err= i2c_write(adaptateur_i2c,0X20,msg,2)) != 0){
+        fprintf(stderr, "Error writing to the adapter: %s\n", linkm_error_msg(err));
+        exit(1);
+    }
+    if( (err= i2c_read(adaptateur_i2c,0X20,rec,1)) != 0){
+        fprintf(stderr, "Error reading from the adapter: %s\n", linkm_error_msg(err));
+        exit(1);
+    }
+    
+    return rec[0];
+}
+    
+
+bool EtatJumper ( void ) {
+    
+    unsigned char msg[2] = {0X50, '\0'};
+    unsigned char rec[1];
+    
+    int err;
+    
+    if( (err= i2c_write(adaptateur_i2c,0X20,msg,2)) != 0){
+        fprintf(stderr, "Error writing to the adapter: %s\n", linkm_error_msg(err));
+        exit(1);
+    }
+    if( (err= i2c_read(adaptateur_i2c,0X20,rec,1)) != 0){
+        fprintf(stderr, "Error reading from the adapter: %s\n", linkm_error_msg(err));
+        exit(1);
+    }
+    
+    return rec[0];
+}
+
 
 void InterfaceCapteurs::attendreJumper()
 {

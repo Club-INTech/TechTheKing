@@ -80,7 +80,7 @@ void TWI_Loop( void )
                 cons = AX_ANGLE_EXT1;
             
             // Envoi de l'ordre au servo
-            AX12GoTo (0XFE, cons);
+            AX12GoTo (AX_ID2, cons);
         }
 
         if ( messageBuf[0] == MASTER_CMD_SERVO1_UP ) {

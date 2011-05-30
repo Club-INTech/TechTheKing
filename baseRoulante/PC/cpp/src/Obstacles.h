@@ -49,7 +49,7 @@ class Obstacle : public Point{
          * L'obstacle est il en collision avec un cercle?
          *
          * \return true si le cercle donné chevauche l'obstacle.
-         */
+x         */
         virtual bool contientCercle(int centreX, int centreY, int rayon) = 0;
 
 #ifdef DEBUG_GRAPHIQUE
