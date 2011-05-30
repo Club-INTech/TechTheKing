@@ -188,45 +188,44 @@ void Socket::trouverObstacles(std::string trame, std::vector<Obstacle*>* Obstacl
 }
 
 // Intersection des résultats (au moins 2 téléphones nécessaires)
-void Socket::fusionResultats(std::vector< std::pair<Obstacle*,int> >& resultatFusion, std::vector<Obstacle*> t1, std::vector<Obstacle*> t2, std::vector<Obstacle*> t3, int niveau)
+void Socket::fusionResultats(std::vector< std::pair<Obstacle*,int> >& resultatFusion, std::vector<Obstacle*>& t1, std::vector<Obstacle*>& t2, std::vector<Obstacle*>& t3, int niveau)
 {
 	std::vector<Obstacle*>::iterator it;
-	
+	std::vector< std::pair<Obstacle*,int> > resultatFusion2;
 	// Une double boucle pour 3 instructions c'est mal
 	for(it=t1.begin();it!=t1.end();it++)
 	{
-		ajouterPion(resultatFusion,it);
+		ajouterPion(resultatFusion2,it);
 	}
 	
 	for(it=t2.begin();it!=t2.end();it++)
 	{
-		ajouterPion(resultatFusion,it);
+		ajouterPion(resultatFusion2,it);
 	}
 	
 	for(it=t3.begin();it!=t3.end();it++)
 	{
-		ajouterPion(resultatFusion,it);
+		ajouterPion(resultatFusion2,it);
 	}
 	
-	
-	
-	
 	// Tri des résultats en fonction du niveau
-	for(std::vector< std::pair<Obstacle*,int> >::iterator it2=resultatFusion.begin();it2!=resultatFusion.end();it2++)
+	for(std::vector< std::pair<Obstacle*,int> >::iterator it2=resultatFusion2.begin();it2!=resultatFusion2.end();it2++)
 	{
-		if (it2->second >= niveau) resultatFusion.erase(it2);
+		if (it2->second >= niveau){
+			resultatFusion.push_back(*it2);
+		}
 	}
 }
 
 // True si les 2 pions sont les mêmes, false sinon 
-bool Socket::comparerPions(std::vector< std::pair<Obstacle*,int> >::iterator a, std::vector<Obstacle*>::iterator b)
+bool Socket::comparerPions(std::vector< std::pair<Obstacle*,int> >::iterator& a, std::vector<Obstacle*>::iterator& b)
 {
 	double d = (a->first)->rayon(**b);
 	return (d < TOLERANCE_DISTANCE);
 }
 
 // Vérifie si un pion est déjà présent, l'ajoute sinon
-void Socket::ajouterPion(std::vector< std::pair<Obstacle*,int> > &v, std::vector<Obstacle*>::iterator p)
+void Socket::ajouterPion(std::vector< std::pair<Obstacle*,int> > &v, std::vector<Obstacle*>::iterator& p)
 {
 	std::vector< std::pair<Obstacle*,int> >::iterator it;
 	bool present = false;
@@ -239,8 +238,8 @@ void Socket::ajouterPion(std::vector< std::pair<Obstacle*,int> > &v, std::vector
 			present = true;
 			
 			// Calcul du barycentre
-			((it->first))->setX( ( it->second * ((it->first))->getX() + (*p)->getX() ) / (it->second + 1) );
-			((it->first))->setY( ( it->second * ((it->first))->getY() + (*p)->getY() ) / (it->second + 1) );
+			(it->first)->setX( ( it->second * (it->first)->getX() + (*p)->getX() ) / (it->second + 1) );
+			(it->first)->setY( ( it->second * (it->first)->getY() + (*p)->getY() ) / (it->second + 1) );
 			
 			// Incrémentation du poids
 			it->second += 1;
@@ -255,7 +254,7 @@ void Socket::ajouterPion(std::vector< std::pair<Obstacle*,int> > &v, std::vector
 	}
 }
 
-void Socket::printVector(std::vector< std::pair<Obstacle*,int> > v)
+void Socket::printVector(std::vector< std::pair<Obstacle*,int> >& v)
 {	
 	for(std::vector< std::pair<Obstacle*,int> >::iterator it=v.begin();it!=v.end();it++)
 	{

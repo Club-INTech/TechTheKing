@@ -35,6 +35,10 @@ Point::Point(double x,double y){
 	CHECK_INVARIANTS;
 }
 
+Point::Point(const Point& p){
+	m_x = p.m_x;
+	m_y = p.m_y;
+}
 void Point::print() {
 	CHECK_INVARIANTS;
 	cout << "x= " << m_x << " ; y= " << m_y << endl;

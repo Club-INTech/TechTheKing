@@ -28,10 +28,10 @@ class Socket{
         std::string onRead(int sockfd);
         void onClose();
         Socket& operator=(const Socket&);
-        bool comparerPions(std::vector< std::pair<Obstacle*,int> >::iterator a, std::vector<Obstacle*>::iterator b);
-		void printVector(std::vector< std::pair<Obstacle*,int> > v);
-		void fusionResultats(std::vector< std::pair<Obstacle*,int> >& resultatFusion, std::vector<Obstacle*> t1, std::vector<Obstacle*> t2, std::vector<Obstacle*> t3, int niveau);
-		void ajouterPion(std::vector< std::pair<Obstacle*,int> > &v, std::vector<Obstacle*>::iterator p);
+        bool comparerPions(std::vector< std::pair<Obstacle*,int> >::iterator& a, std::vector<Obstacle*>::iterator& b);
+		void printVector(std::vector< std::pair<Obstacle*,int> >& v);
+		void fusionResultats(std::vector< std::pair<Obstacle*,int> >& resultatFusion, std::vector<Obstacle*>& t1, std::vector<Obstacle*>& t2, std::vector<Obstacle*>& t3, int niveau);
+		void ajouterPion(std::vector< std::pair<Obstacle*,int> > &v, std::vector<Obstacle*>::iterator& p);
         Socket(const Socket&){};
     private:
         static Socket* m_instance;
