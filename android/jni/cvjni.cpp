@@ -42,6 +42,9 @@ IplImage* getIplImageFromIntArray(JNIEnv* env, jintArray array_data,
 // TODO: cvRelease
 JNIEXPORT jstring JNICALL Java_intech_detection_PictureTaker_trouverPions(JNIEnv* env, jobject thiz,jint vue){
 
+	LOGI( " Vue : ");
+	LOGI(convertString(vue).c_str());
+	
 	// Filtre HSV
 	LOGI("Filtrage HSV");
     IplImage *imgHSV = nvgHSV(pImage);

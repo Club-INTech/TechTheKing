@@ -18,11 +18,11 @@ class Socket{
         static Socket* Instance(int port);
         ~Socket();
         void onOpen();
-        void getPions();
+        void getAllPions();
     private:
 		int getFd(const char* address);
-		void getPions(const char* address, std::vector<Obstacle*>& Obstacles);
-		void trouverObstacles(std::string trame, std::vector<Obstacle*>& Obstacles);
+		void getPions(const char* address, std::vector<Obstacle*>* Obstacles);
+		void trouverObstacles(std::string trame, std::vector<Obstacle*>* Obstacles);
         Socket(int port);
         void onWrite(int sockfd,std::string msg);
         std::string onRead(int sockfd);
