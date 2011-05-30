@@ -51,6 +51,7 @@ private:
     void recupPosition();
     void attendreArrivee();
 private:
+	bool m_Evitement;
     Point m_lastArrivee;
     int m_lastNbPoints;
     int m_compteurImages;
