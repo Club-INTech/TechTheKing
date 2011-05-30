@@ -6,8 +6,8 @@ InterfaceCapteurs = LibChessUp::InterfaceCapteurs.new;
 
 #Modèles et tests pour les capteurs
 
-while (1) {
+while ( true )
 
 puts InterfaceCapteurs.DistanceUltrason();
 
-}
+end
