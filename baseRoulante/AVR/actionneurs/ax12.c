@@ -21,6 +21,9 @@ int status_id;
 int status_error;
 int status_data;
 
+// volatile uint16_t ax_cons1 = 200;
+// volatile uint16_t ax_cons2 = 800;
+
 // making these volatile keeps the compiler from optimizing loops of available()
 volatile byte ax_rx_Pointer;                       
 
@@ -199,7 +202,7 @@ void AX12Init (uint8_t ID, uint16_t angleCW, uint16_t angleCCW, uint16_t vitesse
     // Définit la vitesse de rotation
     writeData (ID, AX_GOAL_SPEED_L, 2, vitesse);
     // Fonction bas niveau pour la transmission série
-    ax12Init (1000000);
+    ax12Init (200000);
 }
 
 void AX12GoTo (uint8_t ID, uint16_t angle)

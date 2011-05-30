@@ -7,59 +7,64 @@
 
 int main()
 {
-	// Pour le debug serie
-	//uart_init();
+    // Pour le debug serie
+    //uart_init();
 
-	// Initialisations diverses (et variees)
-	actio_init();
+    // Initialisation de la freq de la serie pour AX12
+    writeData (0XFE, 0X04, 1, 0X09);
 
-	// Initialisation I2C
-	TWI_Init();
+    // Initialisations diverses (et variees)
+    actio_init();
 
-	//Initialisation de l'adc
-	unsigned char conf = 0;
-	conf |= ( 1 << ADC_REF0 ) | ( 1 << ADC_CHOOSE ) | ADC1;
-	conf &= ~( 1 << ADC_REF1 );
-	adcInit(conf);
+    // Initialisation I2C
+    TWI_Init();
 
-	// Initialisation pour l'AX12 gauche
-	AX12Init (AX_ID1, AX_ANGLE_EXT1, AX_ANGLE_EXT2, AX_SPEED);
-	// Initialisation pour l'AX12 droite
-	AX12Init (AX_ID2, AX_ANGLE_EXT1, AX_ANGLE_EXT2, AX_SPEED);
+    //Initialisation de l'adc
+    unsigned char conf = 0;
+    conf |= ( 1 << ADC_REF0 ) | ( 1 << ADC_CHOOSE ) | ADC1;
+    conf &= ~( 1 << ADC_REF1 );
+    adcInit(conf);
 
-	SERVO_CONS1 = SERVO_PWM_UP1;
-	SERVO_CONS2 = SERVO_PWM_UP2;
-	consigne1 = 5000;
+    // Initialisation pour l'AX12 gauche
+    AX12Init (AX_ID1, AX_ANGLE_EXT1, AX_ANGLE_EXT2, AX_SPEED);
+    // Initialisation pour l'AX12 droite
+    AX12Init (AX_ID2, AX_ANGLE_EXT1, AX_ANGLE_EXT2, AX_SPEED);
 
-	while(1)
-	{
-		/*************** Asservissement ***************/
-		if (etat_asservissement == ASC_ASSERV_SYNCHRO)
-			asservissement_synchro();
-		else if (etat_asservissement == ASC_ASSERV_INDEP)
-			asservissement();
-		/**********************************************/
+    SERVO_CONS1 = SERVO_PWM_UP1;
+    SERVO_CONS2 = SERVO_PWM_UP2;
+    consigne1 = 5000;
 
-		/********************* I2C ********************/
-		// Je l'ai dans l'interruption TWI
-		TWI_Loop();
-		/**********************************************/
+    while(1)
+    {
+        /*************** Asservissement ***************/
+        if (etat_asservissement == ASC_ASSERV_SYNCHRO)
+            asservissement_synchro();
+        else if (etat_asservissement == ASC_ASSERV_INDEP)
+            asservissement();
+        /**********************************************/
 
-	//         /*** Pour les tests ***/
-	//         _delay_ms(2000);
-	//         //SERVO2 = PWM_UP;
-	//         AX12GoTo(0XFE, 511);
-	//         _delay_ms(2000);
-	//         //SERVO2 = PWM_DOWN;
-	//         AX12GoTo(0XFE, 200);
-	//         _delay_ms(2000);
-	//         AX12GoTo(0XFE,800);
+        /********************* I2C ********************/
+        TWI_Loop();
+        /**********************************************/
 
-	//         _delay_ms(250);
-	//         printLong(ascenseur1);
-	//         printString(" ; ");
-	//         printlnLong(ascenseur2);
-	}
+    //          /*** Pour les tests ***/
+    //          _delay_ms(2000);
+    //          AX12GoTo(AX_ID2, 511);
+    //          _delay_ms(2000);
+    //          AX12GoTo(AX_ID2, 200);
+    //          _delay_ms(2000);
+    //          AX12GoTo(AX_ID2,800);
+    
+    //         _delay_ms(2000);
+    //         SERVO_CONS1 = SERVO_PWM_UP1;
+    //         _delay_ms(2000);
+    //         SERVO_CONS1 = SERVO_PWM_DOWN1;
 
-	return 0;
+    //         _delay_ms(250);
+    //         printLong(ascenseur1);
+    //         printString(" ; ");
+    //         printlnLong(ascenseur2);
+    }
+
+    return 0;
 }
