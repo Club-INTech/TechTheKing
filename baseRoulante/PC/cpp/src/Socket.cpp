@@ -39,15 +39,12 @@ void Socket::getAllPions(){
     group.create_thread(boost::bind(&Socket::getPions,this,"192.168.6.3",&listeObstacles2));
     group.create_thread(boost::bind(&Socket::getPions,this,"192.168.6.4",&listeObstacles3));
     group.join_all();
-    std::cout << "Liste Obstacles 1 : " << listeObstacles1.size() << std::endl;
-    std::cout << "Liste Obstacles 2 : " << listeObstacles2.size() << std::endl;
     
-    std::vector< std::pair<Obstacle*,int> > fusion = fusionResultats(listeObstacles1,listeObstacles2,listeObstacles3,1);
+    std::vector< std::pair<Obstacle*,int> > fusion;
+    fusionResultats(fusion, listeObstacles1,listeObstacles2,listeObstacles3,1);
     
-    for(std::vector< std::pair<Obstacle*,int> >::iterator it=fusion.begin();it!=fusion.end();it++)
-	{
-		std::cout << ((it->first))->getX() << " " << ((it->first))->getY() << " n=" << it->second << std::endl;
-	}
+    printVector(fusion);
+    
 	/*
     #ifdef DEBUG_GRAPHIQUE
     Magick::Image image( "img/table.png" );
@@ -102,8 +99,6 @@ void Socket::getPions(const char* address,std::vector<Obstacle*>* Obstacles){
     image.display();
     #endif
     */
-    
-    std::cout << "Liste Obstacles : " << address << " " << Obstacles->size() << std::endl;
     
     close(sockfd);
 }
@@ -193,10 +188,9 @@ void Socket::trouverObstacles(std::string trame, std::vector<Obstacle*>* Obstacl
 }
 
 // Intersection des résultats (au moins 2 téléphones nécessaires)
-std::vector< std::pair<Obstacle*,int> > Socket::fusionResultats(std::vector<Obstacle*> t1, std::vector<Obstacle*> t2, std::vector<Obstacle*> t3, int niveau)
+void Socket::fusionResultats(std::vector< std::pair<Obstacle*,int> >& resultatFusion, std::vector<Obstacle*> t1, std::vector<Obstacle*> t2, std::vector<Obstacle*> t3, int niveau)
 {
 	std::vector<Obstacle*>::iterator it;
-	std::vector< std::pair<Obstacle*,int> > resultatFusion;
 	
 	// Une double boucle pour 3 instructions c'est mal
 	for(it=t1.begin();it!=t1.end();it++)
@@ -215,13 +209,13 @@ std::vector< std::pair<Obstacle*,int> > Socket::fusionResultats(std::vector<Obst
 	}
 	
 	
+	
+	
 	// Tri des résultats en fonction du niveau
 	for(std::vector< std::pair<Obstacle*,int> >::iterator it2=resultatFusion.begin();it2!=resultatFusion.end();it2++)
 	{
 		if (it2->second >= niveau) resultatFusion.erase(it2);
 	}
-	
-	return resultatFusion;
 }
 
 // True si les 2 pions sont les mêmes, false sinon 
@@ -261,11 +255,10 @@ void Socket::ajouterPion(std::vector< std::pair<Obstacle*,int> > &v, std::vector
 	}
 }
 
-void Socket::printVector(std::vector<Obstacle*> v)
+void Socket::printVector(std::vector< std::pair<Obstacle*,int> > v)
 {	
-	for(std::vector<Obstacle*>::iterator it=v.begin();it!=v.end();it++)
+	for(std::vector< std::pair<Obstacle*,int> >::iterator it=v.begin();it!=v.end();it++)
 	{
-		std::cout << (*it)->getX() << " " << (*it)->getY() << std::endl;
+		std::cout << ((it->first))->getX() << " " << ((it->first))->getY() << " n=" << it->second << std::endl;
 	}
 }
-
