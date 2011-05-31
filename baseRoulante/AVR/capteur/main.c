@@ -13,7 +13,7 @@ int main()
     uart_init();
     
     while(1) {
-        _delay_ms(25);
+        _delay_ms(50);
         
         uint32_t temp1 = 0;
         uint32_t temp2 = 0;
