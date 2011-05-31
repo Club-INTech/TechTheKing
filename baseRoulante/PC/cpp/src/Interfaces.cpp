@@ -136,8 +136,7 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
         attendreArrivee();
    }
    else{
-        tourner(depart.angle(arrivee));
-        avancer(depart.rayon(arrivee));
+        stop();
    }
    
 }
@@ -162,6 +161,7 @@ void InterfaceAsservissement::attendreArrivee(){
 		serialPort.Close();
 		stop();
 		sleep(1);
+		/*
 		int xRobot =  CONVERSION_TIC_MM*getXRobot();
         int yRobot =  CONVERSION_TIC_MM*getYRobot();
 		double angleRobot = CONVERSION_TIC_RADIAN*getAngleRobot();
@@ -180,8 +180,8 @@ void InterfaceAsservissement::attendreArrivee(){
 		RobotAdverse::Instance()->setCoords(
 			xRobot-offsetX,
 			yRobot-offsetY);
-		
-		reculer(distanceUltraSon);
+		*/
+		reculer(TAILLE_ROBOT);
 		reGoTo();
 	}
 	else{
