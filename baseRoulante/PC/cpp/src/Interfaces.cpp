@@ -128,18 +128,35 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
    #endif
    Point depart(xDepart,yDepart);
    vector<Point> listePointsTmp;
-   listePointsTmp = m_pathfinding.getChemin(depart,arrivee);
-   if(!listePointsTmp.empty()){
-        m_lastTrajectory=ListePoints::lissageBezier(listePointsTmp,nbPoints);
-        m_lastListeConsignes=ListePoints::convertirEnConsignes(m_lastTrajectory,getDistanceRobot()); 
-        ListeConsignes::transfertSerie(m_lastListeConsignes,m_liaisonSerie);
-        attendreArrivee();
-   }
-   else{
-        tourner(depart.angle(arrivee));
-        avancer(depart.rayon(arrivee));
-   }
    
+   if( ListeObstacles::contientCercle(xDepart,yDepart,TAILLE_ROBOT,NOIR)!=NULL
+	|| ListeObstacles::contientCercle(xDepart,yDepart,TAILLE_ROBOT,COULEUR_ROBOT)!=NULL
+	|| ListeObstacles::contientCercle(xDepart,yDepart,TAILLE_ROBOT,NEUTRE)!=NULL ){
+		#ifdef DEBUG
+		std::cout << "Le robot croit qu'il est bloqué dans un obstacle ! Génération d'une lolconsigne aléatoire" << std::endl;
+		#endif
+		if(rand()/(float)RAND_MAX>0.5){
+			avancer(150);
+		}
+		else{
+			reculer(150);
+	    }
+		tourner(M_PI*rand()/(float)RAND_MAX);
+		goTo(arrivee,nbPoints);
+   }
+   else
+   {
+	   listePointsTmp = m_pathfinding.getChemin(depart,arrivee);
+	   if(!listePointsTmp.empty()){
+			m_lastTrajectory=ListePoints::lissageBezier(listePointsTmp,nbPoints);
+			m_lastListeConsignes=ListePoints::convertirEnConsignes(m_lastTrajectory,getDistanceRobot()); 
+			ListeConsignes::transfertSerie(m_lastListeConsignes,m_liaisonSerie);
+			attendreArrivee();
+	   }
+	   else{
+			stop();
+	   }
+   }
 }
 
 void InterfaceAsservissement::attendreArrivee(){
@@ -662,13 +679,15 @@ void InterfaceCapteurs::gestionJumper()
     #endif
     while(EtatJumper()==false);
     std::cout << "Match commencé" << std::endl;
-    boost::thread(&gestionFinMatch);
+    boost::thread(&gestionFinMatch());
 }
 
 void InterfaceCapteurs::gestionFinMatch(){
 	sleep(20);
 	InterfaceAsservissement::Instance()->stopAll();
 }
+
+
 /*********************************************************/
 /*  FIN CAPTEURS                                         */
 /*********************************************************/
