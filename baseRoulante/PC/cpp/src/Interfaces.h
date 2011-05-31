@@ -20,6 +20,7 @@ class InterfaceAsservissement;
 std::vector<char> getTtyUSB();
 
 class InterfaceAsservissement {
+	friend class InterfaceCapteurs;
 public:
     static InterfaceAsservissement* Instance(int precisionAStar=50);
     ~InterfaceAsservissement();
@@ -43,7 +44,6 @@ public:
     int getYRobot();
     void setXRobot(int xMm);
     void setYRobot(int yMm);
-
 private:
     InterfaceAsservissement& operator=(const InterfaceAsservissement&);
     InterfaceAsservissement(const InterfaceAsservissement&){};
@@ -51,6 +51,7 @@ private:
     void recupPosition();
     void attendreArrivee();
 private:
+	bool m_evitement;
     Point m_lastArrivee;
     int m_lastNbPoints;
     int m_compteurImages;
@@ -60,6 +61,7 @@ private:
     AStar m_pathfinding;
     unsigned int vitesseMax;
     SerialStream m_liaisonSerie;
+    boost::mutex m_evitement_mutex;
 };
 
 // Interface passive : capteurs. A priori, pas besoin de méthode publique autre que ouvrirThread.
@@ -100,9 +102,6 @@ class InterfaceActionneurs{
     private:
         inline unsigned short pourcentageHauteurConversion(unsigned char pourcentage);
         inline unsigned short pourcentageAngleConversion(unsigned char pourcentage);
-        
-    private:
-        static const int i2c_wait = 1500;
 };
 
 void ouvrir_adaptateur_i2c ();

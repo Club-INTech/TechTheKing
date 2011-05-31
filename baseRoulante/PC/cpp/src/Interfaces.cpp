@@ -102,7 +102,6 @@ void detectionSerieUsb(InterfaceAsservissement* asserv){
             streamTmp.Open( stringTmp );
             streamTmp << "?" << endl;
             streamTmp >> charTmp ;
-            cout<<charTmp<<endl;
             switch(charTmp){
                 case '0':
                     asserv->m_liaisonSerie.Open(stringTmp);
@@ -141,6 +140,12 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
 void InterfaceAsservissement::attendreArrivee(){
 	unsigned char result = 0;	
 	while(result != 'f'){
+		{
+			boost::mutex::scoped_lock lolilol(m_evitement_mutex);
+			if(m_evitement==true){
+				break;
+			}
+		}
 		m_liaisonSerie >> result;
 	}
 	sleep(1);
@@ -168,7 +173,6 @@ void InterfaceAsservissement::reculer(unsigned int distanceMm){
 		std::cout << "Recule de " << distanceMm << std::endl;
 	#endif
     int distanceTicks = getDistanceRobot() - distanceMm*CONVERSION_MM_TIC;
-    cout << distanceTicks << endl ;
     if(distanceTicks>0){
 		m_liaisonSerie<<"b1"+formaterInt(distanceTicks)<<endl;
 	}
@@ -190,7 +194,7 @@ void InterfaceAsservissement::tourner(double angleRadian){
     attendreArrivee();
 }
 
-InterfaceAsservissement::InterfaceAsservissement(int precision) : m_compteurImages(0), m_pathfinding(precision){
+InterfaceAsservissement::InterfaceAsservissement(int precision) : m_Evitement(false), m_compteurImages(0), m_pathfinding(precision){
     detectionSerieUsb(this);
     m_liaisonSerie.SetBaudRate(SerialStreamBuf::BAUD_57600);
     m_liaisonSerie.SetNumOfStopBits(1);
@@ -240,15 +244,21 @@ InterfaceAsservissement::~InterfaceAsservissement()
 int InterfaceAsservissement::getDistanceRobot()
 {
 	int result;
-	m_liaisonSerie << "t" ;
+	m_liaisonSerie << "t" << std::endl;
 	m_liaisonSerie >> result;
+	#ifdef DEBUG
+	std::cout << "Distance du robot (ticks :)" << result << std::endl;
+	#endif
 	return result;
 }
 
 int InterfaceAsservissement::getAngleRobot(){
 	int result;
-	m_liaisonSerie << "u" ;
+	m_liaisonSerie << "u" << std::endl;
 	m_liaisonSerie >> result;
+	#ifdef DEBUG
+	std::cout << "Angle du robot (ticks :)" << result << std::endl;
+	#endif
 	return result;
 }
 
@@ -306,8 +316,6 @@ void InterfaceActionneurs::hauteurBrasGauche(unsigned char pourcentageHauteur)
     unsigned char message[] = {0X41, (unsigned char) tics, (unsigned char) (tics >> 8),'\0'};
     
     i2c_write(adaptateur_i2c, 0X10, message, 3+1);
-    
-    usleep(i2c_wait);
 }
 
 
@@ -317,8 +325,6 @@ void InterfaceActionneurs::hauteurBrasDroit(unsigned char pourcentageHauteur)
     unsigned char message[] = {0X42, (unsigned char) tics, (unsigned char) (tics >> 8), '\0'};
     
     i2c_write(adaptateur_i2c, 0X10, message, 3+1);
-    
-    usleep(i2c_wait);
 }
 
 
@@ -328,8 +334,6 @@ void InterfaceActionneurs::hauteurDeuxBras(unsigned char pourcentageHauteur)
     unsigned char message[] = {0X4B, (unsigned char) tics, (unsigned char) (tics >> 8), '\0'};
     
     i2c_write(adaptateur_i2c, 0X10, message, 3+1);
-    
-    usleep(i2c_wait);
 }
 
 
@@ -340,8 +344,6 @@ void InterfaceActionneurs::angleBrasGauche(unsigned char pourcentageAngle)
     unsigned char message[] = {0X11, (unsigned char) angle, (unsigned char) (angle >> 8), '\0'};
     
     i2c_write(adaptateur_i2c, 0X10, message, 3+1);
-    
-    usleep(i2c_wait);
 }
 
 
@@ -351,8 +353,6 @@ void InterfaceActionneurs::angleBrasDroit(unsigned char pourcentageAngle)
     unsigned char message[] = {0X12, (unsigned char) angle, (unsigned char) (angle >> 8), '\0'};
     
     i2c_write(adaptateur_i2c, 0X10, message, 3+1);
-    
-    usleep(i2c_wait);
 }
 
 
@@ -370,8 +370,6 @@ void InterfaceActionneurs::positionAimantGauche(ModeAimant mode)
     }
     
     i2c_write(adaptateur_i2c, 0X10, message, 1+1);
-    
-    usleep(i2c_wait);
 }
 
 
@@ -389,8 +387,6 @@ void InterfaceActionneurs::positionAimantDroit(ModeAimant mode)
     }
     
     i2c_write(adaptateur_i2c, 0X10, message, 1+1);
-    
-    usleep(i2c_wait);
 }
 
 void InterfaceActionneurs::recalage(void)
@@ -401,8 +397,6 @@ void InterfaceActionneurs::recalage(void)
     message[1] = '\0';
     
     i2c_write(adaptateur_i2c, 0X10, message, 1+1);
-    
-    usleep(i2c_wait);
 }
 
 unsigned short InterfaceActionneurs::pourcentageHauteurConversion(unsigned char pourcentage)
@@ -438,21 +432,31 @@ InterfaceCapteurs::~InterfaceCapteurs()
 }
 
 void InterfaceCapteurs::thread(){
+	InterfaceAsservissement* interfaceAsservissement=InterfaceAsservissement::Instance();
     while(1){
-        InterfaceAsservissement* interfaceAsservissement=InterfaceAsservissement::Instance();
         //Il y a quelquechose devant
         int distanceUltraSon = DistanceUltrason();
-        if(distanceUltraSon < 5000) {
-            interfaceAsservissement->stop();
+        #ifdef DEBUG
+			std::cout << "Distance ultrasons = " << distanceUltraSon << std::endl;
+		#endif
+        if(distanceUltraSon>0 && distanceUltraSon < 9000) {
+			#ifdef DEBUG
+			std::cout << "Objet détecté par les ultrasons à " << distanceUltraSon << std::endl;
+			#endif
+			{
+				boost::scoped_mutex lolilol(m_evitement_mutex);
+				InterfaceAsservissement.m_evitement==true;
+			}
+			interfaceAsservissement->reculer(200);
+			//Arrêt
             int xRobot =  CONVERSION_TIC_MM*interfaceAsservissement->getXRobot();
             int yRobot =  CONVERSION_TIC_MM*interfaceAsservissement->getYRobot();
             double angleRobot = CONVERSION_TIC_RADIAN*interfaceAsservissement->getAngleRobot();         
                 //On actualise la position du robot adverse
                 RobotAdverse::Instance()->setCoords(
-                xRobot+cos(angleRobot)*distanceUltraSon,
-                yRobot+cos(angleRobot)*distanceUltraSon);
+                xRobot+cos(angleRobot)*distanceUltraSon*CONVERSION_ULTRASONS_CM,
+                yRobot+sin(angleRobot)*distanceUltraSon*CONVERSION_ULTRASONS_CM);
                 //On recule
-                interfaceAsservissement->reculer(200);
                 //On recalcule une trajectoire.
                 interfaceAsservissement->reGoTo();
         }
@@ -528,7 +532,7 @@ char InterfaceCapteurs::LecteurCB ( void ) {
 }
     
 
-bool EtatJumper ( void ) {
+bool InterfaceCapteurs::EtatJumper ( void ) {
     
     unsigned char msg[2] = {0X50, '\0'};
     unsigned char rec[1];
