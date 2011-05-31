@@ -80,7 +80,7 @@ extern int16_t consigne2;
 extern int16_t consigneb;
 extern volatile int16_t ascenseur1;
 extern volatile int16_t ascenseur2;
-extern int8_t etat_asservissement;
+extern volatile int8_t etat_asservissement;
 
 /*
  *  Fonctions d'asservissement
