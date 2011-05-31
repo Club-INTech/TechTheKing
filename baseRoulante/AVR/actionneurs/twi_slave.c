@@ -1,9 +1,10 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
-#include "twi_slave.h"
 #include "actionneurs.h"
 #include "ax12.h"
+
+#include "twi_slave.h"
 
 union TWI_statusReg_t
 {
@@ -43,10 +44,12 @@ void TWI_Loop( void )
 {
     if ( ! TWI_Transceiver_Busy() ) {
         
+        unsigned char status = 0;
+
         if ( TWI_statusReg.RxDataInBuf ) {
-            TWI_Get_Data_From_Transceiver(messageBuf, 3);
+            status = TWI_Get_Data_From_Transceiver(messageBuf, 3);
         }
-            
+    
         // Ordre pour l'AX12 1
         if ( messageBuf[0] == MASTER_CMD_AX1_GOTO ) {
             
@@ -62,7 +65,7 @@ void TWI_Loop( void )
                 cons = AX_ANGLE_EXT1;
             
             // Envoi de l'ordre au servo
-                AX12GoTo (AX_ID1, cons);
+            AX12GoTo (AX_ID1, cons);
         }
 
         // Ordre pour l'AX12 2
@@ -80,7 +83,7 @@ void TWI_Loop( void )
                 cons = AX_ANGLE_EXT1;
             
             // Envoi de l'ordre au servo
-             AX12GoTo (AX_ID2, cons);
+            AX12GoTo (AX_ID2, cons);
         }
 
         if ( messageBuf[0] == MASTER_CMD_SERVO1_UP ) {
@@ -165,7 +168,8 @@ void TWI_Loop( void )
         
         if ( messageBuf[0] == MASTER_CMD_RECALAGE ) {
             recalage();
-        }   
+        } 
+            
         
         // Retour pour le debug
         // TWI_Start_Transceiver_With_Data(messageBuf, 3);
