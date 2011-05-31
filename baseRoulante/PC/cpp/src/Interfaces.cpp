@@ -95,20 +95,22 @@ void detectionSerieUsb(InterfaceAsservissement* asserv){
     streamTmp.SetCharSize( SerialStreamBuf::CHAR_SIZE_8 ) ;
     streamTmp.SetNumOfStopBits(1) ;
     string listePorts = exec((char*)"ls -1 /dev/ttyUSB* | cut -d '/' -f 3 | sed -e 's/ttyUSB//'");
-    for(unsigned int i=0;i<listePorts.length();i++){
-        if(listePorts[i+1]=='\n'){
-            stringTmp="/dev/ttyUSB";
-            stringTmp.push_back( listePorts[i] );
-            streamTmp.Open( stringTmp );
-            streamTmp << "?" << endl;
-            streamTmp >> charTmp ;
-            switch(charTmp){
-                case '0':
-                    asserv->m_liaisonSerie.Open(stringTmp);
-                    cout<<"Asservissement : ok"<<endl;
-                    break;
-            }
-        }
+    for(unsigned int i=0;i<=listePorts.length();i++){
+		stringTmp="/dev/ttyUSB";
+        while(listePorts[i+1]=!'\n'){
+				stringTmp.push_back( listePorts[i] );
+				i++;
+		}
+		std::cout << stringTmp << std::endl;
+		streamTmp.Open( stringTmp );
+		streamTmp << "?" << endl;
+		streamTmp >> charTmp ;
+		switch(charTmp){
+			case '0':
+				asserv->m_port=stringTmp;
+				cout<<"Asservissement : ok"<<endl;
+				break;
+		}
     }
 }
 
@@ -138,16 +140,26 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
 }
 
 void InterfaceAsservissement::attendreArrivee(){
-	unsigned char result = 0;	
-	while(result != 'f'){
-		{
+	unsigned char result = 0;
+	
+	SerialPort serialPort(m_port);	
+	serialPort.Open();
+	while(!serialPort.IsDataAvailable()){
+			std::cout<<m_evitement<<std::endl;
 			boost::mutex::scoped_lock lolilol(m_evitement_mutex);
 			if(m_evitement==true){
-				break;
+				std::cout << "Evitement : Arrêt" << std::endl;
+				serialPort.Close();
+				m_evitement=false;
+				reculer(150);
+				reGoTo();
+				return;
 			}
-		}
-		m_liaisonSerie >> result;
 	}
+	std::cout << "Arrivé" << std::endl;
+	result = serialPort.ReadByte();
+	std::cout<< result << std::endl;
+	serialPort.Close();
 	sleep(1);
 }
 void InterfaceAsservissement::reGoTo(){
@@ -194,8 +206,9 @@ void InterfaceAsservissement::tourner(double angleRadian){
     attendreArrivee();
 }
 
-InterfaceAsservissement::InterfaceAsservissement(int precision) : m_Evitement(false), m_compteurImages(0), m_pathfinding(precision){
+InterfaceAsservissement::InterfaceAsservissement(int precision) : m_evitement(false), m_compteurImages(0), m_pathfinding(precision){
     detectionSerieUsb(this);
+    m_liaisonSerie.Open(m_port);
     m_liaisonSerie.SetBaudRate(SerialStreamBuf::BAUD_57600);
     m_liaisonSerie.SetNumOfStopBits(1);
     m_liaisonSerie.SetParity( SerialStreamBuf::PARITY_ODD ) ;
@@ -252,6 +265,11 @@ int InterfaceAsservissement::getDistanceRobot()
 	return result;
 }
 
+void InterfaceAsservissement::setEvitement(){	
+	boost::mutex::scoped_lock lolilol(m_evitement_mutex);
+	m_evitement=true;
+	std::cout << m_evitement << std::endl;
+}
 int InterfaceAsservissement::getAngleRobot(){
 	int result;
 	m_liaisonSerie << "u" << std::endl;
@@ -469,29 +487,18 @@ void InterfaceCapteurs::thread(){
     while(1){
         //Il y a quelquechose devant
         int distanceUltraSon = DistanceUltrason();
-        #ifdef DEBUG
-			std::cout << "Distance ultrasons = " << distanceUltraSon << std::endl;
-		#endif
-        if(distanceUltraSon>0 && distanceUltraSon < 9000) {
-			#ifdef DEBUG
-			std::cout << "Objet détecté par les ultrasons à " << distanceUltraSon << std::endl;
-			#endif
-			{
-				boost::scoped_mutex lolilol(m_evitement_mutex);
-				InterfaceAsservissement.m_evitement==true;
-			}
-			interfaceAsservissement->reculer(200);
-			//Arrêt
+        if(distanceUltraSon>0 && distanceUltraSon < 7000) {
+			interfaceAsservissement->setEvitement();
+			sleep(3);
+			/*
             int xRobot =  CONVERSION_TIC_MM*interfaceAsservissement->getXRobot();
             int yRobot =  CONVERSION_TIC_MM*interfaceAsservissement->getYRobot();
             double angleRobot = CONVERSION_TIC_RADIAN*interfaceAsservissement->getAngleRobot();         
-                //On actualise la position du robot adverse
-                RobotAdverse::Instance()->setCoords(
-                xRobot+cos(angleRobot)*distanceUltraSon*CONVERSION_ULTRASONS_CM,
-                yRobot+sin(angleRobot)*distanceUltraSon*CONVERSION_ULTRASONS_CM);
-                //On recule
-                //On recalcule une trajectoire.
-                interfaceAsservissement->reGoTo();
+            //On actualise la position du robot adverse
+            RobotAdverse::Instance()->setCoords(
+            xRobot+cos(angleRobot)*distanceUltraSon*CONVERSION_ULTRASONS_CM,
+            yRobot+sin(angleRobot)*distanceUltraSon*CONVERSION_ULTRASONS_CM);
+            */
         }
         usleep(1000);
     }
