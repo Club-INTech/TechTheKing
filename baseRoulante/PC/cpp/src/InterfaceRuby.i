@@ -11,10 +11,6 @@
 
 %include "../config.h"
 
-%inline %{
-    std::vector <Obstacle*> listeObstacles ;
-%}
-
 %rename(__add__) Point::operator+;
 %rename(__mul__) Point::operator*;
 %rename(__sub__) Point::operator-;
@@ -23,6 +19,7 @@
 enum Couleur {ROUGE, BLEU, NEUTRE, NOIR};
 
 %inline %{
+extern std::vector< std::pair<Obstacle*,int> > listeObstacles;
 extern int RAYON_DE_DETECTION;
 extern int EMPIETEMENT;
 extern Couleur COULEUR_ROBOT;

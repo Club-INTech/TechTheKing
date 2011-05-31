@@ -155,7 +155,7 @@ class RobotAdverse : public CercleObstacle{
 		static RobotAdverse* m_instance;
 };
 
-extern std::vector <Obstacle*> listeObstacles ; /*!< La liste d'obstacles dans la mémoire du robot*/
+extern std::vector< std::pair<Obstacle*,int> > listeObstacles; /*!< La liste d'obstacles dans la mémoire du robot*/
 
 /*!
  * \namespace ListeObstacles

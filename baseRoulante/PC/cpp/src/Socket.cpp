@@ -43,7 +43,10 @@ void Socket::getAllPions(){
     std::vector< std::pair<Obstacle*,int> > fusion;
     fusionResultats(fusion, listeObstacles1,listeObstacles2,listeObstacles3,1);
     
+    #ifdef DEBUG
+    std::cout << "Fusion des résultats obtenus par le téléphone : " << std::endl;
     printVector(fusion);
+    #endif
     
 	
     #ifdef DEBUG_GRAPHIQUE

@@ -1,6 +1,9 @@
 #include "Obstacles.h"
 #include "Constantes.h"
 
+
+std::vector< std::pair<Obstacle*,int> > listeObstacles ;
+
 Obstacle::Obstacle(double x,double y,Couleur couleur){
     m_x=x;
     m_y=y;
@@ -124,8 +127,8 @@ Obstacle* ListeObstacles::contientCercle(int centreX, int centreY, int rayon,Cou
     vector<Obstacle*> tmp; // contient la liste des correspondances.
     Obstacle* min=NULL;
     for(unsigned int i=0;i<listeObstacles.size();i++){
-        if(listeObstacles[i]->contientCercle(centreX,centreY,rayon) && listeObstacles[i]->getCouleur() == couleur)
-            tmp.push_back(listeObstacles[i]);
+        if((listeObstacles[i].first)->contientCercle(centreX,centreY,rayon) && (listeObstacles[i].first)->getCouleur() == couleur)
+            tmp.push_back((listeObstacles[i].first));
     }
     if(tmp.size()>0)
         min=tmp[0];
@@ -146,20 +149,20 @@ Obstacle* ListeObstacles::contientCercle(int centreX, int centreY, int rayon,Cou
 
 void ListeObstacles::setCouleursAuto(){
     for(unsigned int i=0;i<listeObstacles.size();i++){
-        listeObstacles[i]->setCouleur(listeObstacles[i]->couleurPlusProche());
+        (listeObstacles[i].first)->setCouleur((listeObstacles[i].first)->couleurPlusProche());
     }
 }
 
 void ListeObstacles::initialisation(){
-    listeObstacles.push_back(new RectangleObstacle(200,1689,200+TAILLE_ROBOT,11));
-    listeObstacles.push_back(new RectangleObstacle(2800,1689,200+TAILLE_ROBOT,11));
-    listeObstacles.push_back(new RectangleObstacle(800,60,350,60));
-    listeObstacles.push_back(new RectangleObstacle(461,185,11,65+TAILLE_ROBOT));
-    listeObstacles.push_back(new RectangleObstacle(1139,185,11,65+TAILLE_ROBOT));
-    listeObstacles.push_back(new RectangleObstacle(2200,60,350,60));
-    listeObstacles.push_back(new RectangleObstacle(1861,185,11,65+TAILLE_ROBOT));
-    listeObstacles.push_back(new RectangleObstacle(2539,185,11,65+TAILLE_ROBOT));
-    listeObstacles.push_back(RobotAdverse::Instance());
+    listeObstacles.push_back(std::make_pair<Obstacle*,int>(new RectangleObstacle(200,1689,200+TAILLE_ROBOT,11),0));
+    listeObstacles.push_back(std::make_pair<Obstacle*,int>(new RectangleObstacle(2800,1689,200+TAILLE_ROBOT,11),0));
+    listeObstacles.push_back(std::make_pair<Obstacle*,int>(new RectangleObstacle(800,60,350,60),0));
+    listeObstacles.push_back(std::make_pair<Obstacle*,int>(new RectangleObstacle(461,185,11,65+TAILLE_ROBOT),0));
+    listeObstacles.push_back(std::make_pair<Obstacle*,int>(new RectangleObstacle(1139,185,11,65+TAILLE_ROBOT),0));
+    listeObstacles.push_back(std::make_pair<Obstacle*,int>(new RectangleObstacle(2200,60,350,60),0));
+    listeObstacles.push_back(std::make_pair<Obstacle*,int>(new RectangleObstacle(1861,185,11,65+TAILLE_ROBOT),0));
+    listeObstacles.push_back(std::make_pair<Obstacle*,int>(new RectangleObstacle(2539,185,11,65+TAILLE_ROBOT),0));
+    listeObstacles.push_back(std::make_pair<Obstacle*,int>(RobotAdverse::Instance(),0));
 }
 
 void ListeObstacles::refreshPositions(const char nomFichier[]){
@@ -168,9 +171,10 @@ void ListeObstacles::refreshPositions(const char nomFichier[]){
     if(fichierObstacles)
     {
         double x,y;
-        while(fichierObstacles >> x >> y){
+        int note;
+        while(fichierObstacles >> x >> y >> note){
             CercleObstacle* pion = new CercleObstacle(x,y);
-            listeObstacles.push_back(pion);
+            listeObstacles.push_back(std::make_pair(pion,note));
         }
     }
         else
