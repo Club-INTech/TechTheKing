@@ -95,7 +95,7 @@ void detectionSerieUsb(InterfaceAsservissement* asserv){
     streamTmp.SetCharSize( SerialStreamBuf::CHAR_SIZE_8 ) ;
     streamTmp.SetNumOfStopBits(1) ;
     string listePorts = exec((char*)"ls -1 /dev/ttyUSB* | cut -d '/' -f 3 | sed -e 's/ttyUSB//'");
-    for(unsigned int i=0;i<listePorts.length();i++){
+    for(unsigned int i=0;i<=listePorts.length();i++){
         if(listePorts[i+1]=='\n'){
             stringTmp="/dev/ttyUSB";
             stringTmp.push_back( listePorts[i] );
@@ -143,15 +143,19 @@ void InterfaceAsservissement::attendreArrivee(){
 	serialPort.Open();
 	while(!serialPort.IsDataAvailable()){
 			boost::mutex::scoped_lock lolilol(m_evitement_mutex);
-			std::cout << m_evitement << std::endl;
 			if(m_evitement==true){
 				std::cout << "Evitement : Arrêt" << std::endl;
-				stop();
+				serialPort.Close();
+				m_evitement=false;
+				reculer(150);
+				reGoTo();
 				return;
 			}
 	}
-	m_liaisonSerie >> result;
+	std::cout << "Arrivé" << std::endl;
+	result = serialPort.ReadByte();
 	std::cout<< result << std::endl;
+	serialPort.Close();
 	sleep(1);
 }
 void InterfaceAsservissement::reGoTo(){
@@ -446,10 +450,12 @@ void InterfaceCapteurs::thread(){
     while(1){
         //Il y a quelquechose devant
         int distanceUltraSon = DistanceUltrason();
-        if(distanceUltraSon>0 && distanceUltraSon < 9000) {
+        if(distanceUltraSon>0 && distanceUltraSon < 7000) {
 			interfaceAsservissement->setEvitement();
+			sleep(2);
 			/*
-			interfaceAsservissement->reculer(200);
+			//On recule
+			interfaceAsservissement->reculer(300);
 			//Arrêt
             int xRobot =  CONVERSION_TIC_MM*interfaceAsservissement->getXRobot();
             int yRobot =  CONVERSION_TIC_MM*interfaceAsservissement->getYRobot();
@@ -458,10 +464,9 @@ void InterfaceCapteurs::thread(){
                 RobotAdverse::Instance()->setCoords(
                 xRobot+cos(angleRobot)*distanceUltraSon*CONVERSION_ULTRASONS_CM,
                 yRobot+sin(angleRobot)*distanceUltraSon*CONVERSION_ULTRASONS_CM);
-                //On recule
                 //On recalcule une trajectoire.
                 interfaceAsservissement->reGoTo();
-                */
+             */
         }
         usleep(1000);
     }
