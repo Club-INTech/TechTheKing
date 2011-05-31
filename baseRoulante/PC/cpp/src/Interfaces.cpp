@@ -96,21 +96,19 @@ void detectionSerieUsb(InterfaceAsservissement* asserv){
     streamTmp.SetNumOfStopBits(1) ;
     string listePorts = exec((char*)"ls -1 /dev/ttyUSB* | cut -d '/' -f 3 | sed -e 's/ttyUSB//'");
     for(unsigned int i=0;i<=listePorts.length();i++){
-		stringTmp="/dev/ttyUSB";
-        while(listePorts[i+1]=!'\n'){
-				stringTmp.push_back( listePorts[i] );
-				i++;
-		}
-		std::cout << stringTmp << std::endl;
-		streamTmp.Open( stringTmp );
-		streamTmp << "?" << endl;
-		streamTmp >> charTmp ;
-		switch(charTmp){
-			case '0':
-				asserv->m_port=stringTmp;
-				cout<<"Asservissement : ok"<<endl;
-				break;
-		}
+        if(listePorts[i+1]=='\n'){
+            stringTmp="/dev/ttyUSB";
+            stringTmp.push_back( listePorts[i] );
+            streamTmp.Open( stringTmp );
+            streamTmp << "?" << endl;
+            streamTmp >> charTmp ;
+            switch(charTmp){
+                case '0':
+                    asserv->m_port=stringTmp;
+                    cout<<"Asservissement : ok"<<endl;
+                    break;
+            }
+        }
     }
 }
 
@@ -144,23 +142,29 @@ void InterfaceAsservissement::attendreArrivee(){
 	
 	SerialPort serialPort(m_port);	
 	serialPort.Open();
+	bool doitEviter=false;
 	while(!serialPort.IsDataAvailable()){
-			std::cout<<m_evitement<<std::endl;
 			boost::mutex::scoped_lock lolilol(m_evitement_mutex);
 			if(m_evitement==true){
 				std::cout << "Evitement : Arrêt" << std::endl;
-				serialPort.Close();
 				m_evitement=false;
-				reculer(150);
-				reGoTo();
-				return;
+				doitEviter=true;
+				break;
 			}
 	}
-	std::cout << "Arrivé" << std::endl;
-	result = serialPort.ReadByte();
-	std::cout<< result << std::endl;
-	serialPort.Close();
-	sleep(1);
+	if(doitEviter)
+	{
+		serialPort.Close();
+		reculer(150);
+		reGoTo();
+	}
+	else{
+		std::cout << "Arrivé" << std::endl;
+		result = serialPort.ReadByte();
+		std::cout<< result << std::endl;
+		serialPort.Close();
+		sleep(1);
+	}
 }
 void InterfaceAsservissement::reGoTo(){
     goTo(m_lastArrivee,m_lastNbPoints);
@@ -452,8 +456,11 @@ InterfaceCapteurs::~InterfaceCapteurs()
 void InterfaceCapteurs::thread(){
 	InterfaceAsservissement* interfaceAsservissement=InterfaceAsservissement::Instance();
     while(1){
+			
         //Il y a quelquechose devant
         int distanceUltraSon = DistanceUltrason();
+        std::cout<<distanceUltraSon<<std::endl;
+
         if(distanceUltraSon>0 && distanceUltraSon < 7000) {
 			interfaceAsservissement->setEvitement();
 			sleep(3);
