@@ -20,12 +20,12 @@
  *  Fonction pour obtenir la distance a partir d'un capteur a ultrasons
  *    Prend la pin du capteur en argument
  */
-uint16_t ping(uint8_t pin);
+uint32_t ping(uint8_t pin);
 
 /*
  *  Valeurs enregistrees par les ultrasons
  */
-extern uint16_t ultrason;
+extern uint32_t ultrason;
 
 /*
  *  Pins des capteurs tout ou rien
