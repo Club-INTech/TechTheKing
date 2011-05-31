@@ -166,8 +166,8 @@ void InterfaceAsservissement::attendreArrivee(){
 		double angleRobot = CONVERSION_TIC_RADIAN*getAngleRobot();
 		double distanceUltraSon = InterfaceCapteurs::Instance()->distanceDernierObstacle();
 		std::cout << distanceUltraSon << std::endl;
-		double offsetX = cos(angleRobot)*distanceUltraSon*CONVERSION_ULTRASONS_CM;
-		double offsetY = sin(angleRobot)*distanceUltraSon*CONVERSION_ULTRASONS_CM;
+		double offsetX = cos(angleRobot)*distanceUltraSon*CONVERSION_ULTRASONS_MM;
+		double offsetY = sin(angleRobot)*distanceUltraSon*CONVERSION_ULTRASONS_MM;
 		std::cout << "Offset x : " << offsetX << std::endl;
 		std::cout << "Offset y : " << offsetY << std::endl;
 		RobotAdverse::Instance()->setCoords(
