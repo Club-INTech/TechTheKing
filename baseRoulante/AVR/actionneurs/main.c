@@ -34,6 +34,8 @@ int main()
     SERVO_CONS1 = SERVO_PWM_UP1;
     SERVO_CONS2 = SERVO_PWM_UP2;
 
+    //recalage();
+    
     while(1)
     {
         /*************** Asservissement ***************/
@@ -41,10 +43,6 @@ int main()
             asservissement_synchro();
         else if (etat_asservissement == ASC_ASSERV_INDEP)
             asservissement();
-        /**********************************************/
-
-        /********************* I2C ********************/
-        TWI_Loop();
         /**********************************************/
 
     //          /*** Pour les tests ***/
