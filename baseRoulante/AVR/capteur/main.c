@@ -14,11 +14,7 @@ int main()
     
     while(1) {
         _delay_ms(50);
-        uint16_t temp1 = ping(PIN_ULTRASON1);
-        _delay_ms(50);
-        uint16_t temp2 = ping(PIN_ULTRASON2);
-        
-        ultrason = (temp1 <= temp2)?temp1:temp2;
+        ultrason = ping(PIN_ULTRASON);
     }
 
     return 0;

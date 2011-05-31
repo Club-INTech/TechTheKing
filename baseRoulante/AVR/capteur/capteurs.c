@@ -4,7 +4,7 @@
 
 #include "capteurs.h"
 
-uint16_t ultrason;
+volatile uint16_t ultrason;
 
 uint16_t ping(uint8_t pin)
 {
