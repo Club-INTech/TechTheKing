@@ -163,10 +163,6 @@ void ListeObstacles::initialisation(){
 }
 
 void ListeObstacles::refreshPositions(const char nomFichier[]){
-    
-}
-
-void ListeObstacles::refreshPositions(const char nomFichier[]){
     listeObstacles.clear();
     ifstream fichierObstacles(nomFichier, ios::in);
     if(fichierObstacles)
