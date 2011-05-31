@@ -70,7 +70,7 @@ private:
 
 class InterfaceCapteurs : public Thread {
 public:
-    InterfaceCapteurs();
+	static InterfaceCapteurs* Instance();
     ~InterfaceCapteurs();
     unsigned short DistanceUltrason( void );
     bool EtatBras ( Bras val );
@@ -78,11 +78,14 @@ public:
     void attendreJumper();
     bool EtatJumper ( void );
 private:
+	InterfaceCapteurs();
     inline void traiterAbsenceObstacle();
     inline void traiterPresenceObstacle();
-    
     void thread();
 private:
+	static InterfaceCapteurs* m_instance;
+	boost::mutex m_ultrason_mutex;
+    int m_distanceUltraSon;
 };
 
 

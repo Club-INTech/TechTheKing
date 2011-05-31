@@ -155,6 +155,18 @@ void InterfaceAsservissement::attendreArrivee(){
 	if(doitEviter)
 	{
 		serialPort.Close();
+		int xRobot =  CONVERSION_TIC_MM*getXRobot();
+        int yRobot =  CONVERSION_TIC_MM*getYRobot();
+		double angleRobot = CONVERSION_TIC_RADIAN*getAngleRobot();
+		{
+			boost::mutex::scope_lock locklilol(m_ultrason_mutex);
+			int distanceUltraSon = DistanceUltrason();
+		}      
+		RobotAdverse::Instance()->setCoords(
+			xRobot+cos(angleRobot)*distanceUltraSon*CONVERSION_ULTRASONS_CM,
+			yRobot+sin(angleRobot)*distanceUltraSon*CONVERSION_ULTRASONS_CM);
+		stop();
+		sleep(1);
 		reculer(150);
 		reGoTo();
 	}
@@ -312,8 +324,6 @@ void InterfaceAsservissement::setYRobot(int yMm){
 void InterfaceAsservissement::stop()
 {
 	m_liaisonSerie << "s" ;
-	pwmMaxRotation(0);
-	pwmMaxTranslation(0);
 }
 
 /*********************************************************/
@@ -444,6 +454,23 @@ unsigned short InterfaceActionneurs::pourcentageAngleConversion(unsigned char po
 /*   CAPTEURS                                            */
 /*********************************************************/
 
+InterfaceCapteurs* InterfaceCapteurs::m_instance=NULL;
+
+InterfaceCapteurs* InterfaceCapteurs::Instance(){
+    if(m_instance==NULL){
+       #ifdef DEBUG
+         cout<<"Création de l'interface capteurs"<<endl;
+       #endif
+       m_instance= new InterfaceCapteurs();
+    }
+    else{
+      #ifdef DEBUG
+         cout<<"Interface capteurs déjà crée " <<endl;
+      #endif
+    }
+    return m_instance;
+}
+
 InterfaceCapteurs::InterfaceCapteurs() : Thread()  
 {
 }
@@ -455,11 +482,12 @@ InterfaceCapteurs::~InterfaceCapteurs()
 
 void InterfaceCapteurs::thread(){
 	InterfaceAsservissement* interfaceAsservissement=InterfaceAsservissement::Instance();
-    while(1){
-			
+    while(1){	
         //Il y a quelquechose devant
-        int distanceUltraSon = DistanceUltrason();
-        std::cout<<distanceUltraSon<<std::endl;
+        {
+        boost::mutex::scope_lock locklilol(m_ultrason_mutex);
+        m_distanceUltraSon = DistanceUltrason();
+		}
 
         if(distanceUltraSon>0 && distanceUltraSon < 7000) {
 			interfaceAsservissement->setEvitement();
