@@ -136,7 +136,8 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
         attendreArrivee();
    }
    else{
-        
+        tourner(depart.angle(arrivee));
+        avancer(depart.rayon(arrivee));
    }
    
 }
