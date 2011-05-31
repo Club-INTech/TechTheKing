@@ -4,9 +4,9 @@
 
 #include "capteurs.h"
 
-uint32_t ultrason;
+uint16_t ultrason;
 
-uint32_t ping(uint8_t pin)
+uint16_t ping(uint8_t pin)
 {
     // Envoi d'une impulsion dans le capteur
     DDRD |= pin;
@@ -21,8 +21,8 @@ uint32_t ping(uint8_t pin)
 
     uint8_t masque = pin;
 
-    uint32_t duree = 0;
-    uint32_t duree_max = TIMEOUT;
+    uint16_t duree = 0;
+    uint16_t duree_max = TIMEOUT;
     
     // Attente de la fin de l'impulsion precedente
     while ((PIND & pin) == masque)
