@@ -104,7 +104,7 @@ void detectionSerieUsb(InterfaceAsservissement* asserv){
             streamTmp >> charTmp ;
             switch(charTmp){
                 case '0':
-                    asserv->m_liaisonSerie.Open(stringTmp);
+                    asserv->m_port=stringTmp;
                     cout<<"Asservissement : ok"<<endl;
                     break;
             }
@@ -138,16 +138,20 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
 }
 
 void InterfaceAsservissement::attendreArrivee(){
-	unsigned char result = 0;	
-	while(result != 'f'){
-		{
+	unsigned char result = 0;
+	SerialPort serialPort(m_port);	
+	serialPort.Open();
+	while(!serialPort.IsDataAvailable()){
 			boost::mutex::scoped_lock lolilol(m_evitement_mutex);
+			std::cout << m_evitement << std::endl;
 			if(m_evitement==true){
-				break;
+				std::cout << "Evitement : Arrêt" << std::endl;
+				stop();
+				return;
 			}
-		}
-		m_liaisonSerie >> result;
 	}
+	m_liaisonSerie >> result;
+	std::cout<< result << std::endl;
 	sleep(1);
 }
 void InterfaceAsservissement::reGoTo(){
@@ -194,8 +198,9 @@ void InterfaceAsservissement::tourner(double angleRadian){
     attendreArrivee();
 }
 
-InterfaceAsservissement::InterfaceAsservissement(int precision) : m_Evitement(false), m_compteurImages(0), m_pathfinding(precision){
+InterfaceAsservissement::InterfaceAsservissement(int precision) : m_evitement(false), m_compteurImages(0), m_pathfinding(precision){
     detectionSerieUsb(this);
+    m_liaisonSerie.Open(m_port);
     m_liaisonSerie.SetBaudRate(SerialStreamBuf::BAUD_57600);
     m_liaisonSerie.SetNumOfStopBits(1);
     m_liaisonSerie.SetParity( SerialStreamBuf::PARITY_ODD ) ;
@@ -252,6 +257,11 @@ int InterfaceAsservissement::getDistanceRobot()
 	return result;
 }
 
+void InterfaceAsservissement::setEvitement(){	
+	boost::mutex::scoped_lock lolilol(m_evitement_mutex);
+	m_evitement=true;
+	std::cout << m_evitement << std::endl;
+}
 int InterfaceAsservissement::getAngleRobot(){
 	int result;
 	m_liaisonSerie << "u" << std::endl;
@@ -452,17 +462,9 @@ void InterfaceCapteurs::thread(){
     while(1){
         //Il y a quelquechose devant
         int distanceUltraSon = DistanceUltrason();
-        #ifdef DEBUG
-			std::cout << "Distance ultrasons = " << distanceUltraSon << std::endl;
-		#endif
         if(distanceUltraSon>0 && distanceUltraSon < 9000) {
-			#ifdef DEBUG
-			std::cout << "Objet détecté par les ultrasons à " << distanceUltraSon << std::endl;
-			#endif
-			{
-				boost::scoped_mutex lolilol(m_evitement_mutex);
-				InterfaceAsservissement.m_evitement==true;
-			}
+			interfaceAsservissement->setEvitement();
+			/*
 			interfaceAsservissement->reculer(200);
 			//Arrêt
             int xRobot =  CONVERSION_TIC_MM*interfaceAsservissement->getXRobot();
@@ -475,6 +477,7 @@ void InterfaceCapteurs::thread(){
                 //On recule
                 //On recalcule une trajectoire.
                 interfaceAsservissement->reGoTo();
+                */
         }
         usleep(1000);
     }

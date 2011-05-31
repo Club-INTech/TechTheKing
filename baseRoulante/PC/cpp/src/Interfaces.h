@@ -44,6 +44,7 @@ public:
     int getYRobot();
     void setXRobot(int xMm);
     void setYRobot(int yMm);
+    void setEvitement();
 private:
     InterfaceAsservissement& operator=(const InterfaceAsservissement&);
     InterfaceAsservissement(const InterfaceAsservissement&){};
@@ -62,6 +63,7 @@ private:
     unsigned int vitesseMax;
     SerialStream m_liaisonSerie;
     boost::mutex m_evitement_mutex;
+    std::string m_port;
 };
 
 // Interface passive : capteurs. A priori, pas besoin de méthode publique autre que ouvrirThread.
@@ -74,10 +76,11 @@ public:
     bool EtatBras ( Bras val );
     char LecteurCB ( void );
     void attendreJumper();
+    bool EtatJumper ( void );
 private:
     inline void traiterAbsenceObstacle();
     inline void traiterPresenceObstacle();
-    bool EtatJumper ( void );
+    
     void thread();
 private:
 };
