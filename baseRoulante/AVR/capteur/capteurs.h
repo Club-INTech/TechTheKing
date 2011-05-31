@@ -8,7 +8,7 @@
  *  Pins des ultrasons relies a la carte
  */
 #define PIN_ULTRASON1   (1 << PORTD6)
-#define PIN_ULTRASON2   (1 << PORTD4)
+#define PIN_ULTRASON2   (1 << PORTD2)
 
 /*
  *  Temps maximal d'attente de la fin d'une impulsion

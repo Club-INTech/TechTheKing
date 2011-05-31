@@ -151,6 +151,7 @@ void InterfaceAsservissement::attendreArrivee(){
 	while(!serialPort.IsDataAvailable()){
 			boost::mutex::scoped_lock lolilol(m_evitement_mutex);
 			if(m_evitement==true){
+				std::cout << "Obstacle détecté" << std::endl;
 				m_evitement=false;
 				doitEviter=true;
 				break;
@@ -160,14 +161,18 @@ void InterfaceAsservissement::attendreArrivee(){
 	{
 		serialPort.Close();
 		stop();
+		sleep(1);
 		int xRobot =  CONVERSION_TIC_MM*getXRobot();
         int yRobot =  CONVERSION_TIC_MM*getYRobot();
 		double angleRobot = CONVERSION_TIC_RADIAN*getAngleRobot();
-		double distanceUltraSon = InterfaceCapteurs::Instance()->distanceDernierObstacle();
+		double distanceUltraSon = TAILLE_ROBOT+InterfaceCapteurs::Instance()->distanceDernierObstacle()*CONVERSION_ULTRASONS_MM;
 		
 		//TODO : Dépend de la couleur du robot.
-		double offsetX = cos(angleRobot)*distanceUltraSon*CONVERSION_ULTRASONS_MM;
-		double offsetY = sin(angleRobot)*distanceUltraSon*CONVERSION_ULTRASONS_MM;
+		double offsetX = cos(angleRobot)*distanceUltraSon;
+		double offsetY = sin(angleRobot)*distanceUltraSon;
+		
+		std::cout << "xRobot : " << xRobot << std::endl;
+		std::cout << "yRobot : " << yRobot << std::endl;
 		
 		std::cout << "Offset x : " << offsetX << std::endl;
 		std::cout << "Offset y : " << offsetY << std::endl;
@@ -175,7 +180,8 @@ void InterfaceAsservissement::attendreArrivee(){
 		RobotAdverse::Instance()->setCoords(
 			xRobot-offsetX,
 			yRobot-offsetY);
-		reculer(150);
+		
+		reculer(distanceUltraSon);
 		reGoTo();
 	}
 	else{
