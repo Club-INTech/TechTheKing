@@ -42,6 +42,8 @@ extern double TOLERANCE_Y;
 enum SensDeplacement {POSITIF, NEGATIF};
 enum ModeAimant {BAS, HAUT};
 enum Bras {BGAUCHE = 0X41, BDROITE = 0X42};
+enum Niveau {SOCLE, MILIEU, TOUR};
+enum Orientation {EXTERIEUR, CENTRE, REPLIE}; 
 typedef struct usbDevice Adaptator;
 
 std::string exec(char* cmd);
@@ -151,14 +153,15 @@ class InterfaceActionneurs{
 public:
     InterfaceActionneurs();
     ~InterfaceActionneurs();
-    void hauteurBrasGauche(unsigned char pourcentageHauteur);
-    void hauteurBrasDroit(unsigned char pourcentageHauteur);
-    void hauteurDeuxBras(unsigned char pourcentageHauteur);
-    void angleBrasGauche(unsigned char pourcentageAngle);
-    void angleBrasDroit(unsigned char pourcentageAngle);
+    void hauteurBrasGauche(Niveau Hauteur);
+    void hauteurBrasDroit(Niveau Hauteur);
+    void hauteurDeuxBras(Niveau Hauteur);
+    void angleBrasGauche(Orientation Angle);
+    void angleBrasDroit(Orientation Angle);
     void positionAimantGauche(ModeAimant mode);
     void positionAimantDroit(ModeAimant mode);
     void recalage(void);
+    void arret(void);
 
 };
 
