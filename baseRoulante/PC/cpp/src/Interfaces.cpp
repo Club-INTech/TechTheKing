@@ -326,8 +326,6 @@ void InterfaceActionneurs::hauteurBrasGauche(unsigned char pourcentageHauteur)
     unsigned char message[] = {0X41, (unsigned char) tics, (unsigned char) (tics >> 8),'\0'};
     
     i2c_write(adaptateur_i2c, 0X10, message, 3+1);
-    
-    usleep(i2c_wait);
 }
 
 
@@ -337,8 +335,6 @@ void InterfaceActionneurs::hauteurBrasDroit(unsigned char pourcentageHauteur)
     unsigned char message[] = {0X42, (unsigned char) tics, (unsigned char) (tics >> 8), '\0'};
     
     i2c_write(adaptateur_i2c, 0X10, message, 3+1);
-    
-    usleep(i2c_wait);
 }
 
 
@@ -348,8 +344,6 @@ void InterfaceActionneurs::hauteurDeuxBras(unsigned char pourcentageHauteur)
     unsigned char message[] = {0X4B, (unsigned char) tics, (unsigned char) (tics >> 8), '\0'};
     
     i2c_write(adaptateur_i2c, 0X10, message, 3+1);
-    
-    usleep(i2c_wait);
 }
 
 
@@ -360,8 +354,6 @@ void InterfaceActionneurs::angleBrasGauche(unsigned char pourcentageAngle)
     unsigned char message[] = {0X11, (unsigned char) angle, (unsigned char) (angle >> 8), '\0'};
     
     i2c_write(adaptateur_i2c, 0X10, message, 3+1);
-    
-    usleep(i2c_wait);
 }
 
 
@@ -371,8 +363,6 @@ void InterfaceActionneurs::angleBrasDroit(unsigned char pourcentageAngle)
     unsigned char message[] = {0X12, (unsigned char) angle, (unsigned char) (angle >> 8), '\0'};
     
     i2c_write(adaptateur_i2c, 0X10, message, 3+1);
-    
-    usleep(i2c_wait);
 }
 
 
@@ -390,8 +380,6 @@ void InterfaceActionneurs::positionAimantGauche(ModeAimant mode)
     }
     
     i2c_write(adaptateur_i2c, 0X10, message, 1+1);
-    
-    usleep(i2c_wait);
 }
 
 
@@ -409,8 +397,6 @@ void InterfaceActionneurs::positionAimantDroit(ModeAimant mode)
     }
     
     i2c_write(adaptateur_i2c, 0X10, message, 1+1);
-    
-    usleep(i2c_wait);
 }
 
 void InterfaceActionneurs::recalage(void)
@@ -421,8 +407,6 @@ void InterfaceActionneurs::recalage(void)
     message[1] = '\0';
     
     i2c_write(adaptateur_i2c, 0X10, message, 1+1);
-    
-    usleep(i2c_wait);
 }
 
 unsigned short InterfaceActionneurs::pourcentageHauteurConversion(unsigned char pourcentage)
