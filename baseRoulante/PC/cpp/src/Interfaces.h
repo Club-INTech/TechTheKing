@@ -61,7 +61,7 @@ private:
     static InterfaceAsservissement* m_instance;
     AStar m_pathfinding;
     unsigned int vitesseMax;
-    SerialPort m_liaisonSerie;
+    SerialStream m_liaisonSerie;
     boost::mutex m_evitement_mutex;
     std::string m_port;
 };
