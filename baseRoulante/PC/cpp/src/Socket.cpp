@@ -103,6 +103,7 @@ void Socket::getPions(const char* address,std::vector<Obstacle*>* Obstacles){
     #endif
     */
     
+    
     close(sockfd);
 }
 

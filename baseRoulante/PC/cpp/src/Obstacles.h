@@ -181,13 +181,21 @@ Obstacle* contientCercle(int centreX,int centreY,int rayon, Couleur couleur);
  */
 void setCouleursAuto();
 
+
+
+void erasePions();
+	
 /*!
  * \brief refreshPositions
  *
- * Recharge les coordonnees de la liste d'obstacles depuis le fichier .dat spécifié.
+ * Recharge les coordonnees de la liste d'obstacles depuis le fichier ou la liste de pions spécifié.
  *
  */
-void refreshPositions(const char nomFichier[]);
+ 
+ void refreshPions(std::vector< std::pair<Obstacle*,int> > listePions);
+ 
+ 
+void refreshPions(const char nomFichier[]);
 
 /*!
  * \brief

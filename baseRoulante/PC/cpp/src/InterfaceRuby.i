@@ -50,8 +50,10 @@ std::vector<char> getTtyUSB();
 namespace ListeObstacles {
     Obstacle* contientCercle(int centreX,int centreY,int rayon, Couleur couleur);
     void setCouleursAuto();
-    void refreshPositions(const char nomFichier[]);
     void initialisation();
+    void erasePions();
+	void refreshPions(std::vector< std::pair<Obstacle*,int> > listePions);
+	void refreshPions(const char nomFichier[]);
 }
 
 class Point{

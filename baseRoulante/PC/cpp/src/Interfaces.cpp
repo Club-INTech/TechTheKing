@@ -136,10 +136,10 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
 		std::cout << "Le robot croit qu'il est bloqué dans un obstacle ! Génération d'une lolconsigne aléatoire" << std::endl;
 		#endif
 		if(rand()/(float)RAND_MAX>0.5){
-			avancer(150);
+			avancer(300);
 		}
 		else{
-			reculer(150);
+			reculer(300);
 	    }
 		tourner(M_PI*rand()/(float)RAND_MAX);
 		goTo(arrivee,nbPoints);
