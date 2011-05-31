@@ -75,6 +75,7 @@ public:
 	static InterfaceCapteurs* Instance();
     ~InterfaceCapteurs();
     unsigned short DistanceUltrason( void );
+    unsigned short distanceDernierObstacle ( void );
     bool EtatBras ( Bras val );
     char LecteurCB ( void );
     void attendreJumper();
@@ -85,9 +86,9 @@ private:
     inline void traiterPresenceObstacle();
     void thread();
 private:
+	unsigned short m_distanceDernierObstacle;
 	static InterfaceCapteurs* m_instance;
 	boost::mutex m_ultrason_mutex;
-    int m_distanceUltraSon;
 };
 
 

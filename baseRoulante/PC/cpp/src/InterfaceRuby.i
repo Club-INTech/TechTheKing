@@ -133,20 +133,25 @@ private:
     InterfaceAsservissement(int precisionAStar);
     void recupPosition();
 };
+
 class InterfaceCapteurs : public Thread {
 public:
-    InterfaceCapteurs();
+	static InterfaceCapteurs* Instance();
     ~InterfaceCapteurs();
     unsigned short DistanceUltrason( void );
     bool EtatBras ( Bras val );
     char LecteurCB ( void );
-    bool EtatJumper ( void );
     void attendreJumper();
+    unsigned short distanceDernierObstacle ( void );
+    bool EtatJumper ( void );
 private:
+	InterfaceCapteurs();
     inline void traiterAbsenceObstacle();
     inline void traiterPresenceObstacle();
     void thread();
 private:
+	static InterfaceCapteurs* m_instance;
+	boost::mutex m_ultrason_mutex;
 };
 
 class InterfaceActionneurs{

@@ -14,6 +14,10 @@ using namespace std;
 Adaptator* adaptateur_i2c;
 
 
+/*********************************************************/
+/*   ASSERVISSEMENT                                      */
+/*********************************************************/
+
 InterfaceAsservissement* InterfaceAsservissement::m_instance=NULL;
 
 void InterfaceAsservissement::debugConsignes(){
@@ -157,14 +161,15 @@ void InterfaceAsservissement::attendreArrivee(){
 		serialPort.Close();
 		int xRobot =  CONVERSION_TIC_MM*getXRobot();
         int yRobot =  CONVERSION_TIC_MM*getYRobot();
-		double angleRobot = CONVERSION_TIC_RADIAN*getAngleRobot();
-		{
-			boost::mutex::scope_lock locklilol(m_ultrason_mutex);
-			int distanceUltraSon = DistanceUltrason();
-		}      
+		double angleRobot = - CONVERSION_TIC_RADIAN*getAngleRobot();
+		int distanceUltraSon = InterfaceCapteurs::Instance()->distanceDernierObstacle();
+		int offsetX = cos(angleRobot)*distanceUltraSon*CONVERSION_ULTRASONS_CM;
+		int offsetY = sin(angleRobot)*distanceUltraSon*CONVERSION_ULTRASONS_CM;
+		std::cout << "Offset x : " << offsetX << std::endl;
+		std::cout << "Offset y : " << offsetY << std::endl;
 		RobotAdverse::Instance()->setCoords(
-			xRobot+cos(angleRobot)*distanceUltraSon*CONVERSION_ULTRASONS_CM,
-			yRobot+sin(angleRobot)*distanceUltraSon*CONVERSION_ULTRASONS_CM);
+			xRobot+offsetX,
+			yRobot+offsetY);
 		stop();
 		sleep(1);
 		reculer(150);
@@ -517,12 +522,10 @@ void InterfaceCapteurs::thread(){
 	InterfaceAsservissement* interfaceAsservissement=InterfaceAsservissement::Instance();
     while(1){	
         //Il y a quelquechose devant
-        {
-        boost::mutex::scope_lock locklilol(m_ultrason_mutex);
-        m_distanceUltraSon = DistanceUltrason();
-		}
-
+        int distanceUltraSon = DistanceUltrason();
         if(distanceUltraSon>0 && distanceUltraSon < 7000) {
+			boost::mutex::scoped_lock locklilol(m_ultrason_mutex);
+			m_distanceDernierObstacle = distanceUltraSon;
 			interfaceAsservissement->setEvitement();
 			sleep(3);
 			/*
@@ -539,7 +542,14 @@ void InterfaceCapteurs::thread(){
     }
 }
 
+unsigned short InterfaceCapteurs::distanceDernierObstacle( void ) 
+{
+	boost::mutex::scoped_lock locklilol(m_ultrason_mutex);
+	return m_distanceDernierObstacle;
+}
 unsigned short InterfaceCapteurs::DistanceUltrason( void ) {
+    
+    
     
     unsigned char msg[2] = {0X11, '\0'};
     
