@@ -11,7 +11,7 @@ struct ring_buffer rx_buffer = { { 0 }, 0, 0 };
 ISR(USART_RX_vect)
 {
 	unsigned char c = UDR0;
-	
+    
     if (c == 'Q') 
         lcb_val = 'Q';
    

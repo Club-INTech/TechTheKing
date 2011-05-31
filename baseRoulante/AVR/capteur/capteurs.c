@@ -39,8 +39,4 @@ uint16_t ping(uint8_t pin)
             duree++;
     
     return duree;
-} 
-
-uint8_t etat_capteur (uint8_t pin) {
-    return (PINC & pin);
 }

@@ -53,7 +53,7 @@ void TWI_Data( void )
         }
         
         if (messageBuf[0] == MASTER_CMD_JUMPER) {
-            messageBuf[0] = etat_capteur (PIN_JUMPER);
+            messageBuf[0] = PIND & PIN_JUMPER;
             TWI_Start_Transceiver_With_Data(messageBuf, 1);
         }
         
@@ -66,17 +66,17 @@ void TWI_Data( void )
         else if (messageBuf[0] == MASTER_CMD_LCB) {
             messageBuf[0] = lcb_val;
             TWI_Start_Transceiver_With_Data(messageBuf, 1);
-            // On reset la valeur lue par le lecteur codes barres
+            // On reset la valeur lue par le lcb
             lcb_val = 'P';
         }
 
         else if (messageBuf[0] == MASTER_CMD_BRAS1) {
-            messageBuf[0] = etat_capteur(PIN_BRAS1);
+            messageBuf[0] = PINB & PIN_BRAS1;
             TWI_Start_Transceiver_With_Data(messageBuf, 1);
         }
         
         else if (messageBuf[0] == MASTER_CMD_BRAS2) {
-            messageBuf[0] = etat_capteur(PIN_BRAS2);
+            messageBuf[0] = PINB & PIN_BRAS2;
             
             TWI_Start_Transceiver_With_Data(messageBuf, 1);
         }
