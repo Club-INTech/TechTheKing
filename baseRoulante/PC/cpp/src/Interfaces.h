@@ -38,6 +38,7 @@ public:
     void reculer(unsigned int distanceMm);
     void tourner(double angleRadian);
     void stop();
+    void stopAll();
     #ifdef DEBUG_GRAPHIQUE
     void debugGraphique();
     #endif
@@ -78,7 +79,8 @@ public:
     unsigned short distanceDernierObstacle ( void );
     bool EtatBras ( Bras val );
     char LecteurCB ( void );
-    void attendreJumper();
+    void gestionJumper();
+    void gestionFinMatch();
     bool EtatJumper ( void );
 private:
 	InterfaceCapteurs();
