@@ -95,9 +95,15 @@ vector <Point> AStar::getChemin(Point depart, Point arrivee){
 	REQUIRE(depart!=arrivee, "Le point de départ est différent du point d'arrivée du robot");
 	REQUIRE(TAILLE_ROBOT<arrivee.getX() && arrivee.getX()<3000-TAILLE_ROBOT, "L'abscisse du point d'arrivee du robot est tel qu'il ne touche pas le bord de la table");
 	REQUIRE(TAILLE_ROBOT<arrivee.getY() && arrivee.getY()<2100-TAILLE_ROBOT, "L'ordonnée du point d'arrivee du robot est tel qu'il ne touche pas le bord de la table");
+	m_chemin.clear();
 	m_depart=depart;
 	m_arrivee=arrivee;
-	trouverChemin();
+	if(
+	! ListeObstacles::contientCercle(arrivee.getX(),arrivee.getY(),TAILLE_ROBOT,NOIR)
+	&&
+	! ListeObstacles::contientCercle(depart.getX(),depart.getY(),TAILLE_ROBOT,NOIR)
+	)
+		trouverChemin();
 	return m_chemin;
 }
 
@@ -235,7 +241,6 @@ void AStar::remonterChemin(){
  */
 
 bool AStar::trouverChemin(){
-		m_chemin.clear();
 		Noeud* courant = new Noeud(m_depart.getX(),m_depart.getY(),0,m_depart.rayon(m_arrivee)); //initialisation du noeud courant..
 		m_listeOuverte.push_back(courant);
 		transfererNoeud(courant);
@@ -251,7 +256,7 @@ bool AStar::trouverChemin(){
 		}
 		else{
 			cerr<<"pas de chemin"<<endl;
-			m_chemin.push_back(m_depart);
+			return false;
 		}
 		for(list<Noeud*>::iterator it = m_listeOuverte.begin();it!=m_listeOuverte.end();it++){
 			if(*it)

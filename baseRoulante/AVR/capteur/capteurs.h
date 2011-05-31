@@ -7,8 +7,7 @@
 /*
  *  Pins des ultrasons relies a la carte
  */
-#define PIN_ULTRASON1   (1 << PORTD6)
-#define PIN_ULTRASON2   (1 << PORTD4)
+#define PIN_ULTRASON   (1 << PORTD6)
 
 /*
  *  Temps maximal d'attente de la fin d'une impulsion
@@ -25,7 +24,7 @@ uint16_t ping(uint8_t pin);
 /*
  *  Valeurs enregistrees par les ultrasons
  */
-extern uint16_t ultrason;
+extern volatile uint16_t ultrason;
 
 /*
  *  Pins des capteurs tout ou rien
