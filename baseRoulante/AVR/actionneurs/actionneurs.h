@@ -29,14 +29,16 @@
  *    PWM pour les servos
  *    Type d'asservissement
  */
-#define ASC_PWM_MAX1           150
-#define ASC_PWM_MAX2           150
+#define ASC_PWM_MAX1           200
+#define ASC_PWM_MAX2           200
 #define ASC_KP1                1
 #define ASC_KP2                2
 #define ASC_ASSERV_INDEP       0
 #define ASC_ASSERV_SYNCHRO     1
 #define ASC_ASSERV_STOP       -1
 #define ASC_CONS_MAX           8000
+#define ASC_CONS_MED           4000
+#define ASC_CONS_MIN           0
 
 #define AX_ID1                 1
 #define AX_ID2                 2
@@ -75,9 +77,9 @@
  *    position
  *    synchronisation
  */
-extern int16_t consigne1;
-extern int16_t consigne2;
-extern int16_t consigneb;
+extern volatile int16_t consigne1;
+extern volatile int16_t consigne2;
+extern volatile int16_t consigneb;
 extern volatile int16_t ascenseur1;
 extern volatile int16_t ascenseur2;
 extern volatile int8_t etat_asservissement;

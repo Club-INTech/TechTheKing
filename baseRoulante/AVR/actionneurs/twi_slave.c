@@ -47,132 +47,116 @@ void TWI_Loop( void )
         unsigned char status = 0;
 
         if ( TWI_statusReg.RxDataInBuf ) {
-            status = TWI_Get_Data_From_Transceiver(messageBuf, 3);
+            status = TWI_Get_Data_From_Transceiver(messageBuf, 1);
         }
     
-        // Ordre pour l'AX12 1
-        if ( messageBuf[0] == MASTER_CMD_AX1_GOTO ) {
-            
-            // Lecture de la consigne
-            uint16_t cons = messageBuf[1];
-            uint16_t temp = messageBuf[2];
-            cons += (temp << 8);
-            
-            // Ecretage de la consigne
-            if (cons > AX_ANGLE_EXT2)
-                cons = AX_ANGLE_EXT2;
-            else if (cons < AX_ANGLE_EXT1)
-                cons = AX_ANGLE_EXT1;
-            
-            // Envoi de l'ordre au servo
-            AX12GoTo (AX_ID1, cons);
-        }
-
-        // Ordre pour l'AX12 2
-        if ( messageBuf[0] == MASTER_CMD_AX2_GOTO ) {
-            
-            // Lecture de la consigne
-            uint16_t cons = messageBuf[1];
-            uint16_t temp = messageBuf[2];
-            cons += (temp << 8);
-            
-            // Ecretage de la consigne
-            if (cons > AX_ANGLE_EXT2)
-                cons = AX_ANGLE_EXT2;
-            else if (cons < AX_ANGLE_EXT1)
-                cons = AX_ANGLE_EXT1;
-            
-            // Envoi de l'ordre au servo
-            AX12GoTo (AX_ID2, cons);
-        }
-
-        if ( messageBuf[0] == MASTER_CMD_SERVO1_UP ) {
-            SERVO_CONS1 = SERVO_PWM_UP1;
-        }
-
-        if ( messageBuf[0] == MASTER_CMD_SERVO2_UP ) {
-            SERVO_CONS2 = SERVO_PWM_UP2;
-        }
-
-        if ( messageBuf[0] == MASTER_CMD_SERVO1_DOWN ) {
-            SERVO_CONS1 = SERVO_PWM_DOWN1;
-        }
-
-        if ( messageBuf[0] == MASTER_CMD_SERVO2_DOWN ) {
-            SERVO_CONS2 = SERVO_PWM_DOWN2;
-        }
-
-        if ( messageBuf[0] == MASTER_CMD_ASC1_GOTO ) {
-            
-            // Lecture de la consigne
-            uint16_t cons = messageBuf[1];
-            uint16_t temp = messageBuf[2];
-            cons += (temp << 8);
-            
-            // Ecretage de la consigne
-            if (cons > ASC_CONS_MAX)
-                cons = ASC_CONS_MAX;
-            else if (cons < 0)
-                cons = 0;
-            
-            // Modification de la consigne
-            consigne1 = cons;
-            
-            // Activation de l'asservissement independant
-            etat_asservissement = ASC_ASSERV_INDEP;
-        }
-
-        if ( messageBuf[0] == MASTER_CMD_ASC2_GOTO ) {
-            
-            // Lecture de la consigne
-            uint16_t cons = messageBuf[1];
-            uint16_t temp = messageBuf[2];
-            cons += (temp << 8);
-            
-            // Ecretage de la consigne
-            if (cons > ASC_CONS_MAX)
-                cons = ASC_CONS_MAX;
-            else if (cons < 0)
-                cons = 0;
-            
-            // Modification de la consigne
-            consigne2 = cons;
-            
-            // Activation de l'asservissement independant
-            etat_asservissement = ASC_ASSERV_INDEP;
-        }
-
-        if ( messageBuf[0] == MASTER_CMD_ASCB_GOTO) {
-            
-            // Lecture de la consigne
-            int16_t cons;
-            cons = messageBuf[1];
-            
-            // Ecretage de la consigne
-            if (cons > ASC_CONS_MAX)
-                cons = ASC_CONS_MAX;
-            else if (cons < 0)
-                cons = 0;
-            
-            // Modification de la consigne
-            consigneb = cons;
-            
-            // Activation de l'asservissement synchronise
-            etat_asservissement = ASC_ASSERV_SYNCHRO;
-        }
-
-        if ( messageBuf[0] == MASTER_CMD_STOP ) {
-            // On desactive l'asservissement
-            etat_asservissement = ASC_ASSERV_STOP;
-        }
+        switch ( messageBuf[0] ) {
         
-        if ( messageBuf[0] == MASTER_CMD_RECALAGE ) {
-            recalage();
+            // Ordres pour l'AX12 1
+            case MASTER_CMD_AX1_GOTO1 :
+                AX12GoTo (AX_ID1, AX_ANGLE_EXT1);
+                break;
+                
+            case MASTER_CMD_AX1_GOTO2 :
+                AX12GoTo (AX_ID1, AX_ANGLE_MEDIAN);
+                break;
+                
+            case MASTER_CMD_AX1_GOTO3 :
+                AX12GoTo (AX_ID1, AX_ANGLE_EXT2);
+                break;
+
+            // Ordres pour l'AX12 2
+            case MASTER_CMD_AX2_GOTO1 :
+                AX12GoTo (AX_ID2, AX_ANGLE_EXT2);
+                break;
+                
+            case MASTER_CMD_AX2_GOTO2 :
+                AX12GoTo (AX_ID2, AX_ANGLE_MEDIAN);
+                break;
+                
+            case MASTER_CMD_AX2_GOTO3 :
+                AX12GoTo (AX_ID2, AX_ANGLE_EXT1);
+                break;
+
+            case MASTER_CMD_SERVO1_UP :
+                SERVO_CONS1 = SERVO_PWM_UP1;
+                break;
+
+            case MASTER_CMD_SERVO2_UP :
+                SERVO_CONS2 = SERVO_PWM_UP2;
+                break;
+
+            case MASTER_CMD_SERVO1_DOWN :
+                SERVO_CONS1 = SERVO_PWM_DOWN1;
+                break;
+
+            case MASTER_CMD_SERVO2_DOWN :
+                SERVO_CONS2 = SERVO_PWM_DOWN2;
+                break;
+
+            case MASTER_CMD_ASC1_GOTO1 :
+                consigne1 = ASC_CONS_MIN;
+                // Activation de l'asservissement independant
+                etat_asservissement = ASC_ASSERV_INDEP;
+                break;
+                
+            case MASTER_CMD_ASC1_GOTO2 :
+                consigne1 = ASC_CONS_MED;
+                // Activation de l'asservissement independant
+                etat_asservissement = ASC_ASSERV_INDEP;
+                break;
+                
+            case MASTER_CMD_ASC1_GOTO3 :
+                consigne1 = ASC_CONS_MAX;
+                // Activation de l'asservissement independant
+                etat_asservissement = ASC_ASSERV_INDEP;
+                break;
+                
+            case MASTER_CMD_ASC2_GOTO1 :
+                consigne2 = ASC_CONS_MIN;
+                // Activation de l'asservissement independant
+                etat_asservissement = ASC_ASSERV_INDEP;
+                break;
+                
+            case MASTER_CMD_ASC2_GOTO2 :
+                consigne2 = ASC_CONS_MED;
+                // Activation de l'asservissement independant
+                etat_asservissement = ASC_ASSERV_INDEP;
+                break;
+                
+            case MASTER_CMD_ASC2_GOTO3 :
+                consigne2 = ASC_CONS_MAX;
+                // Activation de l'asservissement independant
+                etat_asservissement = ASC_ASSERV_INDEP;
+                break;
+                
+            case MASTER_CMD_ASCB_GOTO1 :
+                consigneb = ASC_CONS_MIN;
+                // Activation de l'asservissement synchronise
+                etat_asservissement = ASC_ASSERV_SYNCHRO;
+                break;
+                
+            case MASTER_CMD_ASCB_GOTO2 :
+                consigneb = ASC_CONS_MED;
+                // Activation de l'asservissement synchronise
+                etat_asservissement = ASC_ASSERV_SYNCHRO;
+                break;
+                
+            case MASTER_CMD_ASCB_GOTO3 :
+                consigneb = ASC_CONS_MAX;
+                // Activation de l'asservissement synchronise
+                etat_asservissement = ASC_ASSERV_SYNCHRO;
+                break;
+
+            case MASTER_CMD_STOP :
+                // On desactive l'asservissement
+                etat_asservissement = ASC_ASSERV_STOP;
+                break;
+            
+            case MASTER_CMD_RECALAGE :
+                recalage();
+                break;
         } 
-            
-        
-        // Retour pour le debug
-        // TWI_Start_Transceiver_With_Data(messageBuf, 3);
     }
 }
 

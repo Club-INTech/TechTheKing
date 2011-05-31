@@ -342,49 +342,88 @@ InterfaceActionneurs::~InterfaceActionneurs()
 }
 
 
-void InterfaceActionneurs::hauteurBrasGauche(unsigned char pourcentageHauteur)
+void InterfaceActionneurs::hauteurBrasGauche(Niveau Hauteur)
 {
-    unsigned short tics = pourcentageHauteurConversion(pourcentageHauteur);
-    unsigned char message[] = {0X41, (unsigned char) tics, (unsigned char) (tics >> 8),'\0'};
+    unsigned char message[2];
     
-    i2c_write(adaptateur_i2c, 0X10, message, 3+1);
+    if (Hauteur == SOCLE)
+        message[0] = 0X41;
+    else if (Hauteur == MILIEU)
+        message[0] = 0X43;
+    else if (Hauteur == TOUR)
+        message[0] = 0X45;
+    
+    message[1] = '\0';
+    
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
 }
 
 
-void InterfaceActionneurs::hauteurBrasDroit(unsigned char pourcentageHauteur)
+void InterfaceActionneurs::hauteurBrasDroit(Niveau Hauteur)
 {
-    unsigned short tics = pourcentageHauteurConversion(pourcentageHauteur);
-    unsigned char message[] = {0X42, (unsigned char) tics, (unsigned char) (tics >> 8), '\0'};
+    unsigned char message[2];
     
-    i2c_write(adaptateur_i2c, 0X10, message, 3+1);
+    if (Hauteur == SOCLE)
+        message[0] = 0X42;
+    else if (Hauteur == MILIEU)
+        message[0] = 0X44;
+    else if (Hauteur == TOUR)
+        message[0] = 0X46;
+    
+    message[1] = '\0';
+    
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
 }
 
 
-void InterfaceActionneurs::hauteurDeuxBras(unsigned char pourcentageHauteur)
+void InterfaceActionneurs::hauteurDeuxBras(Niveau Hauteur)
 {
-    unsigned short tics = pourcentageHauteurConversion(pourcentageHauteur);
-    unsigned char message[] = {0X4B, (unsigned char) tics, (unsigned char) (tics >> 8), '\0'};
+    unsigned char message[2];
     
-    i2c_write(adaptateur_i2c, 0X10, message, 3+1);
+    if (Hauteur == SOCLE)
+        message[0] = 0X51;
+    else if (Hauteur == MILIEU)
+        message[0] = 0X52;
+    else if (Hauteur == TOUR)
+        message[0] = 0X53;
+    
+    message[1] = '\0';
+    
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
 }
 
 
-void InterfaceActionneurs::angleBrasGauche(unsigned char pourcentageAngle)
+void InterfaceActionneurs::angleBrasGauche(Orientation Angle)
 {   
-    unsigned short angle = pourcentageAngleConversion(pourcentageAngle);
+    unsigned char message[2];
     
-    unsigned char message[] = {0X11, (unsigned char) angle, (unsigned char) (angle >> 8), '\0'};
+    if (Angle == REPLIE)
+        message[0] = 0X11;
+    else if (Angle == CENTRE)
+        message[0] = 0X13;
+    else if (Angle == EXTERIEUR)
+        message[0] = 0X15;
     
-    i2c_write(adaptateur_i2c, 0X10, message, 3+1);
+    message[1] = '\0';
+    
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
 }
 
 
-void InterfaceActionneurs::angleBrasDroit(unsigned char pourcentageAngle)
+void InterfaceActionneurs::angleBrasDroit(Orientation Angle)
 {
-    unsigned short angle = pourcentageAngleConversion(pourcentageAngle);
-    unsigned char message[] = {0X12, (unsigned char) angle, (unsigned char) (angle >> 8), '\0'};
+    unsigned char message[2];
     
-    i2c_write(adaptateur_i2c, 0X10, message, 3+1);
+    if (Angle == REPLIE)
+        message[0] = 0X12;
+    else if (Angle == CENTRE)
+        message[0] = 0X14;
+    else if (Angle == EXTERIEUR)
+        message[0] =0X16;
+    
+    message[1] = '\0';
+    
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
 }
 
 
@@ -392,16 +431,14 @@ void InterfaceActionneurs::positionAimantGauche(ModeAimant mode)
 {
     unsigned char message[2];
     
-    if (mode == HAUT) {
+    if (mode == HAUT)
         message[0] = 0X21;
-        message[1] = '\0';
-    }
-    else {
-        message[0] = 0X31; 
-        message[1] = '\0';
-    }
+    else if (mode == BAS)
+        message[0] = 0X31;
     
-    i2c_write(adaptateur_i2c, 0X10, message, 1+1);
+    message[1] = '\0';
+    
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
 }
 
 
@@ -409,16 +446,14 @@ void InterfaceActionneurs::positionAimantDroit(ModeAimant mode)
 {
     unsigned char message[2];
     
-    if (mode == HAUT) {
+    if (mode == HAUT)
         message[0] = 0X22;
-        message[1] = '\0';
-    }
-    else {
-        message[0] = 0X32; 
-        message[1] = '\0';
-    }
+    else if (mode == BAS)
+        message[0] = 0X32;
     
-    i2c_write(adaptateur_i2c, 0X10, message, 1+1);
+    message[1] = '\0';
+    
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
 }
 
 void InterfaceActionneurs::recalage(void)
@@ -428,20 +463,18 @@ void InterfaceActionneurs::recalage(void)
     message[0] = 0XA1;
     message[1] = '\0';
     
-    i2c_write(adaptateur_i2c, 0X10, message, 1+1);
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
 }
 
-unsigned short InterfaceActionneurs::pourcentageHauteurConversion(unsigned char pourcentage)
+void InterfaceActionneurs::arret(void)
 {
-    return (pourcentage*90);
+    unsigned char message[2];
+    
+    message[0] = 0XA0;
+    message[1] = '\0';
+    
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
 }
-
-
-unsigned short InterfaceActionneurs::pourcentageAngleConversion(unsigned char pourcentage)
-{
-    return(pourcentage*10.23);
-}
-
 
 /*********************************************************/
 /*    Voyageur, ici s'arrete la terre des actionneurs    */

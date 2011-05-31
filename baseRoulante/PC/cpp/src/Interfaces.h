@@ -14,6 +14,8 @@
 enum SensDeplacement {POSITIF, NEGATIF};
 enum ModeAimant {BAS, HAUT};
 enum Bras {BGAUCHE = 0X41, BDROITE = 0X42};
+enum Niveau {SOCLE, MILIEU, TOUR};
+enum Orientation {EXTERIEUR, CENTRE, REPLIE}; 
 
 std::string exec(char* cmd);
 class InterfaceAsservissement;
@@ -96,18 +98,15 @@ class InterfaceActionneurs{
     public:
         InterfaceActionneurs();
         ~InterfaceActionneurs();
-        void hauteurBrasGauche(unsigned char pourcentageHauteur);
-        void hauteurBrasDroit(unsigned char pourcentageHauteur);
-        void hauteurDeuxBras(unsigned char pourcentageHauteur);
-        void angleBrasGauche(unsigned char pourcentageAngle);
-        void angleBrasDroit(unsigned char pourcentageAngle);
+        void hauteurBrasGauche(Niveau Hauteur);
+        void hauteurBrasDroit(Niveau Hauteur);
+        void hauteurDeuxBras(Niveau Hauteur);
+        void angleBrasGauche(Orientation Angle);
+        void angleBrasDroit(Orientation Angle);
         void positionAimantGauche(ModeAimant mode);
         void positionAimantDroit(ModeAimant mode);
         void recalage(void);
-        
-    private:
-        inline unsigned short pourcentageHauteurConversion(unsigned char pourcentage);
-        inline unsigned short pourcentageAngleConversion(unsigned char pourcentage);
+        void arret(void);
 };
 
 void ouvrir_adaptateur_i2c ();
