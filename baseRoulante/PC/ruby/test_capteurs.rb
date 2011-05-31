@@ -2,7 +2,7 @@ require 'libChessUp'
 
 LibChessUp.ouvrir_adaptateur_i2c();
 
-InterfaceCapteurs = LibChessUp::InterfaceCapteurs.new;
+InterfaceCapteurs = LibChessUp::InterfaceCapteurs.Instance();
 
 #InterfaceCapteurs.ouvrirThread();
 #Modèles et tests pour les capteurs

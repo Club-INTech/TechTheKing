@@ -159,18 +159,19 @@ void InterfaceAsservissement::attendreArrivee(){
 	if(doitEviter)
 	{
 		serialPort.Close();
+		stop();
 		int xRobot =  CONVERSION_TIC_MM*getXRobot();
         int yRobot =  CONVERSION_TIC_MM*getYRobot();
-		double angleRobot = - CONVERSION_TIC_RADIAN*getAngleRobot();
-		int distanceUltraSon = InterfaceCapteurs::Instance()->distanceDernierObstacle();
-		int offsetX = cos(angleRobot)*distanceUltraSon*CONVERSION_ULTRASONS_CM;
-		int offsetY = sin(angleRobot)*distanceUltraSon*CONVERSION_ULTRASONS_CM;
+		double angleRobot = CONVERSION_TIC_RADIAN*getAngleRobot();
+		double distanceUltraSon = InterfaceCapteurs::Instance()->distanceDernierObstacle();
+		std::cout << distanceUltraSon << std::endl;
+		double offsetX = cos(angleRobot)*distanceUltraSon*CONVERSION_ULTRASONS_CM;
+		double offsetY = sin(angleRobot)*distanceUltraSon*CONVERSION_ULTRASONS_CM;
 		std::cout << "Offset x : " << offsetX << std::endl;
 		std::cout << "Offset y : " << offsetY << std::endl;
 		RobotAdverse::Instance()->setCoords(
-			xRobot+offsetX,
-			yRobot+offsetY);
-		stop();
+			xRobot-offsetX,
+			yRobot-offsetY);
 		sleep(1);
 		reculer(150);
 		reGoTo();
@@ -524,8 +525,10 @@ void InterfaceCapteurs::thread(){
         //Il y a quelquechose devant
         int distanceUltraSon = DistanceUltrason();
         if(distanceUltraSon>0 && distanceUltraSon < 7000) {
+			{
 			boost::mutex::scoped_lock locklilol(m_ultrason_mutex);
 			m_distanceDernierObstacle = distanceUltraSon;
+			}
 			interfaceAsservissement->setEvitement();
 			sleep(3);
 			/*
@@ -538,7 +541,7 @@ void InterfaceCapteurs::thread(){
             yRobot+sin(angleRobot)*distanceUltraSon*CONVERSION_ULTRASONS_CM);
             */
         }
-        usleep(1000);
+        usleep(10000);
     }
 }
 
