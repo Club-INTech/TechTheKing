@@ -14,7 +14,44 @@ CvMat* initHomogMatrix(int vue)
 	// Coordonnées sources des sommets sur l'image
 	switch(vue)
 	{
+	
+		// Point de vue 1 by jb (ca marchera donc pas)
+		case 1 :
+			//Gauche
+			srcQuad[0].x = 25;
+			srcQuad[0].y = 197;
+
+			//Haut
+			srcQuad[1].x = 129;
+			srcQuad[1].y = 94;
+
+			//Droite
+			srcQuad[2].x = 461;
+			srcQuad[2].y = 176;
+
+			//Bas
+			srcQuad[3].x = 173;
+			srcQuad[3].y = 424;
+			
+			// Cordonnées destination
+			// Gauche
+			dstQuad[0].x = NY*1400/2100; //105cm
+			dstQuad[0].y = NX*1500/3000; //140cm
+			
+			// Haut
+			dstQuad[1].x = 0;
+			dstQuad[1].y = NX-1;
+			
+			// Droit
+			dstQuad[2].x = NY*350/2100; //80cm
+			dstQuad[2].y = NX*800/3000; //35cm
+			
+			// Bas
+			dstQuad[3].x = NY*1750/2100; // 45cm
+			dstQuad[3].y = NX*450/3000; // 175cm
 		
+		break ;
+	
 		// Point de vue 3
 		case 3 :
 			

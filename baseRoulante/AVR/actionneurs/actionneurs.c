@@ -8,14 +8,14 @@ volatile int16_t ascenseur1;
 volatile int16_t ascenseur2;
 
 // Consignes des ascenseurs
-int16_t consigne1 = 0;
-int16_t consigne2 = 0;
-int16_t consigneb = 0;
+volatile int16_t consigne1 = 0;
+volatile int16_t consigne2 = 0;
+volatile int16_t consigneb = 0;
 
 uint16_t tempo1=0,tempo2=0;
 
 // Mode d'asservissement ascenseurs
-int8_t etat_asservissement = 0;
+volatile int8_t etat_asservissement = 0;
 
 void actio_init (void)
 {

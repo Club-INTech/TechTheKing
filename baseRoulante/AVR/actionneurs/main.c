@@ -30,9 +30,9 @@ int main()
     // Initialisation pour l'AX12 droite
     AX12Init (AX_ID2, AX_ANGLE_EXT1, AX_ANGLE_EXT2, AX_SPEED);
 
+    // Position initiale aimants
     SERVO_CONS1 = SERVO_PWM_UP1;
     SERVO_CONS2 = SERVO_PWM_UP2;
-    consigne1 = 5000;
 
     while(1)
     {
@@ -59,7 +59,7 @@ int main()
     //         SERVO_CONS1 = SERVO_PWM_UP1;
     //         _delay_ms(2000);
     //         SERVO_CONS1 = SERVO_PWM_DOWN1;
-
+    
     //         _delay_ms(250);
     //         printLong(ascenseur1);
     //         printString(" ; ");

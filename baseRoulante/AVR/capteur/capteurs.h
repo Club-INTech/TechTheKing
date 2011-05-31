@@ -31,7 +31,7 @@ extern uint16_t ultrason;
  */
 #define PIN_BRAS1  (1 << PORTC1)
 #define PIN_BRAS2  (1 << PORTC2)
-#define PIN_JUMPER  (1 << PORTC3)
+#define PIN_JUMPER  (1 << PORTD5)
 
 /*
  *  Fonction pour obtenir l'etat d'un capteur tout ou rien
