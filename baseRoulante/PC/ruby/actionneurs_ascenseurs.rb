@@ -6,7 +6,8 @@ InterfaceActionneurs = LibChessUp::InterfaceActionneurs.new;
 
 #Modèles et tests pour les ascenseurs
 
-InterfaceActionneurs.hauteurBrasGauche(255);
+InterfaceActionneurs.hauteurDeuxBras(LibChessUp::MILIEU);
+InterfaceActionneurs.hauteurDeuxBras(LibChessUp::MILIEU);
 
 
 
