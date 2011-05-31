@@ -3,6 +3,7 @@
 
 // Librairie C avr pour atmega 168 et 328 pour l'utilisation de liaison serie 
 // Jérémy Cheynet avec le support psychologique de Yann Sionneau
+
 // Purgee par la suite pour une utilisation plus specifique
 
 #include <avr/io.h>
