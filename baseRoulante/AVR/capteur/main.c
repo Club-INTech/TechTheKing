@@ -13,7 +13,7 @@ int main()
     uart_init();
     
     while(1) {
-        _delay_ms(50);
+        _delay_ms(10);
         
         uint32_t temp1 = 0;
         uint32_t temp2 = 0;
@@ -25,7 +25,7 @@ int main()
             temp2 += ping(PIN_ULTRASON2);
         }
         
-        ultrason = (temp1 + temp2) >> 2;
+        ultrason = (temp1 + temp2) >> 3;
     }
 
     return 0;
