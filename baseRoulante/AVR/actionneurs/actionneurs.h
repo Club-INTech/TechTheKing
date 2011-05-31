@@ -38,13 +38,11 @@
 #define ASC_ASSERV_STOP       -1
 #define ASC_CONS_MAX           10000
 #define ASC_CONS_MED           5000
-#define ASC_CONS_MIN           0
+#define ASC_CONS_MIN           4000
+#define ASC_CONS_ZERO          0
 
 #define AX_ID1                 1
 #define AX_ID2                 2
-#define AX_ANGLE_MEDIAN        511
-#define AX_ANGLE_EXT1          200
-#define AX_ANGLE_EXT2          800
 #define AX_SPEED               511
 
 #define SERVO_PWM_UP1           26

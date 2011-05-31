@@ -14,8 +14,8 @@
 enum SensDeplacement {POSITIF, NEGATIF};
 enum ModeAimant {BAS, HAUT};
 enum Bras {BGAUCHE = 0X41, BDROITE = 0X42};
-enum Niveau {SOCLE, MILIEU, TOUR};
-enum Orientation {EXTERIEUR, CENTRE, REPLIE}; 
+enum Niveau {SOCLE, MILIEU, TOUR, CAPTURE};
+enum Orientation {BALAYAGE, CENTRE, REPLIE, DROIT}; 
 
 std::string exec(char* cmd);
 class InterfaceAsservissement;
@@ -106,7 +106,6 @@ class InterfaceActionneurs{
         void angleBrasDroit(Orientation Angle);
         void positionAimantGauche(ModeAimant mode);
         void positionAimantDroit(ModeAimant mode);
-        void recalage(void);
         void arret(void);
 };
 

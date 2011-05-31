@@ -55,29 +55,37 @@ void TWI_Loop( void )
             // Ordres pour l'AX12 1
             
             case MASTER_CMD_AX1_GOTO1 :
-                AX12GoTo (AX_ID1, AX_ANGLE_EXT1);
+                AX12GoTo (AX_ID1, 211);
                 break;
                 
             case MASTER_CMD_AX1_GOTO2 :
-                AX12GoTo (AX_ID1, AX_ANGLE_MEDIAN);
+                AX12GoTo (AX_ID1, 361);
                 break;
                 
             case MASTER_CMD_AX1_GOTO3 :
-                AX12GoTo (AX_ID1, AX_ANGLE_EXT2);
+                AX12GoTo (AX_ID1, 811);
                 break;
 
+            case MASTER_CMD_AX1_GOTO4 :
+                AX12GoTo (AX_ID1, 511);
+                break;
+                
             // Ordres pour l'AX12 2
                 
             case MASTER_CMD_AX2_GOTO1 :
-                AX12GoTo (AX_ID2, AX_ANGLE_EXT2);
+                AX12GoTo (AX_ID2, 811);
                 break;
                 
             case MASTER_CMD_AX2_GOTO2 :
-                AX12GoTo (AX_ID2, AX_ANGLE_MEDIAN);
+                AX12GoTo (AX_ID2, 651);
                 break;
                 
             case MASTER_CMD_AX2_GOTO3 :
-                AX12GoTo (AX_ID2, AX_ANGLE_EXT1);
+                AX12GoTo (AX_ID2, 211);
+                break;
+                
+            case MASTER_CMD_AX2_GOTO4 :
+                AX12GoTo (AX_ID2, 511);
                 break;
 
             // Ordres pour les aimants
@@ -114,7 +122,12 @@ void TWI_Loop( void )
                 consigne1 = ASC_CONS_MAX;
                 etat_asservissement = ASC_ASSERV_INDEP;
                 break;
-            
+                
+            case MASTER_CMD_ASC1_GOTO4 :
+                consigne1 = ASC_CONS_ZERO;
+                etat_asservissement = ASC_ASSERV_INDEP;
+                break;
+                
             // Ordres pour l'ascenseur 2
                 
             case MASTER_CMD_ASC2_GOTO1 :
@@ -129,6 +142,11 @@ void TWI_Loop( void )
                 
             case MASTER_CMD_ASC2_GOTO3 :
                 consigne2 = ASC_CONS_MAX;
+                etat_asservissement = ASC_ASSERV_INDEP;
+                break;
+                
+            case MASTER_CMD_ASC2_GOTO4 :
+                consigne2 = ASC_CONS_ZERO;
                 etat_asservissement = ASC_ASSERV_INDEP;
                 break;
                 
@@ -163,6 +181,17 @@ void TWI_Loop( void )
                 // Activation du mode synchro
                 etat_asservissement = ASC_ASSERV_SYNCHRO;
                 break;
+                
+            case MASTER_CMD_ASCB_GOTO4 :
+                // Permet de garder en memoire la consigne en cas de passage en mode independant
+                consigne1 = ASC_CONS_ZERO;
+                consigne2 = ASC_CONS_ZERO;
+                // Consigne a suivre en mode synchro
+                consigneb = ASC_CONS_ZERO;
+                // Activation du mode synchro
+                etat_asservissement = ASC_ASSERV_SYNCHRO;
+                break;
+                
 
             case MASTER_CMD_STOP :
                 // On desactive l'asservissement
@@ -170,10 +199,6 @@ void TWI_Loop( void )
                 // On coupe les moteurs
                 ASC_MOTEUR1 = 0;
                 ASC_MOTEUR2 = 0;
-                break;
-            
-            case MASTER_CMD_RECALAGE :
-                recalage();
                 break;
         } 
     }

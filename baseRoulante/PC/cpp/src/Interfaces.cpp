@@ -353,12 +353,14 @@ void InterfaceActionneurs::hauteurBrasGauche(Niveau Hauteur)
 {
     unsigned char message[2];
     
-    if (Hauteur == SOCLE)
+    if (Hauteur == CAPTURE)
         message[0] = 0X41;
     else if (Hauteur == MILIEU)
         message[0] = 0X43;
     else if (Hauteur == TOUR)
         message[0] = 0X45;
+    else if (Hauteur == SOCLE)
+        message[0] = 0X47;
     
     message[1] = '\0';
     
@@ -370,12 +372,14 @@ void InterfaceActionneurs::hauteurBrasDroit(Niveau Hauteur)
 {
     unsigned char message[2];
     
-    if (Hauteur == SOCLE)
+    if (Hauteur == CAPTURE)
         message[0] = 0X42;
     else if (Hauteur == MILIEU)
         message[0] = 0X44;
     else if (Hauteur == TOUR)
         message[0] = 0X46;
+    else if (Hauteur == SOCLE)
+        message[0] = 0X48;
     
     message[1] = '\0';
     
@@ -387,12 +391,14 @@ void InterfaceActionneurs::hauteurDeuxBras(Niveau Hauteur)
 {
     unsigned char message[2];
     
-    if (Hauteur == SOCLE)
+    if (Hauteur == CAPTURE)
         message[0] = 0X51;
     else if (Hauteur == MILIEU)
         message[0] = 0X52;
     else if (Hauteur == TOUR)
         message[0] = 0X53;
+    else if (Hauteur == SOCLE)
+        message[0] = 0X54;
     
     message[1] = '\0';
     
@@ -408,8 +414,10 @@ void InterfaceActionneurs::angleBrasGauche(Orientation Angle)
         message[0] = 0X11;
     else if (Angle == CENTRE)
         message[0] = 0X13;
-    else if (Angle == EXTERIEUR)
+    else if (Angle == BALAYAGE)
         message[0] = 0X15;
+    else if (Angle == DROIT)
+        message[0] = 0X17;
     
     message[1] = '\0';
     
@@ -425,8 +433,10 @@ void InterfaceActionneurs::angleBrasDroit(Orientation Angle)
         message[0] = 0X12;
     else if (Angle == CENTRE)
         message[0] = 0X14;
-    else if (Angle == EXTERIEUR)
-        message[0] =0X16;
+    else if (Angle == BALAYAGE)
+        message[0] = 0X16;
+    else if (Angle == DROIT)
+        message[0] = 0X18;
     
     message[1] = '\0';
     
@@ -458,16 +468,6 @@ void InterfaceActionneurs::positionAimantDroit(ModeAimant mode)
     else if (mode == BAS)
         message[0] = 0X32;
     
-    message[1] = '\0';
-    
-    i2c_write(adaptateur_i2c, 0X10, message, 2);
-}
-
-void InterfaceActionneurs::recalage(void)
-{
-    unsigned char message[2];
-
-    message[0] = 0XA1;
     message[1] = '\0';
     
     i2c_write(adaptateur_i2c, 0X10, message, 2);

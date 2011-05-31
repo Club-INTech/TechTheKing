@@ -26,15 +26,13 @@ int main()
     adcInit(conf);
 
     // Initialisation pour l'AX12 gauche
-    AX12Init (AX_ID1, AX_ANGLE_EXT1, AX_ANGLE_EXT2, AX_SPEED);
+    AX12Init (AX_ID1, 211, 811, AX_SPEED);
     // Initialisation pour l'AX12 droite
-    AX12Init (AX_ID2, AX_ANGLE_EXT1, AX_ANGLE_EXT2, AX_SPEED);
+    AX12Init (AX_ID2, 211, 811, AX_SPEED);
 
     // Position initiale aimants
     SERVO_CONS1 = SERVO_PWM_UP1;
     SERVO_CONS2 = SERVO_PWM_UP2;
-
-    //recalage();
     
     while(1)
     {
