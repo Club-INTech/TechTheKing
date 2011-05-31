@@ -6,5 +6,5 @@ InterfaceActionneurs = LibChessUp::InterfaceActionneurs.new;
 
 #Modèles et tests pour les servomoteurs AX12
 
-InterfaceActionneurs.angleBrasDroit(LibChessUp::CENTRE);
-#InterfaceActionneurs.angleBrasGauche(LibChessUp::REPLIE);
+InterfaceActionneurs.angleBrasGauche(LibChessUp::CENTRE);
+InterfaceActionneurs.angleBrasGauche(LibChessUp::CENTRE);
