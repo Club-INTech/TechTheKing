@@ -268,7 +268,12 @@ void InterfaceAsservissement::recalage()
 		setXRobot(DEMI_LARGEUR_ROBOT);
 	}
 	avancer(150);
-	tourner(-M_PI/2);
+	if(COULEUR_ROBOT==BLEU){
+		tourner(-M_PI/2);
+	}
+	else if(COULEUR_ROBOT==ROUGE){
+		tourner(M_PI/2);
+	}
 	pwmMaxRotation(0);
 	pwmMaxTranslation(100);
 	reculer(500);

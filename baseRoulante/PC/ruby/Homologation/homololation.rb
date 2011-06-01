@@ -12,12 +12,11 @@ InterfaceCapteurs = LibChessUp::InterfaceCapteurs.Instance();
 #initialisation des obstacles
 LibChessUp::initialisation();
 
-InterfaceCapteurs.gestionJumper();
-
 #Démarrage des capteurs
 InterfaceCapteurs.ouvrirThread();
 
 #Initialisation des bras.
+puts "Initialisation de la hauteur des bras";
 InterfaceActionneurs.hauteurBrasDroit(LibChessUp::CAPTURE);
 InterfaceActionneurs.hauteurBrasDroit(LibChessUp::CAPTURE);
 
@@ -26,19 +25,37 @@ InterfaceActionneurs.hauteurBrasGauche(LibChessUp::TOUR);
 
 sleep(2);
 
+puts "Repli des bras";
 InterfaceActionneurs.angleBrasGauche(LibChessUp::REPLIE);
 InterfaceActionneurs.angleBrasGauche(LibChessUp::REPLIE);
 
 InterfaceActionneurs.angleBrasDroit(LibChessUp::REPLIE);
 InterfaceActionneurs.angleBrasDroit(LibChessUp::REPLIE);
 
+puts "Abaissement de l'aimant";
 InterfaceActionneurs.positionAimantDroit(LibChessUp::BAS);
 InterfaceActionneurs.positionAimantDroit(LibChessUp::BAS);
 
-puts "Recalage"
+puts "Recalage";
 InterfaceAsservissement.recalage();
 
-#puts "Go To"
-InterfaceAsservissement.goTo(Point.new(1500,1050),80);
-#InterfaceAsservissement.debugGraphique();
+puts "Attente du jumper";
+InterfaceCapteurs.gestionJumper();
 
+puts "Démarrage";
+
+puts "Go To 1500 1050";
+InterfaceAsservissement.goTo(Point.new(1500,1050),80);
+
+puts "Prise de pion"
+
+
+puts "Go To 1500 350";
+InterfaceAsservissement.goTo(Point.new(1500,350),80);
+
+puts "Lacher pion";
+
+
+puts "Arrêt du robot"
+InterfaceAsservissement.stopAll();
+InterfaceActionneurs.arret();
