@@ -166,6 +166,7 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
 
 inline void InterfaceAsservissement::eviter(){
 	stop();
+	m_evitement=false;
 	int xRobot =  CONVERSION_TIC_MM*getXRobot();
 	int yRobot =  CONVERSION_TIC_MM*getYRobot();
 	double angleRobot = CONVERSION_TIC_RADIAN*getAngleRobot();
@@ -187,14 +188,11 @@ inline void InterfaceAsservissement::eviter(){
 	
 	reculer(distanceUltraSon);
 	reGoTo();
-	m_evitement=false;
 }
 void InterfaceAsservissement::attendreArrivee(){
 	std::string result;
-	bool doitEviter=false;
 	while(result[0]!='f'){
 		while(!m_serialPort.IsDataAvailable()){
-			boost::mutex::scoped_lock lolilol(m_evitement_mutex);
 			if(m_evitement==true){
 				std::cout << "Obstacle détecté" << std::endl;
 				eviter();
