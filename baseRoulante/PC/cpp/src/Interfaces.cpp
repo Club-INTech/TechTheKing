@@ -155,7 +155,7 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
 	   if(!listePointsTmp.empty()){
 			m_lastTrajectory=ListePoints::lissageBezier(listePointsTmp,nbPoints);
 			m_lastListeConsignes=ListePoints::convertirEnConsignes(m_lastTrajectory,getDistanceRobot()); 
-			ListeConsignes::transfertSerie(m_lastListeConsignes,m_liaisonSerie);
+			ListeConsignes::transfertSerie(m_lastListeConsignes,m_serialPort);
 			attendreArrivee();
 	   }
 	   else{
@@ -164,46 +164,44 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
    }
 }
 
+inline void InterfaceAsservissement::eviter(){
+	stop();
+	int xRobot =  CONVERSION_TIC_MM*getXRobot();
+	int yRobot =  CONVERSION_TIC_MM*getYRobot();
+	double angleRobot = CONVERSION_TIC_RADIAN*getAngleRobot();
+	double distanceUltraSon = TAILLE_ROBOT+InterfaceCapteurs::Instance()->distanceDernierObstacle()*CONVERSION_ULTRASONS_MM;
+	
+	//TODO : Dépend de la couleur du robot.
+	double offsetX = cos(angleRobot)*distanceUltraSon;
+	double offsetY = sin(angleRobot)*distanceUltraSon;
+	
+	std::cout << "xRobot : " << xRobot << std::endl;
+	std::cout << "yRobot : " << yRobot << std::endl;
+	
+	std::cout << "Offset x : " << offsetX << std::endl;
+	std::cout << "Offset y : " << offsetY << std::endl;
+	
+	RobotAdverse::Instance()->setCoords(
+		xRobot-offsetX,
+		yRobot-offsetY);
+	
+	reculer(distanceUltraSon);
+	reGoTo();
+	m_evitement=false;
+}
 void InterfaceAsservissement::attendreArrivee(){
-	unsigned char result = 0;
+	std::string result;
 	bool doitEviter=false;
-	while(result!='f'){
+	while(result[0]!='f'){
 		while(!m_serialPort.IsDataAvailable()){
 			boost::mutex::scoped_lock lolilol(m_evitement_mutex);
 			if(m_evitement==true){
 				std::cout << "Obstacle détecté" << std::endl;
-				m_evitement=false;
-				doitEviter=true;
-				break;
+				eviter();
+				return;
 			}
 		}
-		result=m_serialPort.ReadByte();
-		cout<<result;
-	}
-	if(doitEviter)
-	{
-		stop();
-		int xRobot =  CONVERSION_TIC_MM*getXRobot();
-        int yRobot =  CONVERSION_TIC_MM*getYRobot();
-		double angleRobot = CONVERSION_TIC_RADIAN*getAngleRobot();
-		double distanceUltraSon = TAILLE_ROBOT+InterfaceCapteurs::Instance()->distanceDernierObstacle()*CONVERSION_ULTRASONS_MM;
-		
-		//TODO : Dépend de la couleur du robot.
-		double offsetX = cos(angleRobot)*distanceUltraSon;
-		double offsetY = sin(angleRobot)*distanceUltraSon;
-		
-		std::cout << "xRobot : " << xRobot << std::endl;
-		std::cout << "yRobot : " << yRobot << std::endl;
-		
-		std::cout << "Offset x : " << offsetX << std::endl;
-		std::cout << "Offset y : " << offsetY << std::endl;
-		
-		RobotAdverse::Instance()->setCoords(
-			xRobot-offsetX,
-			yRobot-offsetY);
-		
-		reculer(distanceUltraSon);
-		reGoTo();
+		result=m_serialPort.ReadLine();
 	}
 	sleep(1);
 }
@@ -214,7 +212,7 @@ void InterfaceAsservissement::reGoTo(){
 void InterfaceAsservissement::avancer(unsigned int distanceMm){
 	int distanceTicks = getDistanceRobot() + distanceMm*CONVERSION_MM_TIC;
 	#ifdef DEBUG
-		std::cout << "Avance de " << distanceTicks << std::endl;
+		std::cout << "Avance de " << distanceTicks << " ticks." << std::endl;
 	#endif
     if(distanceTicks>0){
 		ecrireSerie("b1"+formaterInt(distanceTicks));
@@ -228,7 +226,7 @@ void InterfaceAsservissement::avancer(unsigned int distanceMm){
 void InterfaceAsservissement::reculer(unsigned int distanceMm){
     int distanceTicks = getDistanceRobot() - distanceMm*CONVERSION_MM_TIC;
     #ifdef DEBUG
-		std::cout << "Recule de " << distanceTicks << "ticks" << std::endl;
+		std::cout << "Recule de " << distanceTicks << " ticks" << std::endl;
 	#endif
     if(distanceTicks>0){
 		ecrireSerie("b1"+formaterInt(distanceTicks));
@@ -540,6 +538,9 @@ void InterfaceCapteurs::thread(){
         //Il y a quelquechose devant
         int distanceUltraSon = DistanceUltrason();
         if(distanceUltraSon>0 && distanceUltraSon < 7000) {
+			#ifdef DEBUG
+			std::cout << "OBSTACLE DÉTECTÉ" << std::endl;
+			#endif
 			{
 			boost::mutex::scoped_lock locklilol(m_ultrason_mutex);
 			m_distanceDernierObstacle = distanceUltraSon;

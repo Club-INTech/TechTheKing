@@ -55,6 +55,7 @@ private:
     void recupPosition();
     void attendreArrivee();
     int readInt();
+    inline void eviter();
 private:
 	bool m_evitement;
     Point m_lastArrivee;

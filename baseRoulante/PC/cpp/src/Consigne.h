@@ -39,7 +39,7 @@ class Consigne{
 		 *
 		 * Transfert les deux paramètres de la consigne (rayon et angle) vers l'interface spécifiée.
 		 */
-		void transfertSerie(SerialStream& interfaceDeTransfert);
+		void transfertSerie(SerialPort& interfaceDeTransfert);
 
 		/*!
 		 * \brief print
@@ -85,7 +85,7 @@ ostream &operator<<(ostream &out, vector<Consigne> listeConsignes);
 string formaterInt(int entierDonne);
 
 namespace ListeConsignes{
-void transfertSerie(vector<Consigne>& listeConsignes,SerialStream& interfaceDeTransfert);
+void transfertSerie(vector<Consigne>& listeConsignes,SerialPort& interfaceDeTransfert);
 }
 
 

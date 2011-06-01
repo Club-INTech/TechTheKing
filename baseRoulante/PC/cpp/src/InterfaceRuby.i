@@ -120,9 +120,7 @@ public:
     void tourner(double angleRadian);
     void stop();
     void stopAll();
-    #ifdef DEBUG_GRAPHIQUE
     void debugGraphique();
-    #endif
     void debugConsignes();
     int getXRobot();
     int getYRobot();
