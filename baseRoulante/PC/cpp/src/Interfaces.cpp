@@ -128,17 +128,40 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
    #endif
    Point depart(xDepart,yDepart);
    vector<Point> listePointsTmp;
-   listePointsTmp = m_pathfinding.getChemin(depart,arrivee);
-   if(!listePointsTmp.empty()){
-        m_lastTrajectory=ListePoints::lissageBezier(listePointsTmp,nbPoints);
-        m_lastListeConsignes=ListePoints::convertirEnConsignes(m_lastTrajectory,getDistanceRobot()); 
-        ListeConsignes::transfertSerie(m_lastListeConsignes,m_liaisonSerie);
-        attendreArrivee();
+   
+   if( ListeObstacles::contientCercle(xDepart,yDepart,TAILLE_ROBOT,NOIR)!=NULL
+	|| ListeObstacles::contientCercle(xDepart,yDepart,TAILLE_ROBOT,COULEUR_ROBOT)!=NULL
+	|| ListeObstacles::contientCercle(xDepart,yDepart,TAILLE_ROBOT,NEUTRE)!=NULL ){
+		#ifdef DEBUG
+		std::cout << "Le robot croit qu'il est bloqué dans un obstacle ! Génération d'une lolconsigne aléatoire" << std::endl;
+		#endif
+		if(rand()/(float)RAND_MAX>0.5){
+			avancer(150);
+		}
+		else{
+			reculer(150);
+	    }
+		tourner(M_PI*rand()/(float)RAND_MAX);
+		goTo(arrivee,nbPoints);
    }
+<<<<<<< HEAD
    else{
         stop();
+=======
+   else
+   {
+	   listePointsTmp = m_pathfinding.getChemin(depart,arrivee);
+	   if(!listePointsTmp.empty()){
+			m_lastTrajectory=ListePoints::lissageBezier(listePointsTmp,nbPoints);
+			m_lastListeConsignes=ListePoints::convertirEnConsignes(m_lastTrajectory,getDistanceRobot()); 
+			ListeConsignes::transfertSerie(m_lastListeConsignes,m_liaisonSerie);
+			attendreArrivee();
+	   }
+	   else{
+			stop();
+	   }
+>>>>>>> 01881cb68db9b7394c94a6aabc9f2fc3294dcc1d
    }
-   
 }
 
 void InterfaceAsservissement::attendreArrivee(){
@@ -338,6 +361,13 @@ void InterfaceAsservissement::setYRobot(int yMm){
 void InterfaceAsservissement::stop()
 {
 	m_liaisonSerie << "s" ;
+}
+
+void InterfaceAsservissement::stopAll()
+{
+	stop();
+	pwmMaxTranslation(0);
+	pwmMaxRotation(0);
 }
 
 /*********************************************************/
@@ -648,23 +678,21 @@ bool InterfaceCapteurs::EtatJumper ( void ) {
 }
 
 
-void InterfaceCapteurs::attendreJumper()
+void InterfaceCapteurs::gestionJumper()
 {
-    unsigned char msg[2] = {0x50, '\0'};
-    unsigned char rec[1];
-    int err;
-    while(rec[0]!=1){
-        if( (err= i2c_write(adaptateur_i2c,0X20,msg,2)) != 0){
-            fprintf(stderr, "Error writing to the adapter: %s\n", linkm_error_msg(err));
-            exit(1);
-        }
-        if( (err= i2c_read(adaptateur_i2c,0X20,rec,1)) != 0){
-            fprintf(stderr, "Error reading from the adapter: %s\n", linkm_error_msg(err));
-            exit(1);
-        }
-        usleep(500);
-    }
+	#ifdef DEBUG
+	std::cout << "Attente jumper" << std::endl;
+    #endif
+    while(EtatJumper()==false);
+    std::cout << "Match commencé" << std::endl;
+    boost::thread(&gestionFinMatch());
 }
+
+void InterfaceCapteurs::gestionFinMatch(){
+	sleep(20);
+	InterfaceAsservissement::Instance()->stopAll();
+}
+
 
 /*********************************************************/
 /*  FIN CAPTEURS                                         */
