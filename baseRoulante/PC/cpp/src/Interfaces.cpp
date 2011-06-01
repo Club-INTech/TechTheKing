@@ -173,8 +173,8 @@ inline void InterfaceAsservissement::eviter(){
 	double distanceUltraSon = TAILLE_ROBOT+InterfaceCapteurs::Instance()->distanceDernierObstacle()*CONVERSION_ULTRASONS_MM;
 	
 	//TODO : Dépend de la couleur du robot.
-	double offsetX = cos(angleRobot)*distanceUltraSon;
-	double offsetY = sin(angleRobot)*distanceUltraSon;
+	double offsetX = TAILLE_ROBOT + cos(angleRobot)*distanceUltraSon;
+	double offsetY = TAILLE_ROBOT + sin(angleRobot)*distanceUltraSon;
 	
 	std::cout << "xRobot : " << xRobot << std::endl;
 	std::cout << "yRobot : " << yRobot << std::endl;
@@ -545,15 +545,6 @@ void InterfaceCapteurs::thread(){
 			}
 			interfaceAsservissement->setEvitement();
 			sleep(3);
-			/*
-            int xRobot =  CONVERSION_TIC_MM*interfaceAsservissement->getXRobot();
-            int yRobot =  CONVERSION_TIC_MM*interfaceAsservissement->getYRobot();
-            double angleRobot = CONVERSION_TIC_RADIAN*interfaceAsservissement->getAngleRobot();         
-            //On actualise la position du robot adverse
-            RobotAdverse::Instance()->setCoords(
-            xRobot+cos(angleRobot)*distanceUltraSon*CONVERSION_ULTRASONS_CM,
-            yRobot+sin(angleRobot)*distanceUltraSon*CONVERSION_ULTRASONS_CM);
-            */
         }
         usleep(10000);
     }
