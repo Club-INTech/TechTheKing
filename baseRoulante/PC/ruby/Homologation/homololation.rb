@@ -1,8 +1,11 @@
 require '../libChessUp'
 include LibChessUp
 
-LibChessUp.ouvrir_adaptateur_i2c();
+# Couleur du robot
+COULEUR_ROBOT = ROUGE;
+puts "Couleur: " + COULEUR_ROBOT.to_s();
 
+LibChessUp.ouvrir_adaptateur_i2c();
 
 #Création des interfaces
 InterfaceActionneurs = LibChessUp::InterfaceActionneurs.new;
@@ -45,16 +48,18 @@ InterfaceCapteurs.gestionJumper();
 puts "Démarrage";
 
 puts "Go To 1500 1050";
-InterfaceAsservissement.goTo(Point.new(1500,1050),80);
+#InterfaceAsservissement.goTo(Point.new(1500,1050),80);
 
 puts "Prise de pion"
 
 
 puts "Go To 1500 350";
-InterfaceAsservissement.goTo(Point.new(1500,350),80);
+#InterfaceAsservissement.goTo(Point.new(1500,350),80);
 
 puts "Lacher pion";
 
+
+sleep(2);
 
 puts "Arrêt du robot"
 InterfaceAsservissement.stopAll();
