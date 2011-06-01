@@ -3,7 +3,11 @@ include LibChessUp
 
 # Couleur du robot
 COULEUR_ROBOT = ROUGE;
-puts "Couleur: " + COULEUR_ROBOT.to_s();
+if (COULEUR_ROBOT == ROUGE)
+	puts "Couleur: rouge"
+else 
+	puts "Couleur: bleu"
+end
 
 LibChessUp.ouvrir_adaptateur_i2c();
 
@@ -50,14 +54,16 @@ puts "Démarrage";
 puts "Go To 1500 1050";
 #InterfaceAsservissement.goTo(Point.new(1500,1050),80);
 
-puts "Prise de pion"
+puts "Prise de pion";
+require 'prendre_pion.rb';
 
+sleep(2);
 
 puts "Go To 1500 350";
 #InterfaceAsservissement.goTo(Point.new(1500,350),80);
 
 puts "Lacher pion";
-
+require 'poser_pion.rb';
 
 sleep(2);
 
