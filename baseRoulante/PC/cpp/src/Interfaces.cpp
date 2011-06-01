@@ -135,19 +135,15 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
 		#ifdef DEBUG
 		std::cout << "Le robot croit qu'il est bloqué dans un obstacle ! Génération d'une lolconsigne aléatoire" << std::endl;
 		#endif
+		tourner(M_PI*rand()/(float)RAND_MAX);
 		if(rand()/(float)RAND_MAX>0.5){
 			avancer(300);
 		}
 		else{
 			reculer(300);
 	    }
-		tourner(M_PI*rand()/(float)RAND_MAX);
 		goTo(arrivee,nbPoints);
    }
-<<<<<<< HEAD
-   else{
-        stop();
-=======
    else
    {
 	   listePointsTmp = m_pathfinding.getChemin(depart,arrivee);
@@ -160,13 +156,14 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
 	   else{
 			stop();
 	   }
->>>>>>> 01881cb68db9b7394c94a6aabc9f2fc3294dcc1d
    }
 }
 
 void InterfaceAsservissement::attendreArrivee(){
+	#ifdef DEBUG
+		std::cout << "Attente " << std::endl;
+	#endif
 	unsigned char result = 0;
-	
 	SerialPort serialPort(m_port);	
 	serialPort.Open();
 	bool doitEviter=false;
@@ -220,10 +217,10 @@ void InterfaceAsservissement::reGoTo(){
 }
 
 void InterfaceAsservissement::avancer(unsigned int distanceMm){
-    #ifdef DEBUG
-		std::cout << "Avance de " << distanceMm << std::endl;
-	#endif
 	int distanceTicks = getDistanceRobot() + distanceMm*CONVERSION_MM_TIC;
+	#ifdef DEBUG
+		std::cout << "Avance de " << distanceTicks << std::endl;
+	#endif
     if(distanceTicks>0){
 		m_liaisonSerie<<"b1"+formaterInt(distanceTicks)<<endl;
 	}
@@ -234,10 +231,10 @@ void InterfaceAsservissement::avancer(unsigned int distanceMm){
 }
 
 void InterfaceAsservissement::reculer(unsigned int distanceMm){
-	#ifdef DEBUG
-		std::cout << "Recule de " << distanceMm << std::endl;
-	#endif
     int distanceTicks = getDistanceRobot() - distanceMm*CONVERSION_MM_TIC;
+    #ifdef DEBUG
+		std::cout << "Recule de " << distanceTicks << "ticks" << std::endl;
+	#endif
     if(distanceTicks>0){
 		m_liaisonSerie<<"b1"+formaterInt(distanceTicks)<<endl;
 	}
@@ -248,10 +245,10 @@ void InterfaceAsservissement::reculer(unsigned int distanceMm){
 }
 
 void InterfaceAsservissement::tourner(double angleRadian){
-	#ifdef DEBUG
-		std::cout << "Tourne de " << angleRadian << std::endl;
-	#endif
 	int angleTicks = angleRadian*CONVERSION_RADIAN_TIC;
+	#ifdef DEBUG
+		std::cout << "Tourne de " << angleTicks << std::endl;
+	#endif
     if(angleRadian>0)
         m_liaisonSerie<<"a0"+formaterInt(angleTicks)<<endl;
     else
@@ -290,7 +287,7 @@ void InterfaceAsservissement::recalage()
 	reculer(500);
 	pwmMaxRotation(255);
 	setYRobot(2100-DEMI_LARGEUR_ROBOT);
-	avancer(200);
+	avancer(100);
 }
 
 void InterfaceAsservissement::pwmMaxTranslation(unsigned char valPWM){
@@ -319,7 +316,7 @@ int InterfaceAsservissement::getDistanceRobot()
 }
 
 void InterfaceAsservissement::setEvitement(){	
-	boost::mutex::scoped_lock lolilol(m_evitement_mutex);
+	boost::mutex::scoped_lock lolilol_evitement(m_evitement_mutex);
 	m_evitement=true;
 	std::cout << m_evitement << std::endl;
 }

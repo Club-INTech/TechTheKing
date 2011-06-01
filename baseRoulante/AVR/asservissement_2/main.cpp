@@ -204,13 +204,17 @@ int main( void ){
 				case 't':
 					i=litEntierLong();
 					if (i >= 0) {
+						TIMSK1 &= ~(1 << TOIE1);
 						manager.assTranslation.changePWM(i);
+						TIMSK1 |= (1 << TOIE1);
 					}
 					break;
 				case 'r':
 					i=litEntierLong();
 					if (i >= 0) {
+						TIMSK1 &= ~(1 << TOIE1);
 						manager.assRotation.changePWM(i);
+						TIMSK1 |= (1 << TOIE1);
 					}
 					break;
 			}

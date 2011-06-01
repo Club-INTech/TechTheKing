@@ -66,6 +66,7 @@ private:
     unsigned int vitesseMax;
     SerialStream m_liaisonSerie;
     boost::mutex m_evitement_mutex;
+    boost::mutex  m_serial_mutex;
     std::string m_port;
 };
 

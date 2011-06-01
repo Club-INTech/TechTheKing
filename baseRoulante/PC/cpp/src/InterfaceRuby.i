@@ -19,16 +19,8 @@
 
 enum Couleur {ROUGE, BLEU, NEUTRE, NOIR};
 
-%include std_vector.i
-%include std_pair.i
-%pointer_functions(obstacle, obstaclep);
-
-%template(ObstaclePair) std::pair<Obstacle*,int>;
-%template(ListeObstacles) std::vector< std::pair<Obstacle*,int> >;
-
 
 %inline %{
-extern std::vector< std::pair<Obstacle*,int> > listeObstacles;
 extern int RAYON_DE_DETECTION;
 extern int EMPIETEMENT;
 extern Couleur COULEUR_ROBOT;
@@ -43,6 +35,7 @@ extern double MARGE_SECURITE_PION;
 extern double TAILLE_PION;
 extern double TOLERANCE_X;
 extern double TOLERANCE_Y;
+extern int DEMI_LARGEUR_ROBOT;
 %}
 
 enum SensDeplacement {POSITIF, NEGATIF};
