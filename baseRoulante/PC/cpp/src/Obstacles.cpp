@@ -165,7 +165,23 @@ void ListeObstacles::initialisation(){
     listeObstacles.push_back(std::make_pair<Obstacle*,int>(RobotAdverse::Instance(),0));
 }
 
-void ListeObstacles::refreshPositions(const char nomFichier[]){
+void ListeObstacles::refreshPions(std::vector< std::pair<Obstacle*,int> > listePions){
+	erasePions();
+	for(std::vector< std::pair<Obstacle*,int> >::iterator it=listePions.begin(); it != listePions.end() ; it++){
+		listeObstacles.push_back(*it);
+	}
+}
+
+void ListeObstacles::erasePions(){
+	for(std::vector< std::pair<Obstacle*,int> >::iterator it=listeObstacles.begin(); it != listeObstacles.end() ; it++){
+		if(it->second>0){
+			delete(it->first);
+			listeObstacles.erase(it);
+		}
+	}
+}
+
+void ListeObstacles::refreshPions(const char nomFichier[]){
     listeObstacles.clear();
     ifstream fichierObstacles(nomFichier, ios::in);
     if(fichierObstacles)

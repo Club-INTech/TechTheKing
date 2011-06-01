@@ -7,6 +7,7 @@
     #include "Socket.h"
     #include "i2cLib.h"
     #include "hiddata.h"
+    #include "Obstacles.h"
 %}
 
 %include "../config.h"
@@ -17,6 +18,14 @@
 %rename(print) operator<<;
 
 enum Couleur {ROUGE, BLEU, NEUTRE, NOIR};
+
+%include std_vector.i
+%include std_pair.i
+%pointer_functions(obstacle, obstaclep);
+
+%template(ObstaclePair) std::pair<Obstacle*,int>;
+%template(ListeObstacles) std::vector< std::pair<Obstacle*,int> >;
+
 
 %inline %{
 extern std::vector< std::pair<Obstacle*,int> > listeObstacles;
@@ -50,8 +59,10 @@ std::vector<char> getTtyUSB();
 namespace ListeObstacles {
     Obstacle* contientCercle(int centreX,int centreY,int rayon, Couleur couleur);
     void setCouleursAuto();
-    void refreshPositions(const char nomFichier[]);
     void initialisation();
+    void erasePions();
+	void refreshPions(std::vector< std::pair<Obstacle*,int> > listePions);
+	void refreshPions(const char nomFichier[]);
 }
 
 class Point{

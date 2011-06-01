@@ -98,12 +98,7 @@ vector <Point> AStar::getChemin(Point depart, Point arrivee){
 	m_chemin.clear();
 	m_depart=depart;
 	m_arrivee=arrivee;
-	if(
-	! ListeObstacles::contientCercle(arrivee.getX(),arrivee.getY(),TAILLE_ROBOT,NOIR)
-	&&
-	! ListeObstacles::contientCercle(depart.getX(),depart.getY(),TAILLE_ROBOT,NOIR)
-	)
-		trouverChemin();
+	trouverChemin();
 	return m_chemin;
 }
 
