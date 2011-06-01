@@ -90,7 +90,8 @@ Manager::assPolaire(){
 		if( ABS(pwmTranslation)>0
 			&& ABS(pwmRotation)>0
 			&& distance==distanceBkp
-			&& angle==angleBkp){
+			&& angle==angleBkp
+			&& consigneActuelle>1 ){
 				//On n'en tient compte que si il dure depuis suffisament longtemps lolilol.
 				if(compteurBlocage==40){
 					resetListeConsignes();

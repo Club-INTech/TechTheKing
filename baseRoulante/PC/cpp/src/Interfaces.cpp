@@ -51,12 +51,14 @@ void InterfaceAsservissement::debugGraphique(){
 }
 #endif
 
-InterfaceAsservissement* InterfaceAsservissement::Instance(int precisionAStar){
+
+InterfaceAsservissement* InterfaceAsservissement::Instance(){
     if(m_instance==NULL){
        #ifdef DEBUG
          cout<<"Création de l'interface d'asservissement"<<endl;
        #endif
-       m_instance= new InterfaceAsservissement(precisionAStar);
+       std::string port = "/dev/ttyUSB" + exec((char*)"ls -1 /dev/ttyUSB* | cut -d '/' -f 3 | sed -e 's/ttyUSB//'");
+       m_instance= new InterfaceAsservissement(port.substr(0, port.size()-1), 50);
     }
     else{
       #ifdef DEBUG
@@ -117,6 +119,9 @@ void detectionSerieUsb(InterfaceAsservissement* asserv){
 }
 
 
+void InterfaceAsservissement::ecrireSerie(std::string msg){
+	m_serialPort.Write(msg);
+}
 void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
     m_lastArrivee = arrivee;
     m_lastNbPoints = nbPoints;
@@ -160,14 +165,10 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
 }
 
 void InterfaceAsservissement::attendreArrivee(){
-	#ifdef DEBUG
-		std::cout << "Attente " << std::endl;
-	#endif
 	unsigned char result = 0;
-	SerialPort serialPort(m_port);	
-	serialPort.Open();
 	bool doitEviter=false;
-	while(!serialPort.IsDataAvailable()){
+	while(result!='f'){
+		while(!m_serialPort.IsDataAvailable()){
 			boost::mutex::scoped_lock lolilol(m_evitement_mutex);
 			if(m_evitement==true){
 				std::cout << "Obstacle détecté" << std::endl;
@@ -175,13 +176,13 @@ void InterfaceAsservissement::attendreArrivee(){
 				doitEviter=true;
 				break;
 			}
+		}
+		result=m_serialPort.ReadByte();
+		cout<<result;
 	}
 	if(doitEviter)
 	{
-		serialPort.Close();
 		stop();
-		sleep(1);
-		/*
 		int xRobot =  CONVERSION_TIC_MM*getXRobot();
         int yRobot =  CONVERSION_TIC_MM*getYRobot();
 		double angleRobot = CONVERSION_TIC_RADIAN*getAngleRobot();
@@ -200,15 +201,9 @@ void InterfaceAsservissement::attendreArrivee(){
 		RobotAdverse::Instance()->setCoords(
 			xRobot-offsetX,
 			yRobot-offsetY);
-		*/
-		reculer(TAILLE_ROBOT);
+		
+		reculer(distanceUltraSon);
 		reGoTo();
-	}
-	else{
-		std::cout << "Arrivé" << std::endl;
-		result = serialPort.ReadByte();
-		std::cout<< result << std::endl;
-		serialPort.Close();
 	}
 	sleep(1);
 }
@@ -222,10 +217,10 @@ void InterfaceAsservissement::avancer(unsigned int distanceMm){
 		std::cout << "Avance de " << distanceTicks << std::endl;
 	#endif
     if(distanceTicks>0){
-		m_liaisonSerie<<"b1"+formaterInt(distanceTicks)<<endl;
+		ecrireSerie("b1"+formaterInt(distanceTicks));
 	}
 	else{
-		m_liaisonSerie<< "b0"+formaterInt(-distanceTicks)<<endl;
+		ecrireSerie("b0"+formaterInt(-distanceTicks));
 	}
     attendreArrivee();
 }
@@ -236,10 +231,10 @@ void InterfaceAsservissement::reculer(unsigned int distanceMm){
 		std::cout << "Recule de " << distanceTicks << "ticks" << std::endl;
 	#endif
     if(distanceTicks>0){
-		m_liaisonSerie<<"b1"+formaterInt(distanceTicks)<<endl;
+		ecrireSerie("b1"+formaterInt(distanceTicks));
 	}
 	else{
-		m_liaisonSerie<<"b0"+formaterInt(-distanceTicks)<<endl;
+		ecrireSerie("b0"+formaterInt(-distanceTicks));
 	}
     attendreArrivee();
 }
@@ -250,18 +245,14 @@ void InterfaceAsservissement::tourner(double angleRadian){
 		std::cout << "Tourne de " << angleTicks << std::endl;
 	#endif
     if(angleRadian>0)
-        m_liaisonSerie<<"a0"+formaterInt(angleTicks)<<endl;
+        ecrireSerie("a0"+formaterInt(angleTicks));
     else
-        m_liaisonSerie<<"a1"+formaterInt(-angleTicks)<<endl;
+        ecrireSerie("a1"+formaterInt(-angleTicks));
     attendreArrivee();
 }
 
-InterfaceAsservissement::InterfaceAsservissement(int precision) : m_evitement(false), m_compteurImages(0), m_pathfinding(precision){
-    detectionSerieUsb(this);
-    m_liaisonSerie.Open(m_port);
-    m_liaisonSerie.SetBaudRate(SerialStreamBuf::BAUD_57600);
-    m_liaisonSerie.SetNumOfStopBits(1);
-    m_liaisonSerie.SetParity( SerialStreamBuf::PARITY_ODD ) ;
+InterfaceAsservissement::InterfaceAsservissement(std::string port, int precision) :m_serialPort(port), m_evitement(false), m_compteurImages(0), m_pathfinding(precision){
+    m_serialPort.Open();
     #ifdef DEBUG
       cout<<"Interface crée"<<endl;
       
@@ -280,7 +271,7 @@ void InterfaceAsservissement::recalage()
 	else if(COULEUR_ROBOT==ROUGE){
 		setXRobot(DEMI_LARGEUR_ROBOT);
 	}
-	avancer(200);
+	avancer(150);
 	tourner(-M_PI/2);
 	pwmMaxRotation(0);
 	pwmMaxTranslation(100);
@@ -291,73 +282,62 @@ void InterfaceAsservissement::recalage()
 }
 
 void InterfaceAsservissement::pwmMaxTranslation(unsigned char valPWM){
-	m_liaisonSerie << "pt0" << formaterInt(valPWM) ;
+	ecrireSerie("pt0"+formaterInt(valPWM));
 }
 
 void InterfaceAsservissement::pwmMaxRotation(unsigned char valPWM){
-	m_liaisonSerie << "pr0" << formaterInt(valPWM) ;
+	ecrireSerie("pr0"+formaterInt(valPWM));
 }
 
 
 InterfaceAsservissement::~InterfaceAsservissement()
 {
-    m_liaisonSerie.Close();
+    m_serialPort.Close();
 }
 
 int InterfaceAsservissement::getDistanceRobot()
 {
-	int result;
-	m_liaisonSerie << "t" << std::endl;
-	m_liaisonSerie >> result;
-	#ifdef DEBUG
-	std::cout << "Distance du robot (ticks :)" << result << std::endl;
-	#endif
-	return result;
+	ecrireSerie("t");
+	return readInt();
 }
 
 void InterfaceAsservissement::setEvitement(){	
 	boost::mutex::scoped_lock lolilol_evitement(m_evitement_mutex);
 	m_evitement=true;
-	std::cout << m_evitement << std::endl;
 }
 int InterfaceAsservissement::getAngleRobot(){
-	int result;
-	m_liaisonSerie << "u" << std::endl;
-	m_liaisonSerie >> result;
-	#ifdef DEBUG
-	std::cout << "Angle du robot (ticks :)" << result << std::endl;
-	#endif
-	return result;
+	ecrireSerie("u");
+	return readInt();
 }
 
+int InterfaceAsservissement::readInt()
+{
+	while(!m_serialPort.IsDataAvailable());
+    return atoi(m_serialPort.ReadLine().c_str());
+}
 int InterfaceAsservissement::getXRobot()
 {
-    int result;
-    m_liaisonSerie << "xg" << endl;
-    m_liaisonSerie >> result;
-    return result;
+    ecrireSerie("xg");
+    return readInt();
 }
 
 void InterfaceAsservissement::setXRobot(int xMm){
-	m_liaisonSerie << "xs0" << formaterInt(xMm);
+	ecrireSerie("xs0" + formaterInt(xMm));
 }
 
 int InterfaceAsservissement::getYRobot()
 {
-    int result;
-    m_liaisonSerie << "yg" << endl;
-    m_liaisonSerie >> result;
-    cout << result << endl;
-    return result;
+    ecrireSerie("yg");
+    return readInt();
 }
 
 void InterfaceAsservissement::setYRobot(int yMm){
-    m_liaisonSerie << "ys0" << formaterInt(yMm) << endl;
+    ecrireSerie("ys0"+formaterInt(yMm));
 }
 
 void InterfaceAsservissement::stop()
 {
-	m_liaisonSerie << "s" ;
+	ecrireSerie("s");
 }
 
 void InterfaceAsservissement::stopAll()

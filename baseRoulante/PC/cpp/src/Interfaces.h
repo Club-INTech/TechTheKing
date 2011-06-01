@@ -24,7 +24,7 @@ std::vector<char> getTtyUSB();
 class InterfaceAsservissement {
 	friend class InterfaceCapteurs;
 public:
-    static InterfaceAsservissement* Instance(int precisionAStar=50);
+    static InterfaceAsservissement* Instance();
     ~InterfaceAsservissement();
     friend void detectionSerieUsb(InterfaceAsservissement* asserv); // ne devrait pas servir si on garde l'i2c
     int getDistanceRobot();
@@ -48,12 +48,13 @@ public:
     void setXRobot(int xMm);
     void setYRobot(int yMm);
     void setEvitement();
+    void ecrireSerie(std::string msg);
 private:
     InterfaceAsservissement& operator=(const InterfaceAsservissement&);
-    InterfaceAsservissement(const InterfaceAsservissement&){};
-    InterfaceAsservissement(int precisionAStar);
+    InterfaceAsservissement(std::string port, int precisionAStar);
     void recupPosition();
     void attendreArrivee();
+    int readInt();
 private:
 	bool m_evitement;
     Point m_lastArrivee;
@@ -64,7 +65,7 @@ private:
     static InterfaceAsservissement* m_instance;
     AStar m_pathfinding;
     unsigned int vitesseMax;
-    SerialStream m_liaisonSerie;
+    SerialPort m_serialPort;
     boost::mutex m_evitement_mutex;
     boost::mutex  m_serial_mutex;
     std::string m_port;
