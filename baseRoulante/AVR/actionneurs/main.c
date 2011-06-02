@@ -34,24 +34,31 @@ int main()
     SERVO_CONS1 = SERVO_PWM_UP1;
     SERVO_CONS2 = SERVO_PWM_UP2;
     
-    PORTD |= DIR1;
-    PORTD &= ~DIR2;
-    ASC_MOTEUR1 = 100;
-    ASC_MOTEUR2 = 100;
-    _delay_ms(2000);
-    
     while(1)
     {
         /*************** Asservissement ***************/
-        if (etat_asservissement == ASC_ASSERV_SYNCHRO)
-            asservissement_synchro();
-        else if (etat_asservissement == ASC_ASSERV_INDEP)
-            asservissement();
-        else if (etat_asservissement == ASC_ASSERV_STOP) {
-            // On coupe les moteurs
-            ASC_MOTEUR1 = 0;
-            ASC_MOTEUR2 = 0;
+        switch (etat_asservissement) {
+            case ASC_ASSERV_SYNCHRO :
+                asservissement_synchro();
+                break;
+            case ASC_ASSERV_INDEP :
+                asservissement();
+                break;
+            case ASC_ASSERV_STOP :
+                ASC_MOTEUR1 = 0;
+                ASC_MOTEUR2 = 0;
+                break;
+            case ASC_ASSERV_RECAL :
+                PORTD |= DIR1;
+                PORTD &= ~DIR2;
+                ASC_MOTEUR1 = 100;
+                ASC_MOTEUR2 = 100;
+                break;
         }
+    
+    AX12GoTo (AX_ID2, ax_cons2);
+    AX12GoTo (AX_ID1, ax_cons1);
+    
         /**********************************************/
         
         //          /*** Pour les tests ***/
