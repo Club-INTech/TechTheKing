@@ -32,6 +32,10 @@ InterfaceAsservissement* InterfaceAsservissement::m_instance=NULL;
 boost::mutex m_instance_asservissement_mutex;
 boost::mutex m_instance_capteur_mutex;
 
+void InterfaceAsservissement::ecrireSerie(std::string msg){
+	m_serialPort.Write(msg);
+}
+
 void InterfaceAsservissement::actualiserCouleurRobot(){
 	if(COULEUR_ROBOT==BLEU){
 		ecrireSerie("j");
@@ -516,7 +520,7 @@ void InterfaceActionneurs::positionAimantGauche(ModeAimant mode)
     if (mode == HAUT)
         message[0] = 0X31;
     else if (mode == BAS)
-        message[0] = 0X11;
+        message[0] = 0X21;
     
     message[1] = '\0';
     
