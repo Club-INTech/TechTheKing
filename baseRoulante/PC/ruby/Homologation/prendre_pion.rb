@@ -11,5 +11,5 @@ InterfaceActionneurs.angleBrasDroit(LibChessUp::CENTRE);
 
 sleep(2);
 
-InterfaceActionneurs.hauteurBrasDroit(LibChessUp::MILIEU);
-InterfaceActionneurs.hauteurBrasDroit(LibChessUp::MILIEU);
+InterfaceActionneurs.hauteurBrasDroit(LibChessUp::CAPTURE);
+InterfaceActionneurs.hauteurBrasDroit(LibChessUp::CAPTURE);
