@@ -287,8 +287,7 @@ void InterfaceAsservissement::tourner(double angleRadian){
 InterfaceAsservissement::InterfaceAsservissement(std::string port, int precision) :m_serialPort(port), m_evitement(false), m_compteurImages(0), m_pathfinding(precision){
     m_serialPort.Open();
     #ifdef DEBUG
-      cout<<"Interface crée"<<endl;
-in      
+      cout<<"Interface crée"<<endl;      
     #endif
 }
 
