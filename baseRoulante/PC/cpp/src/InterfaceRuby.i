@@ -164,6 +164,7 @@ public:
     void gestionJumper();
     void gestionFinMatch();
     bool EtatJumper ( void );
+    bool EtatCentre( void ); 
 private:
 	InterfaceCapteurs();
     inline void traiterAbsenceObstacle();
