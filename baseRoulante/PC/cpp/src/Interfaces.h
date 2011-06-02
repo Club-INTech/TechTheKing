@@ -21,6 +21,9 @@ std::string exec(char* cmd);
 class InterfaceAsservissement;
 std::vector<char> getTtyUSB();
 
+void setCouleurRobot(Couleur couleur);
+Couleur getCouleurRobot();
+
 class InterfaceAsservissement {
 	friend class InterfaceCapteurs;
 public:

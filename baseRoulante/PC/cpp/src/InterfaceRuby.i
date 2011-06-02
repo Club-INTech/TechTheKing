@@ -102,6 +102,9 @@ class Socket{
         void getAllPions();
 };
 
+void setCouleurRobot(Couleur couleur);
+Couleur getCouleurRobot();
+
 class InterfaceAsservissement {
 	friend class InterfaceCapteurs;
 public:

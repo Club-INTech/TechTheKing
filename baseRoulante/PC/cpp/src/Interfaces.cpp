@@ -9,9 +9,18 @@
 #include "Obstacles.h"
 #include <ctime>
 
+
 #define DEMI_LARGEUR_ROBOT 77
 using namespace std;
 Adaptator* adaptateur_i2c;
+
+void setCouleurRobot(Couleur couleur){
+	COULEUR_ROBOT = couleur;
+}
+
+Couleur getCouleurRobot(){
+	return COULEUR_ROBOT;
+}
 
 
 /*********************************************************/
