@@ -45,7 +45,7 @@
 #define AX_ID2                 2
 #define AX_SPEED               511
 
-#define SERVO_PWM_UP1           26
+#define SERVO_PWM_UP1           20
 #define SERVO_PWM_DOWN1         13
 #define SERVO_PWM_UP2           13
 #define SERVO_PWM_DOWN2         26
@@ -53,8 +53,8 @@
 /**
  * Définition du courant de seuil maximum
  */
-#define CUR_LIM 512
-#define CUR_MAX 700
+#define CUR_LIM 300
+#define CUR_MAX 500
 
 /**
  * Définition du temps max pour la limite de courant
