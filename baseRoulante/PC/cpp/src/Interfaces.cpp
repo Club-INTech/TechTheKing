@@ -32,6 +32,14 @@ InterfaceAsservissement* InterfaceAsservissement::m_instance=NULL;
 boost::mutex m_instance_asservissement_mutex;
 boost::mutex m_instance_capteur_mutex;
 
+void InterfaceAsservissement::actualiserCouleurRobot(){
+	if(COULEUR_ROBOT==BLEU){
+		ecrireSerie("j");
+	}
+	else{
+		ecrireSerie("r");
+	}
+}
 
 void InterfaceAsservissement::debugConsignes(){
     cout<<m_lastListeConsignes<<endl;
@@ -205,7 +213,7 @@ inline void InterfaceAsservissement::eviter(){
 	}
 	else if(COULEUR_ROBOT == ROUGE){
 		RobotAdverse::Instance()->setCoords(
-			xRobo+offsetX,
+			xRobot+offsetX,
 			yRobot-offsetY);
 	}
 	
@@ -547,7 +555,7 @@ void InterfaceActionneurs::arret(void)
 InterfaceCapteurs* InterfaceCapteurs::m_instance=NULL;
 
 InterfaceCapteurs* InterfaceCapteurs::Instance(){
-	boost::mutex::scoped_lock locklilol(m_instance_capteur_mutex)
+	boost::mutex::scoped_lock locklilol(m_instance_capteur_mutex);
     if(m_instance==NULL){
        #ifdef DEBUG
          cout<<"Création de l'interface capteurs"<<endl;

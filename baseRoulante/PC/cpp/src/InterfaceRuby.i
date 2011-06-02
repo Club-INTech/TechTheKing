@@ -130,6 +130,7 @@ public:
     void setYRobot(int yMm);
     void setEvitement();
     void ecrireSerie(std::string msg);
+    void actualiserCouleurRobot();
 private:
     InterfaceAsservissement& operator=(const InterfaceAsservissement&);
     InterfaceAsservissement(std::string port, int precisionAStar);
