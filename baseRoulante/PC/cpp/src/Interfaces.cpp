@@ -153,6 +153,7 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
    if(ListeObstacles::contientCercle(xDepart,yDepart,TAILLE_ROBOT,NOIR)!=NULL
 	|| ListeObstacles::contientCercle(xDepart,yDepart,TAILLE_ROBOT,COULEUR_ROBOT)!=NULL
 	|| ListeObstacles::contientCercle(xDepart,yDepart,TAILLE_ROBOT,NEUTRE)!=NULL
+	|| ListeObstacles::contientCercle(xDepart,yDepart,TAILLE_ROBOT,COULEUR_ADVERSE)!=NULL
 	|| xDepart > 3000-TAILLE_ROBOT
 	|| xDepart < TAILLE_ROBOT
 	|| yDepart > 2100-TAILLE_ROBOT
@@ -160,7 +161,7 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
 		#ifdef DEBUG
 		std::cout << "Le robot croit qu'il est bloqué dans un obstacle ! Génération d'une lolconsigne aléatoire" << std::endl;
 		#endif
-		tourner(M_PI*rand()/(float)RAND_MAX);
+		tourner(M_PI/2*rand()/(float)RAND_MAX);
 		if(rand()/(float)RAND_MAX>0.5){
 			avancer(300);
 		}
@@ -215,7 +216,7 @@ void InterfaceAsservissement::attendreArrivee(){
 	while(result[0]!='f'){
 		while(!m_serialPort.IsDataAvailable()){
 			if(m_evitement==true){
-				std::cout << "Obstacle détecté" << std::endl;
+				std::cout << "Obstacle détecté !! " << std::endl;
 				eviter();
 				return;
 			}
@@ -544,7 +545,7 @@ void InterfaceActionneurs::arret(void)
 InterfaceCapteurs* InterfaceCapteurs::m_instance=NULL;
 
 InterfaceCapteurs* InterfaceCapteurs::Instance(){
-	boost::mutex::scoped_lock locklilol(m_instance_capteur_mutex);
+	boost::mutex::scoped_lock locklilol(m_instance_capteur_mutex)
     if(m_instance==NULL){
        #ifdef DEBUG
          cout<<"Création de l'interface capteurs"<<endl;
@@ -576,7 +577,6 @@ void InterfaceCapteurs::thread(){
         int distanceUltraSon = DistanceUltrason();
         if(distanceUltraSon>0 && distanceUltraSon < 7000) {
 				interfaceAsservissement->setEvitement();
-				std::cout << "Obstacle détecté !!" << std::endl;
 			{
 				boost::mutex::scoped_lock locklilol(m_ultrason_mutex);
 				m_distanceDernierObstacle = distanceUltraSon;
@@ -688,14 +688,14 @@ void InterfaceCapteurs::gestionJumper()
 	std::cout << "Attente jumper" << std::endl;
     #endif
     while(EtatJumper()==false);
-    //m_thread_finMatch = boost::thread(boost::bind(&InterfaceCapteurs::gestionFinMatch,this));
+    m_thread_finMatch = boost::thread(boost::bind(&InterfaceCapteurs::gestionFinMatch,this));
 }
 
 void InterfaceCapteurs::gestionFinMatch(void){
 	#ifdef DEBUG
 	std::cout << "Match commencé" << std::endl;
 	#endif
-	sleep(5);
+	sleep(87);
 	#ifdef DEBUG
 	std::cout << "Match terminé" << std::endl;
     #endif
