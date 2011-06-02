@@ -121,7 +121,7 @@ void AStar::debugGraphique(std::vector<Point> listePoints){
 
 #endif
 
-vector <Point> AStar::getChemin(Point depart, Point arrivee){
+vector<Point> AStar::getChemin(Point depart, Point arrivee){
 	REQUIRE(depart!=arrivee, "Le point de départ est différent du point d'arrivée du robot");
 	REQUIRE(TAILLE_ROBOT<arrivee.getX() && arrivee.getX()<3000-TAILLE_ROBOT, "L'abscisse du point d'arrivee du robot est tel qu'il ne touche pas le bord de la table");
 	REQUIRE(TAILLE_ROBOT<arrivee.getY() && arrivee.getY()<2100-TAILLE_ROBOT, "L'ordonnée du point d'arrivee du robot est tel qu'il ne touche pas le bord de la table");
@@ -302,11 +302,6 @@ bool AStar::trouverChemin(){
 			m_arrivee.setParent(courant);
 			remonterChemin();
 		}
-		else
-		{
-			cerr<<"pas de chemin"<<endl;
-			return false;
-		}
 		for(list<Noeud*>::iterator it = m_listeOuverte.begin();it!=m_listeOuverte.end();it++){
 			if(*it)
 				delete *it;
@@ -325,12 +320,15 @@ bool AStar::trouverChemin(){
 		}
 		if(m_chemin.empty())
 		{
+			std::cout << "Pas de chemin..." << std::endl;
 			return false;
 		}
-		debugGraphique(m_chemin);                                                                                
-		m_listeOuverte.clear();
-		m_listeFermee.clear();
-		return true;
+		else{
+			debugGraphique(m_chemin);                                                                                
+			m_listeOuverte.clear();
+			m_listeFermee.clear();
+			return true;
+		}
 }
 
 /*

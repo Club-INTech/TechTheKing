@@ -9,8 +9,8 @@
 #include "Obstacles.h"
 #include <ctime>
 
-
 #define DEMI_LARGEUR_ROBOT 77
+
 using namespace std;
 Adaptator* adaptateur_i2c;
 
@@ -423,6 +423,7 @@ void InterfaceActionneurs::hauteurBrasGauche(Niveau Hauteur)
     message[1] = '\0';
     
     i2c_write(adaptateur_i2c, 0X10, message, 2);
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
 }
 
 
@@ -441,6 +442,7 @@ void InterfaceActionneurs::hauteurBrasDroit(Niveau Hauteur)
     
     message[1] = '\0';
     
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
     i2c_write(adaptateur_i2c, 0X10, message, 2);
 }
 
@@ -461,6 +463,7 @@ void InterfaceActionneurs::hauteurDeuxBras(Niveau Hauteur)
     message[1] = '\0';
     
     i2c_write(adaptateur_i2c, 0X10, message, 2);
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
 }
 
 
@@ -479,6 +482,7 @@ void InterfaceActionneurs::angleBrasGauche(Orientation Angle)
     
     message[1] = '\0';
     
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
     i2c_write(adaptateur_i2c, 0X10, message, 2);
 }
 
@@ -499,6 +503,7 @@ void InterfaceActionneurs::angleBrasDroit(Orientation Angle)
     message[1] = '\0';
     
     i2c_write(adaptateur_i2c, 0X10, message, 2);
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
 }
 
 
@@ -513,6 +518,7 @@ void InterfaceActionneurs::positionAimantGauche(ModeAimant mode)
     
     message[1] = '\0';
     
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
     i2c_write(adaptateur_i2c, 0X10, message, 2);
 }
 
@@ -529,6 +535,7 @@ void InterfaceActionneurs::positionAimantDroit(ModeAimant mode)
     message[1] = '\0';
     
     i2c_write(adaptateur_i2c, 0X10, message, 2);
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
 }
 
 void InterfaceActionneurs::arret(void)
@@ -538,6 +545,7 @@ void InterfaceActionneurs::arret(void)
     message[0] = 0XA0;
     message[1] = '\0';
     
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
     i2c_write(adaptateur_i2c, 0X10, message, 2);
 }
 

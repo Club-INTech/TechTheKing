@@ -7,62 +7,45 @@ InterfaceActionneurs = LibChessUp::InterfaceActionneurs.new;
 sleep(1);
 
 InterfaceActionneurs.positionAimantGauche(LibChessUp::BAS);
-InterfaceActionneurs.positionAimantDroit(LibChessUp::BAS);
+#InterfaceActionneurs.positionAimantDroit(LibChessUp::BAS);
 
 sleep(1);
 
 InterfaceActionneurs.hauteurBrasDroit(LibChessUp::SOCLE);
-InterfaceActionneurs.hauteurBrasDroit(LibChessUp::SOCLE);
+#InterfaceActionneurs.hauteurBrasGauche(LibChessUp::SOCLE);
 
 sleep(1);
 
 InterfaceActionneurs.hauteurBrasDroit(LibChessUp::CAPTURE);
-InterfaceActionneurs.hauteurBrasDroit(LibChessUp::CAPTURE);
-
-sleep(1);
-
-InterfaceActionneurs.hauteurBrasDroit(LibChessUp::MILIEU);
-InterfaceActionneurs.hauteurBrasDroit(LibChessUp::MILIEU);
+#InterfaceActionneurs.hauteurBrasGauche(LibChessUp::CAPTURE);
 
 sleep(1);
 
 InterfaceActionneurs.hauteurBrasDroit(LibChessUp::TOUR);
-InterfaceActionneurs.hauteurBrasDroit(LibChessUp::TOUR);
-
-sleep(1);
-
-InterfaceActionneurs.angleBrasDroit(LibChessUp::REPLIE);
-InterfaceActionneurs.angleBrasDroit(LibChessUp::REPLIE); 
-
-sleep(1);
-
-InterfaceActionneurs.angleBrasDroit(LibChessUp::CENTRE);
-InterfaceActionneurs.angleBrasDroit(LibChessUp::CENTRE); 
+#InterfaceActionneurs.hauteurBrasGauche(LibChessUp::TOUR);
 
 sleep(1);
 
 InterfaceActionneurs.angleBrasDroit(LibChessUp::DROIT);
-InterfaceActionneurs.angleBrasDroit(LibChessUp::DROIT); 
+#InterfaceActionneurs.angleBrasGauche(LibChessUp::DROIT); 
 
 sleep(1);
 
 InterfaceActionneurs.angleBrasDroit(LibChessUp::BALAYAGE);
-InterfaceActionneurs.angleBrasDroit(LibChessUp::BALAYAGE); 
-
-
+#InterfaceActionneurs.angleBrasGauche(LibChessUp::BALAYAGE); 
 
 sleep(1);
 
 InterfaceActionneurs.angleBrasDroit(LibChessUp::DROIT);
-InterfaceActionneurs.angleBrasDroit(LibChessUp::DROIT);
+#InterfaceActionneurs.angleBrasGauche(LibChessUp::DROIT);
 
 sleep(1);
 
 InterfaceActionneurs.hauteurBrasDroit(LibChessUp::SOCLE);
-InterfaceActionneurs.hauteurBrasDroit(LibChessUp::SOCLE);
+#InterfaceActionneurs.hauteurBrasGauche(LibChessUp::SOCLE);
 
 sleep(1);
 
 
 InterfaceActionneurs.positionAimantGauche(LibChessUp::HAUT);
-InterfaceActionneurs.positionAimantDroit(LibChessUp::HAUT);
+#InterfaceActionneurs.positionAimantDroit(LibChessUp::HAUT);
