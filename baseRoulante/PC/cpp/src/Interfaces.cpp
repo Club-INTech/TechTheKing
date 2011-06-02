@@ -285,11 +285,22 @@ void InterfaceAsservissement::tourner(double angleRadian){
 }
 
 InterfaceAsservissement::InterfaceAsservissement(std::string port, int precision) :m_serialPort(port), m_evitement(false), m_compteurImages(0), m_pathfinding(precision){
-    m_serialPort.Open();
-    #ifdef DEBUG
-      cout<<"Interface crée"<<endl;
-      
-    #endif
+
+    if(m_instance==NULL){
+       #ifdef DEBUG
+         cout<<"Création de l'interface d'asservissement"<<endl;
+       #endif
+       std::string port = "/dev/ttyUSB" + exec((char*)"ls -1 /dev/ttyUSB* | cut -d '/' -f 3 | sed -e 's/ttyUSB//'");
+       m_instance= new InterfaceAsservissement(port.substr(0, port.size()-1), 50);
+	 	m_serialPort.Open();
+    }
+    else{
+      #ifdef DEBUG
+         cout<<"Interface d'asservissement déjà crée " <<endl;
+      #endif
+    }
+    return m_instance;
+
 }
 
 
