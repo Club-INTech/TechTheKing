@@ -2,7 +2,6 @@ require '../libChessUp'
 include LibChessUp
 
 
-
 # Couleur du robot
 COULEUR_ROBOT = BLEU;
 
@@ -25,53 +24,71 @@ LibChessUp::initialisation();
 #Initialisation des bras.
 puts "Initialisation de la hauteur des bras";
 InterfaceActionneurs.hauteurBrasDroit(LibChessUp::CAPTURE);
-InterfaceActionneurs.hauteurBrasDroit(LibChessUp::CAPTURE);
-
-InterfaceActionneurs.hauteurBrasGauche(LibChessUp::TOUR);
 InterfaceActionneurs.hauteurBrasGauche(LibChessUp::TOUR);
 
-sleep(2);
+sleep(0.5);
 
 puts "Repli des bras";
 InterfaceActionneurs.angleBrasGauche(LibChessUp::REPLIE);
-InterfaceActionneurs.angleBrasGauche(LibChessUp::REPLIE);
-
-InterfaceActionneurs.angleBrasDroit(LibChessUp::REPLIE);
 InterfaceActionneurs.angleBrasDroit(LibChessUp::REPLIE);
 
 puts "Abaissement de l'aimant";
 InterfaceActionneurs.positionAimantDroit(LibChessUp::BAS);
-InterfaceActionneurs.positionAimantDroit(LibChessUp::BAS);
+InterfaceActionneurs.positionAimantGauche(LibChessUp::BAS);
 
 puts "Recalage";
 require 'recalage.rb'
 
+
+#############################################################
+################# DEBUT DU MATCH ############################
+#############################################################
+
 puts "Attente du jumper";
 InterfaceCapteurs.gestionJumper();
 
-##########################################################
-################  DEBUT DU MATCH #########################
-##########################################################
-
-puts "Lancement des capteurs"
+#Démarrage des capteurs
 InterfaceCapteurs.ouvrirThread();
+
+puts "Démarrage";
 
 puts "Go To 1500 1050";
 InterfaceAsservissement.goTo(Point.new(1500,1050),80);
 
 puts "Prise de pion";
-require 'prendre_pion.rb';
+sleep(0.5);
 
-sleep(2);
+InterfaceActionneurs.angleBrasDroit(LibChessUp::CENTRE);
+
+sleep(1);
+
+InterfaceActionneurs.hauteurBrasDroit(LibChessUp::MILIEU);
+
+sleep(1);
 
 puts "Go To 1500 350";
 InterfaceAsservissement.goTo(Point.new(1500,350),80);
 
 puts "Lacher pion";
-require 'poser_pion.rb';
+InterfaceActionneurs.hauteurBrasDroit(LibChessUp::CAPTURE);
 
 sleep(2);
 
+InterfaceActionneurs.positionAimantDroit(LibChessUp::HAUT);
+InterfaceActionneurs.positionAimantGauche(LibChessUp::HAUT);
+
+sleep(2);
+
+InterfaceActionneurs.angleBrasDroit(LibChessUp::REPLIE);
+
+#############################################################
+################# DEPLACEMENT RANDOM ########################
+#############################################################
+
+puts "Déplacement random jusqu'à trouver un pion"
+
+
+
 puts "Arrêt du robot"
-InterfaceAsservissement.stopAll();
+#InterfaceAsservissement.stopAll();
 InterfaceActionneurs.arret();
