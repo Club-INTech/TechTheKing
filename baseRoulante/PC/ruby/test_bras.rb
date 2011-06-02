@@ -6,7 +6,7 @@ InterfaceActionneurs = LibChessUp::InterfaceActionneurs.new;
 
 sleep(1);
 
-InterfaceActionneurs.positionAimantGauche(LibChessUp::BAS);
+InterfaceActionneurs.positionAimantDroit(LibChessUp::BAS);
 #InterfaceActionneurs.positionAimantDroit(LibChessUp::BAS);
 
 sleep(1);
@@ -47,5 +47,5 @@ InterfaceActionneurs.hauteurBrasDroit(LibChessUp::SOCLE);
 sleep(1);
 
 
-InterfaceActionneurs.positionAimantGauche(LibChessUp::HAUT);
+InterfaceActionneurs.positionAimantDroit(LibChessUp::HAUT);
 #InterfaceActionneurs.positionAimantDroit(LibChessUp::HAUT);
