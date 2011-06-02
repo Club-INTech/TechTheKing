@@ -38,7 +38,7 @@ InterfaceActionneurs.hauteurBrasDroit(LibChessUp::TOUR);
 
 puts "Servomoteur AX12 angle replié"
 sleep(1);
-InterfaceActionneurs.angleBrasDroit(LibChessUp::REPLIE);
+InterfaceActionneurs.angleBrasDroit(LibChessUp::CENTRE);
 
 puts "Servomoteur AX12 angle centré"
 sleep(1);
@@ -84,7 +84,7 @@ InterfaceActionneurs.angleBrasGauche(LibChessUp::REPLIE);
 
 puts "Servomoteur AX12 angle centré"
 sleep(1);
-InterfaceActionneurs.angleBrasGauche(LibChessUp::REPLIE);
+InterfaceActionneurs.angleBrasGauche(LibChessUp::CENTRE);
 
 puts "Servomoteur AX12 angle de balayage"
 sleep(1);
