@@ -22,6 +22,7 @@ Consigne::Consigne(int rayon,int angle){
 }
 
 void Consigne::transfertSerie(SerialPort& interfaceDeTransfert){
+	usleep(1000);
 	if(m_rayon>=0)
 		interfaceDeTransfert.Write("g1" + formaterInt(m_rayon));
 	else

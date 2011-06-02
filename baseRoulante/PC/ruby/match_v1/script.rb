@@ -23,8 +23,8 @@ InterfaceActionneurs.angleBrasGauche(LibChessUp::REPLIE);
 InterfaceActionneurs.angleBrasDroit(LibChessUp::REPLIE);
 
 puts "Abaissement de l'aimant";
-InterfaceActionneurs.positionAimantDroit(LibChessUp::BAS);
-InterfaceActionneurs.positionAimantGauche(LibChessUp::BAS);
+InterfaceActionneurs.positionAimantDroit(LibChessUp::HAUT);
+InterfaceActionneurs.positionAimantGauche(LibChessUp::HAUT);
 
 puts "Recalage";
 require 'recalage.rb'
@@ -69,8 +69,8 @@ InterfaceActionneurs.hauteurBrasDroit(LibChessUp::CAPTURE);
 
 sleep(1.5);
 
-InterfaceActionneurs.positionAimantDroit(LibChessUp::HAUT);
-InterfaceActionneurs.positionAimantGauche(LibChessUp::HAUT);
+InterfaceActionneurs.positionAimantDroit(LibChessUp::BAS);
+InterfaceActionneurs.positionAimantGauche(LibChessUp::BAS);
 
 sleep(1);
 
@@ -84,7 +84,7 @@ puts "Déplacement random jusqu'à trouver un pion"
 
 InterfaceAsservissement.reculer(300);
 
-InterfaceAsservissement.ajoutPion();
+ajoutPion();
 
 if (getCouleurRobot() == ROUGE)
 	InterfaceAsservissement.goTo(Point.new(2500,1100),80);
