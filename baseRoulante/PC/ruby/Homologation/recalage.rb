@@ -2,7 +2,7 @@ require '../libChessUp'
 
 include LibChessUp
 
-COULEUR_ROBOT=BLEU;
+setCouleurRobot(BLEU);
 
 InterfaceAsservissement = LibChessUp::InterfaceAsservissement.Instance();
 
@@ -11,19 +11,19 @@ InterfaceAsservissement.pwmMaxRotation(0);
 InterfaceAsservissement.reculer(500);
 InterfaceAsservissement.pwmMaxRotation(200);
 
-if(COULEUR_ROBOT=BLEU)
+if(getCouleurRobot()==BLEU)
 	InterfaceAsservissement.setXRobot(3000-DEMI_LARGEUR_ROBOT);
 end
-if(COULEUR_ROBOT=ROUGE)
+if(getCouleurRobot()==ROUGE)
 	InterfaceAsservissement.setXRobot(DEMI_LARGEUR_ROBOT);
 end
 
 InterfaceAsservissement.avancer(500);
 
-if(COULEUR_ROBOT=BLEU)
+if(getCouleurRobot()==BLEU)
 	InterfaceAsservissement.tourner(-Math::PI/2);
 end
-if(COULEUR_ROBOT=ROUGE)
+if(getCouleurRobot()==ROUGE)
 	InterfaceAsservissement.tourner(Math::PI/2);
 end
 InterfaceAsservissement.pwmMaxRotation(0);
