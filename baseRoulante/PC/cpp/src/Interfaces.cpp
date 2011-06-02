@@ -9,8 +9,8 @@
 #include "Obstacles.h"
 #include <ctime>
 
-
 #define DEMI_LARGEUR_ROBOT 77
+
 using namespace std;
 Adaptator* adaptateur_i2c;
 
