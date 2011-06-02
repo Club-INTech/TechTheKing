@@ -9,15 +9,14 @@ InterfaceActionneurs = LibChessUp::InterfaceActionneurs.new;
 InterfaceActionneurs.hauteurDeuxBras(LibChessUp::TOUR);
 InterfaceActionneurs.hauteurDeuxBras(LibChessUp::TOUR);
 
-# sleep(2);
-# 
-# InterfaceActionneurs.hauteurDeuxBras(LibChessUp::MILIEU);
-# InterfaceActionneurs.hauteurDeuxBras(LibChessUp::MILIEU);
-# 
-# sleep(2);
-# 
-# InterfaceActionneurs.hauteurDeuxBras(LibChessUp::CAPTURE);
-# InterfaceActionneurs.hauteurDeuxBras(LibChessUp::CAPTURE);
+ sleep(2);
+ 
+ InterfaceActionneurs.hauteurDeuxBras(LibChessUp::MILIEU);
+ InterfaceActionneurs.hauteurDeuxBras(LibChessUp::MILIEU);
+ 
+ sleep(2);
+ InterfaceActionneurs.hauteurDeuxBras(LibChessUp::SOCLE);
+ InterfaceActionneurs.hauteurDeuxBras(LibChessUp::SOCLE);
 
 
 

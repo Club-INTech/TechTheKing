@@ -2,9 +2,19 @@ require '../libChessUp'
 
 include LibChessUp
 
-setCouleurRobot(BLEU);
+setCouleurRobot(ROUGE);
+
+if(getCouleurRobot()==BLEU)
+	puts "Couleur : Bleue"
+end
+if(getCouleurRobot()==ROUGE)
+	puts "Couleur : Rouge"
+end
+
 
 InterfaceAsservissement = LibChessUp::InterfaceAsservissement.Instance();
+
+InterfaceAsservissement.actualiserCouleurRobot();
 
 InterfaceAsservissement.pwmMaxTranslation(70);
 InterfaceAsservissement.pwmMaxRotation(0);

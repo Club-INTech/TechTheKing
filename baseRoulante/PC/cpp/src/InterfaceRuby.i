@@ -23,7 +23,6 @@ enum Couleur {ROUGE, BLEU, NEUTRE, NOIR};
 %inline %{
 extern int RAYON_DE_DETECTION;
 extern int EMPIETEMENT;
-extern Couleur COULEUR_ROBOT;
 extern Couleur COULEUR_ADVERSE;
 extern double CONVERSION_RADIAN_TIC;
 extern double CONVERSION_TIC_RADIAN;
@@ -56,6 +55,7 @@ namespace ListeObstacles {
     void erasePions();
 	void refreshPions(std::vector< std::pair<Obstacle*,int> > listePions);
 	void refreshPions(const char nomFichier[]);
+	void ajoutPion();
 }
 
 class Point{
@@ -122,7 +122,9 @@ public:
     void tourner(double angleRadian);
     void stop();
     void stopAll();
+    #ifdef DEBUG_GRAPHIQUE
     void debugGraphique();
+    #endif
     void debugConsignes();
     int getXRobot();
     int getYRobot();
@@ -137,6 +139,7 @@ private:
     void recupPosition();
     void attendreArrivee();
     int readInt();
+    inline void eviter();
 private:
 	bool m_evitement;
     Point m_lastArrivee;

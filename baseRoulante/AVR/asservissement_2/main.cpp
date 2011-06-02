@@ -184,14 +184,15 @@ int main( void ){
             manager.switchAssAngle();
             break;
         case 'j':
+			TIMSK1 &= ~(1 << TOIE1);
 			CouleurRobot = BLEU;
+			TIMSK1 |= (1 << TOIE1);
             break;
         case 'l':
             i=litEntierLong();
             if (i >= 0) {
                 manager.assRotation.changeVmax(i);
             }
-            break;
             break;
         case 'o':
             TIMSK1 &= ~(1 << TOIE1);
@@ -227,7 +228,9 @@ int main( void ){
                 manager.pushConsigneAngle(-i);
             break;
         case 'r':
+			TIMSK1 &= ~(1 << TOIE1);
             CouleurRobot = ROUGE;
+            TIMSK1 |= (1 << TOIE1);
             break;
         case 's':
 			TIMSK1 &= ~(1 << TOIE1);
