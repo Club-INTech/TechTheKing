@@ -299,7 +299,6 @@ InterfaceAsservissement::InterfaceAsservissement(std::string port, int precision
          cout<<"Interface d'asservissement déjà crée " <<endl;
       #endif
     }
-    return m_instance;
 
 }
 
