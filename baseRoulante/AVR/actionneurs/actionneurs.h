@@ -39,17 +39,17 @@
 #define ASC_ASSERV_RECAL       2
 #define ASC_CONS_MAX           10000
 #define ASC_CONS_MED           5000
-#define ASC_CONS_MIN           4000
+#define ASC_CONS_MIN           2000
 #define ASC_CONS_ZERO          0
 
 #define AX_ID1                 1
 #define AX_ID2                 2
 #define AX_SPEED               511
 
-#define SERVO_PWM_UP1           20
-#define SERVO_PWM_DOWN1         13
-#define SERVO_PWM_UP2           13
-#define SERVO_PWM_DOWN2         26
+#define SERVO_PWM_UP1           13
+#define SERVO_PWM_DOWN1         26
+#define SERVO_PWM_UP2           20
+#define SERVO_PWM_DOWN2         20
 
 /**
  * Définition du courant de seuil maximum
