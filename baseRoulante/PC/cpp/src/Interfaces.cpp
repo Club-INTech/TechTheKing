@@ -9,9 +9,18 @@
 #include "Obstacles.h"
 #include <ctime>
 
+
 #define DEMI_LARGEUR_ROBOT 77
 using namespace std;
 Adaptator* adaptateur_i2c;
+
+void setCouleurRobot(Couleur couleur){
+	COULEUR_ROBOT = couleur;
+}
+
+Couleur getCouleurRobot(){
+	return COULEUR_ROBOT;
+}
 
 
 /*********************************************************/
@@ -555,13 +564,14 @@ void InterfaceCapteurs::thread(){
     while(1){	
         //Il y a quelquechose devant
         int distanceUltraSon = DistanceUltrason();
+        cout << distanceUltraSon << endl;
         if(distanceUltraSon>0 && distanceUltraSon < 7000) {
 			#ifdef DEBUG
 			std::cout << "OBSTACLE DÉTECTÉ" << std::endl;
 			#endif
 			{
-			boost::mutex::scoped_lock locklilol(m_ultrason_mutex);
-			m_distanceDernierObstacle = distanceUltraSon;
+				boost::mutex::scoped_lock locklilol(m_ultrason_mutex);
+				m_distanceDernierObstacle = distanceUltraSon;
 			}
 			interfaceAsservissement->setEvitement();
 			sleep(3);
@@ -678,7 +688,7 @@ void InterfaceCapteurs::gestionFinMatch(void){
 	#ifdef DEBUG
 	std::cout << "Match commencé" << std::endl;
 	#endif
-	sleep(20);
+	sleep(5);
 	#ifdef DEBUG
 	std::cout << "Match terminé" << std::endl;
     #endif
