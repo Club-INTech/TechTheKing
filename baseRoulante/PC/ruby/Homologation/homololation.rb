@@ -15,7 +15,7 @@ end
 LibChessUp.ouvrir_adaptateur_i2c();
 
 #Création des interfaces
-#InterfaceActionneurs = LibChessUp::InterfaceActionneurs.new;
+InterfaceActionneurs = LibChessUp::InterfaceActionneurs.new;
 InterfaceAsservissement = LibChessUp::InterfaceAsservissement.Instance();
 InterfaceCapteurs = LibChessUp::InterfaceCapteurs.Instance();
 

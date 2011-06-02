@@ -11,6 +11,8 @@ InterfaceAsservissement.pwmMaxRotation(0);
 InterfaceAsservissement.reculer(500);
 InterfaceAsservissement.pwmMaxRotation(200);
 
+DEMI_LARGEUR_ROBOT=77;
+
 if(getCouleurRobot()==BLEU)
 	InterfaceAsservissement.setXRobot(3000-DEMI_LARGEUR_ROBOT);
 end
@@ -34,5 +36,5 @@ InterfaceAsservissement.setYRobot(2100-DEMI_LARGEUR_ROBOT);
 InterfaceAsservissement.pwmMaxRotation(200);
 InterfaceAsservissement.avancer(120);
 InterfaceAsservissement.tourner(0);
-InterfaceAsservissement.reculer(300);
+InterfaceAsservissement.reculer(350);
 

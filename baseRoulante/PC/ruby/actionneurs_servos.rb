@@ -6,8 +6,8 @@ InterfaceActionneurs = LibChessUp::InterfaceActionneurs.new;
 
 #Modèles et tests pour les servomoteurs des aimants
 
-# InterfaceActionneurs.positionAimantGauche(LibChessUp::BAS);
-# InterfaceActionneurs.positionAimantDroit(LibChessUp::BAS);
+InterfaceActionneurs.positionAimantGauche(LibChessUp::BAS);
+InterfaceActionneurs.positionAimantDroit(LibChessUp::BAS);
 
 sleep(1);
 

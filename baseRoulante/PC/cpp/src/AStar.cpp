@@ -320,7 +320,7 @@ bool AStar::trouverChemin(){
 		{
 			return false;
 		}
-		debugGraphique(m_chemin);                                                                                
+		//debugGraphique(m_chemin);                                                                                
 		m_listeOuverte.clear();
 		m_listeFermee.clear();
 		return true;
