@@ -48,8 +48,8 @@
 
 #define SERVO_PWM_UP1           13
 #define SERVO_PWM_DOWN1         26
-#define SERVO_PWM_UP2           20
-#define SERVO_PWM_DOWN2         20
+#define SERVO_PWM_UP2           13
+#define SERVO_PWM_DOWN2         26
 
 /**
  * Définition du courant de seuil maximum

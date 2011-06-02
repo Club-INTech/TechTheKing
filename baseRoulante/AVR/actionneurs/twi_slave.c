@@ -90,19 +90,19 @@ void TWI_Loop( void )
                 
                 // Ordres pour les aimants
                 
-            case MASTER_CMD_SERVO1_UP :
+            case MASTER_CMD_SERVO2_UP :
                 SERVO_CONS1 = SERVO_PWM_UP1;
                 break;
                 
-            case MASTER_CMD_SERVO2_UP :
+            case MASTER_CMD_SERVO1_UP :
                 SERVO_CONS2 = SERVO_PWM_UP2;
                 break;
                 
-            case MASTER_CMD_SERVO1_DOWN :
+            case MASTER_CMD_SERVO2_DOWN :
                 SERVO_CONS1 = SERVO_PWM_DOWN1;
                 break;
                 
-            case MASTER_CMD_SERVO2_DOWN :
+            case MASTER_CMD_SERVO1_DOWN :
                 SERVO_CONS2 = SERVO_PWM_DOWN2;
                 break;
                 
