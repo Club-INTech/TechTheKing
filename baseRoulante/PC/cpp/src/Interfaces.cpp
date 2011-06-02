@@ -29,6 +29,10 @@ Couleur getCouleurRobot(){
 
 InterfaceAsservissement* InterfaceAsservissement::m_instance=NULL;
 
+boost::mutex m_instance_asservissement_mutex;
+boost::mutex m_instance_capteur_mutex;
+
+
 void InterfaceAsservissement::debugConsignes(){
     cout<<m_lastListeConsignes<<endl;
 }
@@ -61,8 +65,9 @@ void InterfaceAsservissement::debugGraphique(){
 #endif
 
 
+
 InterfaceAsservissement* InterfaceAsservissement::Instance(){
-   	boost::mutex::scoped_lock lolilol_evitement(m_instance_mutex);
+	boost::mutex::scoped_lock locklilol(m_instance_asservissement_mutex);
     if(m_instance==NULL){
        #ifdef DEBUG
          cout<<"Création de l'interface d'asservissement"<<endl;
@@ -208,14 +213,14 @@ void InterfaceAsservissement::attendreArrivee(){
 	
 	std::string result;
 	while(result[0]!='f'){
-		//while(!m_serialPort.IsDataAvailable()){
+		while(!m_serialPort.IsDataAvailable()){
 			if(m_evitement==true){
 				std::cout << "Obstacle détecté" << std::endl;
 				eviter();
 				return;
 			}
-		//}
-		//result=m_serialPort.ReadLine();
+		}
+		result=m_serialPort.ReadLine();
 	}
 	sleep(2);
 }
@@ -539,6 +544,7 @@ void InterfaceActionneurs::arret(void)
 InterfaceCapteurs* InterfaceCapteurs::m_instance=NULL;
 
 InterfaceCapteurs* InterfaceCapteurs::Instance(){
+	boost::mutex::scoped_lock locklilol(m_instance_capteur_mutex);
     if(m_instance==NULL){
        #ifdef DEBUG
          cout<<"Création de l'interface capteurs"<<endl;
@@ -564,11 +570,13 @@ InterfaceCapteurs::~InterfaceCapteurs()
 
 void InterfaceCapteurs::thread(){
 	InterfaceAsservissement* interfaceAsservissement=InterfaceAsservissement::Instance();
-    while(1){	
+    while(1){
+		
         //Il y a quelquechose devant
         int distanceUltraSon = DistanceUltrason();
         if(distanceUltraSon>0 && distanceUltraSon < 7000) {
 				interfaceAsservissement->setEvitement();
+				std::cout << "Obstacle détecté !!" << std::endl;
 			{
 				boost::mutex::scoped_lock locklilol(m_ultrason_mutex);
 				m_distanceDernierObstacle = distanceUltraSon;

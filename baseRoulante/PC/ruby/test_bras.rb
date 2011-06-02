@@ -41,8 +41,8 @@ InterfaceActionneurs.angleBrasDroit(LibChessUp::DROIT);
 
 sleep(1);
 
-InterfaceActionneurs.angleBrasDroit(LibChessUp::EXTERIEUR);
-InterfaceActionneurs.angleBrasDroit(LibChessUp::EXTERIEUR); 
+InterfaceActionneurs.angleBrasDroit(LibChessUp::BALAYAGE);
+InterfaceActionneurs.angleBrasDroit(LibChessUp::BALAYAGE); 
 
 sleep(1);
 
