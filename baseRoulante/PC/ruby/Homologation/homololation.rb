@@ -15,16 +15,19 @@ end
 LibChessUp.ouvrir_adaptateur_i2c();
 
 #Création des interfaces
-#InterfaceActionneurs = LibChessUp::InterfaceActionneurs.new;
+
+InterfaceActionneurs = LibChessUp::InterfaceActionneurs.new;
 InterfaceAsservissement = LibChessUp::InterfaceAsservissement.Instance();
 InterfaceCapteurs = LibChessUp::InterfaceCapteurs.Instance();
 
 #initialisation des obstacles
+
 LibChessUp::initialisation();
 
 
 
 #Initialisation des bras.
+
 puts "Initialisation de la hauteur des bras";
 InterfaceActionneurs.hauteurBrasDroit(LibChessUp::CAPTURE);
 InterfaceActionneurs.hauteurBrasDroit(LibChessUp::CAPTURE);

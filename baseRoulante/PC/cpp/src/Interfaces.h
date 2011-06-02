@@ -25,7 +25,6 @@ void setCouleurRobot(Couleur couleur);
 Couleur getCouleurRobot();
 
 class InterfaceAsservissement {
-	friend class InterfaceCapteurs;
 public:
     static InterfaceAsservissement* Instance();
     ~InterfaceAsservissement();
@@ -72,6 +71,7 @@ private:
     SerialPort m_serialPort;
     boost::mutex m_evitement_mutex;
     boost::mutex  m_serial_mutex;
+    static boost::mutex m_instance_mutex;
     std::string m_port;
 };
 
