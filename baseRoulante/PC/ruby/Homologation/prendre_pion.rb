@@ -1,4 +1,4 @@
- require '../libChessUp'
+#require '../libChessUp'
 
 LibChessUp.ouvrir_adaptateur_i2c();
 

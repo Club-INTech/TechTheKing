@@ -184,7 +184,7 @@ int main( void ){
             manager.switchAssAngle();
             break;
         case 'j':
-            send_reset();
+			CouleurRobot = BLEU;
             break;
         case 'l':
             i=litEntierLong();
@@ -227,10 +227,7 @@ int main( void ){
                 manager.pushConsigneAngle(-i);
             break;
         case 'r':
-            i=litEntierLong();
-            if (i >= 0) {
-                manager.assTranslation.changeVmax(i);
-            }
+            CouleurRobot = ROUGE;
             break;
         case 's':
 			TIMSK1 &= ~(1 << TOIE1);

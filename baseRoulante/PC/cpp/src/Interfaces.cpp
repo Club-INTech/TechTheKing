@@ -201,7 +201,7 @@ void InterfaceAsservissement::attendreArrivee(){
 		}
 		result=m_serialPort.ReadLine();
 	}
-	sleep(1);
+	sleep(2);
 }
 void InterfaceAsservissement::reGoTo(){
     goTo(m_lastArrivee,m_lastNbPoints);
@@ -255,19 +255,21 @@ InterfaceAsservissement::InterfaceAsservissement(std::string port, int precision
     #endif
 }
 
+
 void InterfaceAsservissement::recalage()
 {
 	pwmMaxTranslation(100);
 	pwmMaxRotation(0);
 	reculer(500);
 	pwmMaxRotation(255);
+	
 	if(COULEUR_ROBOT==BLEU){
 		setXRobot(3000-DEMI_LARGEUR_ROBOT);
 	}
 	else if(COULEUR_ROBOT==ROUGE){
 		setXRobot(DEMI_LARGEUR_ROBOT);
 	}
-	avancer(150);
+	avancer(650);
 	if(COULEUR_ROBOT==BLEU){
 		tourner(-M_PI/2);
 	}
@@ -279,7 +281,15 @@ void InterfaceAsservissement::recalage()
 	reculer(500);
 	pwmMaxRotation(255);
 	setYRobot(2100-DEMI_LARGEUR_ROBOT);
+
 	avancer(100);
+	tourner(0);
+	
+	reculer(500);
+	
+	//pwmMaxRotation(255);
+	//pwmMaxTranslation(100);
+	//reculer(150);
 }
 
 void InterfaceAsservissement::pwmMaxTranslation(unsigned char valPWM){
@@ -656,12 +666,17 @@ void InterfaceCapteurs::gestionJumper()
 	std::cout << "Attente jumper" << std::endl;
     #endif
     while(EtatJumper()==false);
-    std::cout << "Match commencé" << std::endl;
-    boost::thread(&gestionFinMatch());
+    m_thread_finMatch = boost::thread(boost::bind(&InterfaceCapteurs::gestionFinMatch,this));
 }
 
-void InterfaceCapteurs::gestionFinMatch(){
+void InterfaceCapteurs::gestionFinMatch(void){
+	#ifdef DEBUG
+	std::cout << "Match commencé" << std::endl;
+	#endif
 	sleep(20);
+	#ifdef DEBUG
+	std::cout << "Match terminé" << std::endl;
+    #endif
 	InterfaceAsservissement::Instance()->stopAll();
 }
 

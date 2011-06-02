@@ -93,6 +93,7 @@ private:
 private:
 	unsigned short m_distanceDernierObstacle;
 	static InterfaceCapteurs* m_instance;
+	boost::thread m_thread_finMatch;
 	boost::mutex m_ultrason_mutex;
 };
 
