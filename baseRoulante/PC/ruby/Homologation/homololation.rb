@@ -15,39 +15,27 @@ end
 LibChessUp.ouvrir_adaptateur_i2c();
 
 #Création des interfaces
-
 InterfaceActionneurs = LibChessUp::InterfaceActionneurs.new;
 InterfaceAsservissement = LibChessUp::InterfaceAsservissement.Instance();
 InterfaceCapteurs = LibChessUp::InterfaceCapteurs.Instance();
 
 #initialisation des obstacles
-
 LibChessUp::initialisation();
 
 
-
 #Initialisation des bras.
-
 puts "Initialisation de la hauteur des bras";
 InterfaceActionneurs.hauteurBrasDroit(LibChessUp::CAPTURE);
-InterfaceActionneurs.hauteurBrasDroit(LibChessUp::CAPTURE);
-
-InterfaceActionneurs.hauteurBrasGauche(LibChessUp::TOUR);
 InterfaceActionneurs.hauteurBrasGauche(LibChessUp::TOUR);
 
 sleep(2);
 
 puts "Repli des bras";
 InterfaceActionneurs.angleBrasGauche(LibChessUp::REPLIE);
-InterfaceActionneurs.angleBrasGauche(LibChessUp::REPLIE);
-
-InterfaceActionneurs.angleBrasDroit(LibChessUp::REPLIE);
 InterfaceActionneurs.angleBrasDroit(LibChessUp::REPLIE);
 
 puts "Abaissement de l'aimant";
 InterfaceActionneurs.positionAimantDroit(LibChessUp::BAS);
-InterfaceActionneurs.positionAimantDroit(LibChessUp::BAS);
-InterfaceActionneurs.positionAimantGauche(LibChessUp::BAS);
 InterfaceActionneurs.positionAimantGauche(LibChessUp::BAS);
 
 puts "Recalage";
@@ -68,11 +56,9 @@ puts "Prise de pion";
 sleep(2);
 
 InterfaceActionneurs.angleBrasDroit(LibChessUp::CENTRE);
-InterfaceActionneurs.angleBrasDroit(LibChessUp::CENTRE);
 
 sleep(2);
 
-InterfaceActionneurs.hauteurBrasDroit(LibChessUp::MILIEU);
 InterfaceActionneurs.hauteurBrasDroit(LibChessUp::MILIEU);
 
 sleep(2);
@@ -82,21 +68,15 @@ InterfaceAsservissement.goTo(Point.new(1500,350),80);
 
 puts "Lacher pion";
 InterfaceActionneurs.hauteurBrasDroit(LibChessUp::CAPTURE);
-InterfaceActionneurs.hauteurBrasDroit(LibChessUp::CAPTURE);
 
 sleep(2);
 
 InterfaceActionneurs.positionAimantDroit(LibChessUp::HAUT);
-InterfaceActionneurs.positionAimantDroit(LibChessUp::HAUT);
 InterfaceActionneurs.positionAimantGauche(LibChessUp::HAUT);
-InterfaceActionneurs.positionAimantGauche(LibChessUp::HAUT);
-
 
 sleep(2);
 
 InterfaceActionneurs.angleBrasDroit(LibChessUp::REPLIE);
-InterfaceActionneurs.angleBrasDroit(LibChessUp::REPLIE);
-
 
 sleep(2);
 

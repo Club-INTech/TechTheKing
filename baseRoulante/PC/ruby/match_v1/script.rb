@@ -1,8 +1,11 @@
 require '../libChessUp'
 include LibChessUp
 
+
+
 # Couleur du robot
-COULEUR_ROBOT = ROUGE;
+COULEUR_ROBOT = BLEU;
+
 if (COULEUR_ROBOT == ROUGE)
 	puts "Couleur: rouge"
 else 
@@ -18,9 +21,6 @@ InterfaceCapteurs = LibChessUp::InterfaceCapteurs.Instance();
 
 #initialisation des obstacles
 LibChessUp::initialisation();
-
-#Démarrage des capteurs
-InterfaceCapteurs.ouvrirThread();
 
 #Initialisation des bras.
 puts "Initialisation de la hauteur des bras";
@@ -44,15 +44,20 @@ InterfaceActionneurs.positionAimantDroit(LibChessUp::BAS);
 InterfaceActionneurs.positionAimantDroit(LibChessUp::BAS);
 
 puts "Recalage";
-InterfaceAsservissement.recalage();
+require 'recalage.rb'
 
 puts "Attente du jumper";
 InterfaceCapteurs.gestionJumper();
 
-puts "Démarrage";
+##########################################################
+################  DEBUT DU MATCH #########################
+##########################################################
+
+puts "Lancement des capteurs"
+InterfaceCapteurs.ouvrirThread();
 
 puts "Go To 1500 1050";
-#InterfaceAsservissement.goTo(Point.new(1500,1050),80);
+InterfaceAsservissement.goTo(Point.new(1500,1050),80);
 
 puts "Prise de pion";
 require 'prendre_pion.rb';
@@ -60,7 +65,7 @@ require 'prendre_pion.rb';
 sleep(2);
 
 puts "Go To 1500 350";
-#InterfaceAsservissement.goTo(Point.new(1500,350),80);
+InterfaceAsservissement.goTo(Point.new(1500,350),80);
 
 puts "Lacher pion";
 require 'poser_pion.rb';
