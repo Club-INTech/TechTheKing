@@ -511,10 +511,12 @@ void InterfaceActionneurs::positionAimantGauche(ModeAimant mode)
 {
     unsigned char message[2];
     
+    
+    // MAUVAIS, DANS L'IDEAL, INVERSER CONSIGNES ICI ET DANS L'AVR
     if (mode == HAUT)
-        message[0] = 0X21;
-    else if (mode == BAS)
         message[0] = 0X31;
+    else if (mode == BAS)
+        message[0] = 0X11;
     
     message[1] = '\0';
     
