@@ -210,5 +210,5 @@ void AX12GoTo (uint8_t ID, uint16_t angle)
     writeData (ID, AX_GOAL_POSITION_L, 2, angle);
 }
 
-// volatile uint16_t ax_cons1 = 200;
-// volatile uint16_t ax_cons2 = 800;
+volatile uint16_t ax_cons1 = 511;
+volatile uint16_t ax_cons2 = 511;

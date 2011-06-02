@@ -35,7 +35,8 @@
 #define ASC_KP2                1
 #define ASC_ASSERV_INDEP       0
 #define ASC_ASSERV_SYNCHRO     1
-#define ASC_ASSERV_STOP       -1
+#define ASC_ASSERV_STOP        -1
+#define ASC_ASSERV_RECAL       2
 #define ASC_CONS_MAX           10000
 #define ASC_CONS_MED           5000
 #define ASC_CONS_MIN           4000

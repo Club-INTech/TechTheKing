@@ -25,8 +25,12 @@
 #define MASTER_CMD_ASCB_GOTO3   0X53
 #define MASTER_CMD_ASCB_GOTO4   0X54
 #define MASTER_CMD_STOP         0XA0
+#define MASTER_CMD_RECAL        0XB0
 
 extern unsigned char messageBuf[];
+
+extern uint16_t ax_cons1;
+extern uint16_t ax_cons2;
 
 /****************************************************************************
  *  Function definitions
