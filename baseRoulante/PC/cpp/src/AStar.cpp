@@ -296,7 +296,8 @@ bool AStar::trouverChemin(){
 			m_arrivee.setParent(courant);
 			remonterChemin();
 		}
-		else{
+		if(m_chemin.empty())
+		{
 			cerr<<"pas de chemin"<<endl;
 			return false;
 		}
@@ -316,11 +317,7 @@ bool AStar::trouverChemin(){
 				listeObstacles.push_back(std::make_pair<Obstacle*,int>(*it,0));
 			}
 		}
-		if(m_chemin.empty())
-		{
-			return false;
-		}
-		//debugGraphique(m_chemin);                                                                                
+		                                                                                
 		m_listeOuverte.clear();
 		m_listeFermee.clear();
 		return true;
