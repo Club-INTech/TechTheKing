@@ -133,11 +133,6 @@ void detectionSerieUsb(InterfaceAsservissement* asserv){
     }
 }
 
-
-void InterfaceAsservissement::ecrireSerie(std::string msg){
-	m_serialPort.Write(msg);
-}
-
 void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
     m_lastArrivee = arrivee;
     m_lastNbPoints = nbPoints;
@@ -203,9 +198,16 @@ inline void InterfaceAsservissement::eviter(){
 	std::cout << "Offset x : " << offsetX << std::endl;
 	std::cout << "Offset y : " << offsetY << std::endl;
 	
-	RobotAdverse::Instance()->setCoords(
-		xRobot-offsetX,
-		yRobot-offsetY);
+	if(COULEUR_ROBOT == BLEU){
+		RobotAdverse::Instance()->setCoords(
+			xRobot-offsetX,
+			yRobot-offsetY);
+	}
+	else if(COULEUR_ROBOT == ROUGE){
+		RobotAdverse::Instance()->setCoords(
+			xRobo+offsetX,
+			yRobot-offsetY);
+	}
 	
 	reculer(distanceUltraSon);
 	reGoTo();
