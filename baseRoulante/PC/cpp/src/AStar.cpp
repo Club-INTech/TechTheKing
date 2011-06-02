@@ -1,5 +1,6 @@
 #include "AStar.h"
 #include "Constantes.h"
+#include "Util.hpp"
 
 /*!
  *\def RAYON_DE_DETECTION
@@ -18,6 +19,8 @@ int EMPIETEMENT = 100 ;
  *
  * La classe Noeud, indispensable pour tout algorithme de pathfinding.
  */
+ 
+ int compteurImages=0;
  
 /*ce qui concerne les noeuds*/
 
@@ -112,7 +115,7 @@ void AStar::debugGraphique(std::vector<Point> listePoints){
         630-listePoints[i+1].getY()*630/2100));
     image.magick("png");
     std::string tmp("cheminRobot");
-    image.display();
+    image.write(tmp + numToString(compteurImages++));;
     cout<<"chemin emprunté dans le robot écrit dans cheminRobot.png"<<endl;
 }
 
@@ -276,11 +279,14 @@ bool AStar::trouverChemin(){
 		{
 			listeObstaclesBloquants.push_back(bloqueArrivee);
 			#ifdef DEBUG
-				std::cout << "Obstacle sur le point d'arrivée : suppression" << *bloqueArrivee << std::endl;
+				std::cout << "Obstacle sur le point d'arrivée : suppression de " << *bloqueArrivee << std::endl;
 			#endif
 			for( std::vector< std::pair<Obstacle*,int> >::iterator it = listeObstacles.begin() ; it !=listeObstacles.end() ; it++){
 				if(*(it->first) == *bloqueArrivee)
 					listeObstacles.erase(it);
+					#ifdef DEBUG
+					std::cout << "Supprimé " << *bloqueArrivee << std::endl;
+					#endif
 			}
 		}
 		Noeud* courant = new Noeud(m_depart.getX(),m_depart.getY(),0,m_depart.rayon(m_arrivee)); //initialisation du noeud courant..
@@ -296,7 +302,7 @@ bool AStar::trouverChemin(){
 			m_arrivee.setParent(courant);
 			remonterChemin();
 		}
-		if(m_chemin.empty())
+		else
 		{
 			cerr<<"pas de chemin"<<endl;
 			return false;
@@ -317,7 +323,11 @@ bool AStar::trouverChemin(){
 				listeObstacles.push_back(std::make_pair<Obstacle*,int>(*it,0));
 			}
 		}
-		                                                                                
+		if(m_chemin.empty())
+		{
+			return false;
+		}
+		debugGraphique(m_chemin);                                                                                
 		m_listeOuverte.clear();
 		m_listeFermee.clear();
 		return true;

@@ -130,12 +130,27 @@ public:
     void setYRobot(int yMm);
     void setEvitement();
     void ecrireSerie(std::string msg);
+    void actualiserCouleurRobot();
 private:
     InterfaceAsservissement& operator=(const InterfaceAsservissement&);
     InterfaceAsservissement(std::string port, int precisionAStar);
     void recupPosition();
     void attendreArrivee();
     int readInt();
+private:
+	bool m_evitement;
+    Point m_lastArrivee;
+    int m_lastNbPoints;
+    int m_compteurImages;
+    vector<Point> m_lastTrajectory;
+    vector<Consigne> m_lastListeConsignes;
+    static InterfaceAsservissement* m_instance;
+    AStar m_pathfinding;
+    unsigned int vitesseMax;
+    SerialPort m_serialPort;
+    boost::mutex m_evitement_mutex;
+    boost::mutex  m_serial_mutex;
+    std::string m_port;
 };
 
 class InterfaceCapteurs : public Thread {

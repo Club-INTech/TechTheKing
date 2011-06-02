@@ -33,13 +33,23 @@ Manager::assPolaire(){
     
     if(delta_angle==0)
     {
-		x -= ( delta_distance * CONVERSION_TIC_DISTANCE * fp_cos( CONVERSION_TIC_ANGLE * angleBkp ) );
+		if(CouleurRobot==BLEU){
+			x -= ( delta_distance * CONVERSION_TIC_DISTANCE * fp_cos( CONVERSION_TIC_ANGLE * angleBkp ) );
+        }
+        else{
+			x += ( delta_distance * CONVERSION_TIC_DISTANCE * fp_cos( CONVERSION_TIC_ANGLE * angleBkp ) );
+		}
         y += ( delta_distance * CONVERSION_TIC_DISTANCE * fp_sin( CONVERSION_TIC_ANGLE * angleBkp ) );
     }
     else
     {
         r = CONVERSION_COURBURE_TIC_MM * (double)delta_distance/(double)delta_angle;
-		x-= r * (-fp_sin(CONVERSION_TIC_ANGLE * angle) + fp_sin(CONVERSION_TIC_ANGLE * angleBkp));
+		if(CouleurRobot==BLEU){
+			x -= r * (-fp_sin(CONVERSION_TIC_ANGLE * angle) + fp_sin(CONVERSION_TIC_ANGLE * angleBkp));
+        }
+        else{
+			x += r * (-fp_sin(CONVERSION_TIC_ANGLE * angle) + fp_sin(CONVERSION_TIC_ANGLE * angleBkp));
+		}
         y+= r * (fp_cos(CONVERSION_TIC_ANGLE * angle) - fp_cos(CONVERSION_TIC_ANGLE * angleBkp));
         //printlnLong(r*(-fp_sin(CONVERSION_TIC_ANGLE * angle) + fp_sin(CONVERSION_TIC_ANGLE * angleBkp)));
     }

@@ -51,6 +51,7 @@ public:
     void setYRobot(int yMm);
     void setEvitement();
     void ecrireSerie(std::string msg);
+    void actualiserCouleurRobot();
 private:
     InterfaceAsservissement& operator=(const InterfaceAsservissement&);
     InterfaceAsservissement(std::string port, int precisionAStar);
@@ -71,7 +72,6 @@ private:
     SerialPort m_serialPort;
     boost::mutex m_evitement_mutex;
     boost::mutex  m_serial_mutex;
-    static boost::mutex m_instance_mutex;
     std::string m_port;
 };
 
