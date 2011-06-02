@@ -102,6 +102,9 @@ class Socket{
         void getAllPions();
 };
 
+void setCouleurRobot(Couleur couleur);
+Couleur getCouleurRobot();
+
 class InterfaceAsservissement {
 	friend class InterfaceCapteurs;
 public:
@@ -186,6 +189,21 @@ class InterfaceActionneurs{
         void positionAimantGauche(ModeAimant mode);
         void positionAimantDroit(ModeAimant mode);
         void arret(void);
+};
+
+class AStar{
+	private:
+		bool trouverChemin();
+		list<Noeud*>::iterator trouverMeilleurNoeud();
+		void ajouterCasesAdjacentes(Noeud* noeud);
+		void transfererNoeud(Noeud* noeud);
+		void remonterChemin();
+	public:	
+		void debugGraphique(std::vector<Point> listePoints);
+		AStar(int precision=50);
+		void setPrecision(int precision);
+		vector<Point> getChemin(Point depart, Point arrivee);
+		
 };
 
 void ouvrir_adaptateur_i2c ();

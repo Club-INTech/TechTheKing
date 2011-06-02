@@ -89,7 +89,34 @@ Noeud::~Noeud(){
 
 /* ce qui concerne AStar */
 
+#ifdef DEBUG_GRAPHIQUE
+using namespace Magick;
 
+void AStar::debugGraphique(std::vector<Point> listePoints){
+    cout << "Conversion du chemin emprunté par le robot en graphique..." << endl;
+    Image image( "img/table.png" );
+    
+    /* Affiche les obstacles */
+    for(unsigned int i=0;i<listeObstacles.size();i++){
+        (listeObstacles[i].first)->draw(&image);
+    }
+    
+    /* Affiche la courbe */
+    image.strokeColor(Color(MaxRGB,MaxRGB,MaxRGB,MaxRGB/2));
+    //image.strokeWidth(2*TAILLE_ROBOT);
+    image.strokeWidth(15);
+    for(unsigned int i=0;i<listePoints.size()-1;i++)
+        image.draw(DrawableLine((listePoints[i].getX())*900/3000,
+        630-listePoints[i].getY()*630/2100,
+        listePoints[i+1].getX()*900/3000,
+        630-listePoints[i+1].getY()*630/2100));
+    image.magick("png");
+    std::string tmp("cheminRobot");
+    image.display();
+    cout<<"chemin emprunté dans le robot écrit dans cheminRobot.png"<<endl;
+}
+
+#endif
 
 vector <Point> AStar::getChemin(Point depart, Point arrivee){
 	REQUIRE(depart!=arrivee, "Le point de départ est différent du point d'arrivée du robot");
@@ -127,8 +154,10 @@ void AStar::ajouterCasesAdjacentes(Noeud* noeud){
 			if(i==noeudX && j==noeudY)
 				continue;
 			if(estDansListe(m_listeFermee,i,j)==m_listeFermee.end()){ //si le a déjà été étudié, on ne fait rien, sinon...
-						 // si le point est dans un obstacle de la couleur du robot ou sur une planche de bois, on ignore pour ne pas le déplacer ou se bloquer
 				Noeud* tmp = new Noeud(i,j);
+				// si le point est dans un obstacle de la couleur du robot
+				// ou sur une planche de bois, on ignore pour ne pas le déplacer ou se bloquer.
+				// Si cet obstacle est le point d'arrivee, ça ne s'applique pas
 				if(ListeObstacles::contientCercle(i,j,TAILLE_ROBOT,NOIR)!=NULL)
 				{
 					continue;
@@ -236,6 +265,24 @@ void AStar::remonterChemin(){
  */
 
 bool AStar::trouverChemin(){
+		//Supression de l'arrivee de la liste d'obstacles
+		Obstacle* bloqueArrivee;
+		std::vector<Obstacle*> listeObstaclesBloquants;
+		while((bloqueArrivee=ListeObstacles::contientCercle(m_arrivee.getX(),m_arrivee.getY(),TAILLE_ROBOT,NOIR))!=NULL
+			   || (bloqueArrivee=ListeObstacles::contientCercle(m_arrivee.getX(),m_arrivee.getY(),TAILLE_ROBOT,COULEUR_ROBOT))!=NULL
+			   || (bloqueArrivee=ListeObstacles::contientCercle(m_arrivee.getX(),m_arrivee.getY(),TAILLE_ROBOT,COULEUR_ADVERSE))!=NULL
+			   || (bloqueArrivee=ListeObstacles::contientCercle(m_arrivee.getX(),m_arrivee.getY(),TAILLE_ROBOT,NEUTRE))!=NULL
+			 ) 
+		{
+			listeObstaclesBloquants.push_back(bloqueArrivee);
+			#ifdef DEBUG
+				std::cout << "Obstacle sur le point d'arrivée : suppression" << *bloqueArrivee << std::endl;
+			#endif
+			for( std::vector< std::pair<Obstacle*,int> >::iterator it = listeObstacles.begin() ; it !=listeObstacles.end() ; it++){
+				if(*(it->first) == *bloqueArrivee)
+					listeObstacles.erase(it);
+			}
+		}
 		Noeud* courant = new Noeud(m_depart.getX(),m_depart.getY(),0,m_depart.rayon(m_arrivee)); //initialisation du noeud courant..
 		m_listeOuverte.push_back(courant);
 		transfererNoeud(courant);
@@ -263,10 +310,17 @@ bool AStar::trouverChemin(){
 			}
 				
 		}
+		for(std::vector<Obstacle*>::iterator it =listeObstaclesBloquants.begin(); it!=listeObstaclesBloquants.end();it++)
+		{
+			if((*it)->getCouleur()==NOIR){
+				listeObstacles.push_back(std::make_pair<Obstacle*,int>(*it,0));
+			}
+		}
 		if(m_chemin.empty())
 		{
 			return false;
-		}                                                                                
+		}
+		debugGraphique(m_chemin);                                                                                
 		m_listeOuverte.clear();
 		m_listeFermee.clear();
 		return true;

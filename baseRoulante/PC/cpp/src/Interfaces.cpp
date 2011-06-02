@@ -9,9 +9,18 @@
 #include "Obstacles.h"
 #include <ctime>
 
+
 #define DEMI_LARGEUR_ROBOT 77
 using namespace std;
 Adaptator* adaptateur_i2c;
+
+void setCouleurRobot(Couleur couleur){
+	COULEUR_ROBOT = couleur;
+}
+
+Couleur getCouleurRobot(){
+	return COULEUR_ROBOT;
+}
 
 
 /*********************************************************/
@@ -122,6 +131,7 @@ void detectionSerieUsb(InterfaceAsservissement* asserv){
 void InterfaceAsservissement::ecrireSerie(std::string msg){
 	m_serialPort.Write(msg);
 }
+
 void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
     m_lastArrivee = arrivee;
     m_lastNbPoints = nbPoints;
@@ -134,9 +144,13 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
    Point depart(xDepart,yDepart);
    vector<Point> listePointsTmp;
    
-   if( ListeObstacles::contientCercle(xDepart,yDepart,TAILLE_ROBOT,NOIR)!=NULL
+   if(ListeObstacles::contientCercle(xDepart,yDepart,TAILLE_ROBOT,NOIR)!=NULL
 	|| ListeObstacles::contientCercle(xDepart,yDepart,TAILLE_ROBOT,COULEUR_ROBOT)!=NULL
-	|| ListeObstacles::contientCercle(xDepart,yDepart,TAILLE_ROBOT,NEUTRE)!=NULL ){
+	|| ListeObstacles::contientCercle(xDepart,yDepart,TAILLE_ROBOT,NEUTRE)!=NULL
+	|| xDepart > 3000-TAILLE_ROBOT
+	|| xDepart < TAILLE_ROBOT
+	|| yDepart > 2100-TAILLE_ROBOT
+	|| yDepart < TAILLE_ROBOT){
 		#ifdef DEBUG
 		std::cout << "Le robot croit qu'il est bloqué dans un obstacle ! Génération d'une lolconsigne aléatoire" << std::endl;
 		#endif
