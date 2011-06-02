@@ -62,6 +62,7 @@ void InterfaceAsservissement::debugGraphique(){
 
 
 InterfaceAsservissement* InterfaceAsservissement::Instance(){
+   	boost::mutex::scoped_lock lolilol_evitement(m_instance_mutex);
     if(m_instance==NULL){
        #ifdef DEBUG
          cout<<"Création de l'interface d'asservissement"<<endl;
@@ -204,16 +205,17 @@ inline void InterfaceAsservissement::eviter(){
 	reGoTo();
 }
 void InterfaceAsservissement::attendreArrivee(){
+	
 	std::string result;
 	while(result[0]!='f'){
-		while(!m_serialPort.IsDataAvailable()){
+		//while(!m_serialPort.IsDataAvailable()){
 			if(m_evitement==true){
 				std::cout << "Obstacle détecté" << std::endl;
 				eviter();
 				return;
 			}
-		}
-		result=m_serialPort.ReadLine();
+		//}
+		//result=m_serialPort.ReadLine();
 	}
 	sleep(2);
 }
@@ -233,6 +235,7 @@ void InterfaceAsservissement::avancer(unsigned int distanceMm){
 		ecrireSerie("b0"+formaterInt(-distanceTicks));
 	}
     attendreArrivee();
+    
 }
 
 void InterfaceAsservissement::reculer(unsigned int distanceMm){
@@ -326,7 +329,7 @@ int InterfaceAsservissement::getDistanceRobot()
 	return readInt();
 }
 
-void InterfaceAsservissement::setEvitement(){	
+void InterfaceAsservissement::setEvitement(){
 	boost::mutex::scoped_lock lolilol_evitement(m_evitement_mutex);
 	m_evitement=true;
 }
@@ -564,16 +567,12 @@ void InterfaceCapteurs::thread(){
     while(1){	
         //Il y a quelquechose devant
         int distanceUltraSon = DistanceUltrason();
-        cout << distanceUltraSon << endl;
         if(distanceUltraSon>0 && distanceUltraSon < 7000) {
-			#ifdef DEBUG
-			std::cout << "OBSTACLE DÉTECTÉ" << std::endl;
-			#endif
+				interfaceAsservissement->setEvitement();
 			{
 				boost::mutex::scoped_lock locklilol(m_ultrason_mutex);
 				m_distanceDernierObstacle = distanceUltraSon;
 			}
-			interfaceAsservissement->setEvitement();
 			sleep(3);
         }
         usleep(10000);
@@ -681,7 +680,7 @@ void InterfaceCapteurs::gestionJumper()
 	std::cout << "Attente jumper" << std::endl;
     #endif
     while(EtatJumper()==false);
-    m_thread_finMatch = boost::thread(boost::bind(&InterfaceCapteurs::gestionFinMatch,this));
+    //m_thread_finMatch = boost::thread(boost::bind(&InterfaceCapteurs::gestionFinMatch,this));
 }
 
 void InterfaceCapteurs::gestionFinMatch(void){
