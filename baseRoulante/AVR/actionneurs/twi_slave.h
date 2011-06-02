@@ -1,5 +1,5 @@
 #define TWI_BUFFER_SIZE 5
-                               
+
 #define MASTER_CMD_AX1_GOTO1    0X11
 #define MASTER_CMD_AX2_GOTO1    0X12
 #define MASTER_CMD_AX1_GOTO2    0X13
@@ -29,8 +29,8 @@
 extern unsigned char messageBuf[];
 
 /****************************************************************************
-  Function definitions
-****************************************************************************/
+ *  Function definitions
+ ****************************************************************************/
 void TWI_Loop( void );
 void TWI_Init ( void );
 void TWI_Slave_Initialise( unsigned char );
@@ -41,8 +41,8 @@ void TWI_Start_Transceiver( void );
 unsigned char TWI_Get_Data_From_Transceiver( unsigned char *, unsigned char );
 
 /****************************************************************************
-  Bit and byte definitions
-****************************************************************************/
+ *  Bit and byte definitions
+ ****************************************************************************/
 #define TWI_READ_BIT  0   // Bit position for R/W bit in "address byte".
 #define TWI_ADR_BITS  1   // Bit position for LSB of the slave address bits in the init byte.
 #define TWI_GEN_BIT   0   // Bit position for LSB of the general call bit in the init byte.
@@ -51,8 +51,8 @@ unsigned char TWI_Get_Data_From_Transceiver( unsigned char *, unsigned char );
 #define FALSE         0
 
 /****************************************************************************
-  TWI State codes
-****************************************************************************/
+ *  TWI State codes
+ ****************************************************************************/
 // General TWI Master staus codes                      
 #define TWI_START                  0x08  // START has been transmitted  
 #define TWI_REP_START              0x10  // Repeated START has been transmitted
