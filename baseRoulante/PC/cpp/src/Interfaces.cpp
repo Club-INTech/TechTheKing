@@ -288,7 +288,7 @@ InterfaceAsservissement::InterfaceAsservissement(std::string port, int precision
     m_serialPort.Open();
     #ifdef DEBUG
       cout<<"Interface crée"<<endl;
-      
+in      
     #endif
 }
 
