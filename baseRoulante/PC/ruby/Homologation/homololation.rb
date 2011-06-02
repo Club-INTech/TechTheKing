@@ -51,6 +51,7 @@ puts "Démarrage";
 
 puts "Go To 1500 1050";
 InterfaceAsservissement.goTo(Point.new(1500,1050),80);
+InterfaceAsservissement.tourner(-Math::PI*3/4)
 
 puts "Prise de pion";
 sleep(2);
