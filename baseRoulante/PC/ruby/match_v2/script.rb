@@ -100,8 +100,8 @@ InterfaceAsservissement.tourner(0);
 
 ajoutPion();
 
-tabPosRouge = [Point.new(2500,1100),Point.new(2500,1100),Point.new(2500,1100)]
-tabPosBleu = [Point.new(2500,1100),Point.new(2500,1100),Point.new(2500,1100)]
+tabPosRouge = [Point.new(2400,1100),Point.new(600,1100),Point.new(1500,1700)]
+tabPosBleu = [Point.new(600,1100),Point.new(2400,1100),Point.new(1500,1700)]
 i = 0
 
 # Mouvement jusqu'à trouver un pion
@@ -115,10 +115,10 @@ if (InterfaceCapteurs.EtatCentre() == false)
 
 	# Déplacement sur la case bonus
 	if(getCouleurRobot()==BLEU)
-        InterfaceAsservissement.goTo(Point.new(,),80);
+        InterfaceAsservissement.goTo(Point.new(975,1575),80);
 	end
 	if(getCouleurRobot()==ROUGE)
-		InterfaceAsservissement.goTo(Point.new(,),80);
+		InterfaceAsservissement.goTo(Point.new(2025,1575),80);
 	end
 	
 	# Dépose le pion
