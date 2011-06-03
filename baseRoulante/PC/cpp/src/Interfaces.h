@@ -62,6 +62,7 @@ private:
 private:
 	bool m_evitement;
     Point m_lastArrivee;
+    Point m_lastDepart;
     int m_lastNbPoints;
     int m_compteurImages;
     vector<Point> m_lastTrajectory;

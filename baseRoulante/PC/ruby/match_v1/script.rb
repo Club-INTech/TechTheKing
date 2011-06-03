@@ -52,16 +52,16 @@ sleep(0.5);
 
 InterfaceActionneurs.angleBrasDroit(LibChessUp::CENTRE);
 
-sleep(1);
+sleep(0.5);
 
 InterfaceActionneurs.hauteurBrasDroit(LibChessUp::MILIEU);
 
-sleep(1);
+sleep(0.5);
 
 
 if (getCouleurRobot() == ROUGE)
 	InterfaceAsservissement.goTo(Point.new(1500,350),80);
-	InterfaceAsservissement.tourner(Math::PI/2);
+	InterfaceAsservissement.tourner(Math::3*PI/4);
 else
 	InterfaceAsservissement.goTo(Point.new(1500,350),80);
 end
@@ -69,12 +69,12 @@ end
 puts "Lacher pion";
 InterfaceActionneurs.hauteurBrasDroit(LibChessUp::CAPTURE);
 
-sleep(1.5);
+sleep(0.5);
 
 InterfaceActionneurs.positionAimantDroit(LibChessUp::HAUT);
 InterfaceActionneurs.positionAimantGauche(LibChessUp::HAUT);
 
-sleep(1);
+sleep(0.5);
 
 InterfaceActionneurs.angleBrasDroit(LibChessUp::REPLIE);
 
@@ -85,6 +85,7 @@ InterfaceActionneurs.angleBrasDroit(LibChessUp::REPLIE);
 puts "Déplacement random jusqu'à trouver un pion"
 
 InterfaceAsservissement.reculer(300);
+InterfaceAsservissement.tourner(0);
 
 ajoutPion();
 
