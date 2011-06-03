@@ -82,7 +82,7 @@ void TWI_Data( void )
         }
         
         else if (messageBuf[0] == MASTER_CMD_CENTRE) {
-            messageBuf[0] = PINC & (1<< PORTC1);
+            messageBuf[0] = PINC & PIN_CENTRE;
             
             TWI_Start_Transceiver_With_Data(messageBuf, 1);
         }

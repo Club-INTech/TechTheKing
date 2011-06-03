@@ -207,6 +207,8 @@ void ajoutPion();
  */
 void initialisation();
 
+void ajouterPions();
+
 void addRobotAdverse();
 
 }

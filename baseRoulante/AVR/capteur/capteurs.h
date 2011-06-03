@@ -30,8 +30,9 @@ extern volatile uint16_t ultrason;
 /*
  *  Pins des capteurs tout ou rien
  */
-#define PIN_BRAS1  (1 << PORTB2)
-#define PIN_BRAS2  (1 << PORTB1)
+#define PIN_BRAS1   (1 << PORTB2)
+#define PIN_BRAS2   (1 << PORTB1)
 #define PIN_JUMPER  (1 << PORTD7)
+#define PIN_CENTRE  (1 << PORTC1)
 
 #endif
