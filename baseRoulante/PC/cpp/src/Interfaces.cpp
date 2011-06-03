@@ -157,6 +157,10 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
    Point depart(xDepart,yDepart);
    vector<Point> listePointsTmp;
    
+   if(m_lastDepart.rayon(depart) < 20){
+	   reculer(300);
+   }
+   
    if(ListeObstacles::contientCercle(xDepart,yDepart,TAILLE_ROBOT,NOIR)!=NULL
 	|| ListeObstacles::contientCercle(xDepart,yDepart,TAILLE_ROBOT,COULEUR_ROBOT)!=NULL
 	|| ListeObstacles::contientCercle(xDepart,yDepart,TAILLE_ROBOT,NEUTRE)!=NULL

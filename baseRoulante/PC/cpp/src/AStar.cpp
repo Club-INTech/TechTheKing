@@ -269,23 +269,27 @@ void AStar::remonterChemin(){
 
 bool AStar::trouverChemin(){
 		//Supression de l'arrivee de la liste d'obstacles
-		Obstacle* bloqueArrivee;
+		Obstacle* bloque;
 		std::vector<Obstacle*> listeObstaclesBloquants;
-		while((bloqueArrivee=ListeObstacles::contientCercle(m_arrivee.getX(),m_arrivee.getY(),TAILLE_ROBOT,NOIR))!=NULL
-			   || (bloqueArrivee=ListeObstacles::contientCercle(m_arrivee.getX(),m_arrivee.getY(),TAILLE_ROBOT,COULEUR_ROBOT))!=NULL
-			   || (bloqueArrivee=ListeObstacles::contientCercle(m_arrivee.getX(),m_arrivee.getY(),TAILLE_ROBOT,COULEUR_ADVERSE))!=NULL
-			   || (bloqueArrivee=ListeObstacles::contientCercle(m_arrivee.getX(),m_arrivee.getY(),TAILLE_ROBOT,NEUTRE))!=NULL
+		while((bloque=ListeObstacles::contientCercle(m_arrivee.getX(),m_arrivee.getY(),TAILLE_ROBOT,NOIR))!=NULL
+			   || (bloque=ListeObstacles::contientCercle(m_arrivee.getX(),m_arrivee.getY(),TAILLE_ROBOT,COULEUR_ROBOT))!=NULL
+			   || (bloque=ListeObstacles::contientCercle(m_arrivee.getX(),m_arrivee.getY(),TAILLE_ROBOT,COULEUR_ADVERSE))!=NULL
+			   || (bloque=ListeObstacles::contientCercle(m_arrivee.getX(),m_arrivee.getY(),TAILLE_ROBOT,NEUTRE))!=NULL
+			   || (bloque=ListeObstacles::contientCercle(m_depart.getX(),m_depart.getY(),TAILLE_ROBOT,NOIR))!=NULL
+			   || (bloque=ListeObstacles::contientCercle(m_depart.getX(),m_depart.getY(),TAILLE_ROBOT,COULEUR_ROBOT))!=NULL
+			   || (bloque=ListeObstacles::contientCercle(m_depart.getX(),m_depart.getY(),TAILLE_ROBOT,COULEUR_ADVERSE))!=NULL
+			   || (bloque=ListeObstacles::contientCercle(m_depart.getX(),m_depart.getY(),TAILLE_ROBOT,NEUTRE))!=NULL
 			 ) 
 		{
-			listeObstaclesBloquants.push_back(bloqueArrivee);
+			listeObstaclesBloquants.push_back(bloque);
 			#ifdef DEBUG
-				std::cout << "Obstacle sur le point d'arrivée : suppression de " << *bloqueArrivee << std::endl;
+				std::cout << "Obstacle sur le point d'arrivée : suppression de " << *bloque << std::endl;
 			#endif
 			for( std::vector< std::pair<Obstacle*,int> >::iterator it = listeObstacles.begin() ; it !=listeObstacles.end() ; it++){
-				if(*(it->first) == *bloqueArrivee){
+				if(*(it->first) == *bloque){
 					listeObstacles.erase(it);
 					#ifdef DEBUG
-					std::cout << "Supprimé : " << *bloqueArrivee << std::endl;
+					std::cout << "Supprimé : " << *bloque << std::endl;
 					#endif
 				}
 			}

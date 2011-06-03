@@ -61,7 +61,7 @@ sleep(0.5);
 
 if (getCouleurRobot() == ROUGE)
 	InterfaceAsservissement.goTo(Point.new(1500,350),80);
-	InterfaceAsservissement.tourner(Math::3*PI/4);
+	InterfaceAsservissement.tourner(3*Math::PI/4);
 else
 	InterfaceAsservissement.goTo(Point.new(1500,350),80);
 end
