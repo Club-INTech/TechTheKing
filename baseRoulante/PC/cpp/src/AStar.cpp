@@ -115,7 +115,7 @@ void AStar::debugGraphique(std::vector<Point> listePoints){
         630-listePoints[i+1].getY()*630/2100));
     image.magick("png");
     std::string tmp("cheminRobot");
-    image.write(tmp + numToString(compteurImages++));;
+    image.display();
     cout<<"chemin emprunté dans le robot écrit dans cheminRobot.png"<<endl;
 }
 
@@ -339,7 +339,7 @@ bool AStar::trouverChemin(){
 			return false;
 		}
 		else{
-			//debugGraphique(m_chemin);                                                                                
+			debugGraphique(m_chemin);                                                                                
 			m_listeOuverte.clear();
 			m_listeFermee.clear();
 			return true;

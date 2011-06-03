@@ -52,6 +52,7 @@ public:
     void ecrireSerie(std::string msg);
     void actualiserCouleurRobot();
     void Open();
+    void setPionCentre(bool etat);
 private:
     InterfaceAsservissement& operator=(const InterfaceAsservissement&);
     InterfaceAsservissement(std::string port, int precisionAStar);
@@ -59,8 +60,10 @@ private:
     void attendreArrivee();
     int readInt();
     inline void eviter();
+    
 private:
 	bool m_evitement;
+	bool m_pionCentre;
     Point m_lastArrivee;
     Point m_lastDepart;
     int m_lastNbPoints;
@@ -73,6 +76,7 @@ private:
     SerialPort m_serialPort;
     boost::mutex m_evitement_mutex;
     boost::mutex  m_serial_mutex;
+    boost::mutex m_pionCentre_mutex;
     std::string m_port;
 };
 
