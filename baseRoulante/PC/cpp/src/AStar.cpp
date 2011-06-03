@@ -269,26 +269,35 @@ void AStar::remonterChemin(){
 
 bool AStar::trouverChemin(){
 		//Supression de l'arrivee de la liste d'obstacles
-		Obstacle* bloqueArrivee;
+		Obstacle* bloque;
 		std::vector<Obstacle*> listeObstaclesBloquants;
-		while((bloqueArrivee=ListeObstacles::contientCercle(m_arrivee.getX(),m_arrivee.getY(),TAILLE_ROBOT,NOIR))!=NULL
-			   || (bloqueArrivee=ListeObstacles::contientCercle(m_arrivee.getX(),m_arrivee.getY(),TAILLE_ROBOT,COULEUR_ROBOT))!=NULL
-			   || (bloqueArrivee=ListeObstacles::contientCercle(m_arrivee.getX(),m_arrivee.getY(),TAILLE_ROBOT,COULEUR_ADVERSE))!=NULL
-			   || (bloqueArrivee=ListeObstacles::contientCercle(m_arrivee.getX(),m_arrivee.getY(),TAILLE_ROBOT,NEUTRE))!=NULL
+		while((bloque=ListeObstacles::contientCercle(m_arrivee.getX(),m_arrivee.getY(),TAILLE_ROBOT,NOIR))!=NULL
+			   || (bloque=ListeObstacles::contientCercle(m_arrivee.getX(),m_arrivee.getY(),TAILLE_ROBOT,COULEUR_ROBOT))!=NULL
+			   || (bloque=ListeObstacles::contientCercle(m_arrivee.getX(),m_arrivee.getY(),TAILLE_ROBOT,COULEUR_ADVERSE))!=NULL
+			   || (bloque=ListeObstacles::contientCercle(m_arrivee.getX(),m_arrivee.getY(),TAILLE_ROBOT,NEUTRE))!=NULL
+			   || (bloque=ListeObstacles::contientCercle(m_depart.getX(),m_depart.getY(),TAILLE_ROBOT,NOIR))!=NULL
+			   || (bloque=ListeObstacles::contientCercle(m_depart.getX(),m_depart.getY(),TAILLE_ROBOT,COULEUR_ROBOT))!=NULL
+			   || (bloque=ListeObstacles::contientCercle(m_depart.getX(),m_depart.getY(),TAILLE_ROBOT,COULEUR_ADVERSE))!=NULL
+			   || (bloque=ListeObstacles::contientCercle(m_depart.getX(),m_depart.getY(),TAILLE_ROBOT,NEUTRE))!=NULL
 			 ) 
 		{
-			listeObstaclesBloquants.push_back(bloqueArrivee);
+			listeObstaclesBloquants.push_back(bloque);
 			#ifdef DEBUG
-				std::cout << "Obstacle sur le point d'arrivée : suppression de " << *bloqueArrivee << std::endl;
+				std::cout << "Obstacle sur le point d'arrivée : suppression de " << *bloque << std::endl;
 			#endif
-			for( std::vector< std::pair<Obstacle*,int> >::iterator it = listeObstacles.begin() ; it !=listeObstacles.end() ; it++){
-				if(*(it->first) == *bloqueArrivee)
-					listeObstacles.erase(it);
+			for(int k = 0; k < listeObstacles.size(); k++)
+			{
+				if(*(listeObstacles[k].first) == *bloque){
+					listeObstacles.erase(listeObstacles.begin() + k);
 					#ifdef DEBUG
-					std::cout << "Supprimé " << *bloqueArrivee << std::endl;
+					std::cout << "Supprimé : " << *bloque << std::endl;
 					#endif
+				}
 			}
 		}
+		#ifdef DEBUG
+			std::cout << "Début AStar " << std::endl;
+		#endif
 		Noeud* courant = new Noeud(m_depart.getX(),m_depart.getY(),0,m_depart.rayon(m_arrivee)); //initialisation du noeud courant..
 		m_listeOuverte.push_back(courant);
 		transfererNoeud(courant);
@@ -312,10 +321,16 @@ bool AStar::trouverChemin(){
 			}
 				
 		}
+		#ifdef DEBUG
+			std::cout << "Début Rajout de l'obstacle supprimé " << std::endl;
+		#endif
 		for(std::vector<Obstacle*>::iterator it =listeObstaclesBloquants.begin(); it!=listeObstaclesBloquants.end();it++)
 		{
 			if((*it)->getCouleur()==NOIR){
 				listeObstacles.push_back(std::make_pair<Obstacle*,int>(*it,0));
+				#ifdef DEBUG
+				std::cout << "Rajouté " << std::endl;
+				#endif
 			}
 		}
 		if(m_chemin.empty())
@@ -324,7 +339,7 @@ bool AStar::trouverChemin(){
 			return false;
 		}
 		else{
-			debugGraphique(m_chemin);                                                                                
+			//debugGraphique(m_chemin);                                                                                
 			m_listeOuverte.clear();
 			m_listeFermee.clear();
 			return true;

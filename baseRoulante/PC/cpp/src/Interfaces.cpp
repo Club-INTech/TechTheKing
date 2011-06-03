@@ -157,24 +157,21 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
    Point depart(xDepart,yDepart);
    vector<Point> listePointsTmp;
    
-   if(ListeObstacles::contientCercle(xDepart,yDepart,TAILLE_ROBOT,NOIR)!=NULL
-	|| ListeObstacles::contientCercle(xDepart,yDepart,TAILLE_ROBOT,COULEUR_ROBOT)!=NULL
-	|| ListeObstacles::contientCercle(xDepart,yDepart,TAILLE_ROBOT,NEUTRE)!=NULL
-	|| ListeObstacles::contientCercle(xDepart,yDepart,TAILLE_ROBOT,COULEUR_ADVERSE)!=NULL
-	|| xDepart > 3000-TAILLE_ROBOT
+   if(m_lastDepart.rayon(depart) < 20){
+	   reculer(300);
+	   goTo(arrivee,nbPoints);
+   }
+   
+   if(
+	xDepart > 3000-TAILLE_ROBOT
 	|| xDepart < TAILLE_ROBOT
 	|| yDepart > 2100-TAILLE_ROBOT
 	|| yDepart < TAILLE_ROBOT){
 		#ifdef DEBUG
-		std::cout << "Le robot croit qu'il est bloqué dans un obstacle ! Génération d'une lolconsigne aléatoire" << std::endl;
+		std::cout << "Le robot croit ere bloqué sur les bords de table" << std::endl;
 		#endif
-		tourner(M_PI/2*rand()/(float)RAND_MAX);
-		if(rand()/(float)RAND_MAX>0.5){
-			avancer(300);
-		}
-		else{
-			reculer(300);
-	    }
+		tourner(M_PI*rand()/(float)RAND_MAX);
+		avancer(500);
 		goTo(arrivee,nbPoints);
    }
    else
@@ -185,6 +182,7 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
 			m_lastListeConsignes=ListePoints::convertirEnConsignes(m_lastTrajectory,getDistanceRobot()); 
 			ListeConsignes::transfertSerie(m_lastListeConsignes,m_serialPort);
 			attendreArrivee();
+			m_lastDepart=depart;
 	   }
 	   else{
 			stop();
@@ -285,49 +283,18 @@ void InterfaceAsservissement::tourner(double angleRadian){
 }
 
 InterfaceAsservissement::InterfaceAsservissement(std::string port, int precision) :m_serialPort(port), m_evitement(false), m_compteurImages(0), m_pathfinding(precision){
-    m_serialPort.Open();
     #ifdef DEBUG
-      cout<<"Interface crée"<<endl;
-      
+      cout<<"Interface Asservissement crée"<<endl;      
     #endif
 }
 
-
-void InterfaceAsservissement::recalage()
-{
-	pwmMaxTranslation(100);
-	pwmMaxRotation(0);
-	reculer(500);
-	pwmMaxRotation(255);
-	
-	if(COULEUR_ROBOT==BLEU){
-		setXRobot(3000-DEMI_LARGEUR_ROBOT);
-	}
-	else if(COULEUR_ROBOT==ROUGE){
-		setXRobot(DEMI_LARGEUR_ROBOT);
-	}
-	avancer(650);
-	if(COULEUR_ROBOT==BLEU){
-		tourner(-M_PI/2);
-	}
-	else if(COULEUR_ROBOT==ROUGE){
-		tourner(M_PI/2);
-	}
-	pwmMaxRotation(0);
-	pwmMaxTranslation(100);
-	reculer(500);
-	pwmMaxRotation(255);
-	setYRobot(2100-DEMI_LARGEUR_ROBOT);
-
-	avancer(100);
-	tourner(0);
-	
-	reculer(500);
-	
-	//pwmMaxRotation(255);
-	//pwmMaxTranslation(100);
-	//reculer(150);
+void InterfaceAsservissement::Open(){
+	m_serialPort.Open();
+    #ifdef DEBUG
+      cout<<"Interface Asservissement Ouverte"<<endl;      
+    #endif
 }
+
 
 void InterfaceAsservissement::pwmMaxTranslation(unsigned char valPWM){
 	ecrireSerie("pt0"+formaterInt(valPWM));
@@ -515,12 +482,10 @@ void InterfaceActionneurs::positionAimantGauche(ModeAimant mode)
 {
     unsigned char message[2];
     
-    
-    // MAUVAIS, DANS L'IDEAL, INVERSER CONSIGNES ICI ET DANS L'AVR
     if (mode == HAUT)
-        message[0] = 0X31;
-    else if (mode == BAS)
         message[0] = 0X21;
+    else if (mode == BAS)
+        message[0] = 0X31;
     
     message[1] = '\0';
     
@@ -669,6 +634,26 @@ bool InterfaceCapteurs::EtatBras ( Bras val ) {
 char InterfaceCapteurs::LecteurCB ( void ) {
 
     unsigned char msg[2] = {0X30, '\0'};
+    unsigned char rec[1];
+    
+    int err;
+    
+    if( (err= i2c_write(adaptateur_i2c,0X20,msg,2)) != 0){
+        fprintf(stderr, "Error writing to the adapter: %s\n", linkm_error_msg(err));
+        exit(1);
+    }
+    if( (err= i2c_read(adaptateur_i2c,0X20,rec,1)) != 0){
+        fprintf(stderr, "Error reading from the adapter: %s\n", linkm_error_msg(err));
+        exit(1);
+    }
+    
+    return rec[0];
+}
+    
+    
+bool InterfaceCapteurs::EtatCentre( void ) {
+    
+    unsigned char msg[2] = {0X43, '\0'};
     unsigned char rec[1];
     
     int err;

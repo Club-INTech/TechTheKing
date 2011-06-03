@@ -34,7 +34,6 @@ public:
     void goTo(Point arrivee,int nbPoints);
     void pwmMaxTranslation(unsigned char valPWM);
     void pwmMaxRotation(unsigned char valPWM);
-    void recalage();
     void reGoTo();
     void avancer(unsigned int distanceMm);
     void reculer(unsigned int distanceMm);
@@ -52,6 +51,7 @@ public:
     void setEvitement();
     void ecrireSerie(std::string msg);
     void actualiserCouleurRobot();
+    void Open();
 private:
     InterfaceAsservissement& operator=(const InterfaceAsservissement&);
     InterfaceAsservissement(std::string port, int precisionAStar);
@@ -62,6 +62,7 @@ private:
 private:
 	bool m_evitement;
     Point m_lastArrivee;
+    Point m_lastDepart;
     int m_lastNbPoints;
     int m_compteurImages;
     vector<Point> m_lastTrajectory;
@@ -88,6 +89,7 @@ public:
     void gestionJumper();
     void gestionFinMatch();
     bool EtatJumper ( void );
+    bool EtatCentre( void );
 private:
 	InterfaceCapteurs();
     inline void traiterAbsenceObstacle();

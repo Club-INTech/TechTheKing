@@ -153,6 +153,7 @@ void ListeObstacles::setCouleursAuto(){
     }
 }
 
+
 void ListeObstacles::initialisation(){
     listeObstacles.push_back(std::make_pair<Obstacle*,int>(new RectangleObstacle(200,1689,200+TAILLE_ROBOT,11),0));
     listeObstacles.push_back(std::make_pair<Obstacle*,int>(new RectangleObstacle(2800,1689,200+TAILLE_ROBOT,11),0));
@@ -197,6 +198,38 @@ void ListeObstacles::ajouterPions(){
 	}
 }
 
+void ListeObstacles::ajoutPion(){
+	if(COULEUR_ROBOT==ROUGE){
+		COULEUR_ADVERSE=BLEU;
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE32,BLEU),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE34,BLEU),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE36,BLEU),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE41,BLEU),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE43,BLEU),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE45,BLEU),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE52,BLEU),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE54,BLEU),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE56,BLEU),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE61,BLEU),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE63,BLEU),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE65,BLEU),1));
+	}
+	if(COULEUR_ROBOT==BLEU){
+		COULEUR_ADVERSE=ROUGE;
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE31,ROUGE),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE33,ROUGE),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE35,ROUGE),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE42,ROUGE),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE44,ROUGE),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE46,ROUGE),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE51,ROUGE),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE53,ROUGE),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE55,ROUGE),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE62,ROUGE),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE64,ROUGE),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE66,ROUGE),1));
+	}
+}
 void ListeObstacles::refreshPions(std::vector< std::pair<Obstacle*,int> > listePions){
 	erasePions();
 	for(std::vector< std::pair<Obstacle*,int> >::iterator it=listePions.begin(); it != listePions.end() ; it++){

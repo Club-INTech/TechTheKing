@@ -53,18 +53,19 @@ puts "Go To 1500 1050";
 InterfaceAsservissement.goTo(Point.new(1500,1050),80);
 
 puts "Prise de pion";
-sleep(2);
+sleep(0.5);
 
 InterfaceActionneurs.angleBrasDroit(LibChessUp::CENTRE);
 
-sleep(2);
+sleep(1);
 
 InterfaceActionneurs.hauteurBrasDroit(LibChessUp::MILIEU);
 
-sleep(2);
+sleep(0.5);
 
 puts "Go To 1500 350";
-InterfaceAsservissement.goTo(Point.new(1500,350),80);
+InterfaceAsservissement.tourner(Math::PI/2))
+InterfaceAsservissement.goTo(Point.new(1400,350),80);
 
 puts "Lacher pion";
 InterfaceActionneurs.hauteurBrasDroit(LibChessUp::CAPTURE);
