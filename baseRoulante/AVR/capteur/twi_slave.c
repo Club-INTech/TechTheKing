@@ -81,8 +81,8 @@ void TWI_Data( void )
             TWI_Start_Transceiver_With_Data(messageBuf, 1);
         }
         
-        else if (messageBuf[0] == MASTER_CMD_BRAS2) {
-            messageBuf[0] = PINB & PIN_BRAS2;
+        else if (messageBuf[0] == MASTER_CMD_CENTRE) {
+            messageBuf[0] = PINC & (1<< PORTC1);
             
             TWI_Start_Transceiver_With_Data(messageBuf, 1);
         }
