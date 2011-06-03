@@ -115,7 +115,6 @@ public:
     void goTo(Point arrivee,int nbPoints);
     void pwmMaxTranslation(unsigned char valPWM);
     void pwmMaxRotation(unsigned char valPWM);
-    void recalage();
     void reGoTo();
     void avancer(unsigned int distanceMm);
     void reculer(unsigned int distanceMm);

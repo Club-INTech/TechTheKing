@@ -159,18 +159,16 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
    
    if(m_lastDepart.rayon(depart) < 20){
 	   reculer(300);
+	   goTo(arrivee,nbPoints);
    }
    
-   if(ListeObstacles::contientCercle(xDepart,yDepart,TAILLE_ROBOT,NOIR)!=NULL
-	|| ListeObstacles::contientCercle(xDepart,yDepart,TAILLE_ROBOT,COULEUR_ROBOT)!=NULL
-	|| ListeObstacles::contientCercle(xDepart,yDepart,TAILLE_ROBOT,NEUTRE)!=NULL
-	|| ListeObstacles::contientCercle(xDepart,yDepart,TAILLE_ROBOT,COULEUR_ADVERSE)!=NULL
-	|| xDepart > 3000-TAILLE_ROBOT
+   if(
+	xDepart > 3000-TAILLE_ROBOT
 	|| xDepart < TAILLE_ROBOT
 	|| yDepart > 2100-TAILLE_ROBOT
 	|| yDepart < TAILLE_ROBOT){
 		#ifdef DEBUG
-		std::cout << "Le robot croit qu'il est bloqué dans un obstacle ! Génération d'une lolconsigne aléatoire" << std::endl;
+		std::cout << "Le robot croit ere bloqué sur les bords de table" << std::endl;
 		#endif
 		tourner(M_PI*rand()/(float)RAND_MAX);
 		avancer(500);
@@ -184,6 +182,7 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
 			m_lastListeConsignes=ListePoints::convertirEnConsignes(m_lastTrajectory,getDistanceRobot()); 
 			ListeConsignes::transfertSerie(m_lastListeConsignes,m_serialPort);
 			attendreArrivee();
+			m_lastDepart=depart;
 	   }
 	   else{
 			stop();

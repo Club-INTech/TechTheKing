@@ -39,6 +39,8 @@ require 'recalage.rb'
 puts "Attente du jumper";
 InterfaceCapteurs.gestionJumper();
 
+InterfaceAsservissement.avancer(300);
+
 #Démarrage des capteurs
 InterfaceCapteurs.ouvrirThread();
 
