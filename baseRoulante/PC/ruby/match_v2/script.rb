@@ -16,17 +16,14 @@ LibChessUp::initialisation();
 #Initialisation des bras.
 puts "Initialisation de la hauteur des bras";
 InterfaceActionneurs.hauteurBrasDroit(LibChessUp::CAPTURE);
-InterfaceActionneurs.hauteurBrasGauche(LibChessUp::TOUR);
 
 sleep(0.5);
 
 puts "Repli des bras";
-InterfaceActionneurs.angleBrasGauche(LibChessUp::REPLIE);
 InterfaceActionneurs.angleBrasDroit(LibChessUp::REPLIE);
 
 puts "Abaissement de l'aimant";
 InterfaceActionneurs.positionAimantDroit(LibChessUp::BAS);
-InterfaceActionneurs.positionAimantGauche(LibChessUp::BAS);
 
 puts "Recalage";
 require 'recalage.rb'
@@ -56,7 +53,7 @@ InterfaceActionneurs.angleBrasDroit(LibChessUp::CENTRE);
 
 sleep(0.5);
 
-InterfaceActionneurs.hauteurBrasDroit(LibChessUp::MILIEU);
+InterfaceActionneurs.hauteurBrasDroit(LibChessUp::TOUR);
 
 sleep(0.5);
 
@@ -78,12 +75,8 @@ if(getCouleurRobot()==ROUGE)
 end
 
 puts "Lacher pion";
-InterfaceActionneurs.hauteurBrasDroit(LibChessUp::CAPTURE);
-
-sleep(0.5);
 
 InterfaceActionneurs.positionAimantDroit(LibChessUp::HAUT);
-InterfaceActionneurs.positionAimantGauche(LibChessUp::HAUT);
 
 sleep(0.5);
 
@@ -106,13 +99,27 @@ i = 0
 
 # Mouvement jusqu'à trouver un pion
 while (InterfaceCapteurs.EtatCentre())
-	InterfaceAsservissement.goTo(tabPos[i],80);
+	if(getCouleurRobot()==BLEU)
+        InterfaceAsservissement.goTo(tabPosBleu[i],80);
+	end
+	if(getCouleurRobot()==ROUGE)
+		InterfaceAsservissement.goTo(tabPosRouge[i],80);
+	end
 	i += 1
 end
 
 # Pion détecté au centre
 if (InterfaceCapteurs.EtatCentre() == false)
 
+	# Prise du pion
+	InterfaceActionneurs.angleBrasDroit(LibChessUp::CENTRE);
+	InterfaceActionneurs.hauteurBrasDroit(LibChessUp::CAPTURE);
+	InterfaceActionneurs.positionAimantDroit(LibChessUp::BAS);
+	
+	sleep(0.5);
+	
+	InterfaceActionneurs.hauteurBrasDroit(LibChessUp::TOUR);
+	
 	# Déplacement sur la case bonus
 	if(getCouleurRobot()==BLEU)
         InterfaceAsservissement.goTo(Point.new(975,1575),80);
@@ -122,6 +129,9 @@ if (InterfaceCapteurs.EtatCentre() == false)
 	end
 	
 	# Dépose le pion
+	InterfaceActionneurs.positionAimantDroit(LibChessUp::HAUT);
+	
+	sleep(0.5);
 	
 end
 
