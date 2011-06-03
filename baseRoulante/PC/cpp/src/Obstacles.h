@@ -205,6 +205,8 @@ void refreshPions(const char nomFichier[]);
  */
 void initialisation();
 
+void ajouterPions();
+
 void addRobotAdverse();
 
 }
