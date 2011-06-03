@@ -100,15 +100,31 @@ InterfaceAsservissement.tourner(0);
 
 ajoutPion();
 
-if (getCouleurRobot() == ROUGE)
-	InterfaceAsservissement.goTo(Point.new(2500,1100),80);
-	InterfaceAsservissement.goTo(Point.new(500,1100),80);
-	InterfaceAsservissement.goTo(Point.new(1500,1800),80);
-else
-	InterfaceAsservissement.goTo(Point.new(500,1100),80);
-	InterfaceAsservissement.goTo(Point.new(2500,1100),80);
-	InterfaceAsservissement.goTo(Point.new(1500,1800),80);
+tabPosRouge = [Point.new(2500,1100),Point.new(2500,1100),Point.new(2500,1100)]
+tabPosBleu = [Point.new(2500,1100),Point.new(2500,1100),Point.new(2500,1100)]
+i = 0
+
+# Mouvement jusqu'à trouver un pion
+while (InterfaceCapteurs.EtatCentre())
+	InterfaceAsservissement.goTo(tabPos[i],80);
+	i += 1
 end
+
+# Pion détecté au centre
+if (InterfaceCapteurs.EtatCentre() == false)
+
+	# Déplacement sur la case bonus
+	if(getCouleurRobot()==BLEU)
+        InterfaceAsservissement.goTo(Point.new(,),80);
+	end
+	if(getCouleurRobot()==ROUGE)
+		InterfaceAsservissement.goTo(Point.new(,),80);
+	end
+	
+	# Dépose le pion
+	
+end
+
 
 puts "Arrêt du robot"
 #InterfaceAsservissement.stopAll();
