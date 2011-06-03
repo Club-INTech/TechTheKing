@@ -133,6 +133,7 @@ public:
     void setEvitement();
     void ecrireSerie(std::string msg);
     void actualiserCouleurRobot();
+    void Open();
 private:
     InterfaceAsservissement& operator=(const InterfaceAsservissement&);
     InterfaceAsservissement(std::string port, int precisionAStar);

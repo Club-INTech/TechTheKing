@@ -282,11 +282,12 @@ bool AStar::trouverChemin(){
 				std::cout << "Obstacle sur le point d'arrivée : suppression de " << *bloqueArrivee << std::endl;
 			#endif
 			for( std::vector< std::pair<Obstacle*,int> >::iterator it = listeObstacles.begin() ; it !=listeObstacles.end() ; it++){
-				if(*(it->first) == *bloqueArrivee)
+				if(*(it->first) == *bloqueArrivee){
 					listeObstacles.erase(it);
 					#ifdef DEBUG
-					std::cout << "Supprimé " << *bloqueArrivee << std::endl;
+					std::cout << "Supprimé : " << *bloqueArrivee << std::endl;
 					#endif
+				}
 			}
 		}
 		Noeud* courant = new Noeud(m_depart.getX(),m_depart.getY(),0,m_depart.rayon(m_arrivee)); //initialisation du noeud courant..

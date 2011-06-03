@@ -8,6 +8,8 @@ InterfaceActionneurs = LibChessUp::InterfaceActionneurs.new;
 InterfaceAsservissement = LibChessUp::InterfaceAsservissement.Instance();
 InterfaceCapteurs = LibChessUp::InterfaceCapteurs.Instance();
 
+InterfaceAsservissement.Open();
+
 #initialisation des obstacles
 LibChessUp::initialisation();
 
@@ -23,8 +25,8 @@ InterfaceActionneurs.angleBrasGauche(LibChessUp::REPLIE);
 InterfaceActionneurs.angleBrasDroit(LibChessUp::REPLIE);
 
 puts "Abaissement de l'aimant";
-InterfaceActionneurs.positionAimantDroit(LibChessUp::HAUT);
-InterfaceActionneurs.positionAimantGauche(LibChessUp::HAUT);
+InterfaceActionneurs.positionAimantDroit(LibChessUp::BAS);
+InterfaceActionneurs.positionAimantGauche(LibChessUp::BAS);
 
 puts "Recalage";
 require 'recalage.rb'
@@ -69,8 +71,8 @@ InterfaceActionneurs.hauteurBrasDroit(LibChessUp::CAPTURE);
 
 sleep(1.5);
 
-InterfaceActionneurs.positionAimantDroit(LibChessUp::BAS);
-InterfaceActionneurs.positionAimantGauche(LibChessUp::BAS);
+InterfaceActionneurs.positionAimantDroit(LibChessUp::HAUT);
+InterfaceActionneurs.positionAimantGauche(LibChessUp::HAUT);
 
 sleep(1);
 

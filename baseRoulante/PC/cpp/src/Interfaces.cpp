@@ -168,13 +168,8 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
 		#ifdef DEBUG
 		std::cout << "Le robot croit qu'il est bloqué dans un obstacle ! Génération d'une lolconsigne aléatoire" << std::endl;
 		#endif
-		tourner(M_PI/2*rand()/(float)RAND_MAX);
-		if(rand()/(float)RAND_MAX>0.5){
-			avancer(300);
-		}
-		else{
-			reculer(300);
-	    }
+		tourner(M_PI*rand()/(float)RAND_MAX);
+		avancer(500);
 		goTo(arrivee,nbPoints);
    }
    else
@@ -285,48 +280,18 @@ void InterfaceAsservissement::tourner(double angleRadian){
 }
 
 InterfaceAsservissement::InterfaceAsservissement(std::string port, int precision) :m_serialPort(port), m_evitement(false), m_compteurImages(0), m_pathfinding(precision){
-    m_serialPort.Open();
     #ifdef DEBUG
-      cout<<"Interface crée"<<endl;      
+      cout<<"Interface Asservissement crée"<<endl;      
     #endif
 }
 
-
-void InterfaceAsservissement::recalage()
-{
-	pwmMaxTranslation(100);
-	pwmMaxRotation(0);
-	reculer(500);
-	pwmMaxRotation(255);
-	
-	if(COULEUR_ROBOT==BLEU){
-		setXRobot(3000-DEMI_LARGEUR_ROBOT);
-	}
-	else if(COULEUR_ROBOT==ROUGE){
-		setXRobot(DEMI_LARGEUR_ROBOT);
-	}
-	avancer(650);
-	if(COULEUR_ROBOT==BLEU){
-		tourner(-M_PI/2);
-	}
-	else if(COULEUR_ROBOT==ROUGE){
-		tourner(M_PI/2);
-	}
-	pwmMaxRotation(0);
-	pwmMaxTranslation(100);
-	reculer(500);
-	pwmMaxRotation(255);
-	setYRobot(2100-DEMI_LARGEUR_ROBOT);
-
-	avancer(100);
-	tourner(0);
-	
-	reculer(500);
-	
-	//pwmMaxRotation(255);
-	//pwmMaxTranslation(100);
-	//reculer(150);
+void InterfaceAsservissement::Open(){
+	m_serialPort.Open();
+    #ifdef DEBUG
+      cout<<"Interface Asservissement Ouverte"<<endl;      
+    #endif
 }
+
 
 void InterfaceAsservissement::pwmMaxTranslation(unsigned char valPWM){
 	ecrireSerie("pt0"+formaterInt(valPWM));
