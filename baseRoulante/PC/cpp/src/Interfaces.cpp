@@ -286,7 +286,7 @@ void InterfaceAsservissement::tourner(double angleRadian){
     attendreArrivee();
 }
 
-InterfaceAsservissement::InterfaceAsservissement(std::string port, int precision) :m_serialPort(port), m_evitement(false), m_compteurImages(0), m_pathfinding(precision){
+InterfaceAsservissement::InterfaceAsservissement(std::string port, int precision) :m_serialPort(port), m_pionCentre(false), m_evitement(false), m_compteurImages(0), m_pathfinding(precision){
     #ifdef DEBUG
       cout<<"Interface Asservissement crée"<<endl;      
     #endif
