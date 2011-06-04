@@ -71,7 +71,7 @@ void InterfaceAsservissement::debugGraphique(){
         630-m_lastTrajectory[i+1].getY()*630/2100));
     image.magick("png");
     std::string tmp("cheminRobot");
-    image.write(tmp + numToString(m_compteurImages++));
+    image.write(tmp);
     cout<<"chemin emprunté dans le robot écrit dans cheminRobot.png"<<endl;
 }
 #endif
@@ -232,6 +232,11 @@ void InterfaceAsservissement::attendreArrivee(){
 				eviter();
 				return;
 			}
+			/*
+			if(m_pionCentre==true){
+				stop();
+				return;
+			}*/
 		}
 		result=m_serialPort.ReadLine();
 	}
@@ -320,6 +325,12 @@ void InterfaceAsservissement::setEvitement(){
 	boost::mutex::scoped_lock lolilol_evitement(m_evitement_mutex);
 	m_evitement=true;
 }
+
+void InterfaceAsservissement::setPionCentre(bool etat){
+	boost::mutex::scoped_lock lolilol_pionCentre(m_pionCentre_mutex);
+	m_pionCentre=etat;
+}
+
 int InterfaceAsservissement::getAngleRobot(){
 	ecrireSerie("u");
 	return readInt();
@@ -564,6 +575,7 @@ void InterfaceCapteurs::thread(){
 		
         //Il y a quelquechose devant
         int distanceUltraSon = DistanceUltrason();
+        bool etatCentre = EtatCentre();
         if(distanceUltraSon>0 && distanceUltraSon < 7000) {
 				interfaceAsservissement->setEvitement();
 			{
@@ -572,6 +584,7 @@ void InterfaceCapteurs::thread(){
 			}
 			sleep(3);
         }
+		interfaceAsservissement->setPionCentre(!etatCentre);
         usleep(10000);
     }
 }

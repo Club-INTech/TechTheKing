@@ -26,7 +26,7 @@ print "Etat capteur bras droit : "
 puts InterfaceCapteurs.EtatBras(LibChessUp::BDROITE);
 
 print "Etat du capteur central : "
-puts IntefaceCapteurs.EtatCentre();
+puts InterfaceCapteurs.EtatCentre();
 
 print "Etat du jumper : "
 puts InterfaceCapteurs.EtatJumper();
