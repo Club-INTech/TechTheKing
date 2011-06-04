@@ -1,4 +1,4 @@
-setCouleurRobot(ROUGE);
+setCouleurRobot(BLEU);
 
 if(getCouleurRobot()==BLEU)
 	puts "Couleur : Bleue"

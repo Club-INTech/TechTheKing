@@ -61,12 +61,22 @@ InterfaceActionneurs.hauteurBrasDroit(LibChessUp::MILIEU);
 sleep(0.5);
 
 
-if (getCouleurRobot() == ROUGE)
-	InterfaceAsservissement.goTo(Point.new(1500,350),80);
-	InterfaceAsservissement.tourner(3*Math::PI/4);
-else
-	InterfaceAsservissement.goTo(Point.new(1500,350),80);
+if(getCouleurRobot()==BLEU)
+        InterfaceAsservissement.tourner(-Math::PI/2);
 end
+if(getCouleurRobot()==ROUGE)
+        InterfaceAsservissement.tourner(Math::PI/2);
+end
+
+InterfaceAsservissement.avancer(700);
+
+if(getCouleurRobot()==BLEU)
+        InterfaceAsservissement.tourner(-3*Math::PI/4);
+end
+if(getCouleurRobot()==ROUGE)
+        InterfaceAsservissement.tourner(3*Math::PI/4);
+end
+
 
 puts "Lacher pion";
 InterfaceActionneurs.hauteurBrasDroit(LibChessUp::CAPTURE);

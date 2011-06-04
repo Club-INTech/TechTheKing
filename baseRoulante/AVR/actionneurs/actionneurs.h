@@ -29,8 +29,8 @@
  *    PWM pour les servos
  *    Type d'asservissement
  */
-#define ASC_PWM_MAX1           200
-#define ASC_PWM_MAX2           200
+#define ASC_PWM_MAX1           150
+#define ASC_PWM_MAX2           150
 #define ASC_KP1                1
 #define ASC_KP2                1
 #define ASC_ASSERV_INDEP       0
