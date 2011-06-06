@@ -10,8 +10,17 @@
 #include <ctime>
 
 #define DEMI_LARGEUR_ROBOT 77
+
 using namespace std;
 Adaptator* adaptateur_i2c;
+
+void setCouleurRobot(Couleur couleur){
+	COULEUR_ROBOT = couleur;
+}
+
+Couleur getCouleurRobot(){
+	return COULEUR_ROBOT;
+}
 
 
 /*********************************************************/
@@ -19,6 +28,22 @@ Adaptator* adaptateur_i2c;
 /*********************************************************/
 
 InterfaceAsservissement* InterfaceAsservissement::m_instance=NULL;
+
+boost::mutex m_instance_asservissement_mutex;
+boost::mutex m_instance_capteur_mutex;
+
+void InterfaceAsservissement::ecrireSerie(std::string msg){
+	m_serialPort.Write(msg);
+}
+
+void InterfaceAsservissement::actualiserCouleurRobot(){
+	if(COULEUR_ROBOT==BLEU){
+		ecrireSerie("j");
+	}
+	else{
+		ecrireSerie("r");
+	}
+}
 
 void InterfaceAsservissement::debugConsignes(){
     cout<<m_lastListeConsignes<<endl;
@@ -46,13 +71,15 @@ void InterfaceAsservissement::debugGraphique(){
         630-m_lastTrajectory[i+1].getY()*630/2100));
     image.magick("png");
     std::string tmp("cheminRobot");
-    image.write(tmp + numToString(m_compteurImages++));
+    image.write(tmp);
     cout<<"chemin emprunté dans le robot écrit dans cheminRobot.png"<<endl;
 }
 #endif
 
 
+
 InterfaceAsservissement* InterfaceAsservissement::Instance(){
+	boost::mutex::scoped_lock locklilol(m_instance_asservissement_mutex);
     if(m_instance==NULL){
        #ifdef DEBUG
          cout<<"Création de l'interface d'asservissement"<<endl;
@@ -118,10 +145,6 @@ void detectionSerieUsb(InterfaceAsservissement* asserv){
     }
 }
 
-
-void InterfaceAsservissement::ecrireSerie(std::string msg){
-	m_serialPort.Write(msg);
-}
 void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
     m_lastArrivee = arrivee;
     m_lastNbPoints = nbPoints;
@@ -134,19 +157,21 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
    Point depart(xDepart,yDepart);
    vector<Point> listePointsTmp;
    
-   if( ListeObstacles::contientCercle(xDepart,yDepart,TAILLE_ROBOT,NOIR)!=NULL
-	|| ListeObstacles::contientCercle(xDepart,yDepart,TAILLE_ROBOT,COULEUR_ROBOT)!=NULL
-	|| ListeObstacles::contientCercle(xDepart,yDepart,TAILLE_ROBOT,NEUTRE)!=NULL ){
+   if(m_lastDepart.rayon(depart) < 20){
+	   reculer(300);
+	   goTo(arrivee,nbPoints);
+   }
+   
+   if(
+	xDepart > 3000-TAILLE_ROBOT
+	|| xDepart < TAILLE_ROBOT
+	|| yDepart > 2100-TAILLE_ROBOT
+	|| yDepart < TAILLE_ROBOT){
 		#ifdef DEBUG
-		std::cout << "Le robot croit qu'il est bloqué dans un obstacle ! Génération d'une lolconsigne aléatoire" << std::endl;
+		std::cout << "Le robot croit ere bloqué sur les bords de table" << std::endl;
 		#endif
 		tourner(M_PI*rand()/(float)RAND_MAX);
-		if(rand()/(float)RAND_MAX>0.5){
-			avancer(300);
-		}
-		else{
-			reculer(300);
-	    }
+		avancer(500);
 		goTo(arrivee,nbPoints);
    }
    else
@@ -157,6 +182,7 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
 			m_lastListeConsignes=ListePoints::convertirEnConsignes(m_lastTrajectory,getDistanceRobot()); 
 			ListeConsignes::transfertSerie(m_lastListeConsignes,m_serialPort);
 			attendreArrivee();
+			m_lastDepart=depart;
 	   }
 	   else{
 			stop();
@@ -182,26 +208,39 @@ inline void InterfaceAsservissement::eviter(){
 	std::cout << "Offset x : " << offsetX << std::endl;
 	std::cout << "Offset y : " << offsetY << std::endl;
 	
-	RobotAdverse::Instance()->setCoords(
-		xRobot-offsetX,
-		yRobot-offsetY);
+	if(COULEUR_ROBOT == BLEU){
+		RobotAdverse::Instance()->setCoords(
+			xRobot-offsetX,
+			yRobot-offsetY);
+	}
+	else if(COULEUR_ROBOT == ROUGE){
+		RobotAdverse::Instance()->setCoords(
+			xRobot+offsetX,
+			yRobot-offsetY);
+	}
 	
 	reculer(distanceUltraSon);
 	reGoTo();
 }
 void InterfaceAsservissement::attendreArrivee(){
+	
 	std::string result;
 	while(result[0]!='f'){
 		while(!m_serialPort.IsDataAvailable()){
 			if(m_evitement==true){
-				std::cout << "Obstacle détecté" << std::endl;
+				std::cout << "Obstacle détecté !! " << std::endl;
 				eviter();
 				return;
 			}
+			/*
+			if(m_pionCentre==true){
+				stop();
+				return;
+			}*/
 		}
 		result=m_serialPort.ReadLine();
 	}
-	sleep(1);
+	sleep(2);
 }
 void InterfaceAsservissement::reGoTo(){
     goTo(m_lastArrivee,m_lastNbPoints);
@@ -219,6 +258,7 @@ void InterfaceAsservissement::avancer(unsigned int distanceMm){
 		ecrireSerie("b0"+formaterInt(-distanceTicks));
 	}
     attendreArrivee();
+    
 }
 
 void InterfaceAsservissement::reculer(unsigned int distanceMm){
@@ -248,34 +288,18 @@ void InterfaceAsservissement::tourner(double angleRadian){
 }
 
 InterfaceAsservissement::InterfaceAsservissement(std::string port, int precision) :m_serialPort(port), m_evitement(false), m_compteurImages(0), m_pathfinding(precision){
-    m_serialPort.Open();
     #ifdef DEBUG
-      cout<<"Interface crée"<<endl;
-      
+      cout<<"Interface Asservissement crée"<<endl;      
     #endif
 }
 
-void InterfaceAsservissement::recalage()
-{
-	pwmMaxTranslation(100);
-	pwmMaxRotation(0);
-	reculer(500);
-	pwmMaxRotation(255);
-	if(COULEUR_ROBOT==BLEU){
-		setXRobot(3000-DEMI_LARGEUR_ROBOT);
-	}
-	else if(COULEUR_ROBOT==ROUGE){
-		setXRobot(DEMI_LARGEUR_ROBOT);
-	}
-	avancer(150);
-	tourner(-M_PI/2);
-	pwmMaxRotation(0);
-	pwmMaxTranslation(100);
-	reculer(500);
-	pwmMaxRotation(255);
-	setYRobot(2100-DEMI_LARGEUR_ROBOT);
-	avancer(100);
+void InterfaceAsservissement::Open(){
+	m_serialPort.Open();
+    #ifdef DEBUG
+      cout<<"Interface Asservissement Ouverte"<<endl;      
+    #endif
 }
+
 
 void InterfaceAsservissement::pwmMaxTranslation(unsigned char valPWM){
 	ecrireSerie("pt0"+formaterInt(valPWM));
@@ -297,10 +321,16 @@ int InterfaceAsservissement::getDistanceRobot()
 	return readInt();
 }
 
-void InterfaceAsservissement::setEvitement(){	
+void InterfaceAsservissement::setEvitement(){
 	boost::mutex::scoped_lock lolilol_evitement(m_evitement_mutex);
 	m_evitement=true;
 }
+
+void InterfaceAsservissement::setPionCentre(bool etat){
+	boost::mutex::scoped_lock lolilol_pionCentre(m_pionCentre_mutex);
+	m_pionCentre=etat;
+}
+
 int InterfaceAsservissement::getAngleRobot(){
 	ecrireSerie("u");
 	return readInt();
@@ -375,6 +405,7 @@ void InterfaceActionneurs::hauteurBrasGauche(Niveau Hauteur)
     message[1] = '\0';
     
     i2c_write(adaptateur_i2c, 0X10, message, 2);
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
 }
 
 
@@ -393,6 +424,7 @@ void InterfaceActionneurs::hauteurBrasDroit(Niveau Hauteur)
     
     message[1] = '\0';
     
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
     i2c_write(adaptateur_i2c, 0X10, message, 2);
 }
 
@@ -413,6 +445,7 @@ void InterfaceActionneurs::hauteurDeuxBras(Niveau Hauteur)
     message[1] = '\0';
     
     i2c_write(adaptateur_i2c, 0X10, message, 2);
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
 }
 
 
@@ -431,6 +464,7 @@ void InterfaceActionneurs::angleBrasGauche(Orientation Angle)
     
     message[1] = '\0';
     
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
     i2c_write(adaptateur_i2c, 0X10, message, 2);
 }
 
@@ -451,6 +485,7 @@ void InterfaceActionneurs::angleBrasDroit(Orientation Angle)
     message[1] = '\0';
     
     i2c_write(adaptateur_i2c, 0X10, message, 2);
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
 }
 
 
@@ -465,6 +500,7 @@ void InterfaceActionneurs::positionAimantGauche(ModeAimant mode)
     
     message[1] = '\0';
     
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
     i2c_write(adaptateur_i2c, 0X10, message, 2);
 }
 
@@ -481,6 +517,7 @@ void InterfaceActionneurs::positionAimantDroit(ModeAimant mode)
     message[1] = '\0';
     
     i2c_write(adaptateur_i2c, 0X10, message, 2);
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
 }
 
 void InterfaceActionneurs::arret(void)
@@ -490,6 +527,7 @@ void InterfaceActionneurs::arret(void)
     message[0] = 0XA0;
     message[1] = '\0';
     
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
     i2c_write(adaptateur_i2c, 0X10, message, 2);
 }
 
@@ -507,6 +545,7 @@ void InterfaceActionneurs::arret(void)
 InterfaceCapteurs* InterfaceCapteurs::m_instance=NULL;
 
 InterfaceCapteurs* InterfaceCapteurs::Instance(){
+	boost::mutex::scoped_lock locklilol(m_instance_capteur_mutex);
     if(m_instance==NULL){
        #ifdef DEBUG
          cout<<"Création de l'interface capteurs"<<endl;
@@ -532,20 +571,20 @@ InterfaceCapteurs::~InterfaceCapteurs()
 
 void InterfaceCapteurs::thread(){
 	InterfaceAsservissement* interfaceAsservissement=InterfaceAsservissement::Instance();
-    while(1){	
+    while(1){
+		
         //Il y a quelquechose devant
         int distanceUltraSon = DistanceUltrason();
+        bool etatCentre = EtatCentre();
         if(distanceUltraSon>0 && distanceUltraSon < 7000) {
-			#ifdef DEBUG
-			std::cout << "OBSTACLE DÉTECTÉ" << std::endl;
-			#endif
+				interfaceAsservissement->setEvitement();
 			{
-			boost::mutex::scoped_lock locklilol(m_ultrason_mutex);
-			m_distanceDernierObstacle = distanceUltraSon;
+				boost::mutex::scoped_lock locklilol(m_ultrason_mutex);
+				m_distanceDernierObstacle = distanceUltraSon;
 			}
-			interfaceAsservissement->setEvitement();
 			sleep(3);
         }
+		interfaceAsservissement->setPionCentre(!etatCentre);
         usleep(10000);
     }
 }
@@ -624,6 +663,26 @@ char InterfaceCapteurs::LecteurCB ( void ) {
     return rec[0];
 }
     
+    
+bool InterfaceCapteurs::EtatCentre( void ) {
+    
+    unsigned char msg[2] = {0X43, '\0'};
+    unsigned char rec[1];
+    
+    int err;
+    
+    if( (err= i2c_write(adaptateur_i2c,0X20,msg,2)) != 0){
+        fprintf(stderr, "Error writing to the adapter: %s\n", linkm_error_msg(err));
+        exit(1);
+    }
+    if( (err= i2c_read(adaptateur_i2c,0X20,rec,1)) != 0){
+        fprintf(stderr, "Error reading from the adapter: %s\n", linkm_error_msg(err));
+        exit(1);
+    }
+    
+    return rec[0];
+}
+    
 
 bool InterfaceCapteurs::EtatJumper ( void ) {
     
@@ -651,12 +710,17 @@ void InterfaceCapteurs::gestionJumper()
 	std::cout << "Attente jumper" << std::endl;
     #endif
     while(EtatJumper()==false);
-    std::cout << "Match commencé" << std::endl;
-    boost::thread(&gestionFinMatch());
+    m_thread_finMatch = boost::thread(boost::bind(&InterfaceCapteurs::gestionFinMatch,this));
 }
 
-void InterfaceCapteurs::gestionFinMatch(){
-	sleep(20);
+void InterfaceCapteurs::gestionFinMatch(void){
+	#ifdef DEBUG
+	std::cout << "Match commencé" << std::endl;
+	#endif
+	sleep(87);
+	#ifdef DEBUG
+	std::cout << "Match terminé" << std::endl;
+    #endif
 	InterfaceAsservissement::Instance()->stopAll();
 }
 

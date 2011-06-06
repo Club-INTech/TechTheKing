@@ -83,6 +83,7 @@ x         */
         virtual Couleur getCouleur()  { return m_couleur; };
         void setCouleur(Couleur couleur){ m_couleur=couleur; };
         
+        
     protected:
         
         Couleur m_couleur;
@@ -197,6 +198,7 @@ void erasePions();
  
 void refreshPions(const char nomFichier[]);
 
+void ajoutPion();
 /*!
  * \brief
  * 
@@ -204,6 +206,8 @@ void refreshPions(const char nomFichier[]);
  * 
  */
 void initialisation();
+
+void ajouterPions();
 
 void addRobotAdverse();
 

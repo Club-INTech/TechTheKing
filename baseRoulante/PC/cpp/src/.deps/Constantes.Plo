@@ -1,0 +1,3 @@
+Constantes.lo: Constantes.cpp Constantes.h
+
+Constantes.h:

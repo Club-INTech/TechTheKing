@@ -23,7 +23,6 @@ enum Couleur {ROUGE, BLEU, NEUTRE, NOIR};
 %inline %{
 extern int RAYON_DE_DETECTION;
 extern int EMPIETEMENT;
-extern Couleur COULEUR_ROBOT;
 extern Couleur COULEUR_ADVERSE;
 extern double CONVERSION_RADIAN_TIC;
 extern double CONVERSION_TIC_RADIAN;
@@ -56,6 +55,7 @@ namespace ListeObstacles {
     void erasePions();
 	void refreshPions(std::vector< std::pair<Obstacle*,int> > listePions);
 	void refreshPions(const char nomFichier[]);
+	void ajoutPion();
 }
 
 class Point{
@@ -102,8 +102,10 @@ class Socket{
         void getAllPions();
 };
 
+void setCouleurRobot(Couleur couleur);
+Couleur getCouleurRobot();
+
 class InterfaceAsservissement {
-	friend class InterfaceCapteurs;
 public:
     static InterfaceAsservissement* Instance();
     ~InterfaceAsservissement();
@@ -113,14 +115,15 @@ public:
     void goTo(Point arrivee,int nbPoints);
     void pwmMaxTranslation(unsigned char valPWM);
     void pwmMaxRotation(unsigned char valPWM);
-    void recalage();
     void reGoTo();
     void avancer(unsigned int distanceMm);
     void reculer(unsigned int distanceMm);
     void tourner(double angleRadian);
     void stop();
     void stopAll();
+    #ifdef DEBUG_GRAPHIQUE
     void debugGraphique();
+    #endif
     void debugConsignes();
     int getXRobot();
     int getYRobot();
@@ -128,12 +131,15 @@ public:
     void setYRobot(int yMm);
     void setEvitement();
     void ecrireSerie(std::string msg);
+    void actualiserCouleurRobot();
+    void Open();
 private:
     InterfaceAsservissement& operator=(const InterfaceAsservissement&);
     InterfaceAsservissement(std::string port, int precisionAStar);
     void recupPosition();
     void attendreArrivee();
     int readInt();
+    inline void eviter();
 private:
 	bool m_evitement;
     Point m_lastArrivee;
@@ -161,6 +167,7 @@ public:
     void gestionJumper();
     void gestionFinMatch();
     bool EtatJumper ( void );
+    bool EtatCentre( void ); 
 private:
 	InterfaceCapteurs();
     inline void traiterAbsenceObstacle();
@@ -186,6 +193,21 @@ class InterfaceActionneurs{
         void positionAimantGauche(ModeAimant mode);
         void positionAimantDroit(ModeAimant mode);
         void arret(void);
+};
+
+class AStar{
+	private:
+		bool trouverChemin();
+		list<Noeud*>::iterator trouverMeilleurNoeud();
+		void ajouterCasesAdjacentes(Noeud* noeud);
+		void transfererNoeud(Noeud* noeud);
+		void remonterChemin();
+	public:	
+		void debugGraphique(std::vector<Point> listePoints);
+		AStar(int precision=50);
+		void setPrecision(int precision);
+		vector<Point> getChemin(Point depart, Point arrivee);
+		
 };
 
 void ouvrir_adaptateur_i2c ();

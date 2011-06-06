@@ -21,8 +21,10 @@ std::string exec(char* cmd);
 class InterfaceAsservissement;
 std::vector<char> getTtyUSB();
 
+void setCouleurRobot(Couleur couleur);
+Couleur getCouleurRobot();
+
 class InterfaceAsservissement {
-	friend class InterfaceCapteurs;
 public:
     static InterfaceAsservissement* Instance();
     ~InterfaceAsservissement();
@@ -32,7 +34,6 @@ public:
     void goTo(Point arrivee,int nbPoints);
     void pwmMaxTranslation(unsigned char valPWM);
     void pwmMaxRotation(unsigned char valPWM);
-    void recalage();
     void reGoTo();
     void avancer(unsigned int distanceMm);
     void reculer(unsigned int distanceMm);
@@ -49,6 +50,9 @@ public:
     void setYRobot(int yMm);
     void setEvitement();
     void ecrireSerie(std::string msg);
+    void actualiserCouleurRobot();
+    void Open();
+    void setPionCentre(bool etat);
 private:
     InterfaceAsservissement& operator=(const InterfaceAsservissement&);
     InterfaceAsservissement(std::string port, int precisionAStar);
@@ -56,9 +60,12 @@ private:
     void attendreArrivee();
     int readInt();
     inline void eviter();
+    
 private:
 	bool m_evitement;
+	bool m_pionCentre;
     Point m_lastArrivee;
+    Point m_lastDepart;
     int m_lastNbPoints;
     int m_compteurImages;
     vector<Point> m_lastTrajectory;
@@ -69,6 +76,7 @@ private:
     SerialPort m_serialPort;
     boost::mutex m_evitement_mutex;
     boost::mutex  m_serial_mutex;
+    boost::mutex m_pionCentre_mutex;
     std::string m_port;
 };
 
@@ -85,6 +93,7 @@ public:
     void gestionJumper();
     void gestionFinMatch();
     bool EtatJumper ( void );
+    bool EtatCentre( void );
 private:
 	InterfaceCapteurs();
     inline void traiterAbsenceObstacle();
@@ -93,6 +102,7 @@ private:
 private:
 	unsigned short m_distanceDernierObstacle;
 	static InterfaceCapteurs* m_instance;
+	boost::thread m_thread_finMatch;
 	boost::mutex m_ultrason_mutex;
 };
 
