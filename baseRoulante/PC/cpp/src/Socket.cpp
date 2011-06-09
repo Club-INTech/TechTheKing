@@ -43,9 +43,12 @@ void Socket::getAllPions(){
     std::vector< std::pair<Obstacle*,int> > fusion;
     fusionResultats(fusion, listeObstacles1,listeObstacles2,listeObstacles3,1);
     
+    #ifdef DEBUG
+    std::cout << "Fusion des résultats obtenus par le téléphone : " << std::endl;
     printVector(fusion);
+    #endif
     
-	/*
+	
     #ifdef DEBUG_GRAPHIQUE
     Magick::Image image( "img/table.png" );
     for(std::vector< std::pair<Obstacle*,int> >::iterator  it=fusion.begin();it!=fusion.end();it++){
@@ -53,7 +56,7 @@ void Socket::getAllPions(){
     }
     image.display();
     #endif
-    */
+    
     
     
     
@@ -99,6 +102,7 @@ void Socket::getPions(const char* address,std::vector<Obstacle*>* Obstacles){
     image.display();
     #endif
     */
+    
     
     close(sockfd);
 }

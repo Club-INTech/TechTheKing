@@ -10,11 +10,40 @@
 #include <ctime>
 
 #define DEMI_LARGEUR_ROBOT 77
+
 using namespace std;
 Adaptator* adaptateur_i2c;
 
+void setCouleurRobot(Couleur couleur){
+	COULEUR_ROBOT = couleur;
+}
+
+Couleur getCouleurRobot(){
+	return COULEUR_ROBOT;
+}
+
+
+/*********************************************************/
+/*   ASSERVISSEMENT                                      */
+/*********************************************************/
 
 InterfaceAsservissement* InterfaceAsservissement::m_instance=NULL;
+
+boost::mutex m_instance_asservissement_mutex;
+boost::mutex m_instance_capteur_mutex;
+
+void InterfaceAsservissement::ecrireSerie(std::string msg){
+	m_serialPort.Write(msg);
+}
+
+void InterfaceAsservissement::actualiserCouleurRobot(){
+	if(COULEUR_ROBOT==BLEU){
+		ecrireSerie("j");
+	}
+	else{
+		ecrireSerie("r");
+	}
+}
 
 void InterfaceAsservissement::debugConsignes(){
     cout<<m_lastListeConsignes<<endl;
@@ -28,7 +57,7 @@ void InterfaceAsservissement::debugGraphique(){
     
     /* Affiche les obstacles */
     for(unsigned int i=0;i<listeObstacles.size();i++){
-        listeObstacles[i]->draw(&image);
+        (listeObstacles[i].first)->draw(&image);
     }
     
     /* Affiche la courbe */
@@ -42,17 +71,21 @@ void InterfaceAsservissement::debugGraphique(){
         630-m_lastTrajectory[i+1].getY()*630/2100));
     image.magick("png");
     std::string tmp("cheminRobot");
-    image.write(tmp + numToString(m_compteurImages++));
+    image.write(tmp);
     cout<<"chemin emprunté dans le robot écrit dans cheminRobot.png"<<endl;
 }
 #endif
 
-InterfaceAsservissement* InterfaceAsservissement::Instance(int precisionAStar){
+
+
+InterfaceAsservissement* InterfaceAsservissement::Instance(){
+	boost::mutex::scoped_lock locklilol(m_instance_asservissement_mutex);
     if(m_instance==NULL){
        #ifdef DEBUG
          cout<<"Création de l'interface d'asservissement"<<endl;
        #endif
-       m_instance= new InterfaceAsservissement(precisionAStar);
+       std::string port = "/dev/ttyUSB" + exec((char*)"ls -1 /dev/ttyUSB* | cut -d '/' -f 3 | sed -e 's/ttyUSB//'");
+       m_instance= new InterfaceAsservissement(port.substr(0, port.size()-1), 50);
     }
     else{
       #ifdef DEBUG
@@ -95,24 +128,22 @@ void detectionSerieUsb(InterfaceAsservissement* asserv){
     streamTmp.SetCharSize( SerialStreamBuf::CHAR_SIZE_8 ) ;
     streamTmp.SetNumOfStopBits(1) ;
     string listePorts = exec((char*)"ls -1 /dev/ttyUSB* | cut -d '/' -f 3 | sed -e 's/ttyUSB//'");
-    for(unsigned int i=0;i<listePorts.length();i++){
+    for(unsigned int i=0;i<=listePorts.length();i++){
         if(listePorts[i+1]=='\n'){
             stringTmp="/dev/ttyUSB";
             stringTmp.push_back( listePorts[i] );
             streamTmp.Open( stringTmp );
             streamTmp << "?" << endl;
             streamTmp >> charTmp ;
-            cout<<charTmp<<endl;
             switch(charTmp){
                 case '0':
-                    asserv->m_liaisonSerie.Open(stringTmp);
+                    asserv->m_port=stringTmp;
                     cout<<"Asservissement : ok"<<endl;
                     break;
             }
         }
     }
 }
-
 
 void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
     m_lastArrivee = arrivee;
@@ -125,163 +156,221 @@ void InterfaceAsservissement::goTo(Point arrivee,int nbPoints){
    #endif
    Point depart(xDepart,yDepart);
    vector<Point> listePointsTmp;
-   listePointsTmp = m_pathfinding.getChemin(depart,arrivee);
-   if(!listePointsTmp.empty()){
-        m_lastTrajectory=ListePoints::lissageBezier(listePointsTmp,nbPoints);
-        m_lastListeConsignes=ListePoints::convertirEnConsignes(m_lastTrajectory,getDistanceRobot()); 
-        ListeConsignes::transfertSerie(m_lastListeConsignes,m_liaisonSerie);
-        attendreArrivee();
-   }
-   else{
-        
+   
+   if(m_lastDepart.rayon(depart) < 20){
+	   reculer(300);
+	   goTo(arrivee,nbPoints);
    }
    
+   if(
+	xDepart > 3000-TAILLE_ROBOT
+	|| xDepart < TAILLE_ROBOT
+	|| yDepart > 2100-TAILLE_ROBOT
+	|| yDepart < TAILLE_ROBOT){
+		#ifdef DEBUG
+		std::cout << "Le robot croit ere bloqué sur les bords de table" << std::endl;
+		#endif
+		tourner(M_PI*rand()/(float)RAND_MAX);
+		avancer(500);
+		goTo(arrivee,nbPoints);
+   }
+   else
+   {
+	   listePointsTmp = m_pathfinding.getChemin(depart,arrivee);
+	   if(!listePointsTmp.empty()){
+			m_lastTrajectory=ListePoints::lissageBezier(listePointsTmp,nbPoints);
+			m_lastListeConsignes=ListePoints::convertirEnConsignes(m_lastTrajectory,getDistanceRobot()); 
+			ListeConsignes::transfertSerie(m_lastListeConsignes,m_serialPort);
+			attendreArrivee();
+			m_lastDepart=depart;
+	   }
+	   else{
+			stop();
+	   }
+   }
 }
 
-void InterfaceAsservissement::attendreArrivee(){
-	unsigned char result = 0;	
-	while(result != 'f'){
-		m_liaisonSerie >> result;
+inline void InterfaceAsservissement::eviter(){
+	stop();
+	m_evitement=false;
+	int xRobot =  CONVERSION_TIC_MM*getXRobot();
+	int yRobot =  CONVERSION_TIC_MM*getYRobot();
+	double angleRobot = CONVERSION_TIC_RADIAN*getAngleRobot();
+	double distanceUltraSon = TAILLE_ROBOT+InterfaceCapteurs::Instance()->distanceDernierObstacle()*CONVERSION_ULTRASONS_MM;
+	
+	//TODO : Dépend de la couleur du robot.
+	double offsetX = TAILLE_ROBOT + cos(angleRobot)*distanceUltraSon;
+	double offsetY = TAILLE_ROBOT + sin(angleRobot)*distanceUltraSon;
+	
+	std::cout << "xRobot : " << xRobot << std::endl;
+	std::cout << "yRobot : " << yRobot << std::endl;
+	
+	std::cout << "Offset x : " << offsetX << std::endl;
+	std::cout << "Offset y : " << offsetY << std::endl;
+	
+	if(COULEUR_ROBOT == BLEU){
+		RobotAdverse::Instance()->setCoords(
+			xRobot-offsetX,
+			yRobot-offsetY);
 	}
-	sleep(1);
+	else if(COULEUR_ROBOT == ROUGE){
+		RobotAdverse::Instance()->setCoords(
+			xRobot+offsetX,
+			yRobot-offsetY);
+	}
+	
+	reculer(distanceUltraSon);
+	reGoTo();
+}
+void InterfaceAsservissement::attendreArrivee(){
+	
+	std::string result;
+	while(result[0]!='f'){
+		while(!m_serialPort.IsDataAvailable()){
+			if(m_evitement==true){
+				std::cout << "Obstacle détecté !! " << std::endl;
+				eviter();
+				return;
+			}
+			/*
+			if(m_pionCentre==true){
+				stop();
+				return;
+			}*/
+		}
+		result=m_serialPort.ReadLine();
+	}
+	sleep(2);
 }
 void InterfaceAsservissement::reGoTo(){
     goTo(m_lastArrivee,m_lastNbPoints);
 }
 
 void InterfaceAsservissement::avancer(unsigned int distanceMm){
-    #ifdef DEBUG
-		std::cout << "Avance de " << distanceMm << std::endl;
-	#endif
 	int distanceTicks = getDistanceRobot() + distanceMm*CONVERSION_MM_TIC;
+	#ifdef DEBUG
+		std::cout << "Avance de " << distanceTicks << " ticks." << std::endl;
+	#endif
     if(distanceTicks>0){
-		m_liaisonSerie<<"b1"+formaterInt(distanceTicks)<<endl;
+		ecrireSerie("b1"+formaterInt(distanceTicks));
 	}
 	else{
-		m_liaisonSerie<< "b0"+formaterInt(-distanceTicks)<<endl;
+		ecrireSerie("b0"+formaterInt(-distanceTicks));
 	}
     attendreArrivee();
+    
 }
 
 void InterfaceAsservissement::reculer(unsigned int distanceMm){
-	#ifdef DEBUG
-		std::cout << "Recule de " << distanceMm << std::endl;
-	#endif
     int distanceTicks = getDistanceRobot() - distanceMm*CONVERSION_MM_TIC;
-    cout << distanceTicks << endl ;
+    #ifdef DEBUG
+		std::cout << "Recule de " << distanceTicks << " ticks" << std::endl;
+	#endif
     if(distanceTicks>0){
-		m_liaisonSerie<<"b1"+formaterInt(distanceTicks)<<endl;
+		ecrireSerie("b1"+formaterInt(distanceTicks));
 	}
 	else{
-		m_liaisonSerie<<"b0"+formaterInt(-distanceTicks)<<endl;
+		ecrireSerie("b0"+formaterInt(-distanceTicks));
 	}
     attendreArrivee();
 }
 
 void InterfaceAsservissement::tourner(double angleRadian){
-	#ifdef DEBUG
-		std::cout << "Tourne de " << angleRadian << std::endl;
-	#endif
 	int angleTicks = angleRadian*CONVERSION_RADIAN_TIC;
+	#ifdef DEBUG
+		std::cout << "Tourne de " << angleTicks << std::endl;
+	#endif
     if(angleRadian>0)
-        m_liaisonSerie<<"a0"+formaterInt(angleTicks)<<endl;
+        ecrireSerie("a0"+formaterInt(angleTicks));
     else
-        m_liaisonSerie<<"a1"+formaterInt(-angleTicks)<<endl;
+        ecrireSerie("a1"+formaterInt(-angleTicks));
     attendreArrivee();
 }
 
-InterfaceAsservissement::InterfaceAsservissement(int precision) : m_compteurImages(0), m_pathfinding(precision){
-    detectionSerieUsb(this);
-    m_liaisonSerie.SetBaudRate(SerialStreamBuf::BAUD_57600);
-    m_liaisonSerie.SetNumOfStopBits(1);
-    m_liaisonSerie.SetParity( SerialStreamBuf::PARITY_ODD ) ;
+InterfaceAsservissement::InterfaceAsservissement(std::string port, int precision) :m_serialPort(port), m_evitement(false), m_compteurImages(0), m_pathfinding(precision){
     #ifdef DEBUG
-      cout<<"Interface crée"<<endl;
-      
+      cout<<"Interface Asservissement crée"<<endl;      
     #endif
 }
 
-void InterfaceAsservissement::recalage()
-{
-	pwmMaxTranslation(100);
-	pwmMaxRotation(0);
-	reculer(500);
-	pwmMaxRotation(255);
-	if(COULEUR_ROBOT==BLEU){
-		setXRobot(3000-DEMI_LARGEUR_ROBOT);
-	}
-	else if(COULEUR_ROBOT==ROUGE){
-		setXRobot(DEMI_LARGEUR_ROBOT);
-	}
-	avancer(200);
-	tourner(-M_PI/2);
-	pwmMaxRotation(0);
-	pwmMaxTranslation(100);
-	reculer(500);
-	pwmMaxRotation(255);
-	setYRobot(2100-DEMI_LARGEUR_ROBOT);
-	avancer(200);
+void InterfaceAsservissement::Open(){
+	m_serialPort.Open();
+    #ifdef DEBUG
+      cout<<"Interface Asservissement Ouverte"<<endl;      
+    #endif
 }
 
+
 void InterfaceAsservissement::pwmMaxTranslation(unsigned char valPWM){
-	m_liaisonSerie << "pt0" << formaterInt(valPWM) ;
+	ecrireSerie("pt0"+formaterInt(valPWM));
 }
 
 void InterfaceAsservissement::pwmMaxRotation(unsigned char valPWM){
-	m_liaisonSerie << "pr0" << formaterInt(valPWM) ;
+	ecrireSerie("pr0"+formaterInt(valPWM));
 }
 
 
 InterfaceAsservissement::~InterfaceAsservissement()
 {
-    m_liaisonSerie.Close();
+    m_serialPort.Close();
 }
 
 int InterfaceAsservissement::getDistanceRobot()
 {
-	int result;
-	m_liaisonSerie << "t" ;
-	m_liaisonSerie >> result;
-	return result;
+	ecrireSerie("t");
+	return readInt();
+}
+
+void InterfaceAsservissement::setEvitement(){
+	boost::mutex::scoped_lock lolilol_evitement(m_evitement_mutex);
+	m_evitement=true;
+}
+
+void InterfaceAsservissement::setPionCentre(bool etat){
+	boost::mutex::scoped_lock lolilol_pionCentre(m_pionCentre_mutex);
+	m_pionCentre=etat;
 }
 
 int InterfaceAsservissement::getAngleRobot(){
-	int result;
-	m_liaisonSerie << "u" ;
-	m_liaisonSerie >> result;
-	return result;
+	ecrireSerie("u");
+	return readInt();
 }
 
+int InterfaceAsservissement::readInt()
+{
+	while(!m_serialPort.IsDataAvailable());
+    return atoi(m_serialPort.ReadLine().c_str());
+}
 int InterfaceAsservissement::getXRobot()
 {
-    int result;
-    m_liaisonSerie << "xg" << endl;
-    m_liaisonSerie >> result;
-    return result;
+    ecrireSerie("xg");
+    return readInt();
 }
 
 void InterfaceAsservissement::setXRobot(int xMm){
-	m_liaisonSerie << "xs0" << formaterInt(xMm);
+	ecrireSerie("xs0" + formaterInt(xMm));
 }
 
 int InterfaceAsservissement::getYRobot()
 {
-    int result;
-    m_liaisonSerie << "yg" << endl;
-    m_liaisonSerie >> result;
-    cout << result << endl;
-    return result;
+    ecrireSerie("yg");
+    return readInt();
 }
 
 void InterfaceAsservissement::setYRobot(int yMm){
-    m_liaisonSerie << "ys0" << formaterInt(yMm) << endl;
+    ecrireSerie("ys0"+formaterInt(yMm));
 }
 
 void InterfaceAsservissement::stop()
 {
-	m_liaisonSerie << "s" ;
-	pwmMaxRotation(0);
+	ecrireSerie("s");
+}
+
+void InterfaceAsservissement::stopAll()
+{
+	stop();
 	pwmMaxTranslation(0);
+	pwmMaxRotation(0);
 }
 
 /*********************************************************/
@@ -300,59 +389,103 @@ InterfaceActionneurs::~InterfaceActionneurs()
 }
 
 
-void InterfaceActionneurs::hauteurBrasGauche(unsigned char pourcentageHauteur)
+void InterfaceActionneurs::hauteurBrasGauche(Niveau Hauteur)
 {
-    unsigned short tics = pourcentageHauteurConversion(pourcentageHauteur);
-    unsigned char message[] = {0X41, (unsigned char) tics, (unsigned char) (tics >> 8),'\0'};
+    unsigned char message[2];
     
-    i2c_write(adaptateur_i2c, 0X10, message, 3+1);
+    if (Hauteur == CAPTURE)
+        message[0] = 0X41;
+    else if (Hauteur == MILIEU)
+        message[0] = 0X43;
+    else if (Hauteur == TOUR)
+        message[0] = 0X45;
+    else if (Hauteur == SOCLE)
+        message[0] = 0X47;
     
-    usleep(i2c_wait);
+    message[1] = '\0';
+    
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
 }
 
 
-void InterfaceActionneurs::hauteurBrasDroit(unsigned char pourcentageHauteur)
+void InterfaceActionneurs::hauteurBrasDroit(Niveau Hauteur)
 {
-    unsigned short tics = pourcentageHauteurConversion(pourcentageHauteur);
-    unsigned char message[] = {0X42, (unsigned char) tics, (unsigned char) (tics >> 8), '\0'};
+    unsigned char message[2];
     
-    i2c_write(adaptateur_i2c, 0X10, message, 3+1);
+    if (Hauteur == CAPTURE)
+        message[0] = 0X42;
+    else if (Hauteur == MILIEU)
+        message[0] = 0X44;
+    else if (Hauteur == TOUR)
+        message[0] = 0X46;
+    else if (Hauteur == SOCLE)
+        message[0] = 0X48;
     
-    usleep(i2c_wait);
+    message[1] = '\0';
+    
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
 }
 
 
-void InterfaceActionneurs::hauteurDeuxBras(unsigned char pourcentageHauteur)
+void InterfaceActionneurs::hauteurDeuxBras(Niveau Hauteur)
 {
-    unsigned short tics = pourcentageHauteurConversion(pourcentageHauteur);
-    unsigned char message[] = {0X4B, (unsigned char) tics, (unsigned char) (tics >> 8), '\0'};
+    unsigned char message[2];
     
-    i2c_write(adaptateur_i2c, 0X10, message, 3+1);
+    if (Hauteur == CAPTURE)
+        message[0] = 0X51;
+    else if (Hauteur == MILIEU)
+        message[0] = 0X52;
+    else if (Hauteur == TOUR)
+        message[0] = 0X53;
+    else if (Hauteur == SOCLE)
+        message[0] = 0X54;
     
-    usleep(i2c_wait);
+    message[1] = '\0';
+    
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
 }
 
 
-void InterfaceActionneurs::angleBrasGauche(unsigned char pourcentageAngle)
+void InterfaceActionneurs::angleBrasGauche(Orientation Angle)
 {   
-    unsigned short angle = pourcentageAngleConversion(pourcentageAngle);
+    unsigned char message[2];
     
-    unsigned char message[] = {0X11, (unsigned char) angle, (unsigned char) (angle >> 8), '\0'};
+    if (Angle == REPLIE)
+        message[0] = 0X11;
+    else if (Angle == CENTRE)
+        message[0] = 0X13;
+    else if (Angle == BALAYAGE)
+        message[0] = 0X15;
+    else if (Angle == DROIT)
+        message[0] = 0X17;
     
-    i2c_write(adaptateur_i2c, 0X10, message, 3+1);
+    message[1] = '\0';
     
-    usleep(i2c_wait);
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
 }
 
 
-void InterfaceActionneurs::angleBrasDroit(unsigned char pourcentageAngle)
+void InterfaceActionneurs::angleBrasDroit(Orientation Angle)
 {
-    unsigned short angle = pourcentageAngleConversion(pourcentageAngle);
-    unsigned char message[] = {0X12, (unsigned char) angle, (unsigned char) (angle >> 8), '\0'};
+    unsigned char message[2];
     
-    i2c_write(adaptateur_i2c, 0X10, message, 3+1);
+    if (Angle == REPLIE)
+        message[0] = 0X12;
+    else if (Angle == CENTRE)
+        message[0] = 0X14;
+    else if (Angle == BALAYAGE)
+        message[0] = 0X16;
+    else if (Angle == DROIT)
+        message[0] = 0X18;
     
-    usleep(i2c_wait);
+    message[1] = '\0';
+    
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
 }
 
 
@@ -360,18 +493,15 @@ void InterfaceActionneurs::positionAimantGauche(ModeAimant mode)
 {
     unsigned char message[2];
     
-    if (mode == HAUT) {
+    if (mode == HAUT)
         message[0] = 0X21;
-        message[1] = '\0';
-    }
-    else {
-        message[0] = 0X31; 
-        message[1] = '\0';
-    }
+    else if (mode == BAS)
+        message[0] = 0X31;
     
-    i2c_write(adaptateur_i2c, 0X10, message, 1+1);
+    message[1] = '\0';
     
-    usleep(i2c_wait);
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
 }
 
 
@@ -379,43 +509,27 @@ void InterfaceActionneurs::positionAimantDroit(ModeAimant mode)
 {
     unsigned char message[2];
     
-    if (mode == HAUT) {
+    if (mode == HAUT)
         message[0] = 0X22;
-        message[1] = '\0';
-    }
-    else {
-        message[0] = 0X32; 
-        message[1] = '\0';
-    }
+    else if (mode == BAS)
+        message[0] = 0X32;
     
-    i2c_write(adaptateur_i2c, 0X10, message, 1+1);
-    
-    usleep(i2c_wait);
-}
-
-void InterfaceActionneurs::recalage(void)
-{
-    unsigned char message[2];
-
-    message[0] = 0XA1;
     message[1] = '\0';
     
-    i2c_write(adaptateur_i2c, 0X10, message, 1+1);
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
+}
+
+void InterfaceActionneurs::arret(void)
+{
+    unsigned char message[2];
     
-    usleep(i2c_wait);
+    message[0] = 0XA0;
+    message[1] = '\0';
+    
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
+    i2c_write(adaptateur_i2c, 0X10, message, 2);
 }
-
-unsigned short InterfaceActionneurs::pourcentageHauteurConversion(unsigned char pourcentage)
-{
-    return (pourcentage*90);
-}
-
-
-unsigned short InterfaceActionneurs::pourcentageAngleConversion(unsigned char pourcentage)
-{
-    return(pourcentage*10.23);
-}
-
 
 /*********************************************************/
 /*    Voyageur, ici s'arrete la terre des actionneurs    */
@@ -428,6 +542,24 @@ unsigned short InterfaceActionneurs::pourcentageAngleConversion(unsigned char po
 /*   CAPTEURS                                            */
 /*********************************************************/
 
+InterfaceCapteurs* InterfaceCapteurs::m_instance=NULL;
+
+InterfaceCapteurs* InterfaceCapteurs::Instance(){
+	boost::mutex::scoped_lock locklilol(m_instance_capteur_mutex);
+    if(m_instance==NULL){
+       #ifdef DEBUG
+         cout<<"Création de l'interface capteurs"<<endl;
+       #endif
+       m_instance= new InterfaceCapteurs();
+    }
+    else{
+      #ifdef DEBUG
+         cout<<"Interface capteurs déjà crée " <<endl;
+      #endif
+    }
+    return m_instance;
+}
+
 InterfaceCapteurs::InterfaceCapteurs() : Thread()  
 {
 }
@@ -438,29 +570,33 @@ InterfaceCapteurs::~InterfaceCapteurs()
 }
 
 void InterfaceCapteurs::thread(){
+	InterfaceAsservissement* interfaceAsservissement=InterfaceAsservissement::Instance();
     while(1){
-        InterfaceAsservissement* interfaceAsservissement=InterfaceAsservissement::Instance();
+		
         //Il y a quelquechose devant
         int distanceUltraSon = DistanceUltrason();
-        if(distanceUltraSon < 5000) {
-            interfaceAsservissement->stop();
-            int xRobot =  CONVERSION_TIC_MM*interfaceAsservissement->getXRobot();
-            int yRobot =  CONVERSION_TIC_MM*interfaceAsservissement->getYRobot();
-            double angleRobot = CONVERSION_TIC_RADIAN*interfaceAsservissement->getAngleRobot();         
-                //On actualise la position du robot adverse
-                RobotAdverse::Instance()->setCoords(
-                xRobot+cos(angleRobot)*distanceUltraSon,
-                yRobot+cos(angleRobot)*distanceUltraSon);
-                //On recule
-                interfaceAsservissement->reculer(200);
-                //On recalcule une trajectoire.
-                interfaceAsservissement->reGoTo();
+        bool etatCentre = EtatCentre();
+        if(distanceUltraSon>0 && distanceUltraSon < 7000) {
+				interfaceAsservissement->setEvitement();
+			{
+				boost::mutex::scoped_lock locklilol(m_ultrason_mutex);
+				m_distanceDernierObstacle = distanceUltraSon;
+			}
+			sleep(3);
         }
-        usleep(1000);
+		interfaceAsservissement->setPionCentre(!etatCentre);
+        usleep(10000);
     }
 }
 
+unsigned short InterfaceCapteurs::distanceDernierObstacle( void ) 
+{
+	boost::mutex::scoped_lock locklilol(m_ultrason_mutex);
+	return m_distanceDernierObstacle;
+}
 unsigned short InterfaceCapteurs::DistanceUltrason( void ) {
+    
+    
     
     unsigned char msg[2] = {0X11, '\0'};
     
@@ -527,8 +663,28 @@ char InterfaceCapteurs::LecteurCB ( void ) {
     return rec[0];
 }
     
+    
+bool InterfaceCapteurs::EtatCentre( void ) {
+    
+    unsigned char msg[2] = {0X43, '\0'};
+    unsigned char rec[1];
+    
+    int err;
+    
+    if( (err= i2c_write(adaptateur_i2c,0X20,msg,2)) != 0){
+        fprintf(stderr, "Error writing to the adapter: %s\n", linkm_error_msg(err));
+        exit(1);
+    }
+    if( (err= i2c_read(adaptateur_i2c,0X20,rec,1)) != 0){
+        fprintf(stderr, "Error reading from the adapter: %s\n", linkm_error_msg(err));
+        exit(1);
+    }
+    
+    return rec[0];
+}
+    
 
-bool EtatJumper ( void ) {
+bool InterfaceCapteurs::EtatJumper ( void ) {
     
     unsigned char msg[2] = {0X50, '\0'};
     unsigned char rec[1];
@@ -548,23 +704,26 @@ bool EtatJumper ( void ) {
 }
 
 
-void InterfaceCapteurs::attendreJumper()
+void InterfaceCapteurs::gestionJumper()
 {
-    unsigned char msg[2] = {0x50, '\0'};
-    unsigned char rec[1];
-    int err;
-    while(rec[0]!=1){
-        if( (err= i2c_write(adaptateur_i2c,0X20,msg,2)) != 0){
-            fprintf(stderr, "Error writing to the adapter: %s\n", linkm_error_msg(err));
-            exit(1);
-        }
-        if( (err= i2c_read(adaptateur_i2c,0X20,rec,1)) != 0){
-            fprintf(stderr, "Error reading from the adapter: %s\n", linkm_error_msg(err));
-            exit(1);
-        }
-        usleep(500);
-    }
+	#ifdef DEBUG
+	std::cout << "Attente jumper" << std::endl;
+    #endif
+    while(EtatJumper()==false);
+    m_thread_finMatch = boost::thread(boost::bind(&InterfaceCapteurs::gestionFinMatch,this));
 }
+
+void InterfaceCapteurs::gestionFinMatch(void){
+	#ifdef DEBUG
+	std::cout << "Match commencé" << std::endl;
+	#endif
+	sleep(87);
+	#ifdef DEBUG
+	std::cout << "Match terminé" << std::endl;
+    #endif
+	InterfaceAsservissement::Instance()->stopAll();
+}
+
 
 /*********************************************************/
 /*  FIN CAPTEURS                                         */

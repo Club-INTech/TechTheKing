@@ -83,6 +83,7 @@ x         */
         virtual Couleur getCouleur()  { return m_couleur; };
         void setCouleur(Couleur couleur){ m_couleur=couleur; };
         
+        
     protected:
         
         Couleur m_couleur;
@@ -155,7 +156,7 @@ class RobotAdverse : public CercleObstacle{
 		static RobotAdverse* m_instance;
 };
 
-extern std::vector <Obstacle*> listeObstacles ; /*!< La liste d'obstacles dans la mémoire du robot*/
+extern std::vector< std::pair<Obstacle*,int> > listeObstacles; /*!< La liste d'obstacles dans la mémoire du robot*/
 
 /*!
  * \namespace ListeObstacles
@@ -181,14 +182,23 @@ Obstacle* contientCercle(int centreX,int centreY,int rayon, Couleur couleur);
  */
 void setCouleursAuto();
 
+
+
+void erasePions();
+	
 /*!
  * \brief refreshPositions
  *
- * Recharge les coordonnees de la liste d'obstacles depuis le fichier .dat spécifié.
+ * Recharge les coordonnees de la liste d'obstacles depuis le fichier ou la liste de pions spécifié.
  *
  */
-void refreshPositions(const char nomFichier[]);
+ 
+ void refreshPions(std::vector< std::pair<Obstacle*,int> > listePions);
+ 
+ 
+void refreshPions(const char nomFichier[]);
 
+void ajoutPion();
 /*!
  * \brief
  * 
@@ -196,6 +206,8 @@ void refreshPositions(const char nomFichier[]);
  * 
  */
 void initialisation();
+
+void ajouterPions();
 
 void addRobotAdverse();
 

@@ -32,29 +32,30 @@
 #define ASC_PWM_MAX1           150
 #define ASC_PWM_MAX2           150
 #define ASC_KP1                1
-#define ASC_KP2                2
+#define ASC_KP2                1
 #define ASC_ASSERV_INDEP       0
 #define ASC_ASSERV_SYNCHRO     1
-#define ASC_ASSERV_STOP       -1
-#define ASC_CONS_MAX           8000
+#define ASC_ASSERV_STOP        -1
+#define ASC_ASSERV_RECAL       2
+#define ASC_CONS_MAX           10000
+#define ASC_CONS_MED           5000
+#define ASC_CONS_MIN           2000
+#define ASC_CONS_ZERO          0
 
 #define AX_ID1                 1
 #define AX_ID2                 2
-#define AX_ANGLE_MEDIAN        511
-#define AX_ANGLE_EXT1          200
-#define AX_ANGLE_EXT2          800
 #define AX_SPEED               511
 
-#define SERVO_PWM_UP1           26
-#define SERVO_PWM_DOWN1         13
+#define SERVO_PWM_UP1           13
+#define SERVO_PWM_DOWN1         26
 #define SERVO_PWM_UP2           13
 #define SERVO_PWM_DOWN2         26
 
 /**
  * Définition du courant de seuil maximum
  */
-#define CUR_LIM 512
-#define CUR_MAX 700
+#define CUR_LIM 300
+#define CUR_MAX 500
 
 /**
  * Définition du temps max pour la limite de courant
@@ -75,12 +76,12 @@
  *    position
  *    synchronisation
  */
-extern int16_t consigne1;
-extern int16_t consigne2;
-extern int16_t consigneb;
+extern volatile int16_t consigne1;
+extern volatile int16_t consigne2;
+extern volatile int16_t consigneb;
 extern volatile int16_t ascenseur1;
 extern volatile int16_t ascenseur2;
-extern int8_t etat_asservissement;
+extern volatile int8_t etat_asservissement;
 
 /*
  *  Fonctions d'asservissement

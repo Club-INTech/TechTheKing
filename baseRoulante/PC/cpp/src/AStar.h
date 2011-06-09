@@ -100,6 +100,7 @@ class AStar {
 		AStar(int precision=50);
 		void setPrecision(int precision);
 		vector<Point> getChemin(Point depart, Point arrivee);
+		void debugGraphique(std::vector<Point> listePoints);
 		
 	private:
 		

@@ -1,6 +1,9 @@
 #include "Obstacles.h"
 #include "Constantes.h"
 
+
+std::vector< std::pair<Obstacle*,int> > listeObstacles ;
+
 Obstacle::Obstacle(double x,double y,Couleur couleur){
     m_x=x;
     m_y=y;
@@ -99,6 +102,9 @@ RobotAdverse::RobotAdverse() : CercleObstacle(0,0,NOIR,TAILLE_ROBOT_ADVERSE){
 void RobotAdverse::setCoords(int x,int y){
 	m_x=x;
 	m_y=y;
+	#ifdef DEBUG
+	std::cout<< "Robot adverse maintenant en (" << x << "," << y << ")" << std::endl;
+	#endif
 }
 
 RobotAdverse* RobotAdverse::Instance(){
@@ -121,8 +127,8 @@ Obstacle* ListeObstacles::contientCercle(int centreX, int centreY, int rayon,Cou
     vector<Obstacle*> tmp; // contient la liste des correspondances.
     Obstacle* min=NULL;
     for(unsigned int i=0;i<listeObstacles.size();i++){
-        if(listeObstacles[i]->contientCercle(centreX,centreY,rayon) && listeObstacles[i]->getCouleur() == couleur)
-            tmp.push_back(listeObstacles[i]);
+        if((listeObstacles[i].first)->contientCercle(centreX,centreY,rayon) && (listeObstacles[i].first)->getCouleur() == couleur)
+            tmp.push_back((listeObstacles[i].first));
     }
     if(tmp.size()>0)
         min=tmp[0];
@@ -143,31 +149,85 @@ Obstacle* ListeObstacles::contientCercle(int centreX, int centreY, int rayon,Cou
 
 void ListeObstacles::setCouleursAuto(){
     for(unsigned int i=0;i<listeObstacles.size();i++){
-        listeObstacles[i]->setCouleur(listeObstacles[i]->couleurPlusProche());
+        (listeObstacles[i].first)->setCouleur((listeObstacles[i].first)->couleurPlusProche());
     }
 }
 
+
 void ListeObstacles::initialisation(){
-    listeObstacles.push_back(new RectangleObstacle(200,1689,200+TAILLE_ROBOT,11));
-    listeObstacles.push_back(new RectangleObstacle(2800,1689,200+TAILLE_ROBOT,11));
-    listeObstacles.push_back(new RectangleObstacle(800,60,350,60));
-    listeObstacles.push_back(new RectangleObstacle(461,185,11,65+TAILLE_ROBOT));
-    listeObstacles.push_back(new RectangleObstacle(1139,185,11,65+TAILLE_ROBOT));
-    listeObstacles.push_back(new RectangleObstacle(2200,60,350,60));
-    listeObstacles.push_back(new RectangleObstacle(1861,185,11,65+TAILLE_ROBOT));
-    listeObstacles.push_back(new RectangleObstacle(2539,185,11,65+TAILLE_ROBOT));
-    listeObstacles.push_back(RobotAdverse::Instance());
+    listeObstacles.push_back(std::make_pair<Obstacle*,int>(new RectangleObstacle(200,1689,200+TAILLE_ROBOT,11),0));
+    listeObstacles.push_back(std::make_pair<Obstacle*,int>(new RectangleObstacle(2800,1689,200+TAILLE_ROBOT,11),0));
+    listeObstacles.push_back(std::make_pair<Obstacle*,int>(new RectangleObstacle(800,60,350,60),0));
+    listeObstacles.push_back(std::make_pair<Obstacle*,int>(new RectangleObstacle(461,185,11,65+TAILLE_ROBOT),0));
+    listeObstacles.push_back(std::make_pair<Obstacle*,int>(new RectangleObstacle(1139,185,11,65+TAILLE_ROBOT),0));
+    listeObstacles.push_back(std::make_pair<Obstacle*,int>(new RectangleObstacle(2200,60,350,60),0));
+    listeObstacles.push_back(std::make_pair<Obstacle*,int>(new RectangleObstacle(1861,185,11,65+TAILLE_ROBOT),0));
+    listeObstacles.push_back(std::make_pair<Obstacle*,int>(new RectangleObstacle(2539,185,11,65+TAILLE_ROBOT),0));
+    listeObstacles.push_back(std::make_pair<Obstacle*,int>(RobotAdverse::Instance(),0));
 }
-    
-void ListeObstacles::refreshPositions(const char nomFichier[]){
+
+void ListeObstacles::ajoutPion(){
+	if(COULEUR_ROBOT==ROUGE){
+		COULEUR_ADVERSE=BLEU;
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE21,BLEU),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE23,BLEU),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE25,BLEU),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE32,BLEU),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE34,BLEU),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE36,BLEU),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE41,BLEU),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE43,BLEU),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE45,BLEU),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE52,BLEU),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE54,BLEU),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE56,BLEU),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE55,ROUGE),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE13,ROUGE),1));
+	}
+	if(COULEUR_ROBOT==BLEU){
+		COULEUR_ADVERSE=ROUGE;
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE22,ROUGE),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE24,ROUGE),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE26,ROUGE),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE31,ROUGE),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE33,ROUGE),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE35,ROUGE),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE42,ROUGE),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE44,ROUGE),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE46,ROUGE),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE51,ROUGE),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE53,ROUGE),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE55,ROUGE),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE14,BLEU),1));
+		listeObstacles.push_back(std::make_pair<Obstacle*,int>(new CercleObstacle(CASE52,BLEU),1));
+	}
+}
+void ListeObstacles::refreshPions(std::vector< std::pair<Obstacle*,int> > listePions){
+	erasePions();
+	for(std::vector< std::pair<Obstacle*,int> >::iterator it=listePions.begin(); it != listePions.end() ; it++){
+		listeObstacles.push_back(*it);
+	}
+}
+
+void ListeObstacles::erasePions(){
+	for(std::vector< std::pair<Obstacle*,int> >::iterator it=listeObstacles.begin(); it != listeObstacles.end() ; it++){
+		if(it->second>0){
+			delete(it->first);
+			listeObstacles.erase(it);
+		}
+	}
+}
+
+void ListeObstacles::refreshPions(const char nomFichier[]){
     listeObstacles.clear();
     ifstream fichierObstacles(nomFichier, ios::in);
     if(fichierObstacles)
     {
         double x,y;
-        while(fichierObstacles >> x >> y){
+        int note;
+        while(fichierObstacles >> x >> y >> note){
             CercleObstacle* pion = new CercleObstacle(x,y);
-            listeObstacles.push_back(pion);
+            listeObstacles.push_back(std::make_pair(pion,note));
         }
     }
         else

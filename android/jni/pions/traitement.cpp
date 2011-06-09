@@ -14,7 +14,82 @@ CvMat* initHomogMatrix(int vue)
 	// Coordonnées sources des sommets sur l'image
 	switch(vue)
 	{
+	
+		// Point de vue 1
+		case 1 :
+			//Gauche
+			srcQuad[0].x = 25;
+			srcQuad[0].y = 197;
+
+			//Haut
+			srcQuad[1].x = 129;
+			srcQuad[1].y = 94;
+
+			//Droite
+			srcQuad[2].x = 461;
+			srcQuad[2].y = 176;
+
+			//Bas
+			srcQuad[3].x = 173;
+			srcQuad[3].y = 424;
+			
+			// Cordonnées destination
+			// Gauche
+			dstQuad[0].x = NY*1400/2100; //105cm
+			dstQuad[0].y = NX*1500/3000; //140cm
+			
+			// Haut
+			dstQuad[1].x = 0;
+			dstQuad[1].y = NX-1;
+			
+			// Droit
+			dstQuad[2].x = NY*350/2100; //80cm
+			dstQuad[2].y = NX*800/3000; //35cm
+			
+			// Bas
+			dstQuad[3].x = NY*1750/2100; // 45cm
+			dstQuad[3].y = NX*450/3000; // 175cm
 		
+		break ;
+		
+		// Point de vue 2
+		case 2 :
+			
+			// Haut gauche
+			srcQuad[0].x = -8; //dst Top left
+			srcQuad[0].y = 40;
+				
+			// Haut droite
+			srcQuad[1].x = 488; //dst Top right
+			srcQuad[1].y = 40;
+				
+			// Bas gauche
+			srcQuad[2].x = -2; //dst Bottom left
+			srcQuad[2].y = 273;
+				
+			// Bas droit
+			srcQuad[3].x = 468; //dst Bot right
+			srcQuad[3].y = 282;
+			
+			// Cordonnées destination
+			// Haut gauche
+			dstQuad[0].x = NY-1;
+			dstQuad[0].y = NX-1;
+			
+			// Haut droite
+			dstQuad[1].x = 0;
+			dstQuad[1].y = NX-1;
+			
+			// Bas gauche
+			dstQuad[2].x = NY-NY*700/2100;
+			dstQuad[2].y = NX*800/3000;
+			
+			// Bas droite
+			dstQuad[3].x = NY-NY*1400/2100;
+			dstQuad[3].y = NX*800/3000;
+		
+		break ;
+
 		// Point de vue 3
 		case 3 :
 			
@@ -53,6 +128,43 @@ CvMat* initHomogMatrix(int vue)
 		
 		break ;
 		
+		// Point de vue 4
+		case 4 :
+			//Gauche
+			srcQuad[0].x = 25;
+			srcQuad[0].y = 197;
+
+			//Haut
+			srcQuad[1].x = 129;
+			srcQuad[1].y = 94;
+
+			//Droite
+			srcQuad[2].x = 461;
+			srcQuad[2].y = 176;
+
+			//Bas
+			srcQuad[3].x = 173;
+			srcQuad[3].y = 424;
+			
+			// Cordonnées destination
+			// Gauche
+			dstQuad[0].x = NY-NY*1400/2100; //105cm
+			dstQuad[0].y = NX-NX*1500/3000; //140cm
+			
+			// Haut
+			dstQuad[1].x = NY-1;
+			dstQuad[1].y = 0;
+			
+			// Droit
+			dstQuad[2].x = NY-NY*350/2100; //80cm
+			dstQuad[2].y = NX-NX*800/3000; //35cm
+			
+			// Bas
+			dstQuad[3].x = NY-NY*1750/2100; // 45cm
+			dstQuad[3].y = NX-NX*450/3000; // 175cm
+		
+		break ;
+	
 		// Point de vue 5
 		case 5 :
 			
@@ -88,6 +200,45 @@ CvMat* initHomogMatrix(int vue)
 			// Bas droite
 			dstQuad[3].x = NY*1400/2100;
 			dstQuad[3].y = NX-NX*800/3000;
+		
+		break ;
+
+
+		// Point de vue 6
+		case 6 :
+			
+			// Haut gauche
+			srcQuad[0].x = 457; //dst Top left
+			srcQuad[0].y = 550;
+				
+			// Haut droite
+			srcQuad[1].x = 6; //dst Top right
+			srcQuad[1].y = 202;
+				
+			// Bas gauche
+			srcQuad[2].x = 441; //dst Bottom left
+			srcQuad[2].y = 226;
+				
+			// Bas droit
+			srcQuad[3].x = 345; //dst Bot right
+			srcQuad[3].y = 126;
+			
+			// Cordonnées destination
+			// Haut gauche
+			dstQuad[0].y = NX-NY*450/2100;
+			dstQuad[0].x = NY-NX*120/3000;
+			
+			// Haut droite
+			dstQuad[1].x = NY-NY*1750/2100;
+			dstQuad[1].y = NX-NX*800/3000;
+			
+			// Bas gauche
+			dstQuad[2].x = NY-NY*700/2100;
+			dstQuad[2].y = NX-NX*1500/3000;
+			
+			// Bas droite
+			dstQuad[3].x = 0;
+			dstQuad[3].y = 0;
 		
 		break ;
 	}

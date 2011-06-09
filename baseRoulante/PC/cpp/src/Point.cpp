@@ -209,12 +209,14 @@ vector<Consigne> ListePoints::convertirEnConsignes(vector<Point>& listePoints,in
 			}			
 			//nombreTours=(angleBkp>=0)?floor(angleBkp/(2*M_PI)):1+floor(angleBkp/(2*M_PI));
 			//angle+=2*nombreTours*M_PI;
-			cout << angle << endl;
 			angleBkp=angle;
 			angle*=CONVERSION_RADIAN_TIC;
 			rayon+=listePoints[i].rayon(listePoints[i+1])*CONVERSION_MM_TIC; //conversion en ticks...
 			nouvelleConsigne.setRayon(floor(rayon+0.5));
-			nouvelleConsigne.setAngle(floor(angle+0.5));
+			if(COULEUR_ROBOT==BLEU)
+				nouvelleConsigne.setAngle(floor(angle+0.5));
+			if(COULEUR_ROBOT==ROUGE)
+				nouvelleConsigne.setAngle(-floor(angle+0.5));
 			resultat.push_back(nouvelleConsigne);
 		}
 	return resultat;

@@ -9,6 +9,12 @@ all: main.hex
 main.hex: main.out
 	avr-objcopy -O ihex -R .eeprom main.out main.hex
 
+asereje.hex: asereje.out
+	avr-objcopy -O ihex -R .eeprom asereje.out asereje.hex
+
+asereje.out: asereje.o actionneurs.o ax12.o twi_slave.o adc.o
+	$(CC) $(CFLAGS) -mmcu=$(MMCU_GCC) -DF_CPU=$(FREQ) -o asereje.out asereje.o actionneurs.o ax12.o twi_slave.o adc.o 
+
 main.out: main.o actionneurs.o ax12.o twi_slave.o adc.o
 	$(CC) $(CFLAGS) -mmcu=$(MMCU_GCC) -DF_CPU=$(FREQ) main.o adc.o actionneurs.o twi_slave.o ax12.o -o main.out
 
@@ -26,4 +32,3 @@ upload2: all
 
 upload3: all
 	sudo avrdude -c usbtiny -p $(MMCU_DUDE) -U flash:w:main.hex
- 
