@@ -2,6 +2,7 @@
 #define LASERS_H
 
 #include <avr/io.h>
+#include <avr/interrupt.h>
 
 /**
  * tout d'abord quelques defines pour écrire et lire nos bits plus simplement.
